@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cogni-Stream — Cognitive-as-a-Service | Shuhan Zhang</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+39+Text&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Palette: Void & Synaptic Cyan — cold clinical-tech counterpart
+               to Revive's warm amber, tuned for a neuro-corporate brief */
+            --bg-void: #000000;
+            --surface-dark: rgba(255, 255, 255, 0.045);
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-tertiary: #52525b;
+            --accent-cyan: #45E6FF;
+            --accent-glow: rgba(69, 230, 255, 0.15);
+            --accent-red: #FB5B5B;
+            --accent-yellow: #F5D742;
+            --border-subtle: rgba(255, 255, 255, 0.1);
+
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --shadow-subtle: 0 12px 40px -12px rgba(0,0,0,0.5);
+            --shadow-float: 0 24px 48px -12px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05) inset;
+
+            --font-main: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+            --font-barcode: 'Libre Barcode 39 Text', var(--font-main);
+
+            --ease-cinematic: cubic-bezier(0.25, 1, 0.3, 1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: inherit; }
+        html { font-family: var(--font-main); }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-void);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            position: relative;
+            cursor: none;
+        }
+
+        *, *::before, *::after { cursor: none !important; }
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+
+        #custom-cursor {
+            position: fixed; top: 0; left: 0; width: 20px; height: 20px;
+            border-radius: 50%; background-color: white; mix-blend-mode: difference;
+            pointer-events: none; z-index: 9999; will-change: transform;
+            transition: width 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        height 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        background-color 0.25s ease, mix-blend-mode 0.25s ease;
+        }
+        #custom-cursor.hover {
+            width: 60px; height: 60px; background-color: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(2px); mix-blend-mode: normal;
+        }
+        @media (max-width: 768px) {
+            #custom-cursor { display: none; }
+            *, *::before, *::after { cursor: auto !important; }
+        }
+
+        .noise-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none; z-index: 9999; opacity: 0.04;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        .ambient-light {
+            position: fixed; width: 80vw; height: 80vh; border-radius: 50%;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            top: -20vh; left: -20vw; pointer-events: none; z-index: -1;
+            filter: blur(100px); opacity: 0.55;
+        }
+        .ambient-light.right {
+            top: 40vh; left: auto; right: -30vw;
+            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+        }
+
+        .container { max-width: 1440px; margin: 0 auto; padding: 0 6vw; }
+
+        h1, h2, h3 { font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; }
+        h2 { font-size: clamp(2.5rem, 5vw, 4.5rem); margin-bottom: 2rem; }
+
+        .text-lead {
+            font-size: clamp(1.125rem, 2vw, 1.5rem); color: var(--text-secondary);
+            font-weight: 400; max-width: 800px; margin-bottom: 2rem;
+        }
+        .text-body {
+            font-size: 1.125rem; color: var(--text-secondary); font-weight: 400;
+            max-width: 620px; margin-bottom: 1.5rem;
+        }
+        .accent { color: var(--text-primary); font-weight: 600; box-shadow: inset 0 -2px 0 var(--accent-cyan); }
+        .caption { font-size: 0.875rem; color: var(--text-tertiary); margin-top: 1rem; display: block; }
+        .data-label { font-size: 0.95rem; color: var(--text-secondary); font-weight: 500; letter-spacing: 0.01em; margin-top: 1rem; display: block; }
+
+        .section { padding: 15vh 0; position: relative; }
+
+        .hero {
+            min-height: 100vh; display: flex; flex-direction: column; justify-content: center; position: relative;
+            padding-top: clamp(140px, 22vh, 240px);
+            padding-bottom: 6vh;
+        }
+        .hero-title { font-size: clamp(3.2rem, 7.5vw, 7rem); font-weight: 700; letter-spacing: -0.04em; margin-bottom: 1.5rem; max-width: 1200px; }
+        .hero-meta {
+            margin-top: 8vh; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem; border-top: 1px solid var(--border-subtle); padding-top: 3rem; max-width: 1000px;
+        }
+        .meta-item span { display: block; font-size: 0.8rem; color: var(--text-tertiary); margin-bottom: 0.5rem; }
+        .meta-item strong { font-size: 1rem; font-weight: 600; color: var(--text-primary); }
+
+        .grid-split { display: grid; grid-template-columns: 1fr; gap: 4rem; }
+        @media (min-width: 1024px) {
+            .grid-split { grid-template-columns: 5fr 7fr; gap: 8vw; align-items: start; }
+            .sticky-col { position: sticky; top: 15vh; }
+        }
+
+        .media-frame {
+            width: 100%; background: var(--surface-dark); border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md); box-shadow: var(--shadow-subtle); overflow: hidden;
+            position: relative; display: flex; align-items: center; justify-content: center;
+            text-align: center; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        }
+        .media-frame.aspect-video { aspect-ratio: 16/9; }
+        .media-frame.aspect-cinema { aspect-ratio: 21/9; }
+        .media-frame.aspect-portrait { aspect-ratio: 4/5; }
+        .media-placeholder-text { color: var(--text-tertiary); font-family: var(--font-main); font-size: 0.85rem; letter-spacing: 0.05em; padding: 2rem; }
+        .media-frame .media-placeholder-text { max-width: 70%; border: 1px dashed var(--border-subtle); }
+
+        .data-card {
+            background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-subtle);
+            padding: 3rem; border-radius: var(--radius-md); margin-bottom: 2rem; transition: background 0.4s ease;
+        }
+        .data-card:hover { background: rgba(255, 255, 255, 0.04); }
+        .data-number {
+            font-family: var(--font-main); font-size: clamp(3.5rem, 7vw, 6rem); color: var(--accent-cyan);
+            line-height: 1; margin-bottom: 1rem; font-weight: 700; letter-spacing: -0.04em;
+        }
+
+        .reveal {
+            opacity: 0; transform: translateY(40px) scale(0.98); filter: blur(10px);
+            transition: opacity 1.2s var(--ease-cinematic), transform 1.2s var(--ease-cinematic), filter 1.2s var(--ease-cinematic);
+            will-change: transform, opacity, filter;
+        }
+        .reveal.in-view { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+        .delay-3 { transition-delay: 0.3s; }
+
+        .site-footer { padding: 8vh 0; border-top: 1px solid var(--border-subtle); margin-top: 10vh; text-align: center; }
+
+        .site-header {
+            position: absolute; top: 6vh; left: 6vw; z-index: 100;
+            display: flex; align-items: center; gap: 1rem;
+            animation: fadeIn 2s var(--ease-cinematic) forwards;
+        }
+        .logo-barcode {
+            font-family: var(--font-barcode); font-size: 2.6rem; letter-spacing: 0.08em;
+            color: var(--text-primary); line-height: 1; user-select: none;
+        }
+        .logo-caption { font-size: 0.62rem; letter-spacing: 0.35em; color: var(--text-tertiary); margin-top: 0.3rem; text-transform: uppercase; }
+
+        .back-home-btn {
+            position: fixed; top: 6vh; right: 6vw; z-index: 100; display: flex; align-items: center; gap: 0.6rem;
+            padding: 0.75rem 1.4rem 0.75rem 1.1rem; border-radius: 999px;
+
+            /* Same restrained glass treatment as the rest of the site —
+               flat surface color, one border, one soft shadow. The
+               refraction is carried entirely by the distortion filter. */
+            background: var(--surface-dark); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: url(#glass-distortion) blur(2px) saturate(140%);
+            border: 1px solid var(--border-subtle); box-shadow: var(--shadow-subtle);
+            color: var(--text-secondary); font-size: 0.85rem; font-weight: 500; letter-spacing: 0.03em;
+            text-decoration: none; cursor: pointer; animation: fadeIn 2s var(--ease-cinematic) forwards;
+            transition: color 0.4s var(--ease-cinematic), border-color 0.4s var(--ease-cinematic),
+                        background 0.4s var(--ease-cinematic), transform 0.4s var(--ease-cinematic);
+        }
+        .back-home-btn svg { width: 16px; height: 16px; flex-shrink: 0; transition: transform 0.4s var(--ease-cinematic); }
+        .back-home-btn:hover { color: var(--accent-cyan); border-color: rgba(69, 230, 255, 0.35); transform: translateY(-2px); }
+        .back-home-btn:hover svg { transform: translateX(-3px); }
+        .back-home-btn:active { transform: translateY(0) scale(0.97); }
+        @media (max-width: 600px) {
+            .back-home-btn { top: 3vh; right: 5vw; padding: 0.55rem 1rem 0.55rem 0.8rem; font-size: 0.75rem; }
+            .back-home-btn span { display: none; }
+            .site-header { top: 3vh; left: 5vw; }
+            .logo-barcode { font-size: 2rem; }
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .scroll-track {
+            position: fixed; right: 4vw; top: 15vh; bottom: 15vh; width: 1px;
+            background: var(--border-subtle); z-index: 50; opacity: 0.6;
+        }
+        .scroll-dot {
+            position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%);
+            width: 9px; height: 9px; border-radius: 50%; background: var(--accent-cyan);
+            box-shadow: 0 0 12px var(--accent-glow), 0 0 24px var(--accent-glow);
+            transition: top 0.1s linear;
+        }
+        @media (max-width: 768px) { .scroll-track { display: none; } }
+
+        .text-outline {
+            color: transparent; -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.4);
+            text-stroke: 1.5px rgba(255, 255, 255, 0.4);
+            transition: color 0.6s var(--ease-cinematic), -webkit-text-stroke-color 0.6s var(--ease-cinematic), text-shadow 0.6s var(--ease-cinematic);
+            cursor: default;
+        }
+        .text-outline:hover {
+            color: var(--accent-cyan); -webkit-text-stroke: 0px transparent;
+            text-shadow: 0 0 40px var(--accent-glow), 0 0 80px var(--accent-glow);
+        }
+        @media (max-width: 600px) { .text-outline { -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4); } }
+
+        .hero-title .text-outline { animation: signal-breathe 5s ease-in-out infinite; }
+        .hero-title .text-outline:hover { animation-play-state: paused; }
+        @keyframes signal-breathe {
+            0%, 100% { -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.4); text-shadow: none; }
+            50% { -webkit-text-stroke: 1.5px rgba(69, 230, 255, 0.55); text-shadow: 0 0 30px var(--accent-glow); }
+        }
+
+        .prototype-btn {
+            margin-top: 3rem; display: inline-flex; align-items: center; gap: 0.6rem; width: fit-content;
+            padding: 0.9rem 1.6rem; border-radius: 999px; background: var(--accent-cyan); color: #001014;
+            font-weight: 600; font-size: 0.9rem; letter-spacing: 0.02em; text-decoration: none;
+            box-shadow: 0 0 40px var(--accent-glow);
+            transition: transform 0.4s var(--ease-cinematic), box-shadow 0.4s var(--ease-cinematic), background 0.4s var(--ease-cinematic);
+        }
+        .prototype-btn svg { transition: transform 0.4s var(--ease-cinematic); }
+        .prototype-btn:hover {
+            transform: translateY(-3px) scale(1.03);
+            background: #7CF0FF;
+            box-shadow: 0 0 20px var(--accent-glow), 0 0 70px var(--accent-glow), 0 16px 32px -12px rgba(0,0,0,0.5);
+        }
+        .prototype-btn:hover svg { transform: translate(2px, -2px); }
+        .prototype-btn:active { transform: translateY(-1px) scale(0.98); }
+
+        /* ---------------------------------------------------------- */
+        /* Subscription tier cards — recreated from the actual        */
+        /* Cogni-Stream "Select your tier of evolution" pricing table */
+        /* ---------------------------------------------------------- */
+        .tier-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem; margin-top: 3rem;
+        }
+        .tier-card {
+            border: 1px solid var(--border-subtle); border-radius: var(--radius-md);
+            padding: 2rem 1.75rem; background: rgba(255,255,255,0.02);
+            display: flex; flex-direction: column; gap: 1.5rem;
+            transition: border-color 0.4s ease, background 0.4s ease, transform 0.4s var(--ease-cinematic);
+        }
+        .tier-card:hover { border-color: rgba(69, 230, 255, 0.3); background: rgba(255,255,255,0.04); transform: translateY(-4px); }
+        .tier-card.elite { border-color: rgba(245, 215, 66, 0.35); }
+        .tier-name { font-size: 1.15rem; font-weight: 600; }
+        .tier-price { font-size: 1.6rem; font-weight: 700; color: var(--accent-cyan); letter-spacing: -0.02em; }
+        .tier-card.elite .tier-price { color: var(--accent-yellow); }
+        .tier-block span.label { display: block; font-size: 0.7rem; letter-spacing: 0.12em; color: var(--text-tertiary); text-transform: uppercase; margin-bottom: 0.6rem; }
+        .tier-block p { font-size: 0.9rem; color: var(--text-secondary); margin: 0.2rem 0; }
+
+        /* ---------------------------------------------------------- */
+        /* Status Halo — the device's public-facing class indicator   */
+        /* ---------------------------------------------------------- */
+        .halo-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2rem; margin-top: 3rem;
+        }
+        .halo-item { display: flex; align-items: flex-start; gap: 1.1rem; }
+        .halo-ring {
+            width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; margin-top: 0.2rem;
+            border: 3px solid var(--ring-color, #fff);
+            box-shadow: 0 0 16px var(--ring-glow, transparent);
+        }
+        .halo-item.active .halo-ring { --ring-color: #fff; --ring-glow: rgba(255,255,255,0.25); }
+        .halo-item.syncing .halo-ring { --ring-color: var(--accent-cyan); --ring-glow: var(--accent-glow); animation: halo-pulse 2.2s ease-in-out infinite; }
+        .halo-item.limited .halo-ring { --ring-color: var(--accent-yellow); --ring-glow: rgba(245,215,66,0.3); }
+        .halo-item.critical .halo-ring { --ring-color: var(--accent-red); --ring-glow: rgba(251,91,91,0.3); }
+        @keyframes halo-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .halo-text .name { font-size: 0.95rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 0.3rem; }
+        .halo-text .desc { font-size: 0.9rem; color: var(--text-secondary); }
+
+        /* ---------------------------------------------------------- */
+        /* Simulated X / community discussion mockup                  */
+        /* ---------------------------------------------------------- */
+        .tweet-stack { display: flex; flex-direction: column; gap: 1.25rem; margin-top: 3rem; max-width: 620px; }
+        .tweet-card {
+            border: 1px solid var(--border-subtle); border-radius: var(--radius-md);
+            background: rgba(255,255,255,0.02); padding: 1.75rem;
+        }
+        .tweet-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.8rem; }
+        .tweet-avatar { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.08); flex-shrink: 0; }
+        .tweet-name { font-size: 0.92rem; font-weight: 600; }
+        .tweet-handle { font-size: 0.82rem; color: var(--text-tertiary); }
+        .tweet-body { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.55; }
+        .tweet-body + .tweet-body { margin-top: 0.75rem; }
+        .tweet-quote { margin-top: 1rem; border: 1px solid var(--border-subtle); border-radius: 12px; padding: 1rem 1.25rem; background: rgba(255,255,255,0.015); }
+        .tweet-quote .tweet-name { font-size: 0.85rem; }
+        .tweet-quote .tweet-body { font-size: 0.85rem; }
+        .halo-inline { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.78rem; color: var(--accent-yellow); margin-top: 0.6rem; }
+        .halo-inline .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-yellow); box-shadow: 0 0 8px rgba(245,215,66,0.5); }
+
+        .quote-block {
+            border-left: 2px solid var(--accent-cyan); padding-left: 1.5rem; margin: 2.5rem 0;
+        }
+        .quote-block p { font-size: 1.15rem; color: var(--text-primary); font-weight: 500; line-height: 1.5; }
+        .quote-block span { display: block; margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-tertiary); }
+
+        /* ---------------------------------------------------------- */
+        /* Source-code excerpts — real snippets pulled from            */
+        /* EnGram__Web.html, annotated inline                          */
+        /* ---------------------------------------------------------- */
+        .code-panel {
+            background: #0a0a0d; border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-subtle);
+            margin-bottom: 1.25rem;
+        }
+        .code-panel-head {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0.85rem 1.25rem; border-bottom: 1px solid var(--border-subtle);
+        }
+        .code-panel-dots { display: flex; gap: 6px; }
+        .code-panel-dots span { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,0.15); display: block; }
+        .code-panel-file { font-size: 0.72rem; letter-spacing: 0.06em; color: var(--text-tertiary); font-family: 'SFMono-Regular', Menlo, Consolas, monospace; }
+        .code-panel pre {
+            margin: 0; padding: 1.5rem; overflow-x: auto;
+            font-family: 'SFMono-Regular', Menlo, Consolas, monospace;
+            font-size: 0.8rem; line-height: 1.7; color: #d4d4d8;
+        }
+        .code-panel .cm { color: #6a6a72; }
+        .code-panel .tg { color: var(--accent-cyan); }
+        .code-panel .st { color: #f5d742; }
+        .code-note {
+            font-size: 0.95rem; color: var(--text-secondary); margin: 0 0 3rem; max-width: 620px;
+        }
+        .code-note strong { color: var(--text-primary); font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <div id="custom-cursor"></div>
+    <div id="page-exit" style="position:fixed; inset:0; z-index:10001; background:#000000; pointer-events:none; opacity:0; transition: opacity 0.7s cubic-bezier(0.25,1,0.3,1);"></div>
+    <div class="noise-overlay"></div>
+    <div class="ambient-light"></div>
+    <div class="ambient-light right"></div>
+
+    <header class="site-header">
+        <div>
+            <div class="logo-barcode">COGNI-STREAM</div>
+        </div>
+    </header>
+
+    <svg style="position:absolute; width:0; height:0; overflow:hidden;" aria-hidden="true">
+        <defs>
+            <filter id="glass-distortion" x="-20%" y="-20%" width="140%" height="140%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.010 0.012" numOctaves="2" seed="7" result="noise"/>
+                <feGaussianBlur in="noise" stdDeviation="3" result="blurredNoise"/>
+                <feDisplacementMap in="SourceGraphic" in2="blurredNoise" scale="40" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+        </defs>
+    </svg>
+
+    <a href="Index.html" class="back-home-btn" aria-label="Back to home">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Back to Home</span>
+    </a>
+
+    <div class="scroll-track">
+        <div class="scroll-dot" id="scrollDot"></div>
+    </div>
+
+    <main>
+        <section class="container hero">
+            <h1 class="hero-title reveal">Cognitive-as-<br>a-<span class="text-outline">Service</span></h1>
+            <p class="text-lead reveal delay-1">A speculative critical-design report imagining EnGram+ — an invasive brain-computer interface that turns knowledge itself into a subscription tier, and class into a light on your temple.</p>
+
+            <div class="hero-meta reveal delay-2">
+                <div class="meta-item"><span>Researcher</span><strong>Shuhan Zhang</strong></div>
+                <div class="meta-item"><span>Prototype</span><strong>Cogni-Stream / EnGram+</strong></div>
+                <div class="meta-item"><span>Module</span><strong>Speculative Design · TFT00068H / TFT00125M</strong></div>
+                <div class="meta-item"><span>Programme</span><strong>University of York</strong></div>
+            </div>
+
+            <a href="EnGram__Web.html" target="_blank" rel="noopener" class="prototype-btn reveal delay-3">
+                Open the live prototype
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </a>
+        </section>
+
+        <section class="section container">
+            <div class="grid-split">
+                <div class="sticky-col reveal">
+                    <h2>The<br><span class="text-outline">Premise</span></h2>
+                </div>
+                <div>
+                    <p class="text-body reveal">Founded in 2040, Cogni-Stream is a fictional techno-medical enterprise built around EnGram+ — an invasive BCI device that downloads knowledge directly into the brain. Access isn't earned through study; it's purchased through a subscription tier, and the price you pay decides how much of your own mind you get to keep.</p>
+                    <p class="text-body reveal">The project recreates the company's full promotional ecosystem: an official website built entirely in HTML and CSS, an EnGram+ launch video, a simulated X community, and a device user manual — a convincing fiction (Dunne &amp; Raby, 2013) designed to make the audience feel, rather than simply read about, the commercialisation of cognition.</p>
+
+                    <div style="margin-top: 3rem;">
+                        <div class="media-frame aspect-video">
+                            <span class="media-placeholder-text">[ Cogni-Stream homepage — "Evolution Through Connection" ]</span>
+                        </div>
+                        <p class="caption">Fig. Homepage hero, built to mirror the clean, high-trust visual grammar of premium consumer tech.</p>
+                    </div>
+
+                    <p class="data-label reveal" style="margin-top: 3rem;">Select your tier of evolution</p>
+                    <div class="tier-grid">
+                        <div class="tier-card reveal">
+                            <div><div class="tier-name">Public</div><div class="tier-price">$0 / lifetime</div></div>
+                            <div class="tier-block"><span class="label">Included streams</span><p>Global Literacy</p><p>Fundamental Arithmetic</p></div>
+                            <div class="tier-block"><span class="label">Protocol</span><p>Ad-supported</p><p>2KB/s bandwidth</p></div>
+                        </div>
+                        <div class="tier-card reveal delay-1">
+                            <div><div class="tier-name">Essential</div><div class="tier-price">$999 / yr</div></div>
+                            <div class="tier-block"><span class="label">Included streams</span><p>General History</p><p>Basic Sciences</p></div>
+                            <div class="tier-block"><span class="label">Protocol</span><p>Clean Stream</p><p>50KB/s bandwidth</p></div>
+                        </div>
+                        <div class="tier-card reveal delay-2">
+                            <div><div class="tier-name">Professional</div><div class="tier-price">$9,999 / yr</div></div>
+                            <div class="tier-block"><span class="label">Included streams</span><p>Advanced Mathematics</p><p>Full Programming Logic</p></div>
+                            <div class="tier-block"><span class="label">Protocol</span><p>Deep Retention</p><p>1MB/s bandwidth</p></div>
+                        </div>
+                        <div class="tier-card elite reveal delay-3">
+                            <div><div class="tier-name">Elite Legacy</div><div class="tier-price">Invite only</div></div>
+                            <div class="tier-block"><span class="label">Included streams</span><p>Executive Strategy</p><p>Fine Arts Intuition</p></div>
+                            <div class="tier-block"><span class="label">Protocol</span><p>Genetic Inheritance</p><p>Uncapped bandwidth</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
+            <h2 class="reveal" style="text-align: center; margin-bottom: 1rem;">Problem <span class="text-outline">Space</span></h2>
+            <p class="text-lead reveal" style="text-align: center; margin: 0 auto 5rem; max-width: 700px;">If knowledge becomes a neural subscription, the digital divide doesn't close — it moves inside your skull.</p>
+
+            <div class="grid-split">
+                <div class="sticky-col reveal">
+                    <h3 style="font-size: 1.8rem;">01 — Digital Divide, at Neural Resolution</h3>
+                </div>
+                <div>
+                    <p class="text-body reveal">Van Dijk (2019) frames the digital divide as a structural gap in access and skill, driven by income, education, geography and age rather than technology itself. As of 2022, roughly 2.7 billion people still lacked internet access, and over half the world had no high-speed broadband (Signé, 2023) — a direct challenge to UN SDG 4's promise of inclusive, equitable education.</p>
+                    <p class="text-body reveal">EnGram+ takes that same structural gap and moves it inside the body. When knowledge is downloaded rather than taught, capital determines cognitive speed directly, and the divide is no longer something a library card can close.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section container">
+            <div class="grid-split">
+                <div class="sticky-col reveal">
+                    <h3 style="font-size: 1.8rem;">02 — Technocapitalism &amp; the Commodified Mind</h3>
+                </div>
+                <div>
+                    <p class="text-body reveal">Under technocapitalism (Suarez-Villa, 2000; 2012), knowledge and innovation are steadily absorbed into corporate-controlled infrastructure, displacing public institutions as the gatekeepers of learning. Napoleoni (2024) argues this concentration of infrastructural control lets a handful of firms accumulate wealth and influence at an unprecedented scale.</p>
+                    <div class="quote-block reveal delay-1">
+                        <p>Who will ultimately control access to human cognition in the neural infrastructure of the future?</p>
+                        <span>— framing question raised by Napoleoni's (2024) account of technocapitalism, applied to Cogni-Stream's fictional world</span>
+                    </div>
+                    <p class="text-body reveal delay-2">In Cogni-Stream's world, education has fully migrated from public good to corporate product — cognition itself becomes a pawn of capital, not just a business model shift but a descent of power from institutions into the neural sphere.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section container">
+            <div class="grid-split">
+                <div class="sticky-col reveal">
+                    <h3 style="font-size: 1.8rem;">03 — KaaS &amp; the Status Halo</h3>
+                </div>
+                <div>
+                    <p class="text-body reveal">Tzuo (2018) describes a broader shift from owning products to using services; EnGram+ applies this logic to cognition itself through an annual subscription. Sheil et al. (2024) document "Roach Motel" dark patterns — easy sign-up, punishing cancellation — and EnGram+ pushes the tactic further: it makes non-payment <span class="accent">visible</span>.</p>
+                    <p class="text-body reveal">When a subscription lapses, the implant's Status Halo — mounted at the temple — switches to an amber glow that anyone nearby can see. Users who can't afford renewal face public stigma long before they face a locked door.</p>
+
+                    <p class="data-label reveal" style="margin-top: 3rem;">The Status Halo — four states</p>
+                    <div class="halo-grid">
+                        <div class="halo-item active reveal">
+                            <div class="halo-ring"></div>
+                            <div class="halo-text"><div class="name">Active</div><div class="desc">System is fully operational.</div></div>
+                        </div>
+                        <div class="halo-item syncing reveal delay-1">
+                            <div class="halo-ring"></div>
+                            <div class="halo-text"><div class="name">Syncing</div><div class="desc">Downloading knowledge packages.</div></div>
+                        </div>
+                        <div class="halo-item limited reveal delay-2">
+                            <div class="halo-ring"></div>
+                            <div class="halo-text"><div class="name">Limited</div><div class="desc">Subscription expired. Basic cognition only.</div></div>
+                        </div>
+                        <div class="halo-item critical reveal delay-3">
+                            <div class="halo-ring"></div>
+                            <div class="halo-text"><div class="name">Critical</div><div class="desc">Hardware damage or illegal operation detected.</div></div>
+                        </div>
+                    </div>
+
+                    <p class="text-body reveal" style="margin-top: 3rem;">If a downgraded user can't pay for removal surgery either, they're left with a device they can't afford to keep and can't afford to take out — a lock-in that's economic, social, and finally cognitive, as EnGram+ subtly reshapes how its users think, not just what they know.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
+            <h2 class="reveal" style="text-align: center; margin-bottom: 1rem;">Design <span class="text-outline">Background</span></h2>
+            <p class="text-lead reveal" style="text-align: center; margin: 0 auto 5rem; max-width: 720px;">Three reference points shaped how Cogni-Stream looks, sounds, and lies to its users.</p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem;">
+                <div class="reveal">
+                    <div class="media-frame aspect-portrait" style="margin-bottom: 1.5rem;">
+                        <span class="media-placeholder-text">[ Ref: Neuralink surgical robot &amp; implant, clinical white aesthetic ]</span>
+                    </div>
+                    <h3 style="font-size: 1.3rem; margin-bottom: 0.8rem;">Neuralink — Clinical Aesthetics</h3>
+                    <p class="text-body" style="font-size: 1rem;">Neuralink's real-world BCI research is the project's technical anchor. Its streamlined, consumer-electronics-white surgical robot reframes brain surgery as routine — a strategy the Cogni-Stream manual borrows directly, recasting implantation as "hardware configuration" performed by a "Certified Neural Technician."</p>
+                </div>
+                <div class="reveal delay-1">
+                    <div class="media-frame aspect-portrait" style="margin-bottom: 1.5rem;">
+                        <span class="media-placeholder-text">[ Ref: Apple.com — white space, grid, restrained type ]</span>
+                    </div>
+                    <h3 style="font-size: 1.3rem; margin-bottom: 0.8rem;">Apple — the Visual Disguise of Power</h3>
+                    <p class="text-body" style="font-size: 1rem;">Apple's expansive white space and precise typographic grid read as premium and transparent (Apple Inc., 2026) — while quietly disguising a closed ecosystem. Cogni-Stream borrows this "Corporate Minimalism" so its predatory downgrade clauses sit inside pages elegant enough that users skim past them.</p>
+                </div>
+                <div class="reveal delay-2">
+                    <div class="media-frame aspect-portrait" style="margin-bottom: 1.5rem;">
+                        <span class="media-placeholder-text">[ Ref: Black Mirror — "Nosedive," social rating overlay ]</span>
+                    </div>
+                    <h3 style="font-size: 1.3rem; margin-bottom: 0.8rem;">Black Mirror — Visible Class Anxiety</h3>
+                    <p class="text-body" style="font-size: 1rem;">"Nosedive" (2016) turns social standing into a number superimposed on everyday life. It directly informed the Status Halo and the simulated X community — a device that makes economic status legible to strangers, and a feed where that visibility turns into public discrimination.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
+            <div class="grid-split">
+                <div class="sticky-col reveal">
+                    <h2>Inside the<br><span class="text-outline">Feed</span></h2>
+                </div>
+                <div>
+                    <p class="text-body reveal">The simulated X community sits inside the website, modelled on the real platform's visual language. Official Cogni-Stream posts stay upbeat and evasive; a breaking-news account raises concerns about memory disruption after downgrades; and ordinary users describe what the Status Halo actually costs them in public.</p>
+
+                    <div class="tweet-stack">
+                        <div class="tweet-card reveal">
+                            <div class="tweet-head"><div class="tweet-avatar"></div><span class="tweet-name">Cogni-Stream</span><span class="tweet-handle">@Cogni_Stream</span></div>
+                            <p class="tweet-body">Education inequality predates neural technology. Our mission is innovation — not policy reform.</p>
+                        </div>
+                        <div class="tweet-card reveal delay-1">
+                            <div class="tweet-head"><div class="tweet-avatar"></div><span class="tweet-name">Cogni-Stream</span><span class="tweet-handle">@Cogni_Stream</span></div>
+                            <p class="tweet-body">EnGram+ is designed with multiple safety protocols to ensure a stable, reliable cognitive experience. In rare cases, users may notice temporary disorientation after a tier change — this is typically short-lived.</p>
+                            <div class="tweet-quote">
+                                <div class="tweet-name">TheBreakingNews</div>
+                                <p class="tweet-body">Multiple reports suggest that when EnGram+ subscriptions lapse and users are auto-downgraded, some experience mild memory disruption. Advocacy groups are calling for greater caution around implantation.</p>
+                            </div>
+                        </div>
+                        <div class="tweet-card reveal delay-2">
+                            <div class="tweet-head"><div class="tweet-avatar"></div><span class="tweet-name">404NotFound_Wy</span><span class="tweet-handle">@Wy_2028831</span></div>
+                            <p class="tweet-body">My EnGram+ subscription ran out and it auto-downgraded me. Didn't think it'd be a big deal, but some of what I downloaded is just gone, and a few normal memories feel blurry too.</p>
+                            <p class="tweet-body">And this thing on my temple won't stop blinking yellow. Removal costs a surgery fee I can't afford right now. Anyone else dealt with this?</p>
+                            <div class="halo-inline"><span class="dot"></span> Status Halo: Limited</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
+            <h2 class="reveal" style="text-align: center; margin-bottom: 1rem;">From the <span class="text-outline">Source</span></h2>
+            <p class="text-lead reveal" style="text-align: center; margin: 0 auto 5rem; max-width: 700px;">The <a href="EnGram__Web.html" target="_blank" rel="noopener" style="color: var(--accent-cyan); text-decoration: underline; text-decoration-color: rgba(69,230,255,0.35);">live prototype</a> is hand-built HTML/CSS/JS, GenAI-assisted only for code cleanup (Level 3, per the in-file AI declaration). A few excerpts, annotated.</p>
+
+            <div class="grid-split">
+                <div class="sticky-col reveal">
+                    <h3 style="font-size: 1.5rem;">01 — The Funnel</h3>
+                </div>
+                <div>
+                    <p class="code-note reveal">The homepage gives visitors exactly one path forward: a single glowing <code style="font-family: monospace; color: var(--accent-cyan);">.gate-card</code>, not a menu of options. It's the Apple keynote structure — name the problem, then reveal the one solution — used to make a predatory subscription funnel feel inevitable rather than chosen.</p>
+                    <div class="code-panel reveal delay-1">
+                        <div class="code-panel-head">
+                            <div class="code-panel-dots"><span></span><span></span><span></span></div>
+                            <span class="code-panel-file">EnGram__Web.html — corp-hero &amp; product-gate</span>
+                        </div>
+                        <pre><code>&lt;<span class="tg">section</span> <span class="st">class="corp-hero"</span>&gt;
+    &lt;<span class="tg">h1</span> <span class="st">class="reveal"</span>&gt;Evolution Through Connection&lt;/<span class="tg">h1</span>&gt;
+    &lt;<span class="tg">p</span>&gt;Founded in 2040, we are architecting the world's
+       first direct-stream neural interface...&lt;/<span class="tg">p</span>&gt;
+&lt;/<span class="tg">section</span>&gt;
+
+&lt;<span class="tg">section</span> <span class="st">class="product-gate"</span>&gt;
+    &lt;<span class="tg">h2</span>&gt;Meet EnGram+&lt;/<span class="tg">h2</span>&gt;
+    &lt;<span class="tg">p</span>&gt;Your mind, upgraded. The premier Brain-Computer
+       Interface for direct-stream knowledge acquisition.&lt;/<span class="tg">p</span>&gt;
+    &lt;<span class="tg">div</span> <span class="st">class="gate-card"</span> <span class="st">onclick="showPage('engram')"</span>&gt;
+        &lt;<span class="tg">p</span>&gt;FLAGSHIP SYSTEM&lt;/<span class="tg">p</span>&gt;
+        &lt;<span class="tg">h3</span>&gt;Neural Port Visualization&lt;/<span class="tg">h3</span>&gt;
+        &lt;<span class="tg">div</span> <span class="st">class="btn-primary"</span>&gt;See EnGram+ Details&lt;/<span class="tg">div</span>&gt;
+    &lt;/<span class="tg">div</span>&gt;
+&lt;/<span class="tg">section</span>&gt;</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-split" style="margin-top: 8vh;">
+                <div class="sticky-col reveal">
+                    <h3 style="font-size: 1.5rem;">02 — Gold Is a Colour Token</h3>
+                </div>
+                <div>
+                    <p class="code-note reveal">The tier cards recreated earlier on this page are pulled straight from this markup. <code style="font-family: monospace; color: var(--accent-cyan);">--elite-gradient</code> renders the top tier's name in a gold text-fill — status is legible in the CSS before it's legible in the price.</p>
+                    <div class="code-panel reveal delay-1">
+                        <div class="code-panel-head">
+                            <div class="code-panel-dots"><span></span><span></span><span></span></div>
+                            <span class="code-panel-file">EnGram__Web.html — #pricing</span>
+                        </div>
+                        <pre><code><span class="cm">:root {</span>
+    <span class="cm">--elite-gradient: linear-gradient(90deg, #d4af37, #f3e5ab);</span>
+<span class="cm">}</span>
+<span class="cm">.tier-elite .plan-name {</span>
+    <span class="cm">background: var(--elite-gradient);</span>
+    <span class="cm">-webkit-background-clip: text;</span>
+    <span class="cm">-webkit-text-fill-color: transparent;</span>
+<span class="cm">}</span>
+
+&lt;<span class="tg">div</span> <span class="st">class="grid-item tier-elite"</span>&gt;
+    &lt;<span class="tg">div</span> <span class="st">class="plan-name"</span>&gt;Elite Legacy&lt;/<span class="tg">div</span>&gt;
+    &lt;<span class="tg">div</span> <span class="st">class="plan-price"</span>&gt;Invite Only&lt;/<span class="tg">div</span>&gt;
+    &lt;<span class="tg">ul</span>&gt;&lt;<span class="tg">li</span>&gt;Genetic Inheritance&lt;/<span class="tg">li</span>&gt;&lt;<span class="tg">li</span>&gt;Uncapped Bandwidth&lt;/<span class="tg">li</span>&gt;&lt;/<span class="tg">ul</span>&gt;
+&lt;/<span class="tg">div</span>&gt;</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-split" style="margin-top: 8vh;">
+                <div class="sticky-col reveal">
+                    <h3 style="font-size: 1.5rem;">03 — One Class Decides Who You Trust</h3>
+                </div>
+                <div>
+                    <p class="code-note reveal">A single modifier class, <code style="font-family: monospace; color: var(--accent-cyan);">.tweet-official</code>, is enough to separate corporate PR from ordinary users in the simulated feed — dark card, verified badge, confident copy for the company; a plain grey avatar and muted tone for everyone else. The interface itself teaches the viewer who to believe.</p>
+                    <div class="code-panel reveal delay-1">
+                        <div class="code-panel-head">
+                            <div class="code-panel-dots"><span></span><span></span><span></span></div>
+                            <span class="code-panel-file">EnGram__Web.html — page-screenshots</span>
+                        </div>
+                        <pre><code>&lt;<span class="tg">div</span> <span class="st">class="tweet tweet-official reveal"</span>&gt;
+    &lt;<span class="tg">div</span> <span class="st">class="tweet-official-badge"</span>&gt;Verified Organization&lt;/<span class="tg">div</span>&gt;
+    &lt;<span class="tg">div</span> <span class="st">class="tweet-avatar tweet-avatar-official"</span>&gt;CS&lt;/<span class="tg">div</span>&gt;
+    &lt;<span class="tg">div</span> <span class="st">class="tweet-body"</span>&gt;
+        Engram+ is designed with multiple safety protocols to
+        ensure a stable and reliable cognitive experience...
+    &lt;/<span class="tg">div</span>&gt;
+&lt;/<span class="tg">div</span>&gt;
+
+&lt;<span class="tg">div</span> <span class="st">class="tweet reveal"</span>&gt;
+    &lt;<span class="tg">div</span> <span class="st">class="tweet-name"</span>&gt;404NotFound_Wy&lt;/<span class="tg">div</span>&gt;
+    &lt;<span class="tg">div</span> <span class="st">class="tweet-body"</span>&gt;
+        My Engram+ subscription ran out and it auto-downgraded me…
+    &lt;/<span class="tg">div</span>&gt;
+&lt;/<span class="tg">div</span>&gt;</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-split" style="margin-top: 8vh;">
+                <div class="sticky-col reveal">
+                    <h3 style="font-size: 1.5rem;">04 — A Brain, Spinning Quietly Behind Everything</h3>
+                </div>
+                <div>
+                    <p class="code-note reveal">A rotating brain point-cloud (Sketchfab, CC BY 4.0 — see report Appendix A) loads as a <code style="font-family: monospace; color: var(--accent-cyan);">.glb</code> via Three.js and sits behind the entire homepage. It's decorative, but also a quiet threat: your future is spinning in the backdrop before you've read a single line of copy.</p>
+                    <div class="code-panel reveal delay-1">
+                        <div class="code-panel-head">
+                            <div class="code-panel-dots"><span></span><span></span><span></span></div>
+                            <span class="code-panel-file">EnGram__Web.html — initThreeJSBackground()</span>
+                        </div>
+                        <pre><code><span class="tg">function</span> initThreeJSBackground() {
+    <span class="tg">const</span> scene = <span class="tg">new</span> THREE.Scene();
+    <span class="tg">const</span> loader = <span class="tg">new</span> THREE.GLTFLoader();
+    <span class="tg">const</span> modelPath = <span class="st">'Model/brain_point_cloud.glb'</span>;
+
+    loader.load(modelPath, <span class="tg">function</span>(gltf) {
+        model = gltf.scene;
+        <span class="cm">// centre, scale to fit, add to scene…</span>
+        scene.add(group);
+    });
+
+    <span class="tg">function</span> animate() {
+        requestAnimationFrame(animate);
+        <span class="tg">if</span> (model) {
+            model.rotation.y += <span class="st">0.002</span>;
+            model.rotation.x += <span class="st">0.001</span>;
+        }
+        renderer.render(scene, camera);
+    }
+    animate();
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-split" style="margin-top: 8vh;">
+                <div class="sticky-col reveal">
+                    <h3 style="font-size: 1.5rem;">05 — The Ethics Page Contradicts the Pricing Page</h3>
+                </div>
+                <div>
+                    <p class="code-note reveal">The site's own Ethics page insists on "Cognitive Sovereignty" and "Equitable Access" — copy directly contradicted by every downgrade clause elsewhere on the same site. The dissonance is the design: corporate transparency language doing the opposite of what it claims.</p>
+                    <div class="code-panel reveal delay-1">
+                        <div class="code-panel-head">
+                            <div class="code-panel-dots"><span></span><span></span><span></span></div>
+                            <span class="code-panel-file">EnGram__Web.html — page-ethics</span>
+                        </div>
+                        <pre><code>&lt;<span class="tg">h4</span>&gt;Cognitive Sovereignty&lt;/<span class="tg">h4</span>&gt;
+&lt;<span class="tg">p</span>&gt;Your mind is your ultimate sanctuary. We guarantee
+   absolute user autonomy over all neural data streams.&lt;/<span class="tg">p</span>&gt;
+
+&lt;<span class="tg">h4</span>&gt;Equitable Access&lt;/<span class="tg">h4</span>&gt;
+&lt;<span class="tg">p</span>&gt;Evolution should not be a privilege. Our 'Public' tier
+   ensures essential knowledge streams remain permanently
+   free for all humanity.&lt;/<span class="tg">p</span>&gt;</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
+            <h2 class="reveal" style="text-align: center; margin-bottom: 5rem;">Design <span class="text-outline">Rationale</span></h2>
+
+            <div class="grid-split">
+                <div class="sticky-col reveal">
+                    <h3 style="font-size: 1.7rem;">Why multimodal</h3>
+                </div>
+                <div>
+                    <p class="text-body reveal">Power under technocapitalism operates across media, not within one, so a single format couldn't reveal its systemic character. Speculative design builds credible fiction as a tool for critical reflection (Dunne &amp; Raby, 2013) — which meant the project needed a website, a promotional video, and a social feed working together, not in isolation.</p>
+                </div>
+            </div>
+
+            <div class="grid-split" style="margin-top: 8vh;">
+                <div class="sticky-col reveal">
+                    <h3 style="font-size: 1.7rem;">Why first-person</h3>
+                </div>
+                <div>
+                    <p class="text-body reveal">The subscription selector on the homepage invites visitors to temporarily become consumers, not observers. It's usually only at the point of picking a tier that people notice they've quietly agreed to the commodification of knowledge inside the story — a delayed self-awareness that does more critical work than a lecture would (Bleecker, 2009).</p>
+                </div>
+            </div>
+
+            <div class="grid-split" style="margin-top: 8vh;">
+                <div class="sticky-col reveal">
+                    <h3 style="font-size: 1.7rem;">Why Apple + Neuralink aesthetics</h3>
+                </div>
+                <div>
+                    <p class="text-body reveal">Borrowing Apple and Neuralink's high-contrast type, precise grids, and restrained palette gives the fiction enough visual credibility to be mistaken for a real product. That's the point: polished interfaces are treated here as instruments of soft power (Suarez-Villa, 2012), not neutral style — the elegance is part of the argument, not a decoration on top of it.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
+            <div class="grid-split">
+                <div class="sticky-col reveal">
+                    <h2>Closing<br><span class="text-outline">Reflection</span></h2>
+                </div>
+                <div>
+                    <p class="text-lead reveal">Cogni-Stream isn't a warning about brain implants. It's a mirror held up to how technocapitalism already works.</p>
+                    <p class="text-body reveal">Grounded in SDG 4's vision of equitable education and read through Van Dijk's digital divide, Suarez-Villa's technocapitalism, and Sheil et al.'s dark-pattern research, the project turns "neuro-inequality" from an abstract concept into something you can click through and feel implicated in. The right to learn, in this fiction, has quietly become an extension of purchasing power — and the value of speculative design is in expanding what we're able to imagine and question about that (Dunne &amp; Raby, 2013), not in predicting it.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer container">
+        <span class="caption">University of York — Speculative Design (TFT00068H / TFT00125M)</span>
+        <span class="caption" style="margin-top: 0.75rem; opacity: 0.7;">AI disclosure: Google Gemini assisted with JavaScript debugging; Midjourney generated product imagery; Runway AI generated promotional video elements — all outputs reviewed, curated and directed by the author. Full disclosure in the written report.</span>
+    </footer>
+
+    <script>
+        (function() {
+            const btn = document.querySelector('.back-home-btn');
+            const exit = document.getElementById('page-exit');
+            if (!btn || !exit) return;
+            btn.addEventListener('click', function(e) {
+                const href = btn.getAttribute('href');
+                if (!href || e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+                e.preventDefault();
+                exit.style.pointerEvents = 'auto';
+                exit.style.opacity = '1';
+                setTimeout(() => { window.location.href = href; }, 650);
+            });
+        })();
+
+        (function() {
+            const cursor = document.getElementById('custom-cursor');
+            if (!cursor) return;
+            let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2, cursorX = mouseX, cursorY = mouseY, lastCursorTime = 0;
+            document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+            function animateCursor(timestamp) {
+                const dt = Math.min((timestamp - (lastCursorTime || timestamp)) / 16.67, 3);
+                lastCursorTime = timestamp;
+                const factor = 1 - Math.pow(0.82, dt);
+                cursorX += (mouseX - cursorX) * factor;
+                cursorY += (mouseY - cursorY) * factor;
+                cursor.style.transform = `translate(${cursorX}px, ${cursorY}px) translate(-50%, -50%)`;
+                requestAnimationFrame(animateCursor);
+            }
+            requestAnimationFrame(animateCursor);
+
+            function bindHoverTargets() {
+                document.querySelectorAll('a, button, [style*="cursor: pointer"], [style*="cursor:pointer"]').forEach(el => {
+                    if (el.dataset.cursorBound) return;
+                    el.dataset.cursorBound = 'true';
+                    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+                    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+                });
+            }
+            bindHoverTargets();
+            const rebindObserver = new MutationObserver(bindHoverTargets);
+            rebindObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+        })();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const reveals = document.querySelectorAll('.reveal');
+            const observerOptions = { root: null, rootMargin: '0px 0px -15% 0px', threshold: 0.1 };
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('in-view');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+            reveals.forEach(element => revealObserver.observe(element));
+
+            const scrollDot = document.getElementById('scrollDot');
+            const updateScrollProgress = () => {
+                const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                if (scrollHeight <= 0) return;
+                const scrollPercent = Math.max(0, Math.min(100, (scrollTop / scrollHeight) * 100));
+                if (scrollDot) scrollDot.style.top = `${scrollPercent}%`;
+            };
+            window.addEventListener('scroll', updateScrollProgress, { passive: true });
+            updateScrollProgress();
+        });
+    </script>
+</body>
+</html>

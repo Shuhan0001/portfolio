@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en" class="antialiased">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Celestial Canvas | Interactive Media Portfolio</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                        mono: ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Text', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                    },
+                    colors: {
+                        dark: '#050505',
+                        primary: '#4F46E5',
+                        emerald: '#10B981',
+                        rose: '#F43F5E'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            cursor: none; 
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Some elements use Tailwind's cursor-pointer utility class,
+           which overrides the inherited "none" from body. Force it
+           everywhere so the system cursor never reappears. */
+        *, *::before, *::after {
+            cursor: none !important;
+        }
+
+
+        /* Ensure ALL small text uses Apple font */
+        header, footer, nav, label, span, p, a, div {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+        }
+        /* Override Tailwind font-mono to use Apple system font */
+        .font-mono {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif !important;
+            letter-spacing: 0.02em;
+        }
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+
+        #custom-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: white;
+            mix-blend-mode: difference;
+            pointer-events: none;
+            z-index: 9999;
+            will-change: transform;
+            transition: width 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        height 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        background-color 0.25s ease,
+                        mix-blend-mode 0.25s ease;
+        }
+        
+        #custom-cursor.hover {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(2px);
+            mix-blend-mode: normal;
+        }
+
+        .glass-panel {
+            background: rgba(10, 10, 15, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .text-outline {
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+        .text-outline:hover {
+            color: white;
+            -webkit-text-stroke: 0px transparent;
+        }
+
+        .archive-row:hover .archive-arrow {
+            transform: translateX(10px) rotate(-45deg);
+        }
+        .archive-row:hover {
+            background: rgba(255,255,255,0.03);
+        }
+
+        .horizontal-scroll-container {
+            overflow: hidden;
+        }
+
+        /* GPU 层提升：卡片图片和文字区块 */
+        #featured-track .group img {
+            will-change: transform;
+        }
+        #featured-track .group > div:last-child {
+            will-change: transform;
+        }
+        .stack-card-inner {
+            will-change: transform, opacity;
+        }
+    </style>
+</head>
+<body class="selection:bg-primary selection:text-white">
+
+<div id="page-enter" style="position:fixed; inset:0; z-index:10000; background:#000000; pointer-events:none; opacity:1; transition: opacity 0.85s cubic-bezier(0.25,1,0.3,1);"></div>
+<div id="custom-cursor"></div>
+
+    <main id="smooth-wrapper" class="relative z-10">
+        <div id="smooth-content">
+            
+            <!-- Zone 0: Hero Section -->
+            <section class="h-screen w-full relative pointer-events-none overflow-hidden">
+                <div id="hero-content-wrapper" class="w-full h-full flex flex-col justify-between p-8 md:p-12 relative">
+                    <header class="flex justify-between items-center w-full pointer-events-auto">
+                        <div class="font-bold tracking-widest text-sm uppercase">Interactive Media</div>
+                        <a href="#contact-section" class="hover-trigger text-sm uppercase tracking-widest border-b border-white/30 pb-1 hover:border-white transition-colors">Contact</a>
+                    </header>
+
+                    <div id="hero-center" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center w-full transition-opacity duration-1000">
+                        <h1 class="text-5xl md:text-[8rem] font-bold leading-none tracking-tighter mix-blend-difference">
+                            CELESTIAL<br>
+                            <span class="text-outline">CANVAS</span>
+                        </h1>
+                    </div>
+
+                    <footer class="w-full text-center text-xs text-white/30 uppercase tracking-[0.2em] flex flex-col items-center pointer-events-auto font-sans">
+                        <span class="mb-4">Scroll to Follow • Click to Interact</span>
+                        <div class="w-[1px] h-12 bg-white/30 overflow-hidden relative">
+                            <div class="w-full h-1/2 bg-white absolute top-0 animate-[scrolldown_1.5s_ease-in-out_infinite]"></div>
+                        </div>
+                    </footer>
+                </div>
+            </section>
+
+            <!-- Zone 1: Philosophy & Stack -->
+            <section id="zone-1" class="w-full bg-[#050505]/30 backdrop-blur-md relative z-20 rounded-t-[3rem] shadow-[0_-20px_50px_rgba(0,0,0,0.5)] border-t border-white/10 pointer-events-auto flex flex-col pt-32 pb-16 px-4 md:px-24">
+                <div class="max-w-6xl mx-auto w-full">
+                    <div class="text-center mb-10">
+                        <h2 class="text-sm font-mono tracking-widest text-primary mb-4 uppercase">01 / Philosophy & Stack</h2>
+                        <h3 class="text-4xl md:text-6xl font-bold tracking-tight">The <span class="text-outline">Engine</span></h3>
+                    </div>
+
+                    <div class="relative w-full">
+                        <div class="stack-card-wrapper sticky top-0 h-screen flex items-center justify-center pt-10">
+                            <div class="stack-card-inner w-full h-[60vh] md:h-[70vh] bg-[#0c0c12] backdrop-blur-none border border-white/10 shadow-2xl rounded-[2rem] p-8 md:p-16 flex flex-col justify-center relative overflow-hidden group">
+                                <div class="absolute top-0 right-0 w-80 h-80 bg-primary rounded-full mix-blend-screen filter blur-[100px] opacity-10 group-hover:opacity-20 group-hover:scale-150 transition-all duration-1000"></div>
+                                <h4 class="text-xl md:text-2xl font-mono text-primary mb-6">01.01 / Mindset</h4>
+                                <h3 class="text-2xl md:text-5xl font-light leading-tight max-w-4xl relative z-10">
+                                    I engineer <span class="font-bold text-white">spatial experiences</span> where human emotion intersects with <span class="text-outline">digital logic</span>.
+                                </h3>
+                            </div>
+                        </div>
+
+                        <div class="stack-card-wrapper sticky top-0 h-screen flex items-center justify-center pt-10">
+                            <div class="stack-card-inner w-full h-[60vh] md:h-[70vh] bg-[#0c0c12] backdrop-blur-none border border-white/10 shadow-2xl rounded-[2rem] p-8 md:p-16 flex flex-col justify-center relative overflow-hidden group">
+                                <div class="absolute bottom-0 left-0 w-80 h-80 bg-emerald-600 rounded-full mix-blend-screen filter blur-[100px] opacity-10 group-hover:opacity-20 group-hover:scale-150 transition-all duration-1000"></div>
+                                <h4 class="text-xl md:text-2xl font-mono text-emerald-500 mb-6 relative z-10">01.02 / Competencies</h4>
+                                <p class="text-gray-300 text-lg md:text-2xl leading-relaxed max-w-3xl mb-8 font-light relative z-10">
+                                    Blurring the boundaries between physical installations and web-based virtual environments. Focus on real-time rendering and sensory hardware integration.
+                                </p>
+                                <div class="flex flex-wrap gap-3 relative z-10">
+                                    <span class="px-5 py-2 rounded-full bg-white/5 border border-white/10 text-sm">Three.js / WebGL</span>
+                                    <span class="px-5 py-2 rounded-full bg-white/5 border border-white/10 text-sm">TouchDesigner</span>
+                                    <span class="px-5 py-2 rounded-full bg-white/5 border border-white/10 text-sm">Kinect / Sensors</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stack-card-wrapper sticky top-0 h-screen flex items-center justify-center pt-10">
+                            <div class="stack-card-inner w-full h-[60vh] md:h-[70vh] bg-[#0c0c12] backdrop-blur-none border border-white/10 shadow-2xl rounded-[2rem] p-8 md:p-16 flex flex-col justify-center relative overflow-hidden group">
+                                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] h-[30rem] bg-rose-600 rounded-full mix-blend-screen filter blur-[120px] opacity-10 group-hover:opacity-20 group-hover:scale-150 transition-all duration-1000"></div>
+                                <h4 class="text-xl md:text-2xl font-mono text-rose-500 mb-6 md:mb-12 relative z-10">01.03 / Tech Stack</h4>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 w-full z-10 relative">
+                                    <div class="flex flex-col gap-3">
+                                        <span class="text-white font-bold text-lg border-b border-white/20 pb-2">Languages</span>
+                                        <span class="text-gray-400">C++ / GLSL</span>
+                                        <span class="text-gray-400">Python</span>
+                                        <span class="text-gray-400">JavaScript / TS</span>
+                                    </div>
+                                    <div class="flex flex-col gap-3">
+                                        <span class="text-white font-bold text-lg border-b border-white/20 pb-2">Engines</span>
+                                        <span class="text-gray-400">Unreal Engine 5</span>
+                                        <span class="text-gray-400">Unity 3D</span>
+                                        <span class="text-gray-400">TouchDesigner</span>
+                                    </div>
+                                    <div class="flex flex-col gap-3">
+                                        <span class="text-white font-bold text-lg border-b border-white/20 pb-2">Web</span>
+                                        <span class="text-gray-400">React / Next.js</span>
+                                        <span class="text-gray-400">GSAP / Lenis</span>
+                                        <span class="text-gray-400">Three.js</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Zone 2: Featured Works -->
+            <section id="zone-2-featured" class="horizontal-scroll-container w-full bg-[#050505]/20 backdrop-blur-md border-t border-b border-white/10 pointer-events-auto relative h-screen flex flex-col justify-center">
+                <div class="absolute top-20 left-8 md:left-24 z-10">
+                    <h2 class="text-sm font-sans font-bold tracking-widest text-rose-500 mb-2 uppercase">02 / Featured Exhibition</h2>
+                    <h3 class="text-4xl md:text-6xl font-bold tracking-tight">SELECTED <span class="text-outline">ARTIFACTS</span></h3>
+                </div>
+
+                <div id="featured-track" class="flex w-[250vw] md:w-[200vw] h-[60vh] px-8 md:px-24 gap-10 md:gap-16 items-center mt-12">
+                    <a href="Revive_Profilo.html" class="w-[80vw] md:w-[50vw] h-full shrink-0 relative group rounded-3xl overflow-hidden glass-panel border border-white/10 hover-trigger cursor-pointer block">
+                        <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-1000 group-hover:scale-105 group-hover:opacity-100">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+                        <div class="absolute bottom-10 left-10 z-10 transition-transform duration-500 group-hover:-translate-y-2">
+                            <span class="text-primary font-mono text-sm tracking-widest">GAME DESIGN RESEARCH · UE5 LUMEN</span>
+                            <h4 class="text-4xl md:text-5xl font-bold mt-2">Revive</h4>
+                            <p class="text-gray-300 text-sm md:text-base mt-3 max-w-md">The Bridge of Pixel and Light — a 2.5D pixel-art study on how lighting shapes player behaviour, built in Unreal Engine 5 with Lumen.</p>
+                        </div>
+                    </a>
+                    <a href="CogniStream_Profilo.html" class="w-[80vw] md:w-[50vw] h-full shrink-0 relative group rounded-3xl overflow-hidden glass-panel border border-white/10 hover-trigger cursor-pointer block">
+                        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-1000 group-hover:scale-105 group-hover:opacity-100">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+                        <div class="absolute bottom-10 left-10 z-10 transition-transform duration-500 group-hover:-translate-y-2">
+                            <span class="text-emerald-500 font-mono text-sm tracking-widest">SPECULATIVE DESIGN · CRITICAL RESEARCH</span>
+                            <h4 class="text-4xl md:text-5xl font-bold mt-2">Cogni-Stream</h4>
+                            <p class="text-gray-300 text-sm md:text-base mt-3 max-w-md">A speculative critical-design report imagining EnGram+ — an invasive brain-computer interface that turns knowledge itself into a subscription tier, and class into a light on your temple.</p>
+                        </div>
+                    </a>
+                    <a href="#" class="w-[80vw] md:w-[50vw] h-full shrink-0 relative group rounded-3xl overflow-hidden glass-panel border border-white/10 hover-trigger cursor-pointer block">
+                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1200&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-1000 group-hover:scale-105 group-hover:opacity-100">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+                        <div class="absolute bottom-10 left-10 z-10 transition-transform duration-500 group-hover:-translate-y-2">
+                            <span class="text-rose-500 font-mono text-sm tracking-widest">GENERATIVE ART</span>
+                            <h4 class="text-4xl md:text-5xl font-bold mt-2">Algorithmic Loom</h4>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Zone 3: Archive Index -->
+            <section class="min-h-[80vh] w-full bg-[#050505]/35 backdrop-blur-md pointer-events-auto py-32 px-8 md:px-24" id="zone-3-archive">
+                <div class="max-w-6xl mx-auto w-full">
+                    <h2 class="text-sm font-sans font-bold tracking-widest text-emerald mb-16 uppercase">03 / ARCHIVE INDEX</h2>
+                    <div class="grid grid-cols-12 gap-4 text-xs font-bold text-gray-500 uppercase tracking-widest pb-4 border-b border-white/20">
+                        <div class="col-span-1">Year</div>
+                        <div class="col-span-5 md:col-span-4">Project</div>
+                        <div class="col-span-6 md:col-span-5 hidden md:block">Role / Type</div>
+                        <div class="col-span-6 md:col-span-2 text-right">Link</div>
+                    </div>
+                    <div class="flex flex-col">
+                        <a href="#" class="archive-row hover-trigger grid grid-cols-12 gap-4 py-8 border-b border-white/10 items-center cursor-pointer transition-colors">
+                            <div class="col-span-1 text-gray-400 font-mono text-sm">2022</div>
+                            <div class="col-span-5 md:col-span-4 text-2xl font-bold text-gray-300">Neural Sync</div>
+                            <div class="col-span-6 md:col-span-5 text-gray-400 hidden md:block">Data Visualization, UI/UX</div>
+                            <div class="col-span-6 md:col-span-2 text-right flex justify-end">
+                                <span class="text-xs uppercase tracking-widest text-gray-500 border border-gray-600 rounded-full px-3 py-1">Archived</span>
+                            </div>
+                        </a>
+                        <a href="#" class="archive-row hover-trigger grid grid-cols-12 gap-4 py-8 border-b border-white/10 items-center cursor-pointer transition-colors">
+                            <div class="col-span-1 text-gray-400 font-mono text-sm">2021</div>
+                            <div class="col-span-5 md:col-span-4 text-2xl font-bold text-gray-300">Echo Chamber</div>
+                            <div class="col-span-6 md:col-span-5 text-gray-400 hidden md:block">Sound Design, Max/MSP</div>
+                            <div class="col-span-6 md:col-span-2 text-right flex justify-end">
+                                <span class="text-xs uppercase tracking-widest text-gray-500 border border-gray-600 rounded-full px-3 py-1">Archived</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Zone 4: Contact -->
+            <section id="contact-section" class="min-h-screen w-full flex items-center justify-center relative overflow-hidden bg-[#050505]/60 backdrop-blur-md pointer-events-auto border-t border-white/10 py-32 px-8 md:px-24">
+                <div class="w-full max-w-5xl z-10" id="contact-content">
+                    <div class="mb-16">
+                        <h2 class="text-sm font-mono tracking-widest text-primary mb-4 uppercase">04 / Connect</h2>
+                        <h3 class="text-4xl md:text-6xl font-bold tracking-tight">Let's <span class="text-outline">Work</span><br>Together.</h3>
+                        <p class="text-gray-400 mt-6 text-lg max-w-xl font-light">Have a project in mind or just want to say hello? My inbox is always open.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24">
+                        <!-- Contact Form -->
+                        <form class="flex flex-col gap-6" onsubmit="handleContactSubmit(event)">
+                            <div class="flex flex-col gap-2">
+                                <label class="text-xs font-mono tracking-widest text-gray-500 uppercase">Name</label>
+                                <input type="text" placeholder="Your name" class="bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-gray-600 focus:outline-none focus:border-primary/60 focus:bg-white/8 transition-all duration-300 hover-trigger" required>
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <label class="text-xs font-mono tracking-widest text-gray-500 uppercase">Email</label>
+                                <input type="email" placeholder="your@email.com" class="bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-gray-600 focus:outline-none focus:border-primary/60 focus:bg-white/8 transition-all duration-300 hover-trigger" required>
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <label class="text-xs font-mono tracking-widest text-gray-500 uppercase">Message</label>
+                                <textarea placeholder="Tell me about your project..." rows="5" class="bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-gray-600 focus:outline-none focus:border-primary/60 focus:bg-white/8 transition-all duration-300 resize-none hover-trigger" required></textarea>
+                            </div>
+                            <button type="submit" id="contact-submit-btn" class="hover-trigger mt-2 px-8 py-4 bg-primary rounded-xl font-bold tracking-widest uppercase text-sm transition-all duration-300 hover:bg-primary/80 hover:shadow-[0_0_30px_rgba(79,70,229,0.4)] active:scale-95">
+                                Send Message →
+                            </button>
+                            <p id="contact-success" class="hidden text-emerald-400 font-mono text-sm tracking-wider">✓ Message sent! I'll be in touch soon.</p>
+                        </form>
+
+                        <!-- Contact Info -->
+                        <div class="flex flex-col justify-between gap-10">
+                            <div class="flex flex-col gap-8">
+                                <div>
+                                    <p class="text-xs font-mono tracking-widest text-gray-500 uppercase mb-2">Email</p>
+                                    <a href="mailto:hello@celestialcanvas.io" class="hover-trigger text-white text-lg hover:text-primary transition-colors">hello@celestialcanvas.io</a>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-mono tracking-widest text-gray-500 uppercase mb-2">Based In</p>
+                                    <p class="text-white text-lg">Remote — Worldwide</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-mono tracking-widest text-gray-500 uppercase mb-3">Availability</p>
+                                    <span class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-full text-emerald-400 text-sm font-mono">
+                                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse inline-block"></span>
+                                        Open to new projects
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <p class="text-xs font-mono tracking-widest text-gray-500 uppercase mb-4">Find Me On</p>
+                                <div class="flex gap-4">
+                                    <a href="#" class="hover-trigger px-5 py-3 bg-white/5 border border-white/10 rounded-xl text-sm font-mono tracking-widest hover:border-white/30 hover:bg-white/10 transition-all duration-300">GitHub</a>
+                                    <a href="#" class="hover-trigger px-5 py-3 bg-white/5 border border-white/10 rounded-xl text-sm font-mono tracking-widest hover:border-white/30 hover:bg-white/10 transition-all duration-300">LinkedIn</a>
+                                    <a href="#" class="hover-trigger px-5 py-3 bg-white/5 border border-white/10 rounded-xl text-sm font-mono tracking-widest hover:border-white/30 hover:bg-white/10 transition-all duration-300">Twitter</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-24 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-gray-600 text-xs font-mono tracking-widest">
+                        <span>© 2024 CELESTIAL CANVAS</span>
+                        <span>INTERACTIVE MEDIA PORTFOLIO</span>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+
+    <script>
+        // --------------------------------------------------------
+        // 0. Smooth Scrolling (Lenis) 
+        // --------------------------------------------------------
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            smooth: true,
+        });
+
+        // 只用 gsap.ticker 驱动 Lenis，避免双重 tick
+        gsap.ticker.add((time) => {
+            lenis.raf(time * 1000);
+        });
+        gsap.ticker.lagSmoothing(0);
+        lenis.on('scroll', ScrollTrigger.update);
+
+        // 让页内锚点链接（比如导航栏的 Contact）走 Lenis 的丝滑滚动，
+        // 而不是浏览器原生的瞬间跳转
+        document.querySelectorAll('a[href^="#"]').forEach((link) => {
+            link.addEventListener('click', (e) => {
+                const href = link.getAttribute('href');
+                if (!href || href === '#') return;
+                const target = document.querySelector(href);
+                if (!target) return;
+                e.preventDefault();
+
+                const scrollOptions = {
+                    duration: 1.6,
+                    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
+                };
+
+                if (href === '#contact-section') {
+                    // Contact 直接瞬间跳转，彻底跳过中间那些滚动锁定区域
+                    // （横向 pin 轨道、堆叠卡片），不用再去处理途中禁用/
+                    // 恢复 ScrollTrigger 的时机问题，最简单也最不容易出错。
+                    lenis.scrollTo(target, { immediate: true });
+                } else {
+                    lenis.scrollTo(target, scrollOptions);
+                }
+            });
+        });
+
+        document.head.insertAdjacentHTML("beforeend", `<style>
+            @keyframes scrolldown {
+                0% { transform: translateY(-100%); }
+                50% { transform: translateY(100%); }
+                100% { transform: translateY(100%); }
+            }
+        </style>`);
+
+        // --------------------------------------------------------
+        // 1. Custom Cursor
+        // --------------------------------------------------------
+        const cursor = document.getElementById('custom-cursor');
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let cursorX = mouseX;
+        let cursorY = mouseY;
+        let lastCursorTime = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animateCursor(timestamp) {
+            const dt = Math.min((timestamp - (lastCursorTime || timestamp)) / 16.67, 3);
+            lastCursorTime = timestamp;
+            const factor = 1 - Math.pow(0.82, dt); // 帧率无关的平滑插值
+            cursorX += (mouseX - cursorX) * factor;
+            cursorY += (mouseY - cursorY) * factor;
+            // translate(-50%,-50%) 保证指针以自身中心为原点，不随尺寸变化跳位
+            cursor.style.transform = `translate(${cursorX}px, ${cursorY}px) translate(-50%, -50%)`;
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor(0);
+
+        // Entrance fade — pairs with the exit transition on the Revive
+        // page, so arriving here reads as a continuation, not a hard cut.
+        requestAnimationFrame(() => {
+            const enter = document.getElementById('page-enter');
+            if (enter) {
+                enter.style.opacity = '0';
+                setTimeout(() => enter.remove(), 900);
+            }
+        });
+
+        // --------------------------------------------------------
+        // 2. GSAP 注册
+        // --------------------------------------------------------
+        gsap.registerPlugin(ScrollTrigger);
+
+        // --------------------------------------------------------
+        // 3. GSAP 核心滚动交互逻辑
+        // --------------------------------------------------------
+        gsap.to("#hero-content-wrapper", {
+            y: "25vh",
+            scale: 0.9,
+            opacity: 0,
+            scrollTrigger: {
+                trigger: "body",
+                start: "top top",
+                end: window.innerHeight,
+                scrub: true
+            }
+        });
+
+        const stackCards = gsap.utils.toArray('.stack-card-wrapper');
+        stackCards.forEach((card, index) => {
+            const innerCard = card.querySelector('.stack-card-inner');
+            if (index < stackCards.length - 1) {
+                gsap.to(innerCard, {
+                    scale: 0.9,
+                    opacity: 0.3,
+                    y: -20,
+                    scrollTrigger: {
+                        trigger: card,
+                        start: "top top",
+                        end: () => `+=${window.innerHeight}`,
+                        scrub: true,
+                        invalidateOnRefresh: true
+                    }
+                });
+            }
+        });
+
+        const track = document.getElementById('featured-track');
+        gsap.to(track, {
+            x: () => -(track.scrollWidth - window.innerWidth) + "px",
+            ease: "none",
+            scrollTrigger: {
+                trigger: "#zone-2-featured",
+                start: "top top", 
+                end: () => "+=" + track.scrollWidth, 
+                pin: true,        
+                scrub: 1,         
+                invalidateOnRefresh: true
+            }
+        });
+
+        // --------------------------------------------------------
+        // 4. UI 聚光灯效果
+        // --------------------------------------------------------
+        document.querySelectorAll('.hover-trigger').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+
+        // Contact form handler
+        function handleContactSubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('contact-submit-btn');
+            const success = document.getElementById('contact-success');
+            btn.textContent = 'Sending...';
+            btn.disabled = true;
+            setTimeout(() => {
+                btn.style.display = 'none';
+                success.classList.remove('hidden');
+            }, 800);
+        }
+
+    </script>
+</body>
+</html>
