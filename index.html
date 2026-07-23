@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Celestial Canvas | Interactive Media Portfolio</title>
-    
+    <title>Ashton Zhang | Game Design Portfolio</title>
+    <meta name="description" content="Ashton Zhang — Game Designer and Interactive Media graduate (University of York). Designing gameplay systems, prototypes and interactive experiences across Unity, Unreal Engine 5 and Android.">
+    <meta property="og:title" content="Ashton Zhang | Game Design Portfolio">
+    <meta property="og:description" content="Game Designer and Interactive Media graduate (University of York). Designing gameplay systems, prototypes and interactive experiences across Unity, Unreal Engine 5 and Android.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -139,14 +144,17 @@
             <section class="h-screen w-full relative pointer-events-none overflow-hidden">
                 <div id="hero-content-wrapper" class="w-full h-full flex flex-col justify-between p-8 md:p-12 relative">
                     <header class="flex justify-between items-center w-full pointer-events-auto">
-                        <div class="font-bold tracking-widest text-sm uppercase">Interactive Media</div>
-                        <a href="#contact-section" class="hover-trigger text-sm uppercase tracking-widest border-b border-white/30 pb-1 hover:border-white transition-colors">Contact</a>
+                        <div class="font-bold tracking-widest text-sm uppercase">Game Designer</div>
+                        <div class="flex items-center gap-6">
+                            <a href="Ashton_Zhang_CV.pdf" download class="hover-trigger text-sm uppercase tracking-widest border-b border-white/30 pb-1 hover:border-white transition-colors">Resume</a>
+                            <a href="#contact-section" class="hover-trigger text-sm uppercase tracking-widest border-b border-white/30 pb-1 hover:border-white transition-colors">Contact</a>
+                        </div>
                     </header>
 
                     <div id="hero-center" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center w-full transition-opacity duration-1000">
                         <h1 class="text-5xl md:text-[8rem] font-bold leading-none tracking-tighter mix-blend-difference">
-                            CELESTIAL<br>
-                            <span class="text-outline">CANVAS</span>
+                            ASHTON<br>
+                            <span class="text-outline">ZHANG</span>
                         </h1>
                     </div>
 
@@ -159,12 +167,24 @@
                 </div>
             </section>
 
+            <!-- Zone About: Introduction -->
+            <section id="zone-about" class="w-full bg-[#050505]/25 backdrop-blur-md relative z-20 rounded-t-[3rem] shadow-[0_-20px_50px_rgba(0,0,0,0.5)] border-t border-white/10 pointer-events-auto pt-32 pb-20 px-8 md:px-24">
+                <div class="max-w-4xl mx-auto w-full">
+                    <h2 class="text-sm font-mono tracking-widest text-primary mb-4 uppercase">00 / About</h2>
+                    <h3 class="text-4xl md:text-6xl font-bold tracking-tight mb-6">Hi, I'm <span class="text-outline">Ashton</span>.</h3>
+                    <p class="text-gray-400 text-lg leading-relaxed max-w-2xl font-light">
+                        I grew up with a controller in my hands, and that love of play became a career built on designing systems and mechanics that reward mastery. I'm now looking to push further — toward the space where game design meets real-world engineering disciplines.
+                    </p>
+                </div>
+            </section>
+
             <!-- Zone 1: Philosophy & Stack -->
-            <section id="zone-1" class="w-full bg-[#050505]/30 backdrop-blur-md relative z-20 rounded-t-[3rem] shadow-[0_-20px_50px_rgba(0,0,0,0.5)] border-t border-white/10 pointer-events-auto flex flex-col pt-32 pb-16 px-4 md:px-24">
+            <section id="zone-1" class="w-full bg-[#050505]/30 backdrop-blur-md relative z-20 pointer-events-auto flex flex-col pt-32 pb-16 px-4 md:px-24">
                 <div class="max-w-6xl mx-auto w-full">
                     <div class="text-center mb-10">
                         <h2 class="text-sm font-mono tracking-widest text-primary mb-4 uppercase">01 / Philosophy & Stack</h2>
                         <h3 class="text-4xl md:text-6xl font-bold tracking-tight">The <span class="text-outline">Engine</span></h3>
+                        <p class="text-gray-500 text-sm md:text-base mt-4 font-mono">BA Interactive Media — University of York · Upper Second-Class Honours (2:1) · 2026</p>
                     </div>
 
                     <div class="relative w-full">
@@ -173,7 +193,7 @@
                                 <div class="absolute top-0 right-0 w-80 h-80 bg-primary rounded-full mix-blend-screen filter blur-[100px] opacity-10 group-hover:opacity-20 group-hover:scale-150 transition-all duration-1000"></div>
                                 <h4 class="text-xl md:text-2xl font-mono text-primary mb-6">01.01 / Mindset</h4>
                                 <h3 class="text-2xl md:text-5xl font-light leading-tight max-w-4xl relative z-10">
-                                    I engineer <span class="font-bold text-white">spatial experiences</span> where human emotion intersects with <span class="text-outline">digital logic</span>.
+                                    I design <span class="font-bold text-white">gameplay systems</span> where task, feedback and reward loops shape how players <span class="text-outline">think and feel</span>.
                                 </h3>
                             </div>
                         </div>
@@ -183,12 +203,12 @@
                                 <div class="absolute bottom-0 left-0 w-80 h-80 bg-emerald-600 rounded-full mix-blend-screen filter blur-[100px] opacity-10 group-hover:opacity-20 group-hover:scale-150 transition-all duration-1000"></div>
                                 <h4 class="text-xl md:text-2xl font-mono text-emerald-500 mb-6 relative z-10">01.02 / Competencies</h4>
                                 <p class="text-gray-300 text-lg md:text-2xl leading-relaxed max-w-3xl mb-8 font-light relative z-10">
-                                    Blurring the boundaries between physical installations and web-based virtual environments. Focus on real-time rendering and sensory hardware integration.
+                                    Bridging gameplay design and implementation, from core loop and level design through to shipping a working build. Comfortable taking a project from Unity/UE5 prototype to Android app, with AI tools folded into the workflow to speed up prototyping.
                                 </p>
                                 <div class="flex flex-wrap gap-3 relative z-10">
-                                    <span class="px-5 py-2 rounded-full bg-white/5 border border-white/10 text-sm">Three.js / WebGL</span>
-                                    <span class="px-5 py-2 rounded-full bg-white/5 border border-white/10 text-sm">TouchDesigner</span>
-                                    <span class="px-5 py-2 rounded-full bg-white/5 border border-white/10 text-sm">Kinect / Sensors</span>
+                                    <span class="px-5 py-2 rounded-full bg-white/5 border border-white/10 text-sm">Gameplay & Level Design</span>
+                                    <span class="px-5 py-2 rounded-full bg-white/5 border border-white/10 text-sm">Android / Sensor Apps</span>
+                                    <span class="px-5 py-2 rounded-full bg-white/5 border border-white/10 text-sm">AI-Assisted Prototyping</span>
                                 </div>
                             </div>
                         </div>
@@ -200,21 +220,26 @@
                                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 w-full z-10 relative">
                                     <div class="flex flex-col gap-3">
                                         <span class="text-white font-bold text-lg border-b border-white/20 pb-2">Languages</span>
-                                        <span class="text-gray-400">C++ / GLSL</span>
-                                        <span class="text-gray-400">Python</span>
-                                        <span class="text-gray-400">JavaScript / TS</span>
+                                        <span class="text-gray-400">C#</span>
+                                        <span class="text-gray-400">Kotlin</span>
+                                        <span class="text-gray-400">JavaScript</span>
                                     </div>
                                     <div class="flex flex-col gap-3">
                                         <span class="text-white font-bold text-lg border-b border-white/20 pb-2">Engines</span>
                                         <span class="text-gray-400">Unreal Engine 5</span>
-                                        <span class="text-gray-400">Unity 3D</span>
-                                        <span class="text-gray-400">TouchDesigner</span>
+                                        <span class="text-gray-400">Unity</span>
                                     </div>
                                     <div class="flex flex-col gap-3">
-                                        <span class="text-white font-bold text-lg border-b border-white/20 pb-2">Web</span>
-                                        <span class="text-gray-400">React / Next.js</span>
-                                        <span class="text-gray-400">GSAP / Lenis</span>
-                                        <span class="text-gray-400">Three.js</span>
+                                        <span class="text-white font-bold text-lg border-b border-white/20 pb-2">Web / Mobile</span>
+                                        <span class="text-gray-400">HTML / CSS / JS</span>
+                                        <span class="text-gray-400">Android (MVVM)</span>
+                                        <span class="text-gray-400">Sensor Integration</span>
+                                    </div>
+                                    <div class="flex flex-col gap-3">
+                                        <span class="text-white font-bold text-lg border-b border-white/20 pb-2">Other</span>
+                                        <span class="text-gray-400">Video Editing</span>
+                                        <span class="text-gray-400">Illustration</span>
+                                        <span class="text-gray-400">AI-Assisted Dev</span>
                                     </div>
                                 </div>
                             </div>
@@ -235,9 +260,9 @@
                         <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-1000 group-hover:scale-105 group-hover:opacity-100">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
                         <div class="absolute bottom-10 left-10 z-10 transition-transform duration-500 group-hover:-translate-y-2">
-                            <span class="text-primary font-mono text-sm tracking-widest">GAME DESIGN RESEARCH · UE5 LUMEN</span>
+                            <span class="text-primary font-mono text-sm tracking-widest">2.5D NARRATIVE DEMO · UE5</span>
                             <h4 class="text-4xl md:text-5xl font-bold mt-2">Revive</h4>
-                            <p class="text-gray-300 text-sm md:text-base mt-3 max-w-md">The Bridge of Pixel and Light — a 2.5D pixel-art study on how lighting shapes player behaviour, built in Unreal Engine 5 with Lumen.</p>
+                            <p class="text-gray-300 text-sm md:text-base mt-3 max-w-md">A 2.5D demo fusing hand-drawn pixel art with real-time UE5 lighting, exploring how visual style and dynamic light can carry emotional narrative.</p>
                         </div>
                     </a>
                     <a href="CogniStream_Profilo.html" class="w-[80vw] md:w-[50vw] h-full shrink-0 relative group rounded-3xl overflow-hidden glass-panel border border-white/10 hover-trigger cursor-pointer block">
@@ -272,19 +297,43 @@
                     </div>
                     <div class="flex flex-col">
                         <a href="#" class="archive-row hover-trigger grid grid-cols-12 gap-4 py-8 border-b border-white/10 items-center cursor-pointer transition-colors">
-                            <div class="col-span-1 text-gray-400 font-mono text-sm">2022</div>
-                            <div class="col-span-5 md:col-span-4 text-2xl font-bold text-gray-300">Neural Sync</div>
-                            <div class="col-span-6 md:col-span-5 text-gray-400 hidden md:block">Data Visualization, UI/UX</div>
+                            <div class="col-span-1 text-gray-400 font-mono text-sm">2025</div>
+                            <div class="col-span-5 md:col-span-4 text-2xl font-bold text-gray-300">Game Assistant Internship</div>
+                            <div class="col-span-6 md:col-span-5 text-gray-400 hidden md:block">Shanghai Sanyi Culture · QQ Dance Live-Ops Team</div>
                             <div class="col-span-6 md:col-span-2 text-right flex justify-end">
-                                <span class="text-xs uppercase tracking-widest text-gray-500 border border-gray-600 rounded-full px-3 py-1">Archived</span>
+                                <span class="text-xs uppercase tracking-widest text-gray-500 border border-gray-600 rounded-full px-3 py-1">Internship</span>
                             </div>
                         </a>
                         <a href="#" class="archive-row hover-trigger grid grid-cols-12 gap-4 py-8 border-b border-white/10 items-center cursor-pointer transition-colors">
-                            <div class="col-span-1 text-gray-400 font-mono text-sm">2021</div>
-                            <div class="col-span-5 md:col-span-4 text-2xl font-bold text-gray-300">Echo Chamber</div>
-                            <div class="col-span-6 md:col-span-5 text-gray-400 hidden md:block">Sound Design, Max/MSP</div>
+                            <div class="col-span-1 text-gray-400 font-mono text-sm">2024</div>
+                            <div class="col-span-5 md:col-span-4 text-2xl font-bold text-gray-300">Psychological Horror RPG</div>
+                            <div class="col-span-6 md:col-span-5 text-gray-400 hidden md:block">Game Designer · Unity, First-Person</div>
                             <div class="col-span-6 md:col-span-2 text-right flex justify-end">
-                                <span class="text-xs uppercase tracking-widest text-gray-500 border border-gray-600 rounded-full px-3 py-1">Archived</span>
+                                <span class="text-xs uppercase tracking-widest text-gray-500 border border-gray-600 rounded-full px-3 py-1">Demo</span>
+                            </div>
+                        </a>
+                        <a href="#" class="archive-row hover-trigger grid grid-cols-12 gap-4 py-8 border-b border-white/10 items-center cursor-pointer transition-colors">
+                            <div class="col-span-1 text-gray-400 font-mono text-sm">2025</div>
+                            <div class="col-span-5 md:col-span-4 text-2xl font-bold text-gray-300">MiniQuest</div>
+                            <div class="col-span-6 md:col-span-5 text-gray-400 hidden md:block">Independent Developer · Android, Kotlin</div>
+                            <div class="col-span-6 md:col-span-2 text-right flex justify-end">
+                                <span class="text-xs uppercase tracking-widest text-gray-500 border border-gray-600 rounded-full px-3 py-1">Demo</span>
+                            </div>
+                        </a>
+                        <a href="Revive_Profilo.html" class="archive-row hover-trigger grid grid-cols-12 gap-4 py-8 border-b border-white/10 items-center cursor-pointer transition-colors">
+                            <div class="col-span-1 text-gray-400 font-mono text-sm">2025</div>
+                            <div class="col-span-5 md:col-span-4 text-2xl font-bold text-gray-300">Revive</div>
+                            <div class="col-span-6 md:col-span-5 text-gray-400 hidden md:block">Researcher · Unreal Engine 5, Pixel Art + Real-Time Lighting</div>
+                            <div class="col-span-6 md:col-span-2 text-right flex justify-end">
+                                <span class="text-xs uppercase tracking-widest text-gray-500 border border-gray-600 rounded-full px-3 py-1">Prototype</span>
+                            </div>
+                        </a>
+                        <a href="CogniStream_Profilo.html" class="archive-row hover-trigger grid grid-cols-12 gap-4 py-8 border-b border-white/10 items-center cursor-pointer transition-colors">
+                            <div class="col-span-1 text-gray-400 font-mono text-sm">2025</div>
+                            <div class="col-span-5 md:col-span-4 text-2xl font-bold text-gray-300">Cogni-Stream / EnGram+</div>
+                            <div class="col-span-6 md:col-span-5 text-gray-400 hidden md:block">Speculative Design · University of York</div>
+                            <div class="col-span-6 md:col-span-2 text-right flex justify-end">
+                                <span class="text-xs uppercase tracking-widest text-gray-500 border border-gray-600 rounded-full px-3 py-1">Prototype</span>
                             </div>
                         </a>
                     </div>
@@ -305,15 +354,15 @@
                         <form class="flex flex-col gap-6" onsubmit="handleContactSubmit(event)">
                             <div class="flex flex-col gap-2">
                                 <label class="text-xs font-mono tracking-widest text-gray-500 uppercase">Name</label>
-                                <input type="text" placeholder="Your name" class="bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-gray-600 focus:outline-none focus:border-primary/60 focus:bg-white/8 transition-all duration-300 hover-trigger" required>
+                                <input type="text" id="contact-name" placeholder="Your name" class="bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-gray-600 focus:outline-none focus:border-primary/60 focus:bg-white/8 transition-all duration-300 hover-trigger" required>
                             </div>
                             <div class="flex flex-col gap-2">
                                 <label class="text-xs font-mono tracking-widest text-gray-500 uppercase">Email</label>
-                                <input type="email" placeholder="your@email.com" class="bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-gray-600 focus:outline-none focus:border-primary/60 focus:bg-white/8 transition-all duration-300 hover-trigger" required>
+                                <input type="email" id="contact-email" placeholder="your@email.com" class="bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-gray-600 focus:outline-none focus:border-primary/60 focus:bg-white/8 transition-all duration-300 hover-trigger" required>
                             </div>
                             <div class="flex flex-col gap-2">
                                 <label class="text-xs font-mono tracking-widest text-gray-500 uppercase">Message</label>
-                                <textarea placeholder="Tell me about your project..." rows="5" class="bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-gray-600 focus:outline-none focus:border-primary/60 focus:bg-white/8 transition-all duration-300 resize-none hover-trigger" required></textarea>
+                                <textarea id="contact-message" placeholder="Tell me about your project..." rows="5" class="bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-gray-600 focus:outline-none focus:border-primary/60 focus:bg-white/8 transition-all duration-300 resize-none hover-trigger" required></textarea>
                             </div>
                             <button type="submit" id="contact-submit-btn" class="hover-trigger mt-2 px-8 py-4 bg-primary rounded-xl font-bold tracking-widest uppercase text-sm transition-all duration-300 hover:bg-primary/80 hover:shadow-[0_0_30px_rgba(79,70,229,0.4)] active:scale-95">
                                 Send Message →
@@ -326,18 +375,20 @@
                             <div class="flex flex-col gap-8">
                                 <div>
                                     <p class="text-xs font-mono tracking-widest text-gray-500 uppercase mb-2">Email</p>
-                                    <a href="mailto:hello@celestialcanvas.io" class="hover-trigger text-white text-lg hover:text-primary transition-colors">hello@celestialcanvas.io</a>
+                                    <a href="mailto:zhangshuhan2023@163.com" class="hover-trigger text-white text-lg hover:text-primary transition-colors">zhangshuhan2023@163.com</a>
+                                    <p class="text-white text-lg mt-1">
+                                        <a href="mailto:ashton.v.zhang@gmail.com" class="hover-trigger hover:text-primary transition-colors">ashton.v.zhang@gmail.com</a>
+                                        <span class="text-gray-500 text-sm"> (outside Mainland China)</span>
+                                    </p>
                                 </div>
                                 <div>
                                     <p class="text-xs font-mono tracking-widest text-gray-500 uppercase mb-2">Based In</p>
-                                    <p class="text-white text-lg">Remote — Worldwide</p>
+                                    <p class="text-white text-lg">Shanghai, China</p>
                                 </div>
                                 <div>
-                                    <p class="text-xs font-mono tracking-widest text-gray-500 uppercase mb-3">Availability</p>
-                                    <span class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-full text-emerald-400 text-sm font-mono">
-                                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse inline-block"></span>
-                                        Open to new projects
-                                    </span>
+                                    <a href="Ashton_Zhang_CV.pdf" download class="hover-trigger inline-flex items-center gap-2 px-5 py-3 bg-white/5 border border-white/10 rounded-xl text-sm font-mono tracking-widest hover:border-white/30 hover:bg-white/10 transition-all duration-300">
+                                        Download CV
+                                    </a>
                                 </div>
                             </div>
 
@@ -353,8 +404,8 @@
                     </div>
 
                     <div class="mt-24 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-gray-600 text-xs font-mono tracking-widest">
-                        <span>© 2024 CELESTIAL CANVAS</span>
-                        <span>INTERACTIVE MEDIA PORTFOLIO</span>
+                        <span>© 2026 ASHTON ZHANG</span>
+                        <span>GAME DESIGN PORTFOLIO</span>
                     </div>
                 </div>
             </section>
@@ -515,17 +566,28 @@
             el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
         });
 
-        // Contact form handler
+        // Contact form handler — builds a prefilled mailto link so the
+        // message actually reaches an inbox (no backend/form service wired up).
         function handleContactSubmit(e) {
             e.preventDefault();
             const btn = document.getElementById('contact-submit-btn');
             const success = document.getElementById('contact-success');
-            btn.textContent = 'Sending...';
+            const name = document.getElementById('contact-name').value;
+            const email = document.getElementById('contact-email').value;
+            const message = document.getElementById('contact-message').value;
+
+            const subject = encodeURIComponent(`Portfolio inquiry from ${name}`);
+            const body = encodeURIComponent(`${message}\n\n— ${name} (${email})`);
+            const mailtoLink = `mailto:zhangshuhan2023@163.com?subject=${subject}&body=${body}`;
+
+            btn.textContent = 'Opening email...';
             btn.disabled = true;
             setTimeout(() => {
+                window.location.href = mailtoLink;
                 btn.style.display = 'none';
                 success.classList.remove('hidden');
-            }, 800);
+                success.textContent = '✓ Opening your email app to send this — if nothing happens, please email me directly.';
+            }, 500);
         }
 
     </script>
