@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiniQuest — Gamifying the Break from Routine | Shuhan Zhang</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+39+Text&family=Jersey+10&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Palette: Terminal Moss — a low-saturation RPG green paired with
+               a warm quest-gold, tuned for a behavioral-health / gamification brief.
+               Cooler and quieter than Revive's amber, warmer than Cogni-Stream's cyan. */
+            --bg-void: #000000;
+            --surface-dark: rgba(255, 255, 255, 0.045);
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-tertiary: #52525b;
+            --accent-moss: #4ADE94;
+            --accent-glow: rgba(74, 222, 148, 0.15);
+            --accent-red: #FB5B5B;
+            --accent-gold: #F0C94A;
+            --border-subtle: rgba(255, 255, 255, 0.1);
+
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --shadow-subtle: 0 12px 40px -12px rgba(0,0,0,0.5);
+            --shadow-float: 0 24px 48px -12px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05) inset;
+
+            --font-main: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+            --font-barcode: 'Libre Barcode 39 Text', var(--font-main);
+            --font-pixel: 'Jersey 10', var(--font-main);
+
+            --ease-cinematic: cubic-bezier(0.25, 1, 0.3, 1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: inherit; }
+        html { font-family: var(--font-main); }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-void);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            position: relative;
+            cursor: none;
+        }
+
+        *, *::before, *::after { cursor: none !important; }
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+
+        #custom-cursor {
+            position: fixed; top: 0; left: 0; width: 20px; height: 20px;
+            border-radius: 50%; background-color: white; mix-blend-mode: difference;
+            pointer-events: none; z-index: 9999; will-change: transform;
+            transition: width 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        height 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        background-color 0.25s ease, mix-blend-mode 0.25s ease;
+        }
+        #custom-cursor.hover {
+            width: 60px; height: 60px; background-color: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(2px); mix-blend-mode: normal;
+        }
+        @media (max-width: 768px) {
+            #custom-cursor { display: none; }
+            *, *::before, *::after { cursor: auto !important; }
+        }
+
+        .noise-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none; z-index: 9999; opacity: 0.04;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        .ambient-light {
+            position: fixed; width: 80vw; height: 80vh; border-radius: 50%;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            top: -20vh; left: -20vw; pointer-events: none; z-index: -1;
+            filter: blur(100px); opacity: 0.55;
+        }
+        .ambient-light.right {
+            top: 40vh; left: auto; right: -30vw;
+            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+        }
+
+        .container { max-width: 1440px; margin: 0 auto; padding: 0 6vw; }
+
+        h1, h2, h3 { font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; }
+        h2 { font-size: clamp(2.5rem, 5vw, 4.5rem); margin-bottom: 2rem; }
+
+        .text-lead {
+            font-size: clamp(1.125rem, 2vw, 1.5rem); color: var(--text-secondary);
+            font-weight: 400; max-width: 800px; margin-bottom: 2rem;
+        }
+        .text-body {
+            font-size: 1.125rem; color: var(--text-secondary); font-weight: 400;
+            max-width: 620px; margin-bottom: 1.5rem;
+        }
+        .accent { color: var(--text-primary); font-weight: 600; box-shadow: inset 0 -2px 0 var(--accent-moss); }
+        .caption { font-size: 0.875rem; color: var(--text-tertiary); margin-top: 1rem; display: block; }
+        .data-label { font-size: 0.95rem; color: var(--text-secondary); font-weight: 500; letter-spacing: 0.01em; margin-top: 1rem; display: block; }
+
+        .section { padding: 15vh 0; position: relative; }
+
+        .hero {
+            min-height: 100vh; display: flex; flex-direction: column; justify-content: center; position: relative;
+            padding-top: clamp(140px, 22vh, 240px);
+            padding-bottom: 6vh;
+        }
+        .hero-title { font-size: clamp(3.2rem, 7.5vw, 7rem); font-weight: 700; letter-spacing: -0.04em; margin-bottom: 1.5rem; max-width: 1200px; }
+        .hero-meta {
+            margin-top: 8vh; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem; border-top: 1px solid var(--border-subtle); padding-top: 3rem; max-width: 1000px;
+        }
+        .meta-item span { display: block; font-size: 0.8rem; color: var(--text-tertiary); margin-bottom: 0.5rem; }
+        .meta-item strong { font-size: 1rem; font-weight: 600; color: var(--text-primary); }
+
+        .grid-split { display: grid; grid-template-columns: 1fr; gap: 4rem; }
+        @media (min-width: 1024px) {
+            .grid-split { grid-template-columns: 5fr 7fr; gap: 8vw; align-items: start; }
+            .sticky-col { position: sticky; top: 15vh; }
+        }
+
+        .media-frame {
+            width: 100%; background: var(--surface-dark); border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md); box-shadow: var(--shadow-subtle); overflow: hidden;
+            position: relative; display: flex; align-items: center; justify-content: center;
+            text-align: center; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        }
+        .media-frame.aspect-video { aspect-ratio: 16/9; }
+        .media-frame.aspect-wide { aspect-ratio: 21/9; }
+        .media-frame.aspect-portrait { aspect-ratio: 4/5; }
+        .media-placeholder-text { color: var(--text-tertiary); font-family: var(--font-main); font-size: 0.85rem; letter-spacing: 0.05em; padding: 2rem; }
+        .media-frame .media-placeholder-text { max-width: 70%; border: 1px dashed var(--border-subtle); }
+
+        .data-card {
+            background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-subtle);
+            padding: 3rem; border-radius: var(--radius-md); margin-bottom: 2rem; transition: background 0.4s ease;
+        }
+        .data-card:hover { background: rgba(255, 255, 255, 0.04); }
+        .data-number {
+            font-family: var(--font-main); font-size: clamp(3.5rem, 7vw, 6rem); color: var(--accent-moss);
+            line-height: 1; margin-bottom: 1rem; font-weight: 700; letter-spacing: -0.04em;
+        }
+
+        .reveal {
+            opacity: 0; transform: translateY(40px) scale(0.98); filter: blur(10px);
+            transition: opacity 1.2s var(--ease-cinematic), transform 1.2s var(--ease-cinematic), filter 1.2s var(--ease-cinematic);
+            will-change: transform, opacity, filter;
+        }
+        .reveal.in-view { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+        .delay-3 { transition-delay: 0.3s; }
+
+        .site-footer { padding: 8vh 0; border-top: 1px solid var(--border-subtle); margin-top: 10vh; text-align: center; }
+
+        .site-header {
+            position: absolute; top: 6vh; left: 6vw; z-index: 100;
+            display: flex; align-items: center; gap: 1rem;
+            animation: fadeIn 2s var(--ease-cinematic) forwards;
+        }
+        .logo-barcode {
+            font-family: var(--font-barcode); font-size: 2.6rem; letter-spacing: 0.08em;
+            color: var(--text-primary); line-height: 1; user-select: none;
+        }
+        .logo-caption { font-size: 0.62rem; letter-spacing: 0.35em; color: var(--text-tertiary); margin-top: 0.3rem; text-transform: uppercase; }
+
+        .back-home-btn {
+            position: fixed; top: 6vh; right: 6vw; z-index: 100; display: flex; align-items: center; gap: 0.6rem;
+            padding: 0.75rem 1.4rem 0.75rem 1.1rem; border-radius: 999px;
+            background: var(--surface-dark); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: url(#glass-distortion) blur(2px) saturate(140%);
+            border: 1px solid var(--border-subtle); box-shadow: var(--shadow-subtle);
+            color: var(--text-secondary); font-size: 0.85rem; font-weight: 500; letter-spacing: 0.03em;
+            text-decoration: none; cursor: pointer; animation: fadeIn 2s var(--ease-cinematic) forwards;
+            transition: color 0.4s var(--ease-cinematic), border-color 0.4s var(--ease-cinematic),
+                        background 0.4s var(--ease-cinematic), transform 0.4s var(--ease-cinematic);
+        }
+        .back-home-btn svg { width: 16px; height: 16px; flex-shrink: 0; transition: transform 0.4s var(--ease-cinematic); }
+        .back-home-btn:hover { color: var(--accent-moss); border-color: rgba(74, 222, 148, 0.35); transform: translateY(-2px); }
+        .back-home-btn:hover svg { transform: translateX(-3px); }
+        .back-home-btn:active { transform: translateY(0) scale(0.97); }
+        @media (max-width: 600px) {
+            .back-home-btn { top: 3vh; right: 5vw; padding: 0.55rem 1rem 0.55rem 0.8rem; font-size: 0.75rem; }
+            .back-home-btn span { display: none; }
+            .site-header { top: 3vh; left: 5vw; }
+            .logo-barcode { font-size: 2rem; }
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .scroll-track {
+            position: fixed; right: 4vw; top: 15vh; bottom: 15vh; width: 1px;
+            background: var(--border-subtle); z-index: 50; opacity: 0.6;
+        }
+        .scroll-dot {
+            position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%);
+            width: 9px; height: 9px; border-radius: 50%; background: var(--accent-moss);
+            box-shadow: 0 0 12px var(--accent-glow), 0 0 24px var(--accent-glow);
+            transition: top 0.1s linear;
+        }
+        @media (max-width: 768px) { .scroll-track { display: none; } }
+
+        .text-outline {
+            color: transparent; -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.4);
+            text-stroke: 1.5px rgba(255, 255, 255, 0.4);
+            transition: color 0.6s var(--ease-cinematic), -webkit-text-stroke-color 0.6s var(--ease-cinematic), text-shadow 0.6s var(--ease-cinematic);
+            cursor: default;
+        }
+        .text-outline:hover {
+            color: var(--accent-moss); -webkit-text-stroke: 0px transparent;
+            text-shadow: 0 0 40px var(--accent-glow), 0 0 80px var(--accent-glow);
+        }
+        @media (max-width: 600px) { .text-outline { -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4); } }
+
+        .hero-title .text-outline { animation: quest-pulse 5s ease-in-out infinite; }
+        .hero-title .text-outline:hover { animation-play-state: paused; }
+        @keyframes quest-pulse {
+            0%, 100% { -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.4); text-shadow: none; }
+            50% { -webkit-text-stroke: 1.5px rgba(74, 222, 148, 0.55); text-shadow: 0 0 30px var(--accent-glow); }
+        }
+
+        .prototype-btn {
+            margin-top: 3rem; display: inline-flex; align-items: center; gap: 0.6rem; width: fit-content;
+            padding: 0.9rem 1.6rem; border-radius: 999px; background: var(--accent-moss); color: #012014;
+            font-weight: 600; font-size: 0.9rem; letter-spacing: 0.02em; text-decoration: none;
+            box-shadow: 0 0 40px var(--accent-glow);
+            transition: transform 0.4s var(--ease-cinematic), box-shadow 0.4s var(--ease-cinematic), background 0.4s var(--ease-cinematic);
+        }
+        .prototype-btn svg { transition: transform 0.4s var(--ease-cinematic); }
+        .prototype-btn:hover {
+            transform: translateY(-3px) scale(1.03);
+            background: #7BF0B8;
+            box-shadow: 0 0 20px var(--accent-glow), 0 0 70px var(--accent-glow), 0 16px 32px -12px rgba(0,0,0,0.5);
+        }
+        .prototype-btn:hover svg { transform: translate(2px, -2px); }
+        .prototype-btn:active { transform: translateY(-1px) scale(0.98); }
+
+        /* ---------------------------------------------------------- */
+        /* Quest log — recreated as a small RPG-style task list to     */
+        /* echo MiniQuest's own in-app aesthetic                       */
+        /* ---------------------------------------------------------- */
+        .quest-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem; margin-top: 3rem;
+        }
+        .quest-card {
+            border: 1px solid var(--border-subtle); border-radius: var(--radius-md);
+            padding: 2rem 1.75rem; background: rgba(255,255,255,0.02);
+            display: flex; flex-direction: column; gap: 1rem;
+            transition: border-color 0.4s ease, background 0.4s ease, transform 0.4s var(--ease-cinematic);
+        }
+        .quest-card:hover { border-color: rgba(74, 222, 148, 0.3); background: rgba(255,255,255,0.04); transform: translateY(-4px); }
+        .quest-card.emergency { border-color: rgba(240, 201, 74, 0.35); }
+        .quest-tag { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-moss); }
+        .quest-card.emergency .quest-tag { color: var(--accent-gold); }
+        .quest-name { font-size: 1.15rem; font-weight: 600; }
+        .quest-desc { font-size: 0.92rem; color: var(--text-secondary); line-height: 1.55; }
+
+        /* ---------------------------------------------------------- */
+        /* Source-code excerpts pulled straight from the report's      */
+        /* appendix, annotated inline                                  */
+        /* ---------------------------------------------------------- */
+        .code-panel {
+            background: #0a0a0d; border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-subtle);
+            margin-bottom: 1.25rem;
+        }
+        .code-panel-head {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0.85rem 1.25rem; border-bottom: 1px solid var(--border-subtle);
+        }
+        .code-panel-dots { display: flex; gap: 6px; }
+        .code-panel-dots span { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,0.15); display: block; }
+        .code-panel-file { font-size: 0.72rem; letter-spacing: 0.06em; color: var(--text-tertiary); font-family: 'SFMono-Regular', Menlo, Consolas, monospace; }
+        .code-panel pre {
+            margin: 0; padding: 1.5rem; overflow-x: auto;
+            font-family: 'SFMono-Regular', Menlo, Consolas, monospace;
+            font-size: 0.8rem; line-height: 1.7; color: #d4d4d8;
+        }
+        .code-panel .cm { color: #6a6a72; }
+        .code-panel .tg { color: var(--accent-moss); }
+        .code-panel .st { color: #f5d742; }
+        .code-panel .kw { color: #c586c0; }
+        .code-note {
+            font-size: 0.95rem; color: var(--text-secondary); margin: 0 0 3rem; max-width: 620px;
+        }
+        .code-note strong { color: var(--text-primary); font-weight: 600; }
+
+        /* Architecture layer diagram */
+        .arch-diagram {
+            display: flex; flex-direction: column; gap: 0; width: 100%;
+        }
+        .arch-layer {
+            border: 1px solid var(--border-subtle); border-radius: var(--radius-md);
+            padding: 1.75rem 2rem; background: rgba(255,255,255,0.02); position: relative;
+        }
+        .arch-layer + .arch-layer { margin-top: 1.25rem; }
+        .arch-layer-title { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-moss); margin-bottom: 0.6rem; }
+        .arch-layer-body { font-size: 0.95rem; color: var(--text-secondary); }
+        .arch-arrow { text-align: center; color: var(--text-tertiary); font-size: 0.8rem; padding: 0.35rem 0; letter-spacing: 0.1em; }
+
+        /* Permissions table */
+        .perm-table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
+        .perm-table th { text-align: left; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-tertiary); padding: 0.9rem 1rem; border-bottom: 1px solid var(--border-subtle); }
+        .perm-table td { padding: 1.1rem 1rem; border-bottom: 1px solid var(--border-subtle); font-size: 0.95rem; color: var(--text-secondary); vertical-align: top; }
+        .perm-table td:first-child { color: var(--text-primary); font-weight: 600; white-space: nowrap; }
+
+        /* Quote block — pull quotes, same treatment as Cogni-Stream */
+        .quote-block { border-left: 2px solid var(--accent-moss); padding-left: 1.5rem; margin: 2.5rem 0; }
+        .quote-block p { font-size: 1.15rem; color: var(--text-primary); font-weight: 500; line-height: 1.5; }
+        .quote-block span { display: block; margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-tertiary); }
+
+        /* Reference grid — image + title + text, mirrors Cogni-Stream's
+           "Design Background" moodboard layout */
+        .media-frame.on-light {
+            background: #f4f4f2; border-color: rgba(0,0,0,0.08);
+        }
+        .media-frame.on-light .media-placeholder-text { color: #71717a; border-color: rgba(0,0,0,0.12); }
+        .media-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .media-frame img.contain { object-fit: contain; padding: 1.5rem; }
+
+        /* Three-state machine cards — same card grammar as Cogni-Stream's
+           halo-grid, adapted to MiniQuest's Idle → Thinking → Reply flow */
+        .state-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem; margin-top: 2.5rem;
+        }
+        .state-item {
+            border: 1px solid var(--border-subtle); border-radius: var(--radius-md);
+            padding: 1.75rem; background: rgba(255,255,255,0.02); display: flex; flex-direction: column; gap: 0.9rem;
+            transition: border-color 0.4s ease, background 0.4s ease, transform 0.4s var(--ease-cinematic);
+        }
+        .state-item:hover { transform: translateY(-4px); background: rgba(255,255,255,0.04); }
+        .state-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .state-item.idle { border-color: rgba(255,255,255,0.12); }
+        .state-item.idle .state-dot { background: var(--text-tertiary); }
+        .state-item.thinking { border-color: rgba(240, 201, 74, 0.35); }
+        .state-item.thinking .state-dot { background: var(--accent-gold); box-shadow: 0 0 10px rgba(240,201,74,0.6); animation: pulse-dot 1.4s ease-in-out infinite; }
+        .state-item.reply { border-color: rgba(74, 222, 148, 0.35); }
+        .state-item.reply .state-dot { background: var(--accent-moss); box-shadow: 0 0 10px var(--accent-glow); }
+        @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+        .state-name { font-size: 1.05rem; font-weight: 600; }
+        .state-desc { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; }
+
+        .limit-list, .future-list { list-style: none; margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; }
+        .limit-list li, .future-list li { padding-left: 1.75rem; position: relative; color: var(--text-secondary); font-size: 1rem; line-height: 1.6; }
+        .limit-list li::before { content: "—"; position: absolute; left: 0; color: var(--accent-red); }
+        .future-list li::before { content: "—"; position: absolute; left: 0; color: var(--accent-moss); }
+        .limit-list strong, .future-list strong { color: var(--text-primary); }
+    </style>
+</head>
+<body>
+
+    <div id="custom-cursor"></div>
+    <div id="page-exit" style="position:fixed; inset:0; z-index:10001; background:#000000; pointer-events:none; opacity:0; transition: opacity 0.7s cubic-bezier(0.25,1,0.3,1);"></div>
+    <div class="noise-overlay"></div>
+    <div class="ambient-light"></div>
+    <div class="ambient-light right"></div>
+
+    <svg style="position:absolute; width:0; height:0; overflow:hidden;" aria-hidden="true">
+        <defs>
+            <filter id="glass-distortion" x="-20%" y="-20%" width="140%" height="140%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.010 0.012" numOctaves="2" seed="7" result="noise"/>
+                <feGaussianBlur in="noise" stdDeviation="3" result="blurredNoise"/>
+                <feDisplacementMap in="SourceGraphic" in2="blurredNoise" scale="40" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+        </defs>
+    </svg>
+
+    <a href="index.html" class="back-home-btn" aria-label="Back to home">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Back to Home</span>
+    </a>
+
+    <div class="scroll-track">
+        <div class="scroll-dot" id="scrollDot"></div>
+    </div>
+
+    <main>
+        <section class="container hero">
+            <h1 class="hero-title reveal">Gamifying the<br>Break From <span class="text-outline">Routine</span></h1>
+            <p class="text-lead reveal delay-1">MiniQuest is a native Android application that turns two behavioral-intervention strategies — response interruption and environmental enrichment — into a pocket-sized RPG, using pervasive accelerometer sensing to reward the body for stepping outside its own habits.</p>
+
+            <div class="hero-meta reveal delay-2">
+                <div class="meta-item"><span>Author</span><strong>Shuhan Zhang</strong></div>
+                <div class="meta-item"><span>Project</span><strong>MiniQuest — Android, Kotlin</strong></div>
+                <div class="meta-item"><span>Module</span><strong>Mobile Interaction · TFT00069H</strong></div>
+                <div class="meta-item"><span>Programme</span><strong>University of York</strong></div>
+            </div>
+
+            <a href="ZhangShuhan_Report.pdf" target="_blank" rel="noopener" class="prototype-btn reveal delay-3">
+                Read the full technical report
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </a>
+        </section>
+
+        <!-- Premise -->
+        <section class="section container">
+            <div class="grid-split">
+                <div class="sticky-col reveal">
+                    <h2>The<br><span class="text-outline">Rigidity</span> Problem</h2>
+                </div>
+                <div>
+                    <p class="text-body reveal">Rapp and Vollmer (2005) describe stereotyped behavior as repetitive action or sound that appears to serve no external purpose — a pattern most associated with autism, but not confined to it. Nwaordu and Charlton (2024) find that adults without ASD also fall into repetitive routines, just less frequently and less intensely.</p>
+                    <p class="text-body reveal">The animal-behavior literature points at the trigger: Gross, Richter, Engel and Würbel (2012) tie cage-induced stereotypies to environments that are monotonous or under-stimulating, and Turner, Yang and Lewis (2002) show that enriched, variable environments measurably reduce them. Modern urban routine, in other words, is its own kind of cage.</p>
+
+                    <div class="quote-block reveal">
+                        <p>A single-purpose habit tracker rewards you for staying inside the loop. MiniQuest is designed to reward you for stepping outside it.</p>
+                        <span>— the design premise behind MiniQuest's dual reward system</span>
+                    </div>
+
+                    <div class="media-frame aspect-video reveal">
+                        <span class="media-placeholder-text">[ MiniQuest home screen — Quest Log, Player Stats & the pixel-art HUD ]</span>
+                    </div>
+                    <p class="caption reveal">Fig. Home screen, rendered with vector pixel fonts and the custom HardShadowBox component to keep edges sharp on high-DPI displays.</p>
+
+                    <p class="data-label reveal" style="margin-top: 3rem;">Two evidence-based interventions (Boyd, McDonough & Bodfish, 2012)</p>
+                    <div class="quest-grid">
+                        <div class="quest-card reveal">
+                            <span class="quest-tag">Response Interruption / Redirection</span>
+                            <div class="quest-name">Emergency Quests</div>
+                            <p class="quest-desc">When a stereotyped pattern would otherwise continue, the app interrupts it and redirects attention toward a new action — effective in the short term for low-level rigidity.</p>
+                        </div>
+                        <div class="quest-card emergency reveal delay-1">
+                            <span class="quest-tag">Environmental Enrichment</span>
+                            <div class="quest-name">Adventure Tools</div>
+                            <p class="quest-desc">A menu of activity modules offering several relaxation and exploration choices, adding the sensory and interactive variety monotonous days are missing.</p>
+                        </div>
+                    </div>
+                    <p class="caption reveal">MiniQuest builds directly on this pair — the Emergency Loop coroutine handles interruption, the Adventure Tools area handles enrichment.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Critique of existing solutions -->
+        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
+            <div class="grid-split">
+                <div class="sticky-col reveal">
+                    <h3 style="font-size: 1.7rem;">Against <span class="accent">Habitica</span></h3>
+                </div>
+                <div>
+                    <p class="text-body reveal">Habitica gamifies daily planning in an RPG shell — a genuinely motivating idea, and the closest existing comparison. But its reward loop stays locked to one thing: finishing your own pre-written tasks. Over time that narrow focus is exactly the kind of monotony the behavioral literature warns against, and engagement fades.</p>
+                    <p class="text-body reveal">MiniQuest keeps the RPG reward structure but opens two channels Habitica doesn't have: <strong style="color: var(--text-primary);">Passive Sensing</strong>, where simply walking accrues energy in the background, and <strong style="color: var(--text-primary);">Induced Novelty</strong>, where the system itself — not the user's to-do list — decides when to surface an emergency task. The reward loop no longer depends entirely on the user already having planned their own escape from routine.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Design references -->
+        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
+            <h2 class="reveal" style="text-align: center; margin-bottom: 1rem;">Design <span class="text-outline">References</span></h2>
+            <p class="text-lead reveal" style="text-align: center; margin: 0 auto 5rem; max-width: 720px;">Three reference points shaped how MiniQuest looks, rewards, and interrupts.</p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem;">
+                <div class="reveal">
+                    <div class="media-frame aspect-portrait" style="margin-bottom: 1.5rem;">
+                        <span class="media-placeholder-text">[ Ref: Habitica — RPG habit-tracker UI ]</span>
+                    </div>
+                    <h3 style="font-size: 1.3rem; margin-bottom: 0.8rem;">Habitica — the RPG Reward Loop</h3>
+                    <p class="text-body" style="font-size: 1rem;">Habitica proved a game shell could make routine self-management genuinely motivating. MiniQuest keeps that XP-and-gold loop but opens two new reward channels — Passive Sensing and Induced Novelty — so progress isn't gated entirely behind tasks the user already wrote down.</p>
+                </div>
+                <div class="reveal delay-1">
+                    <div class="media-frame aspect-portrait" style="margin-bottom: 1.5rem;">
+                        <span class="media-placeholder-text">[ Ref: 16-bit sprite sheet, hard-edged pixel rendering ]</span>
+                    </div>
+                    <h3 style="font-size: 1.3rem; margin-bottom: 0.8rem;">16-bit Pixel Aesthetic</h3>
+                    <p class="text-body" style="font-size: 1rem;">Classic sprite-based RPGs read as playful, low-stakes and unmistakably game-like — the opposite tone of a clinical intervention app. The custom HardShadowBox component and vector pixel fonts exist purely to protect that crisp, hand-drawn edge against modern anti-aliasing.</p>
+                </div>
+                <div class="reveal delay-2">
+                    <div class="media-frame aspect-portrait" style="margin-bottom: 1.5rem;">
+                        <span class="media-placeholder-text">[ Ref: electronic wooden fish, mindfulness object ]</span>
+                    </div>
+                    <h3 style="font-size: 1.3rem; margin-bottom: 0.8rem;">The Electronic Wooden Fish</h3>
+                    <p class="text-body" style="font-size: 1rem;">The wooden fish (muyu) is a centuries-old tool for repetitive, meditative tapping. MiniQuest's stress-relief module borrows that same one-tap ritual — paired with a haptic pulse instead of a physical knock — as Brewster and Brown's (2004) non-visual tactile channel for anxiety relief.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- System architecture -->
+        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
+            <div class="grid-split">
+                <div class="sticky-col reveal">
+                    <h2>System<br><span class="text-outline">Architecture</span></h2>
+                    <p class="text-body reveal" style="margin-top: 1.5rem;">MVVM with unidirectional data flow, built around a single <code style="color: var(--accent-moss);">AppViewModel</code> as the app's single source of truth.</p>
+                </div>
+                <div>
+                    <div class="arch-diagram reveal">
+                        <div class="arch-layer">
+                            <div class="arch-layer-title">View</div>
+                            <div class="arch-layer-body">Jetpack Compose UI — a passive consumer that maps <code>StateFlow</code> to screen and forwards user intent upward. No business logic lives here.</div>
+                        </div>
+                        <div class="arch-arrow">↑ StateFlow updates · ↓ user intent</div>
+                        <div class="arch-layer">
+                            <div class="arch-layer-title">ViewModel — AppViewModel</div>
+                            <div class="arch-layer-body">Holds the immutable <code>StateFlow&lt;T&gt;</code>, orchestrates repository calls, sensor input and the AI API, and scopes every coroutine to <code>viewModelScope</code> so nothing outlives the screen.</div>
+                        </div>
+                        <div class="arch-arrow">↑ raw data streams · ↓ read / write calls</div>
+                        <div class="arch-layer">
+                            <div class="arch-layer-title">Model</div>
+                            <div class="arch-layer-body"><code>QuestRepository</code> (Room persistence) · <code>StepSensorManager</code> (hardware abstraction) · <code>OkClient</code> (web service) — each with a single responsibility, none aware of the UI.</div>
+                        </div>
+                    </div>
+                    <p class="caption reveal">Reconstructed from Figure A1, the report's full system architecture diagram.</p>
+
+                    <div class="media-frame on-light reveal" style="margin-top: 2rem; aspect-ratio: 21/9;">
+                        <img src="Image/MiniQuest_Architecture.jpg" alt="MiniQuest system architecture diagram, as submitted in the technical report" class="contain">
+                    </div>
+                    <p class="caption reveal">Fig. A1 — the original diagram as submitted in the technical report appendix.</p>
+
+                    <p class="data-label reveal" style="margin-top: 3rem;">Why Room + Flow</p>
+                    <p class="text-body reveal">All quest and player-stat data is written to a local Room database first, so gameplay stays instant and offline-first regardless of network state. Any change to <code>repository.allQuests</code> flows automatically into a <code>StateFlow</code> that Compose subscribes to — a backend-inserted emergency task redraws the UI with no manual refresh. Room's compile-time SQL checking and strongly-typed <code>Quest</code> objects also remove an entire class of runtime crashes that a raw <code>Cursor</code> would allow.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pervasive sensing -->
+        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
+            <h2 class="reveal" style="text-align: center; margin-bottom: 5rem;">Critical <span class="text-outline">Implementation</span></h2>
+
+            <div class="grid-split">
+                <div class="sticky-col reveal">
+                    <h3 style="font-size: 1.7rem;">Pervasive sensing from raw acceleration</h3>
+                </div>
+                <div>
+                    <p class="text-body reveal">Android's dedicated step-counter sensor is missing on many low-end or older devices. MiniQuest sidesteps that entirely by reading the raw tri-axis accelerometer directly — a sensor present on nearly every Android phone — and computing motion magnitude itself, so step detection is never limited by hardware tier.</p>
+                    <p class="code-note reveal">The vector magnitude <code>√(x² + y² + z²)</code> is orientation-independent: however the phone is carried, any real motion changes the scalar, which is what drives the step-counting logic.</p>
+                    <div class="code-panel reveal">
+                        <div class="code-panel-head">
+                            <div class="code-panel-dots"><span></span><span></span><span></span></div>
+                            <span class="code-panel-file">StepSensorManager.kt</span>
+                        </div>
+                        <pre><code><span class="kw">override fun</span> onSensorChanged(event: SensorEvent?) {
+    event?.<span class="kw">let</span> {
+        <span class="kw">val</span> x = it.values[0]
+        <span class="kw">val</span> y = it.values[1]
+        <span class="kw">val</span> z = it.values[2]
+        <span class="kw">val</span> magnitude = <span class="tg">sqrt</span>(x * x + y * y + z * z)</code></pre>
+                    </div>
+                    <p class="code-note reveal"><strong>Noise filtering:</strong> a 300ms window stops a single shake being read as several steps in a row.</p>
+                    <div class="code-panel reveal">
+                        <div class="code-panel-head">
+                            <div class="code-panel-dots"><span></span><span></span><span></span></div>
+                            <span class="code-panel-file">StepSensorManager.kt</span>
+                        </div>
+                        <pre><code><span class="kw">val</span> currentTime = System.currentTimeMillis()
+<span class="kw">if</span> (currentTime - lastShakeTime > <span class="st">300</span>) {
+    internalSteps++
+    saveStepsToStorage()
+    lastShakeTime = currentTime
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-split" style="margin-top: 10vh;">
+                <div class="sticky-col reveal">
+                    <h3 style="font-size: 1.7rem;">Multimodal & sensory regulation</h3>
+                </div>
+                <div>
+                    <p class="text-body reveal">Brewster and Brown (2004) treat tactile feedback as a non-visual information channel, useful precisely when visual load is already high. A single tap on the app's <code>stress_relief</code> module fires a haptic pulse — a small, immersive confirmation intended to take the edge off anxiety without asking for more visual attention.</p>
+                    <p class="text-body reveal">On the visual side, standard anti-aliasing quietly blurs pixel-art edges on high-DPI screens. MiniQuest counters this with vector-based pixel fonts and a custom <code>HardShadowBox</code> component that forces hard edges past the renderer's automatic smoothing, keeping the game's pixel aesthetic genuinely sharp rather than approximated.</p>
+                </div>
+            </div>
+
+            <div class="grid-split" style="margin-top: 10vh;">
+                <div class="sticky-col reveal">
+                    <h3 style="font-size: 1.7rem;">Async intelligence — the Grand Wizard</h3>
+                </div>
+                <div>
+                    <p class="text-body reveal">An in-app character, the Grand Wizard, is backed by a live call to the HuggingFace Inference API. Because that network call is inherently unpredictable, MiniQuest wraps it in Kotlin Coroutines rather than AsyncTask or a heavier RxJava dependency — scoped to <code>viewModelScope</code> so a suspended request is cancelled automatically the moment the user leaves the screen, avoiding both leaks and wasted battery.</p>
+                    <div class="code-panel reveal">
+                        <div class="code-panel-head">
+                            <div class="code-panel-dots"><span></span><span></span><span></span></div>
+                            <span class="code-panel-file">AppViewModel.kt — askGrandWizard()</span>
+                        </div>
+                        <pre><code><span class="kw">fun</span> askGrandWizard(userQuestion: String) {
+    viewModelScope.launch {
+        <span class="cm">// Step 1 — enter "thinking", lock the UI</span>
+        _isWizardThinking.value = <span class="kw">true</span>
+        _wizardReply.value = <span class="st">"..."</span>
+
+        <span class="cm">// Step 2 — try each router model on Dispatchers.IO</span>
+        <span class="kw">var</span> finalResult: String? = <span class="kw">null</span>
+        <span class="kw">for</span> (modelId <span class="kw">in</span> routerModels) {
+            <span class="kw">val</span> (success, result) = tryRouterModel(modelId, userQuestion)
+            <span class="kw">if</span> (success && !result.isNullOrBlank()) {
+                finalResult = result; <span class="kw">break</span>
+            }
+        }
+
+        <span class="cm">// Step 3 — resolve, with an offline fallback line</span>
+        _wizardReply.value = finalResult ?: offlineGrimoire.random()
+
+        <span class="cm">// Step 4 — unlock the UI</span>
+        _isWizardThinking.value = <span class="kw">false</span>
+    }
+}</code></pre>
+                    </div>
+                    <p class="code-note reveal">The <code>isThinking</code> flag is a minimal state machine that locks the UI mid-request so a user can't fire off duplicate calls out of "uncertainty anxiety" while waiting.</p>
+                    <div class="state-grid">
+                        <div class="state-item idle reveal">
+                            <div class="state-dot"></div>
+                            <div class="state-name">Idle</div>
+                            <div class="state-desc">Waiting on the user. The wizard's dialogue box sits empty and interactive.</div>
+                        </div>
+                        <div class="state-item thinking reveal delay-1">
+                            <div class="state-dot"></div>
+                            <div class="state-name">Thinking</div>
+                            <div class="state-desc">Request in flight on Dispatchers.IO. UI is locked; a transient "..." placeholder is shown.</div>
+                        </div>
+                        <div class="state-item reply reveal delay-2">
+                            <div class="state-dot"></div>
+                            <div class="state-name">Reply</div>
+                            <div class="state-desc">Response resolved — from the API, or the offline grimoire fallback if the call failed.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Permissions & stack -->
+        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
+            <div class="grid-split">
+                <div class="sticky-col reveal">
+                    <h3 style="font-size: 1.7rem;">Permissions & stack</h3>
+                </div>
+                <div>
+                    <table class="perm-table reveal">
+                        <tr><th>Permission</th><th>Usage</th></tr>
+                        <tr><td>Internet</td><td>OkHttp calls to the HuggingFace API powering the Wizard Q&A.</td></tr>
+                        <tr><td>Network State</td><td>Checks Wi-Fi / mobile connectivity before an AI request.</td></tr>
+                        <tr><td>Vibrate</td><td>Haptic feedback for the stress-relief module.</td></tr>
+                        <tr><td>Post Notifications</td><td>System pop-ups for emergency quest alerts.</td></tr>
+                        <tr><td>Body Sensor</td><td>Reserved for biometric data, in preparation for future expansion.</td></tr>
+                    </table>
+                    <p class="data-label reveal" style="margin-top: 3rem;">Libraries</p>
+                    <p class="text-body reveal"><strong style="color: var(--text-primary);">OkHttp</strong> handles all data transmission; <strong style="color: var(--text-primary);">Konfetti</strong> drives the gamified particle feedback that makes finishing a quest feel like an event rather than a checkbox.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Limitations & Future work -->
+        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
+            <div class="grid-split">
+                <div class="sticky-col reveal">
+                    <h3 style="font-size: 1.7rem;">Limitations &<br>Future Work</h3>
+                </div>
+                <div>
+                    <p class="data-label reveal">Current limitations</p>
+                    <ul class="limit-list reveal">
+                        <li><strong>Local-only storage</strong> — built entirely on device Room, with no cloud sync; uninstalling the app deletes all progress.</li>
+                        <li><strong>Sensing ceiling</strong> — step counting relies solely on the phone's own accelerometer, can't draw on wearable data, and offers weak resistance to mechanical step-cheating.</li>
+                    </ul>
+                    <p class="data-label reveal" style="margin-top: 2.5rem;">Planned next</p>
+                    <ul class="future-list reveal">
+                        <li><strong>Cloud sync</strong> — introduce Firebase in place of native Room for real-time account login and multi-device continuity.</li>
+                        <li><strong>Sensing upgrade</strong> — integrate the Health Connect API for wearable data, with ML Kit analyzing waveform features to filter out mechanical cheating.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Closing reflection -->
+        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
+            <div class="grid-split">
+                <div class="sticky-col reveal">
+                    <h2>Closing<br><span class="text-outline">Reflection</span></h2>
+                </div>
+                <div>
+                    <p class="text-lead reveal">MiniQuest isn't just a task-management app wearing an RPG skin — it's a small, working test of whether phone sensors can be pointed at a real behavioral-health problem instead of a to-do list.</p>
+                    <p class="text-body reveal">By pairing a self-built perception layer — raw-acceleration step counting, immune to hardware gaps — with an offline-first MVVM data foundation and lifecycle-safe coroutine concurrency for its AI character, the project tries to hold two things at once: sound mobile engineering, and a genuinely immersive, pixel-perfect feel. The balance between those two is the actual deliverable.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer container">
+        <span class="caption">University of York — Mobile Interaction (TFT00069H)</span>
+        <span class="caption" style="margin-top: 0.75rem; opacity: 0.7;">AI disclosure: Level 3 (AI-assisted editing) — refactoring suggestions and debugging assistance during development; Level 2 (AI-assisted idea development only) for the written report. All design decisions, implementation logic and final code were independently produced and validated by the author. Full disclosure in the written report.</span>
+    </footer>
+
+    <script>
+        (function() {
+            const btn = document.querySelector('.back-home-btn');
+            const exit = document.getElementById('page-exit');
+            if (!btn || !exit) return;
+            btn.addEventListener('click', function(e) {
+                const href = btn.getAttribute('href');
+                if (!href || e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+                e.preventDefault();
+                exit.style.pointerEvents = 'auto';
+                exit.style.opacity = '1';
+                setTimeout(() => { window.location.href = href; }, 650);
+            });
+        })();
+
+        (function() {
+            const cursor = document.getElementById('custom-cursor');
+            if (!cursor) return;
+            let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2, cursorX = mouseX, cursorY = mouseY, lastCursorTime = 0;
+            document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+            function animateCursor(timestamp) {
+                const dt = Math.min((timestamp - (lastCursorTime || timestamp)) / 16.67, 3);
+                lastCursorTime = timestamp;
+                const factor = 1 - Math.pow(0.82, dt);
+                cursorX += (mouseX - cursorX) * factor;
+                cursorY += (mouseY - cursorY) * factor;
+                cursor.style.transform = `translate(${cursorX}px, ${cursorY}px) translate(-50%, -50%)`;
+                requestAnimationFrame(animateCursor);
+            }
+            requestAnimationFrame(animateCursor);
+
+            function bindHoverTargets() {
+                document.querySelectorAll('a, button, [style*="cursor: pointer"], [style*="cursor:pointer"]').forEach(el => {
+                    if (el.dataset.cursorBound) return;
+                    el.dataset.cursorBound = 'true';
+                    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+                    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+                });
+            }
+            bindHoverTargets();
+            const rebindObserver = new MutationObserver(bindHoverTargets);
+            rebindObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+        })();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const reveals = document.querySelectorAll('.reveal');
+            const observerOptions = { root: null, rootMargin: '0px 0px -15% 0px', threshold: 0.1 };
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('in-view');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+            reveals.forEach(element => revealObserver.observe(element));
+
+            const scrollDot = document.getElementById('scrollDot');
+            const updateScrollProgress = () => {
+                const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                if (scrollHeight <= 0) return;
+                const scrollPercent = Math.max(0, Math.min(100, (scrollTop / scrollHeight) * 100));
+                if (scrollDot) scrollDot.style.top = `${scrollPercent}%`;
+            };
+            window.addEventListener('scroll', updateScrollProgress, { passive: true });
+            updateScrollProgress();
+        });
+    </script>
+</body>
+</html>
