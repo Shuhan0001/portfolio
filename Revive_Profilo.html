@@ -193,6 +193,8 @@
             flex-direction: column;
             justify-content: center;
             position: relative;
+            padding-top: clamp(140px, 22vh, 240px);
+            padding-bottom: 6vh;
         }
 
         .hero-title {
@@ -297,6 +299,122 @@
         .media-frame .media-placeholder-text {
             max-width: 60%;
             border: 1px dashed var(--border-subtle);
+        }
+
+        /* Technical Execution — click-to-expand lightbox */
+        .zoomable-media {
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            transition: transform 0.4s var(--ease-cinematic), border-color 0.4s var(--ease-cinematic);
+        }
+
+        .zoomable-media:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.85);
+        }
+
+        /* Only show a focus ring for keyboard navigation, never as a
+           leftover box after a mouse click or after Esc closes the lightbox. */
+        .zoomable-media:focus {
+            outline: none;
+        }
+
+        .zoomable-media:focus-visible {
+            outline: 2px solid rgba(245, 166, 35, 0.5);
+            outline-offset: 4px;
+        }
+
+        /* While the lightbox is open, use the normal system cursor —
+           the site's custom dot cursor is hidden via JS at the same time. */
+        .lightbox-overlay, .lightbox-overlay * {
+            cursor: auto !important;
+        }
+
+        .lightbox-close {
+            cursor: pointer !important;
+        }
+
+        .lightbox-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6vh 6vw;
+            background: rgba(0, 0, 0, 0.88);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s var(--ease-cinematic);
+        }
+
+        .lightbox-overlay.is-open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .lightbox-figure {
+            position: relative;
+            max-width: 90vw;
+            max-height: 84vh;
+            transform: scale(0.94);
+            transition: transform 0.5s var(--ease-cinematic);
+        }
+
+        .lightbox-overlay.is-open .lightbox-figure {
+            transform: scale(1);
+        }
+
+        .lightbox-figure {
+    width: min(90vw, 1200px);
+    height: min(84vh, 760px);
+}
+
+.lightbox-figure img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-float);
+}
+
+        .lightbox-caption {
+            margin-top: 1.25rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 6vh;
+            right: 6vw;
+            z-index: 10001;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--surface-dark);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            cursor: pointer;
+            transition: transform 0.35s var(--ease-cinematic), border-color 0.35s var(--ease-cinematic), color 0.35s var(--ease-cinematic);
+        }
+
+        .lightbox-close:hover {
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: rotate(90deg);
+        }
+
+        @media (max-width: 600px) {
+            .lightbox-close { top: 3vh; right: 5vw; width: 38px; height: 38px; }
         }
 
         .stack-gallery {
@@ -788,6 +906,16 @@
     <div id="custom-cursor"></div>
     <div id="page-exit" style="position:fixed; inset:0; z-index:10001; background:#000000; pointer-events:none; opacity:0; transition: opacity 0.7s cubic-bezier(0.25,1,0.3,1);"></div>
     <div class="noise-overlay"></div>
+
+    <div class="lightbox-overlay" id="lightboxOverlay">
+        <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Close expanded image">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+        <figure class="lightbox-figure">
+            <img id="lightboxImg" src="" alt="">
+            <figcaption class="lightbox-caption" id="lightboxCaption"></figcaption>
+        </figure>
+    </div>
     <div class="ambient-light"></div>
     <div class="ambient-light right"></div>
 
@@ -854,7 +982,7 @@
                     
                     <figure class="reveal delay-1" style="margin-top: 4rem;">
                         <div class="media-frame aspect-video">
-                            <span class="media-placeholder-text">[ Visual 01: Viewport screenshot ]</span>
+                            <img src="Image/Index_Revive.png" alt="Two pixel-art characters sit beside a glowing campfire in a dark forest, illustrating the contrast between intense local illumination and the surrounding environmental darkness." style="width: 100%; height: 100%; object-fit: cover; display: block;">
                         </div>
                         <figcaption class="caption">Fig 1. Contrast between intense local illumination and profound environmental darkness.</figcaption>
                     </figure>
@@ -873,7 +1001,7 @@
                     <div style="margin: 4rem 0;">
                         <figure class="reveal">
                             <div class="media-frame aspect-cinema">
-                                <span class="media-placeholder-text">[ Visual 02: Triptych side-by-side comparison ]</span>
+                                <img src="Image/Revive_Img2.png" alt="Unreal Engine Blueprint editor showing the BP_TimeManager LightingSettings array with three indexed states, each storing SunPitch, SunColor, FogColor and SkyColor values that drive the global illumination state." style="width: 100%; height: 100%; object-fit: cover; display: block;">
                             </div>
                             <figcaption class="caption">Fig 2. Global illumination state variables.</figcaption>
                         </figure>
@@ -902,32 +1030,32 @@
             
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 4rem;">
                 <div class="reveal">
-                    <div class="media-frame aspect-portrait" style="margin-bottom: 2rem;">
-                        <span class="media-placeholder-text">[ Visual 03: UE5 Node ]</span>
+                    <div class="media-frame aspect-portrait zoomable-media" style="margin-bottom: 2rem; cursor: pointer;">
+                        <img src="Image/Revive_Img3.png" alt="Unreal Engine 5 viewport in Lit mode showing point lights and spotlights placed within the pixel-art forest scene to build up Lumen-driven global illumination." style="width: 100%; height: 100%; object-fit: cover; display: block;">
                     </div>
                     <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Engine & Rendering</h3>
                     <p class="text-body">Powered by Unreal Engine 5's Lumen global illumination. 2D pixel sprites were mapped precisely within 3D spatial geometry across background, midground, and foreground layers.</p>
                 </div>
                 
                 <div class="reveal delay-1">
-                    <div class="media-frame aspect-portrait" style="margin-bottom: 2rem;">
-                        <span class="media-placeholder-text">[ Visual 04: Blueprint logic ]</span>
+                    <div class="media-frame aspect-portrait zoomable-media" style="margin-bottom: 2rem; cursor: pointer;">
+                        <img src="Image/Revive_Img4.png" alt="Test level screen showing the character's handheld lantern lit and active, with repeated on-screen debug prints reading 'Fragment' confirming the scanning collision volume is detecting nearby targets." style="width: 100%; height: 100%; object-fit: cover; display: block;">
                     </div>
                     <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Lantern & Scanning</h3>
                     <p class="text-body">A handheld lantern utilizes a Blueprint-driven spherical collision volume to detect targets, providing critical local lighting and tracking player progression dynamically.</p>
                 </div>
 
                 <div class="reveal delay-2">
-                    <div class="media-frame aspect-portrait" style="margin-bottom: 2rem;">
-                        <span class="media-placeholder-text">[ Visual 05: Fragment collision graph ]</span>
+                    <div class="media-frame aspect-portrait zoomable-media" style="margin-bottom: 2rem; cursor: pointer;">
+                        <img src="Image/Revive_Img5.png" alt="BP_Fragment EventGraph in Unreal Engine, showing an On Component Begin Overlap (Sphere) event cast to BP_MainRole that sets Collected Fragments, plays a pickup sound, hides the actor and disables its collision." style="width: 100%; height: 100%; object-fit: cover; display: block;">
                     </div>
                     <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Fragment Collection</h3>
                     <p class="text-body">Collision-triggered overlap events validate player interaction, increment collected fragments, trigger audio feedback, and hide objects to prevent redundant re-collection.</p>
                 </div>
 
                 <div class="reveal delay-3">
-                    <div class="media-frame aspect-portrait" style="margin-bottom: 2rem;">
-                        <span class="media-placeholder-text">[ Visual 06: Lighting config array ]</span>
+                    <div class="media-frame aspect-portrait zoomable-media" style="margin-bottom: 2rem; cursor: pointer;">
+                        <img src="Image/Revive_Img6.png" alt="S_LightingConfig struct definition in Unreal Engine, containing a SunPitch float and three Linear Color variables — SunColor, FogColor and SkyColor — used to drive the Timeline-based Day, Sunset and Night lighting states." style="width: 100%; height: 100%; object-fit: cover; display: block;">
                     </div>
                     <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Data & Environment</h3>
                     <p class="text-body">A custom S_LightingConfig structure drives Timeline-based Lerp transitions between Day, Sunset, and Night, while a live telemetry system records completion time and lantern usage for each trial.</p>
@@ -1216,6 +1344,74 @@
             // cursor style (and click handlers) assigned dynamically.
             const rebindObserver = new MutationObserver(bindHoverTargets);
             rebindObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+        })();
+
+        // --------------------------------------------------------
+        // Technical Execution — click-to-expand lightbox
+        // --------------------------------------------------------
+        (function() {
+            const overlay = document.getElementById('lightboxOverlay');
+            const overlayImg = document.getElementById('lightboxImg');
+            const overlayCaption = document.getElementById('lightboxCaption');
+            const closeBtn = document.getElementById('lightboxClose');
+            const customCursor = document.getElementById('custom-cursor');
+            if (!overlay || !overlayImg || !closeBtn) return;
+
+            let lastTrigger = null;
+
+            function openLightbox(img, captionText, triggerEl) {
+                lastTrigger = triggerEl || null;
+                overlayImg.src = img.currentSrc || img.src;
+                overlayImg.alt = img.alt || '';
+                overlayCaption.textContent = captionText || '';
+                overlay.classList.add('is-open');
+                document.body.style.overflow = 'hidden';
+                if (customCursor) customCursor.style.display = 'none';
+            }
+
+            function closeLightbox() {
+                overlay.classList.remove('is-open');
+                document.body.style.overflow = '';
+                if (customCursor) customCursor.style.display = '';
+                // Don't leave the card showing a focus box behind — blur it
+                // whether the lightbox was closed by mouse or by Esc.
+                if (lastTrigger && typeof lastTrigger.blur === 'function') lastTrigger.blur();
+                lastTrigger = null;
+                // Clear the src after the fade-out finishes so it doesn't
+                // flash a stale image the next time it opens.
+                setTimeout(() => {
+                    if (!overlay.classList.contains('is-open')) {
+                        overlayImg.src = '';
+                    }
+                }, 500);
+            }
+
+            document.querySelectorAll('.zoomable-media').forEach((frame) => {
+                const img = frame.querySelector('img');
+                if (!img) return; // still a placeholder — nothing to expand yet
+                frame.setAttribute('role', 'button');
+                frame.setAttribute('tabindex', '0');
+                frame.setAttribute('aria-label', 'Expand image');
+
+                const captionEl = frame.parentElement ? frame.parentElement.querySelector('h3') : null;
+                const captionText = captionEl ? captionEl.textContent : img.alt;
+
+                frame.addEventListener('click', () => openLightbox(img, captionText, frame));
+                frame.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        openLightbox(img, captionText, frame);
+                    }
+                });
+            });
+
+            closeBtn.addEventListener('click', closeLightbox);
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) closeLightbox();
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && overlay.classList.contains('is-open')) closeLightbox();
+            });
         })();
 
         document.addEventListener('DOMContentLoaded', () => {
