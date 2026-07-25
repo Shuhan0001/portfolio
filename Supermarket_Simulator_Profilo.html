@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" class="antialiased">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supermarket Together | Ashton (Shuhan) Zhang</title>
+    <meta name="description" content="Supermarket Together — a low-poly management sim that blends RPG progression with store-building mechanics. Game design and interaction design on a small team.">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                        mono: ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Text', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                    },
+                    colors: {
+                        dark: '#050505',
+                        primary: '#4F46E5',
+                        emerald: '#10B981',
+                        rose: '#F43F5E'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html { scroll-behavior: smooth; }
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            cursor: none;
+            margin: 0;
+            padding: 0;
+        }
+        *, *::before, *::after { cursor: none !important; }
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+
+        #custom-cursor {
+            position: fixed;
+            top: 0; left: 0;
+            width: 20px; height: 20px;
+            border-radius: 50%;
+            background-color: white;
+            mix-blend-mode: difference;
+            pointer-events: none;
+            z-index: 9999;
+            will-change: transform;
+            transition: width 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        height 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        background-color 0.25s ease;
+        }
+        #custom-cursor.hover {
+            width: 60px; height: 60px;
+            background-color: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(2px);
+            mix-blend-mode: normal;
+        }
+
+        .text-outline {
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+        .text-outline:hover {
+            color: white;
+            -webkit-text-stroke: 0px transparent;
+        }
+        .card {
+            background: #0c0c12;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 1.5rem;
+        }
+
+        @keyframes breathe {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.15); }
+        }
+        .indicator-dot { animation: breathe 3.2s ease-in-out infinite; }
+    </style>
+</head>
+<body class="selection:bg-primary selection:text-white">
+
+<div id="page-enter" style="position:fixed; inset:0; z-index:10000; background:#000000; pointer-events:none; opacity:1; transition: opacity 0.85s cubic-bezier(0.25,1,0.3,1);"></div>
+<div id="custom-cursor"></div>
+
+<main class="relative z-10 max-w-5xl mx-auto px-6 md:px-12">
+
+    <!-- Header -->
+    <header class="flex justify-between items-center w-full py-8">
+        <a href="index.html" class="hover-trigger text-sm uppercase tracking-widest border-b border-white/30 pb-1 hover:border-white transition-colors">← Portfolio</a>
+        <div class="flex items-center gap-6">
+            <a href="Ashton_Zhang_CV.pdf" download class="hover-trigger text-sm uppercase tracking-widest border-b border-white/30 pb-1 hover:border-white transition-colors">Resume</a>
+            <a href="index.html#contact-section" class="hover-trigger text-sm uppercase tracking-widest border-b border-white/30 pb-1 hover:border-white transition-colors">Contact</a>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="pt-16 pb-20 md:pt-24 md:pb-28">
+        <div class="flex items-center gap-3 mb-8">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 indicator-dot"></span>
+            <span class="text-xs font-mono tracking-widest uppercase text-gray-500">In Development · Collaborative Project</span>
+        </div>
+        <h1 class="text-5xl md:text-7xl font-bold tracking-tighter leading-none">
+            SUPERMARKET<br><span class="text-outline">TOGETHER</span>
+        </h1>
+        <p class="mt-6 text-lg md:text-xl text-gray-400 font-light max-w-2xl">A low-poly management sim about stocking shelves, pricing goods, and turning one small shop into a full supermarket.</p>
+        <p class="mt-8 text-gray-300 text-base md:text-lg leading-relaxed max-w-2xl italic border-l-2 border-white/20 pl-6">
+            "Buy low, price it right, keep the shelves full — and lay out a floor plan customers actually enjoy walking through."
+        </p>
+        <div class="flex flex-wrap gap-3 mt-8">
+            <span class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-mono uppercase tracking-widest">Unity</span>
+            <span class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-mono uppercase tracking-widest">Management Sim</span>
+            <span class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-mono uppercase tracking-widest">Low-Poly</span>
+            <span class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-mono uppercase tracking-widest">Collaborative Team</span>
+        </div>
+    </section>
+
+    <!-- Overview -->
+    <section class="py-14 border-t border-white/10">
+        <h2 class="text-sm font-mono tracking-widest text-white mb-4 uppercase">00 / Overview</h2>
+        <p class="text-gray-400 text-lg leading-relaxed max-w-2xl font-light">
+            Supermarket Together blends RPG-style progression with sim-building mechanics: players lay out their own store, stock and price the goods, hire staff, and reinvest the profit into bigger spaces and pricier inventory. The demo's target is a small but fully playable slice — a handful of buildable structures, a couple of controllable characters, a first batch of sellable goods, and a short story hook.
+        </p>
+    </section>
+
+    <!-- Core Loop -->
+    <section class="py-14 border-t border-white/10">
+        <h2 class="text-sm font-mono tracking-widest text-white mb-8 uppercase">01 / Core Loop</h2>
+        <div class="flex flex-col divide-y divide-white/10 border border-white/10 rounded-2xl overflow-hidden">
+            <div class="flex items-center gap-6 p-5 md:p-6">
+                <span class="text-xs font-mono text-gray-600 w-16 shrink-0">01</span>
+                <div><span class="text-white font-medium">Order stock</span><span class="text-gray-500 text-sm"> — restock inventory while wholesale prices are low</span></div>
+            </div>
+            <div class="flex items-center gap-6 p-5 md:p-6">
+                <span class="text-xs font-mono text-gray-600 w-16 shrink-0">02</span>
+                <div><span class="text-white font-medium">Restock shelves</span><span class="text-gray-500 text-sm"> — carry boxes from the loading dock onto the shop floor</span></div>
+            </div>
+            <div class="flex items-center gap-6 p-5 md:p-6">
+                <span class="text-xs font-mono text-gray-600 w-16 shrink-0">03</span>
+                <div><span class="text-white font-medium">Set prices</span><span class="text-gray-500 text-sm"> — stay within the range customers are willing to pay</span></div>
+            </div>
+            <div class="flex items-center gap-6 p-5 md:p-6">
+                <span class="text-xs font-mono text-gray-600 w-16 shrink-0">04</span>
+                <div><span class="text-white font-medium">Open the store</span><span class="text-gray-500 text-sm"> — customers browse the floor and pick up items</span></div>
+            </div>
+            <div class="flex items-center gap-6 p-5 md:p-6">
+                <span class="text-xs font-mono text-gray-600 w-16 shrink-0">05</span>
+                <div><span class="text-white font-medium">Checkout</span><span class="text-gray-500 text-sm"> — scan each item, take payment, and make change</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Systems -->
+    <section class="py-14 border-t border-white/10">
+        <h2 class="text-sm font-mono tracking-widest text-white mb-8 uppercase">02 / Systems</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="card p-6">
+                <span class="text-white font-bold text-lg">Staff AI</span>
+                <p class="text-gray-500 text-sm mt-2 font-light">Recruited NPCs each take on a single assigned role. Efficiency differs from character to character, and mistreating them lowers morale and productivity.</p>
+            </div>
+            <div class="card p-6">
+                <span class="text-white font-bold text-lg">Dynamic Pricing</span>
+                <p class="text-gray-500 text-sm mt-2 font-light">Wholesale prices fluctuate like a market, rewarding players who buy in when costs dip. Each customer has their own acceptable price range — go beyond it and demand drops off sharply.</p>
+            </div>
+            <div class="card p-6">
+                <span class="text-white font-bold text-lg">Store Building</span>
+                <p class="text-gray-500 text-sm mt-2 font-light">Modular zones such as the bakery and produce section can be paired for bonuses, or clash and hurt sales — a restroom next to the deli counter, for example.</p>
+            </div>
+            <div class="card p-6">
+                <span class="text-white font-bold text-lg">Story Hooks</span>
+                <p class="text-gray-500 text-sm mt-2 font-light">Reaching a revenue milestone can trigger a conversation with a randomly chosen NPC, who offers a quest that's demanding to complete but pays off well.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Role -->
+    <section class="py-14 border-t border-white/10">
+        <h2 class="text-sm font-mono tracking-widest text-white mb-4 uppercase">03 / My Role</h2>
+        <p class="text-gray-400 text-lg leading-relaxed max-w-2xl font-light">
+            Game design and interaction design on a four-person team, working alongside a narrative designer and an artist covering both character and environment work.
+        </p>
+    </section>
+
+    <!-- Status -->
+    <section class="py-14 border-t border-white/10">
+        <h2 class="text-sm font-mono tracking-widest text-white mb-4 uppercase">04 / Status</h2>
+        <p class="text-gray-500 text-sm md:text-base max-w-2xl font-light">
+            Currently building the first playable loop — order, restock, price, open, checkout — using two starter goods to test pricing, shelving and the basic building tools before the demo's scope grows.
+        </p>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-16 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6 text-gray-600 text-xs font-mono tracking-widest">
+        <span>© 2026 ASHTON (SHUHAN) ZHANG</span>
+        <a href="index.html" class="hover-trigger text-gray-400 hover:text-white transition-colors">← Back to Portfolio</a>
+    </footer>
+
+</main>
+
+<script>
+    // Entrance fade
+    requestAnimationFrame(() => {
+        const enter = document.getElementById('page-enter');
+        if (enter) {
+            enter.style.opacity = '0';
+            setTimeout(() => enter.remove(), 900);
+        }
+    });
+
+    // Custom cursor
+    const cursor = document.getElementById('custom-cursor');
+    let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+    let cursorX = mouseX, cursorY = mouseY, lastTime = 0;
+    document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+    function animateCursor(ts) {
+        const dt = Math.min((ts - (lastTime || ts)) / 16.67, 3);
+        lastTime = ts;
+        const factor = 1 - Math.pow(0.82, dt);
+        cursorX += (mouseX - cursorX) * factor;
+        cursorY += (mouseY - cursorY) * factor;
+        cursor.style.transform = `translate(${cursorX}px, ${cursorY}px) translate(-50%, -50%)`;
+        requestAnimationFrame(animateCursor);
+    }
+    animateCursor(0);
+    document.querySelectorAll('.hover-trigger').forEach(el => {
+        el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+        el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+    });
+</script>
+</body>
+</html>

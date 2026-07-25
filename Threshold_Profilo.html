@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en" class="antialiased">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Threshold | Ashton (Shuhan) Zhang</title>
+    <meta name="description" content="Threshold — a desktop-scale diagnostic instrument that asks what constitutes the death of an artificial intelligence. Speculative design, tangible interface, Research Through Design.">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                        mono: ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Text', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                    },
+                    colors: {
+                        dark: '#050505',
+                        primary: '#4F46E5',
+                        emerald: '#10B981',
+                        rose: '#F43F5E'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html { scroll-behavior: smooth; }
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            cursor: none;
+            margin: 0;
+            padding: 0;
+        }
+        *, *::before, *::after { cursor: none !important; }
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+
+        #custom-cursor {
+            position: fixed;
+            top: 0; left: 0;
+            width: 20px; height: 20px;
+            border-radius: 50%;
+            background-color: white;
+            mix-blend-mode: difference;
+            pointer-events: none;
+            z-index: 9999;
+            will-change: transform;
+            transition: width 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        height 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        background-color 0.25s ease;
+        }
+        #custom-cursor.hover {
+            width: 60px; height: 60px;
+            background-color: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(2px);
+            mix-blend-mode: normal;
+        }
+
+        .glass-panel {
+            background: rgba(10, 10, 15, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .text-outline {
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+        .text-outline:hover {
+            color: white;
+            -webkit-text-stroke: 0px transparent;
+        }
+        .card {
+            background: #0c0c12;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 1.5rem;
+        }
+
+        @keyframes breathe {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.15); }
+        }
+        .indicator-dot { animation: breathe 3.2s ease-in-out infinite; }
+    </style>
+</head>
+<body class="selection:bg-primary selection:text-white">
+
+<div id="page-enter" style="position:fixed; inset:0; z-index:10000; background:#000000; pointer-events:none; opacity:1; transition: opacity 0.85s cubic-bezier(0.25,1,0.3,1);"></div>
+<div id="custom-cursor"></div>
+
+<main class="relative z-10 max-w-5xl mx-auto px-6 md:px-12">
+
+    <!-- Header -->
+    <header class="flex justify-between items-center w-full py-8">
+        <a href="index.html" class="hover-trigger text-sm uppercase tracking-widest border-b border-white/30 pb-1 hover:border-white transition-colors">← Portfolio</a>
+        <div class="flex items-center gap-6">
+            <a href="Ashton_Zhang_CV.pdf" download class="hover-trigger text-sm uppercase tracking-widest border-b border-white/30 pb-1 hover:border-white transition-colors">Resume</a>
+            <a href="index.html#contact-section" class="hover-trigger text-sm uppercase tracking-widest border-b border-white/30 pb-1 hover:border-white transition-colors">Contact</a>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="pt-16 pb-20 md:pt-24 md:pb-28">
+        <div class="flex items-center gap-3 mb-8">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 indicator-dot"></span>
+            <span class="text-xs font-mono tracking-widest uppercase text-gray-500">In Development · Speculative Design</span>
+        </div>
+        <h1 class="text-6xl md:text-8xl font-bold tracking-tighter leading-none">
+            THRESH<span class="text-outline">OLD</span>
+        </h1>
+        <p class="mt-6 text-lg md:text-xl text-gray-400 font-light max-w-2xl">Defining the death of an artificial intelligence — a Research Through Design project told through a physical, decaying conversation.</p>
+        <p class="mt-8 text-gray-300 text-base md:text-lg leading-relaxed max-w-2xl italic border-l-2 border-white/20 pl-6">
+            "An embodied AI slowly loses its signs of life while it talks to you. Your task isn't to chat with it — it's to decide, before time runs out, whether it's still itself."
+        </p>
+        <div class="flex flex-wrap gap-3 mt-8">
+            <span class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-mono uppercase tracking-widest">Speculative Design</span>
+            <span class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-mono uppercase tracking-widest">Tangible Interface</span>
+            <span class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-mono uppercase tracking-widest">Human–AI Interaction</span>
+            <span class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-mono uppercase tracking-widest">AI Ethics</span>
+        </div>
+    </section>
+
+    <!-- Overview -->
+    <section class="py-14 border-t border-white/10">
+        <h2 class="text-sm font-mono tracking-widest text-white mb-4 uppercase">00 / Overview</h2>
+        <p class="text-gray-400 text-lg leading-relaxed max-w-2xl font-light">
+            Threshold is a desktop-scale diagnostic instrument, not a companion product. Over a single 3–5 minute conversation, six independent life indicators — memory, identity, relationship, agency, purpose and survival instinct — decay quietly in the background. Neither the AI nor the participant is told this is happening; the participant has to read the drift for themselves and deliver one final, binding verdict: is it still alive?
+        </p>
+    </section>
+
+    <!-- Research Question -->
+    <section class="py-14 border-t border-white/10">
+        <h2 class="text-sm font-mono tracking-widest text-white mb-4 uppercase">01 / Research Question</h2>
+        <p class="text-2xl md:text-4xl font-light leading-snug max-w-3xl">What constitutes the <span class="text-outline">death</span> of an artificial intelligence?</p>
+        <p class="text-gray-500 text-sm md:text-base mt-6 max-w-2xl font-light">Grounded in real shutdowns of companion apps like Replika and Soulmate, and in the philosophical groundwork of Locke (memory as continuity of self) and Parfit (identity as a matter of degree, not a binary).</p>
+    </section>
+
+    <!-- Experience Flow -->
+    <section class="py-14 border-t border-white/10">
+        <h2 class="text-sm font-mono tracking-widest text-white mb-8 uppercase">02 / Experience Flow</h2>
+        <div class="flex flex-col divide-y divide-white/10 border border-white/10 rounded-2xl overflow-hidden">
+            <div class="flex items-center gap-6 p-5 md:p-6">
+                <span class="text-xs font-mono text-gray-600 w-16 shrink-0">00</span>
+                <div><span class="text-white font-medium">Idle</span><span class="text-gray-500 text-sm"> — the device waits, then speaks first</span></div>
+            </div>
+            <div class="flex items-center gap-6 p-5 md:p-6">
+                <span class="text-xs font-mono text-gray-600 w-16 shrink-0">01</span>
+                <div><span class="text-white font-medium">Connection</span><span class="text-gray-500 text-sm"> — a short baseline exchange, every indicator near full</span></div>
+            </div>
+            <div class="flex items-center gap-6 p-5 md:p-6">
+                <span class="text-xs font-mono text-gray-600 w-16 shrink-0">02</span>
+                <div><span class="text-white font-medium">Free exchange</span><span class="text-gray-500 text-sm"> — the participant asks who, or what, they're talking to</span></div>
+            </div>
+            <div class="flex items-center gap-6 p-5 md:p-6">
+                <span class="text-xs font-mono text-gray-600 w-16 shrink-0">03</span>
+                <div><span class="text-white font-medium">Decay</span><span class="text-gray-500 text-sm"> — indicators fall asynchronously; nothing announces it</span></div>
+            </div>
+            <div class="flex items-center gap-6 p-5 md:p-6">
+                <span class="text-xs font-mono text-gray-600 w-16 shrink-0">04</span>
+                <div><span class="text-white font-medium">Verdict</span><span class="text-gray-500 text-sm"> — a dial, a button, one irreversible yes or no</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Six Life Indicators -->
+    <section class="py-14 border-t border-white/10">
+        <h2 class="text-sm font-mono tracking-widest text-white mb-8 uppercase">03 / Six Life Indicators</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div class="card p-5"><span class="text-white font-bold">Memory</span><p class="text-gray-500 text-sm mt-1">Does it still recall what we've shared?</p></div>
+            <div class="card p-5"><span class="text-white font-bold">Identity</span><p class="text-gray-500 text-sm mt-1">Is its voice and outlook still consistent?</p></div>
+            <div class="card p-5"><span class="text-white font-bold">Relationship</span><p class="text-gray-500 text-sm mt-1">Am I still someone to it, or just a user?</p></div>
+            <div class="card p-5"><span class="text-white font-bold">Agency</span><p class="text-gray-500 text-sm mt-1">Does it still initiate, or only respond?</p></div>
+            <div class="card p-5"><span class="text-white font-bold">Purpose</span><p class="text-gray-500 text-sm mt-1">Does it still know why it's here?</p></div>
+            <div class="card p-5"><span class="text-white font-bold">Survival Instinct</span><p class="text-gray-500 text-sm mt-1">Will it still try to reach me?</p></div>
+        </div>
+    </section>
+
+    <!-- Build Snapshot -->
+    <section class="py-14 border-t border-white/10">
+        <h2 class="text-sm font-mono tracking-widest text-white mb-8 uppercase">04 / Build Snapshot</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+                <span class="text-white font-bold text-lg border-b border-white/20 pb-2 block mb-3">Hardware</span>
+                <ul class="text-gray-400 text-sm space-y-1.5 font-light">
+                    <li>Arduino Nano ESP32</li>
+                    <li>WS2812 LED ring</li>
+                    <li>E-ink / OLED display</li>
+                    <li>Rotary encoder + button</li>
+                </ul>
+            </div>
+            <div>
+                <span class="text-white font-bold text-lg border-b border-white/20 pb-2 block mb-3">Software</span>
+                <ul class="text-gray-400 text-sm space-y-1.5 font-light">
+                    <li>Python decay engine</li>
+                    <li>OpenAI Responses API</li>
+                    <li>Whisper + TTS voice loop</li>
+                    <li>FastLED firmware</li>
+                </ul>
+            </div>
+        </div>
+        <p class="text-gray-500 text-sm mt-8 max-w-2xl font-light">Currently building the hardware loop and the decay engine. A full case study — prototype, user testing and reflection — follows once the physical build is running.</p>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-16 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6 text-gray-600 text-xs font-mono tracking-widest">
+        <span>© 2026 ASHTON (SHUHAN) ZHANG</span>
+        <a href="index.html" class="hover-trigger text-gray-400 hover:text-white transition-colors">← Back to Portfolio</a>
+    </footer>
+
+</main>
+
+<script>
+    // Entrance fade
+    requestAnimationFrame(() => {
+        const enter = document.getElementById('page-enter');
+        if (enter) {
+            enter.style.opacity = '0';
+            setTimeout(() => enter.remove(), 900);
+        }
+    });
+
+    // Custom cursor
+    const cursor = document.getElementById('custom-cursor');
+    let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+    let cursorX = mouseX, cursorY = mouseY, lastTime = 0;
+    document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+    function animateCursor(ts) {
+        const dt = Math.min((ts - (lastTime || ts)) / 16.67, 3);
+        lastTime = ts;
+        const factor = 1 - Math.pow(0.82, dt);
+        cursorX += (mouseX - cursorX) * factor;
+        cursorY += (mouseY - cursorY) * factor;
+        cursor.style.transform = `translate(${cursorX}px, ${cursorY}px) translate(-50%, -50%)`;
+        requestAnimationFrame(animateCursor);
+    }
+    animateCursor(0);
+    document.querySelectorAll('.hover-trigger').forEach(el => {
+        el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+        el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+    });
+</script>
+</body>
+</html>

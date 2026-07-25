@@ -190,6 +190,27 @@
         }
         .roster-card p { font-size: 0.98rem; color: var(--text-secondary); }
 
+        /* Main Ghost — featured/hero treatment. It's the antagonist and
+           guide, the only roster member with concept art, so it earns a
+           distinct position and larger footprint rather than sitting as
+           one equal-weight tile inside the 4-up grid. */
+        .roster-featured {
+            display: grid; grid-template-columns: minmax(280px, 420px) 1fr; gap: 3.5rem;
+            align-items: center; margin-top: 3rem; padding-bottom: 3.5rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .roster-featured .media-frame { box-shadow: var(--shadow-float); }
+        .roster-featured h3 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+        .roster-featured .role-tag { color: var(--accent-red); font-size: 0.78rem; }
+        .roster-featured p { font-size: 1.08rem; max-width: 560px; }
+        .roster-subhead {
+            font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase;
+            color: var(--text-tertiary); margin-top: 3.5rem; margin-bottom: -0.5rem;
+        }
+        @media (max-width: 720px) {
+            .roster-featured { grid-template-columns: 1fr; gap: 1.5rem; }
+        }
+
         /* Ethics / responsible-design flags — same anatomy as a status
            indicator (ring + label + description) but repurposed here as
            content warnings rather than a system state. */
@@ -323,7 +344,7 @@
     <main>
         <section class="container hero">
             <h1 class="hero-title reveal">Silent Night at the<br><span class="text-outline">Haunted School</span></h1>
-            <p class="text-lead reveal delay-1">A first-person horror RPG built in Unity, about a bullied student locked in his school on the night the dead return &mdash; and the three ghosts who won't let anyone leave quietly.</p>
+            <p class="text-lead reveal delay-1">A first-person horror RPG built in Unity, about a bullied student locked in his school on the night the dead return, and the three ghosts who won't let anyone leave quietly.</p>
 
             <div class="hero-meta reveal delay-2">
                 <div class="meta-item"><span>My Role</span><strong>Design Team · Team Manager</strong></div>
@@ -337,7 +358,7 @@
                 See this project on GitHub
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M7 7h10v10"/></svg>
             </a>
-            <a href="#responsible-design" class="content-note reveal delay-3">Content note: 18+, jump scares, microphone required</a>
+            <a href="#responsible-design" class="content-note reveal delay-3">Content note. Rated 18+, includes jump scares, and requires a microphone.</a>
         </section>
 
         <section class="section container">
@@ -346,7 +367,7 @@
                     <h2>The<br><span class="text-outline">Premise</span></h2>
                 </div>
                 <div>
-                    <p class="text-body reveal">The game is set inside a school building on the night of the Ghost Festival. The player is Paul, a quiet, bookish student who is bullied by three classmates &mdash; and who is forced to spend the night in the building with them under threat. When the curfew breaks, the school's ghosts wake up with it.</p>
+                    <p class="text-body reveal">The game is set inside a school building on the night of the Ghost Festival. The player is Paul, a quiet, bookish student who is bullied by three classmates and forced to spend the night in the building with them under threat. When the curfew breaks, the school's ghosts wake up with it.</p>
                     <p class="text-body reveal">Each spirit is trapped in whatever it hated or feared most in life, and the bullies begin dying in ways nobody can explain. To escape, Paul has to solve the building's puzzles while working out whether he was really chosen by chance.</p>
 
                     <div class="quote-block reveal delay-1">
@@ -354,7 +375,7 @@
                         <span>From the game's opening narration</span>
                     </div>
 
-                    <p class="text-body reveal delay-2">The player's microphone is live throughout, and screaming has consequences: several of the school's ghosts are drawn toward sound rather than sight, so staying quiet is a real survival mechanic, not just tone-setting.</p>
+                    <p class="text-body reveal delay-2">The player's microphone is live throughout, and screaming has consequences. Several of the school's ghosts are drawn toward sound rather than sight, so staying quiet is a real survival mechanic, not just tone-setting.</p>
 
                     <figure class="reveal delay-2" style="margin-top: 3rem;">
                         <div class="media-frame" style="aspect-ratio: 4/3; background: #000;">
@@ -367,7 +388,7 @@
                         <div class="media-frame" style="aspect-ratio: 2/3; background: #fff;">
                             <img src="Image/SilentNight_Map.png" alt="Top-down school map with a locker-room corridor and a courtyard, marked up with roads, obstacles, water, and colour-coded locked and opened doors" style="width:100%; height:100%; object-fit: contain;">
                         </div>
-                        <figcaption class="caption">Fig 2. Level map &mdash; the locker corridor and courtyard, with locked (red) and opened (green) doors gating the route between them.</figcaption>
+                        <figcaption class="caption">Fig 2. Level map showing the locker corridor and courtyard, with locked (red) and opened (green) doors gating the route between them.</figcaption>
                     </figure>
                 </div>
             </div>
@@ -381,12 +402,12 @@
                 <div class="roster-card reveal">
                     <h3>Paul</h3>
                     <span class="role-tag">Player Character</span>
-                    <p>Introverted and easy to overlook, Paul comes from a family with a quiet, unexamined history of talking to spirits. He'd rather bury himself in a book than be noticed &mdash; which is exactly what made him a target.</p>
+                    <p>Introverted and easy to overlook, Paul comes from a family with a quiet, unexamined history of talking to spirits. He'd rather bury himself in a book than be noticed, which is exactly what made him a target.</p>
                 </div>
                 <div class="roster-card reveal delay-1">
                     <h3>The Leader</h3>
                     <span class="role-tag">Bully</span>
-                    <p>Treats bullying as entertainment and control. Parental neglect is the backstory the team gave him &mdash; not an excuse, but a reason the cruelty feels earned rather than cartoonish.</p>
+                    <p>Treats bullying as entertainment and control. Parental neglect is the backstory the team gave him, not as an excuse, but as a reason the cruelty feels earned rather than cartoonish.</p>
                 </div>
                 <div class="roster-card reveal delay-2">
                     <h3>The Enforcer</h3>
@@ -405,29 +426,33 @@
             <h2 class="reveal" style="text-align: center; margin-bottom: 1rem;">The <span class="text-outline">Dead</span></h2>
             <p class="text-lead reveal" style="text-align: center; margin: 0 auto 2rem; max-width: 760px;">A vengeful main ghost and three bound spirits, each trapped in whatever they hated most while alive.</p>
 
-            <div class="roster-grid">
-                <div class="roster-card reveal">
-                    <div class="media-frame aspect-video" style="background:#000; margin-bottom: 1.5rem;">
-                        <img src="Image/SilentNight_MainGhost.png" alt="3D render of the Main Ghost: a gaunt figure with four screaming, spring-necked skull heads and clawed hands" style="width:100%; height:100%; object-fit: cover; object-position: top;">
-                    </div>
+            <div class="roster-featured reveal">
+                <div class="media-frame aspect-video" style="background:#000;">
+                    <img src="Image/SilentNight_MainGhost.png" alt="3D render of the Main Ghost: a gaunt figure with four screaming, spring-necked skull heads and clawed hands" style="width:100%; height:100%; object-fit: cover; object-position: top;">
+                </div>
+                <div>
                     <h3>The Main Ghost</h3>
                     <span class="role-tag">Antagonist / Guide</span>
-                    <p>A former student, bullied by the same three tormentors, who took her own life after a cruel prank. She wanders the school freely, whispering guidance toward the truth &mdash; but attacks if the player screams instead of listening.</p>
+                    <p>A former student, bullied by the same three tormentors, who took her own life after a cruel prank. She wanders the school freely, whispering guidance toward the truth, but attacks if the player screams instead of listening.</p>
                 </div>
-                <div class="roster-card reveal delay-1">
+            </div>
+
+            <p class="roster-subhead reveal">The Three Bound Spirits</p>
+            <div class="roster-grid">
+                <div class="roster-card reveal">
                     <h3>Ghost in the Painting</h3>
                     <span class="role-tag">Spirit · Envy</span>
-                    <p>Grew up overshadowed by a gifted sibling and turned to bullying to fill the gap. Bound to the school's paintings, she darts between frames &mdash; if the player stops watching them, she strikes.</p>
+                    <p>Grew up overshadowed by a gifted sibling and turned to bullying to fill the gap. Bound to the school's paintings, she darts between frames, and strikes if the player stops watching them.</p>
                 </div>
-                <div class="roster-card reveal delay-2">
+                <div class="roster-card reveal delay-1">
                     <h3>Ghost in the Mirror</h3>
                     <span class="role-tag">Spirit · Self-Loathing</span>
                     <p>Once bullied for a facial disfigurement, he became a bully himself in self-defence. He appears behind the player in reflections, closing in the longer a mirror is stared into.</p>
                 </div>
-                <div class="roster-card reveal delay-3">
+                <div class="roster-card reveal delay-2">
                     <h3>Ghost in the Hole</h3>
                     <span class="role-tag">Spirit · Cruelty</span>
-                    <p>Violent by nature, with no need for a reason to hurt someone. He hides in dark corners and drags at the player from below &mdash; screaming only makes him faster.</p>
+                    <p>Violent by nature, with no need for a reason to hurt someone. He hides in dark corners and drags at the player from below, and screaming only makes him faster.</p>
                 </div>
             </div>
         </section>
@@ -438,7 +463,7 @@
                     <h2>Team<br><span class="text-outline">& Process</span></h2>
                 </div>
                 <div>
-                    <p class="text-body reveal">The four of us split into a Design team and a Technical team, with membership shifting as the project moved through its phases. Ewan led as project manager and technical lead throughout; Yesunkhusel led design and story. Hattie and I started on design and were scheduled to move into the technical team as the workload shifted &mdash; me from week 9, Hattie from week 7.</p>
+                    <p class="text-body reveal">The four of us split into a Design team and a Technical team, with membership shifting as the project moved through its phases. Ewan led as project manager and technical lead throughout, and Yesunkhusel led design and story. Hattie and I started on design and were scheduled to move into the technical team as the workload shifted, me from week 9 and Hattie from week 7.</p>
                     <p class="text-body reveal">Everything was built in Maya and Unity and written in C#, with assets on Google Drive and code on GitHub under agreed commit conventions. Weekly beta builds gave us a rollback point if anything broke, and an anonymous feedback form let anyone flag friction in the group without a confrontation.</p>
 
                     <p class="data-label reveal" style="margin-top: 3rem;">How the schedule was phased</p>
@@ -519,7 +544,7 @@
                 <div class="reveal delay-3">
                     <div class="media-frame aspect-portrait" style="margin-bottom: 1.5rem;"><span class="media-placeholder-text">[ Ref: Visage ]</span></div>
                     <h3 style="font-size: 1.2rem; margin-bottom: 0.6rem;">Visage</h3>
-                    <p class="text-body" style="font-size: 0.98rem;">A haunted-house exploration game that favours atmosphere over jump scares &mdash; a reminder that dread can carry a scene without a single scripted shock.</p>
+                    <p class="text-body" style="font-size: 0.98rem;">A haunted-house exploration game that favours atmosphere over jump scares, a reminder that dread can carry a scene without a single scripted shock.</p>
                 </div>
                 <div class="reveal">
                     <div class="media-frame aspect-portrait" style="margin-bottom: 1.5rem;"><span class="media-placeholder-text">[ Ref: The Hungry Ghost Festival ]</span></div>
@@ -540,9 +565,9 @@
                     <h2>My<br><span class="text-outline">Contribution</span></h2>
                 </div>
                 <div>
-                    <p class="text-lead reveal">As a design team member and the group's team manager, my focus was the cast: giving the bullies and the three bound ghosts believable grievances, and sketching out the school map and character movement routes with the rest of the design team.</p>
-                    <p class="text-body reveal">On the research side, I looked at why horror and games pair so naturally &mdash; genre familiarity, sound design's pull on emotion, and how games like Omori fold real struggles like bullying into a horror frame without losing the player's sympathy for the characters. That reading shaped how we wrote the bullies: as people with a backstory, not just obstacles.</p>
-                    <p class="text-body reveal delay-1">I also managed team logistics day to day &mdash; keeping the Monday/Friday meeting rhythm on track and coordinating the handover as design members rotated onto the technical team. From week 9, my own role shifts the same way: from character and world design into Unity implementation for the rest of the build.</p>
+                    <p class="text-lead reveal">My work spanned the project end to end, from building the game's narrative and world, to modelling and designing its visual identity, to implementing it in-engine later on. I wrote the cast's backstories, giving the bullies and the three bound ghosts believable grievances, then carried that world-building into the school's layout, its rules for the Ghost Festival curfew, and the character movement routes that tie the two together.</p>
+                    <p class="text-body reveal">That world needed a face, so I modelled and art-directed its key figures in Maya, including the Main Ghost's four-headed design, translating the narrative's tone into something the player could actually see and fear. On the research side, I looked at why horror and games pair so naturally, drawing on genre familiarity, sound design's pull on emotion, and how games like Omori fold real struggles like bullying into a horror frame without losing the player's sympathy for the characters. That reading shaped how we wrote the bullies, as people with a backstory rather than just obstacles.</p>
+                    <p class="text-body reveal delay-1">Alongside the creative work, I kept production moving day to day, holding the Monday/Friday meeting rhythm and coordinating the handover as design members rotated onto the technical team. From week 9, my own role shifted the same way, moving from narrative, world and character design into Unity implementation for the rest of the build.</p>
                 </div>
             </div>
         </section>
@@ -550,7 +575,7 @@
 
     <footer class="site-footer container">
         <span class="caption">University of York, Department of Interactive Media &middot; Media Production for Interactive Environment (Group Project)</span>
-        <span class="caption" style="margin-top: 0.75rem; opacity: 0.7;">Group 1: Ewan, Yesunkhusel, Hattie, and Shuhan Zhang. In-engine build in progress &mdash; visuals above are concept placeholders pending capture.</span>
+        <span class="caption" style="margin-top: 0.75rem; opacity: 0.7;">Group 1 (Ewan, Yesunkhusel, Hattie, and Shuhan Zhang). In-engine build in progress, and the visuals above are concept placeholders pending capture.</span>
     </footer>
 
     <script>
