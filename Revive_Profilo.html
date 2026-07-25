@@ -226,6 +226,28 @@
             color: var(--text-primary);
         }
 
+        .gameplay-btn {
+            margin-top: 2.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.65rem;
+            width: fit-content;
+            padding: 0.9rem 1.5rem;
+            border-radius: 999px;
+            background: var(--accent-amber);
+            color: #19130b;
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            text-decoration: none;
+            box-shadow: 0 0 36px rgba(255, 178, 71, 0.18);
+            transition: transform 0.35s var(--ease-cinematic), box-shadow 0.35s var(--ease-cinematic), background 0.35s var(--ease-cinematic);
+        }
+        .gameplay-btn:hover { transform: translateY(-3px) scale(1.03); background: #ffd08a; box-shadow: 0 0 20px rgba(255, 178, 71, 0.2), 0 14px 32px -14px rgba(0,0,0,0.65); }
+        .gameplay-btn:active { transform: translateY(-1px) scale(0.98); }
+        .gameplay-btn svg { transition: transform 0.35s var(--ease-cinematic); }
+        .gameplay-btn:hover svg { transform: translate(2px, -2px); }
+
         .grid-split {
             display: grid;
             grid-template-columns: 1fr;
@@ -572,16 +594,17 @@
             top: 0;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 32px;
-            height: 32px;
+            width: 128px;
+            height: 128px;
             transition: top 0.1s linear; 
         }
 
-        .scroll-character-svg {
+        .scroll-character-img {
             width: 100%;
             height: 100%;
-            position: relative;
-            z-index: 2;
+            display: block;
+            object-fit: contain;
+            image-rendering: pixelated;
             filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.5));
         }
 
@@ -791,17 +814,7 @@
 
     <div class="scroll-track">
         <div class="scroll-character" id="scrollCharacter">
-            <svg class="scroll-character-svg" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-                <rect x="12" y="10" width="8" height="14" fill="var(--text-secondary)" />
-                <rect x="10" y="2" width="12" height="8" fill="var(--text-primary)" />
-                <rect x="12" y="5" width="2" height="2" fill="var(--bg-void)" />
-                <rect x="18" y="5" width="2" height="2" fill="var(--bg-void)" />
-                <rect x="8" y="12" width="4" height="2" fill="var(--text-tertiary)" />
-                <rect x="6" y="14" width="6" height="8" fill="#111" stroke="var(--accent-amber)" stroke-width="1" />
-                <rect x="7" y="16" width="4" height="4" fill="var(--accent-amber)" />
-                <rect x="12" y="24" width="3" height="6" fill="var(--text-tertiary)" />
-                <rect x="17" y="24" width="3" height="6" fill="var(--text-tertiary)" />
-            </svg>
+            <img src="Image/Revive_Character.png" alt="Pixel character scroll progress indicator" class="scroll-character-img">
         </div>
     </div>
 
@@ -824,6 +837,10 @@
                     <strong>BSc Interactive Media '25</strong>
                 </div>
             </div>
+            <a href="https://youtu.be/-3xa17G_q5k" target="_blank" rel="noopener" class="gameplay-btn reveal delay-3">
+                Watch Gameplay Video
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </a>
         </section>
 
         <section class="section container">
