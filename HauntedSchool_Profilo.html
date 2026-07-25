@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silent Night at the Haunted School | Shuhan Zhang</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nosifer&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Palette: Void & Vigil Red — a bloodied counterpart to Revive's
+               warm amber and Cogni-Stream's clinical cyan, tuned for a
+               school-set survival-horror brief. Red is used sparingly:
+               it marks the ghosts, the warnings, and nothing else. */
+            --bg-void: #000000;
+            --surface-dark: rgba(255, 255, 255, 0.045);
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-tertiary: #52525b;
+            --accent-red: #8C1128;
+            --accent-glow: rgba(140, 17, 40, 0.2);
+            --accent-amber: #F5A623;
+            --accent-sick: #7DBE6A;
+            --border-subtle: rgba(255, 255, 255, 0.1);
+
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --shadow-subtle: 0 12px 40px -12px rgba(0,0,0,0.5);
+            --shadow-float: 0 24px 48px -12px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05) inset;
+
+            --font-main: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+            --font-scrawl: 'Nosifer', var(--font-main);
+
+            --ease-cinematic: cubic-bezier(0.25, 1, 0.3, 1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: inherit; }
+        html { font-family: var(--font-main); }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-void);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            position: relative;
+            cursor: none;
+        }
+
+        *, *::before, *::after { cursor: none !important; }
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+
+        #custom-cursor {
+            position: fixed; top: 0; left: 0; width: 20px; height: 20px;
+            border-radius: 50%; background-color: white; mix-blend-mode: difference;
+            pointer-events: none; z-index: 9999; will-change: transform;
+            transition: width 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        height 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        background-color 0.25s ease, mix-blend-mode 0.25s ease;
+        }
+        #custom-cursor.hover {
+            width: 60px; height: 60px; background-color: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(2px); mix-blend-mode: normal;
+        }
+        @media (max-width: 768px) {
+            #custom-cursor { display: none; }
+            *, *::before, *::after { cursor: auto !important; }
+        }
+
+        .noise-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none; z-index: 9999; opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        .ambient-light {
+            position: fixed; width: 80vw; height: 80vh; border-radius: 50%;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            top: -20vh; left: -20vw; pointer-events: none; z-index: -1;
+            filter: blur(100px); opacity: 0.5;
+        }
+        .ambient-light.right {
+            top: 40vh; left: auto; right: -30vw;
+            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+        }
+
+        .container { max-width: 1440px; margin: 0 auto; padding: 0 6vw; }
+
+        h1, h2, h3 { font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; }
+        h2 { font-size: clamp(2.5rem, 5vw, 4.5rem); margin-bottom: 2rem; }
+
+        .text-lead {
+            font-size: clamp(1.125rem, 2vw, 1.5rem); color: var(--text-secondary);
+            font-weight: 400; max-width: 800px; margin-bottom: 2rem;
+        }
+        .text-body {
+            font-size: 1.125rem; color: var(--text-secondary); font-weight: 400;
+            max-width: 620px; margin-bottom: 1.5rem;
+        }
+        .accent { color: var(--text-primary); font-weight: 600; box-shadow: inset 0 -2px 0 var(--accent-red); }
+        .caption { font-size: 0.875rem; color: var(--text-tertiary); margin-top: 1rem; display: block; }
+        .data-label { font-size: 0.95rem; color: var(--text-secondary); font-weight: 500; letter-spacing: 0.01em; margin-top: 1rem; display: block; }
+
+        .section { padding: 15vh 0; position: relative; }
+
+        .hero {
+            min-height: 100vh; display: flex; flex-direction: column; justify-content: center; position: relative;
+            padding-top: clamp(140px, 22vh, 240px);
+            padding-bottom: 6vh;
+        }
+        .hero-title { font-size: clamp(3rem, 7.2vw, 6.6rem); font-weight: 700; letter-spacing: -0.04em; margin-bottom: 1.5rem; max-width: 1200px; }
+
+        .hero-meta {
+            margin-top: 6vh; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 3rem; border-top: 1px solid var(--border-subtle); padding-top: 3rem; max-width: 1080px;
+        }
+        .meta-item span { display: block; font-size: 0.8rem; color: var(--text-tertiary); margin-bottom: 0.5rem; }
+        .meta-item strong { font-size: 1rem; font-weight: 600; color: var(--text-primary); }
+
+        .github-btn {
+            margin-top: 2.5rem; display: inline-flex; align-items: center; gap: 0.65rem;
+            width: fit-content; padding: 0.9rem 1.5rem; border-radius: 999px;
+            background: var(--accent-red); color: #fff;
+            font-size: 0.9rem; font-weight: 700; letter-spacing: 0.02em; text-decoration: none;
+            box-shadow: 0 0 36px var(--accent-glow);
+            transition: transform 0.35s var(--ease-cinematic), box-shadow 0.35s var(--ease-cinematic), background 0.35s var(--ease-cinematic);
+        }
+        .github-btn svg { flex-shrink: 0; transition: transform 0.35s var(--ease-cinematic); }
+        .github-btn:hover { transform: translateY(-3px) scale(1.03); background: #B01B39; box-shadow: 0 0 20px var(--accent-glow), 0 14px 32px -14px rgba(0,0,0,0.65); }
+        .github-btn:hover svg { transform: translate(2px, -2px); }
+        .github-btn:active { transform: translateY(-1px) scale(0.98); }
+
+        /* Content note — a quiet inline link rather than a loud badge;
+           the actual warnings live in the Responsible Design section,
+           this just points there for anyone who wants them upfront. */
+        .content-note {
+            margin-top: 1.5rem; display: inline-flex; align-items: center; gap: 0.4rem;
+            color: var(--text-tertiary); font-size: 0.82rem; text-decoration: none;
+            border-bottom: 1px solid transparent; transition: color 0.3s ease, border-color 0.3s ease;
+        }
+        .content-note:hover { color: var(--text-secondary); border-color: var(--border-subtle); }
+
+        .grid-split { display: grid; grid-template-columns: 1fr; gap: 4rem; }
+        @media (min-width: 1024px) {
+            .grid-split { grid-template-columns: 5fr 7fr; gap: 8vw; align-items: start; }
+            .sticky-col { position: sticky; top: 15vh; }
+        }
+
+        .media-frame {
+            width: 100%; background: var(--surface-dark); border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md); box-shadow: var(--shadow-subtle); overflow: hidden;
+            position: relative; display: flex; align-items: center; justify-content: center; text-align: center;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        }
+        .media-frame.aspect-video { aspect-ratio: 16/9; }
+        .media-frame.aspect-cinema { aspect-ratio: 21/9; }
+        .media-frame.aspect-portrait { aspect-ratio: 4/5; }
+        .media-placeholder-text {
+            color: var(--text-tertiary); font-family: var(--font-main); font-size: 0.85rem;
+            letter-spacing: 0.05em; padding: 2rem;
+        }
+        .media-frame .media-placeholder-text { max-width: 70%; border: 1px dashed var(--border-subtle); }
+
+        .quote-block {
+            border-left: 2px solid var(--accent-red); padding-left: 1.75rem; margin: 2.5rem 0;
+        }
+        .quote-block p { font-size: 1.2rem; color: var(--text-primary); font-weight: 500; line-height: 1.55; font-style: italic; }
+        .quote-block span { display: block; margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-tertiary); font-style: normal; }
+
+        .data-card {
+            background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-subtle);
+            padding: 2.5rem; border-radius: var(--radius-md); margin-bottom: 2rem; transition: background 0.4s ease;
+        }
+        .data-card:hover { background: rgba(255, 255, 255, 0.04); }
+
+        /* Character / ghost roster cards */
+        .roster-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 3rem; margin-top: 3rem;
+        }
+        .roster-card { border-top: 1px solid var(--border-subtle); padding-top: 1.5rem; }
+        .roster-card h3 { font-size: 1.3rem; margin-bottom: 0.4rem; }
+        .roster-card .role-tag {
+            display: inline-block; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+            color: var(--text-tertiary); margin-bottom: 0.9rem;
+        }
+        .roster-card p { font-size: 0.98rem; color: var(--text-secondary); }
+
+        /* Ethics / responsible-design flags — same anatomy as a status
+           indicator (ring + label + description) but repurposed here as
+           content warnings rather than a system state. */
+        .ethics-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2.5rem 3rem; margin-top: 3rem;
+        }
+        .ethics-item { display: flex; align-items: flex-start; gap: 1.1rem; }
+        .ethics-ring {
+            width: 12px; height: 12px; border-radius: 50%; margin-top: 0.35rem; flex-shrink: 0;
+            background: var(--ring-color, var(--accent-red));
+            box-shadow: 0 0 10px var(--ring-glow, var(--accent-glow)), 0 0 22px var(--ring-glow, var(--accent-glow));
+        }
+        .ethics-text .name { font-size: 0.95rem; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; margin-bottom: 0.4rem; color: var(--text-primary); }
+        .ethics-text .desc { font-size: 0.92rem; color: var(--text-secondary); line-height: 1.55; }
+
+        .reveal {
+            opacity: 0; transform: translateY(40px) scale(0.98); filter: blur(10px);
+            transition: opacity 1.2s var(--ease-cinematic), transform 1.2s var(--ease-cinematic), filter 1.2s var(--ease-cinematic);
+            will-change: transform, opacity, filter;
+        }
+        .reveal.in-view { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+        .delay-3 { transition-delay: 0.3s; }
+
+        .site-footer { padding: 8vh 0; border-top: 1px solid var(--border-subtle); margin-top: 10vh; text-align: center; }
+
+        .site-header {
+            position: absolute; top: 6vh; left: 6vw; z-index: 100;
+            display: flex; align-items: center; gap: 1rem;
+            animation: fadeIn 2s var(--ease-cinematic) forwards;
+        }
+        .logo-scrawl {
+            font-family: var(--font-scrawl); font-size: 1.05rem; letter-spacing: 0.04em;
+            color: var(--text-primary); line-height: 1; user-select: none;
+        }
+        .logo-caption { font-size: 0.62rem; letter-spacing: 0.3em; color: var(--text-tertiary); margin-top: 0.5rem; text-transform: uppercase; }
+
+        .back-home-btn {
+            position: fixed; top: 6vh; right: 6vw; z-index: 100; display: flex; align-items: center; gap: 0.6rem;
+            padding: 0.75rem 1.4rem 0.75rem 1.1rem; border-radius: 999px;
+            background: var(--surface-dark); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: url(#glass-distortion) blur(2px) saturate(140%);
+            border: 1px solid var(--border-subtle); box-shadow: var(--shadow-subtle);
+            color: var(--text-secondary); font-size: 0.85rem; font-weight: 500; letter-spacing: 0.03em;
+            text-decoration: none; cursor: pointer; animation: fadeIn 2s var(--ease-cinematic) forwards;
+            transition: color 0.4s var(--ease-cinematic), border-color 0.4s var(--ease-cinematic),
+                        background 0.4s var(--ease-cinematic), transform 0.4s var(--ease-cinematic);
+        }
+        .back-home-btn svg { width: 16px; height: 16px; flex-shrink: 0; transition: transform 0.4s var(--ease-cinematic); }
+        .back-home-btn:hover { color: var(--accent-red); border-color: rgba(225, 29, 72, 0.35); transform: translateY(-2px); }
+        .back-home-btn:hover svg { transform: translateX(-3px); }
+        .back-home-btn:active { transform: translateY(0) scale(0.97); }
+        @media (max-width: 600px) {
+            .back-home-btn { top: 3vh; right: 5vw; padding: 0.55rem 1rem 0.55rem 0.8rem; font-size: 0.75rem; }
+            .back-home-btn span { display: none; }
+            .site-header { top: 3vh; left: 5vw; }
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .scroll-track {
+            position: fixed; right: 4vw; top: 15vh; bottom: 15vh; width: 1px;
+            background: var(--border-subtle); z-index: 50; opacity: 0.6;
+        }
+        .scroll-dot {
+            position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%);
+            width: 9px; height: 9px; border-radius: 50%; background: var(--accent-red);
+            box-shadow: 0 0 12px var(--accent-glow), 0 0 24px var(--accent-glow);
+            transition: top 0.1s linear;
+        }
+        @media (max-width: 768px) { .scroll-track { display: none; } }
+
+        .text-outline {
+            color: transparent; -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.4);
+            text-stroke: 1.5px rgba(255, 255, 255, 0.4);
+            transition: color 0.6s var(--ease-cinematic), -webkit-text-stroke-color 0.6s var(--ease-cinematic), text-shadow 0.6s var(--ease-cinematic);
+            cursor: default;
+        }
+        .text-outline:hover {
+            color: var(--accent-red); -webkit-text-stroke: 0px transparent;
+            text-shadow: 0 0 40px var(--accent-glow), 0 0 80px var(--accent-glow);
+        }
+        @media (max-width: 600px) { .text-outline { -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4); } }
+
+        .hero-title .text-outline { animation: vigil-flicker 4.5s ease-in-out infinite; }
+        .hero-title .text-outline:hover { animation-play-state: paused; }
+        @keyframes vigil-flicker {
+            0%, 100% { -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.4); text-shadow: none; }
+            48% { -webkit-text-stroke: 1.5px rgba(140, 17, 40, 0.6); text-shadow: 0 0 30px var(--accent-glow); }
+            50% { -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.4); text-shadow: none; }
+            52% { -webkit-text-stroke: 1.5px rgba(140, 17, 40, 0.6); text-shadow: 0 0 30px var(--accent-glow); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="custom-cursor"></div>
+    <div id="page-exit" style="position:fixed; inset:0; z-index:10001; background:#000000; pointer-events:none; opacity:0; transition: opacity 0.7s cubic-bezier(0.25,1,0.3,1);"></div>
+    <div class="noise-overlay"></div>
+    <div class="ambient-light"></div>
+    <div class="ambient-light right"></div>
+
+    <header class="site-header">
+        <div>
+            <div class="logo-scrawl">Silent Night</div>
+            <div class="logo-caption">Group 1 · Haunted School</div>
+        </div>
+    </header>
+
+    <svg style="position:absolute; width:0; height:0; overflow:hidden;" aria-hidden="true">
+        <defs>
+            <filter id="glass-distortion" x="-20%" y="-20%" width="140%" height="140%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.010 0.012" numOctaves="2" seed="7" result="noise"/>
+                <feGaussianBlur in="noise" stdDeviation="3" result="blurredNoise"/>
+                <feDisplacementMap in="SourceGraphic" in2="blurredNoise" scale="40" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+        </defs>
+    </svg>
+
+    <a href="Projects.html" class="back-home-btn" aria-label="Back to all projects">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Back to Projects</span>
+    </a>
+
+    <div class="scroll-track"><div class="scroll-dot" id="scrollDot"></div></div>
+
+    <main>
+        <section class="container hero">
+            <h1 class="hero-title reveal">Silent Night at the<br><span class="text-outline">Haunted School</span></h1>
+            <p class="text-lead reveal delay-1">A first-person horror RPG built in Unity, about a bullied student locked in his school on the night the dead return &mdash; and the three ghosts who won't let anyone leave quietly.</p>
+
+            <div class="hero-meta reveal delay-2">
+                <div class="meta-item"><span>My Role</span><strong>Design Team · Team Manager</strong></div>
+                <div class="meta-item"><span>Team</span><strong>Group of 4 · Group 1</strong></div>
+                <div class="meta-item"><span>Engine</span><strong>Unity · C#</strong></div>
+                <div class="meta-item"><span>Module</span><strong>Media Production for Interactive Environment</strong></div>
+            </div>
+
+            <a href="https://github.com/em05niper/Group-Project-Repository" target="_blank" rel="noopener" class="github-btn reveal delay-3">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58 0-.29-.01-1.04-.02-2.04-3.34.72-4.04-1.61-4.04-1.61-.55-1.38-1.33-1.76-1.33-1.76-1.09-.74.08-.72.08-.72 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.93.43.37.81 1.1.81 2.22 0 1.6-.02 2.89-.02 3.29 0 .32.22.7.83.58C20.56 21.79 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                See this project on GitHub
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M7 7h10v10"/></svg>
+            </a>
+            <a href="#responsible-design" class="content-note reveal delay-3">Content note: 18+, jump scares, microphone required</a>
+        </section>
+
+        <section class="section container">
+            <div class="grid-split">
+                <div class="sticky-col reveal">
+                    <h2>The<br><span class="text-outline">Premise</span></h2>
+                </div>
+                <div>
+                    <p class="text-body reveal">The game is set inside a school building on the night of the Ghost Festival. The player is Paul, a quiet, bookish student who is bullied by three classmates &mdash; and who is forced to spend the night in the building with them under threat. When the curfew breaks, the school's ghosts wake up with it.</p>
+                    <p class="text-body reveal">Each spirit is trapped in whatever it hated or feared most in life, and the bullies begin dying in ways nobody can explain. To escape, Paul has to solve the building's puzzles while working out whether he was really chosen by chance.</p>
+
+                    <div class="quote-block reveal delay-1">
+                        <p>The silent survive. The screaming perish. Will you dare to make a sound?</p>
+                        <span>From the game's opening narration</span>
+                    </div>
+
+                    <p class="text-body reveal delay-2">The player's microphone is live throughout, and screaming has consequences: several of the school's ghosts are drawn toward sound rather than sight, so staying quiet is a real survival mechanic, not just tone-setting.</p>
+
+                    <figure class="reveal delay-2" style="margin-top: 3rem;">
+                        <div class="media-frame" style="aspect-ratio: 4/3; background: #000;">
+                            <img src="Image/Index_SilentNight.png" alt="Silent Night at the Haunted School key art: a bloodied, grinning skull mask on black, captioned 'You can't escape!!'" style="width:100%; height:100%; object-fit: contain;">
+                        </div>
+                        <figcaption class="caption">Fig 1. Key art for Silent Night at the Haunted School.</figcaption>
+                    </figure>
+
+                    <figure class="reveal delay-3" style="margin-top: 3rem;">
+                        <div class="media-frame" style="aspect-ratio: 2/3; background: #fff;">
+                            <img src="Image/SilentNight_Map.png" alt="Top-down school map with a locker-room corridor and a courtyard, marked up with roads, obstacles, water, and colour-coded locked and opened doors" style="width:100%; height:100%; object-fit: contain;">
+                        </div>
+                        <figcaption class="caption">Fig 2. Level map &mdash; the locker corridor and courtyard, with locked (red) and opened (green) doors gating the route between them.</figcaption>
+                    </figure>
+                </div>
+            </div>
+        </section>
+
+        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
+            <h2 class="reveal" style="text-align: center; margin-bottom: 1rem;">The <span class="text-outline">Living</span></h2>
+            <p class="text-lead reveal" style="text-align: center; margin: 0 auto 2rem; max-width: 720px;">Paul and the three classmates who forced him into the building with them.</p>
+
+            <div class="roster-grid">
+                <div class="roster-card reveal">
+                    <h3>Paul</h3>
+                    <span class="role-tag">Player Character</span>
+                    <p>Introverted and easy to overlook, Paul comes from a family with a quiet, unexamined history of talking to spirits. He'd rather bury himself in a book than be noticed &mdash; which is exactly what made him a target.</p>
+                </div>
+                <div class="roster-card reveal delay-1">
+                    <h3>The Leader</h3>
+                    <span class="role-tag">Bully</span>
+                    <p>Treats bullying as entertainment and control. Parental neglect is the backstory the team gave him &mdash; not an excuse, but a reason the cruelty feels earned rather than cartoonish.</p>
+                </div>
+                <div class="roster-card reveal delay-2">
+                    <h3>The Enforcer</h3>
+                    <span class="role-tag">Bully</span>
+                    <p>The most physically aggressive of the three; violence doesn't need a reason for him. A chaotic home life left him numb to other people's pain.</p>
+                </div>
+                <div class="roster-card reveal delay-3">
+                    <h3>The Follower</h3>
+                    <span class="role-tag">Bully</span>
+                    <p>A former victim himself, who joined the group to stop being a target. Lacks the others' confidence, but his desperation to belong makes him just as dangerous.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
+            <h2 class="reveal" style="text-align: center; margin-bottom: 1rem;">The <span class="text-outline">Dead</span></h2>
+            <p class="text-lead reveal" style="text-align: center; margin: 0 auto 2rem; max-width: 760px;">A vengeful main ghost and three bound spirits, each trapped in whatever they hated most while alive.</p>
+
+            <div class="roster-grid">
+                <div class="roster-card reveal">
+                    <div class="media-frame aspect-video" style="background:#000; margin-bottom: 1.5rem;">
+                        <img src="Image/SilentNight_MainGhost.png" alt="3D render of the Main Ghost: a gaunt figure with four screaming, spring-necked skull heads and clawed hands" style="width:100%; height:100%; object-fit: cover; object-position: top;">
+                    </div>
+                    <h3>The Main Ghost</h3>
+                    <span class="role-tag">Antagonist / Guide</span>
+                    <p>A former student, bullied by the same three tormentors, who took her own life after a cruel prank. She wanders the school freely, whispering guidance toward the truth &mdash; but attacks if the player screams instead of listening.</p>
+                </div>
+                <div class="roster-card reveal delay-1">
+                    <h3>Ghost in the Painting</h3>
+                    <span class="role-tag">Spirit · Envy</span>
+                    <p>Grew up overshadowed by a gifted sibling and turned to bullying to fill the gap. Bound to the school's paintings, she darts between frames &mdash; if the player stops watching them, she strikes.</p>
+                </div>
+                <div class="roster-card reveal delay-2">
+                    <h3>Ghost in the Mirror</h3>
+                    <span class="role-tag">Spirit · Self-Loathing</span>
+                    <p>Once bullied for a facial disfigurement, he became a bully himself in self-defence. He appears behind the player in reflections, closing in the longer a mirror is stared into.</p>
+                </div>
+                <div class="roster-card reveal delay-3">
+                    <h3>Ghost in the Hole</h3>
+                    <span class="role-tag">Spirit · Cruelty</span>
+                    <p>Violent by nature, with no need for a reason to hurt someone. He hides in dark corners and drags at the player from below &mdash; screaming only makes him faster.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
+            <div class="grid-split">
+                <div class="sticky-col reveal">
+                    <h2>Team<br><span class="text-outline">& Process</span></h2>
+                </div>
+                <div>
+                    <p class="text-body reveal">The four of us split into a Design team and a Technical team, with membership shifting as the project moved through its phases. Ewan led as project manager and technical lead throughout; Yesunkhusel led design and story. Hattie and I started on design and were scheduled to move into the technical team as the workload shifted &mdash; me from week 9, Hattie from week 7.</p>
+                    <p class="text-body reveal">Everything was built in Maya and Unity and written in C#, with assets on Google Drive and code on GitHub under agreed commit conventions. Weekly beta builds gave us a rollback point if anything broke, and an anonymous feedback form let anyone flag friction in the group without a confrontation.</p>
+
+                    <p class="data-label reveal" style="margin-top: 3rem;">How the schedule was phased</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; margin-top: 1.5rem;">
+                        <div class="reveal delay-1" style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
+                            <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Weeks 4&ndash;6 · Design First</h3>
+                            <p class="text-body" style="font-size: 1rem; max-width: none;">Three of us on character, world and story design while Ewan builds the core technical foundation.</p>
+                        </div>
+                        <div class="reveal delay-2" style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
+                            <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Weeks 6&ndash;9 · Transition</h3>
+                            <p class="text-body" style="font-size: 1rem; max-width: none;">Hattie and I move onto the technical team one at a time as design work winds down, keeping the code team never short-staffed.</p>
+                        </div>
+                        <div class="reveal delay-3" style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
+                            <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Weeks 9&ndash;13 · Full Build</h3>
+                            <p class="text-body" style="font-size: 1rem; max-width: none;">All four of us on implementation and weekly testing after Easter, finishing with the final build and minutes.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="responsible-design" class="section container" style="border-top: 1px solid var(--border-subtle); scroll-margin-top: 10vh;">
+            <h2 class="reveal" style="text-align: center; margin-bottom: 1rem;">Responsible <span class="text-outline">Design</span></h2>
+            <p class="text-lead reveal" style="text-align: center; margin: 0 auto 2rem; max-width: 760px;">A horror game about bullying and a live microphone raises real questions before it raises a single jump scare. This is how the group answered them.</p>
+
+            <div class="ethics-grid">
+                <div class="ethics-item reveal">
+                    <div class="ethics-ring"></div>
+                    <div class="ethics-text">
+                        <div class="name">Age Appropriateness</div>
+                        <div class="desc">Rated 18+, with a clear age warning shown before the game starts.</div>
+                    </div>
+                </div>
+                <div class="ethics-item reveal delay-1">
+                    <div class="ethics-ring" style="--ring-color: var(--accent-amber); --ring-glow: rgba(245,166,35,0.3);"></div>
+                    <div class="ethics-text">
+                        <div class="name">Player Wellbeing</div>
+                        <div class="desc">Upfront warnings for jump scares and photosensitive content, plus a planned "Reduced Horror Mode" that tones down noise and visuals for players who want the story without the full intensity.</div>
+                    </div>
+                </div>
+                <div class="ethics-item reveal delay-2">
+                    <div class="ethics-ring" style="--ring-color: var(--accent-sick); --ring-glow: rgba(125,190,106,0.3);"></div>
+                    <div class="ethics-text">
+                        <div class="name">Cultural Sensitivity</div>
+                        <div class="desc">Set during the Hungry Ghost Festival (Zhongyuan), a real Chinese Ghost Month tradition. The team's aim is to represent it respectfully, with in-game context rather than exaggeration.</div>
+                    </div>
+                </div>
+                <div class="ethics-item reveal delay-3">
+                    <div class="ethics-ring"></div>
+                    <div class="ethics-text">
+                        <div class="name">Privacy & Consent</div>
+                        <div class="desc">The microphone captures screams to drive gameplay, gated behind an explicit consent prompt. Players who decline get a button-based alternative for the same interactions.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
+            <h2 class="reveal" style="text-align: center; margin-bottom: 1rem;">Design <span class="text-outline">References</span></h2>
+            <p class="text-lead reveal" style="text-align: center; margin: 0 auto 5rem; max-width: 760px;">Four horror games and two pieces of folklore the group used to pin down tone, mechanics and setting before any of it went into Unity.</p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 3rem;">
+                <div class="reveal">
+                    <div class="media-frame aspect-portrait" style="margin-bottom: 1.5rem;"><span class="media-placeholder-text">[ Ref: Phasmophobia ]</span></div>
+                    <h3 style="font-size: 1.2rem; margin-bottom: 0.6rem;">Phasmophobia</h3>
+                    <p class="text-body" style="font-size: 0.98rem;">Kinetic Games' co-op ghost-hunting title informed how our spirits gather and reveal evidence of themselves, even though our game is single-player and story-driven rather than investigative.</p>
+                </div>
+                <div class="reveal delay-1">
+                    <div class="media-frame aspect-portrait" style="margin-bottom: 1.5rem;"><span class="media-placeholder-text">[ Ref: Five Nights at Freddy's ]</span></div>
+                    <h3 style="font-size: 1.2rem; margin-bottom: 0.6rem;">Five Nights at Freddy's</h3>
+                    <p class="text-body" style="font-size: 0.98rem;">Scott Cawthon's survival horror shaped our thinking on jump scares and resource-management tension, and the idea of a monster the player can't fully understand or defeat.</p>
+                </div>
+                <div class="reveal delay-2">
+                    <div class="media-frame aspect-portrait" style="margin-bottom: 1.5rem;"><span class="media-placeholder-text">[ Ref: Doki Doki Literature Club! ]</span></div>
+                    <h3 style="font-size: 1.2rem; margin-bottom: 0.6rem;">Doki Doki Literature Club!</h3>
+                    <p class="text-body" style="font-size: 0.98rem;">Team Salvato's meta-narrative psychological horror is the main reference for how our story hides its horror behind an ordinary setup before turning on the player.</p>
+                </div>
+                <div class="reveal delay-3">
+                    <div class="media-frame aspect-portrait" style="margin-bottom: 1.5rem;"><span class="media-placeholder-text">[ Ref: Visage ]</span></div>
+                    <h3 style="font-size: 1.2rem; margin-bottom: 0.6rem;">Visage</h3>
+                    <p class="text-body" style="font-size: 0.98rem;">A haunted-house exploration game that favours atmosphere over jump scares &mdash; a reminder that dread can carry a scene without a single scripted shock.</p>
+                </div>
+                <div class="reveal">
+                    <div class="media-frame aspect-portrait" style="margin-bottom: 1.5rem;"><span class="media-placeholder-text">[ Ref: The Hungry Ghost Festival ]</span></div>
+                    <h3 style="font-size: 1.2rem; margin-bottom: 0.6rem;">The Hungry Ghost Festival</h3>
+                    <p class="text-body" style="font-size: 0.98rem;">Ghost Month in the Chinese lunar calendar, when ancestral spirits are said to roam freely, gave the game its calendar hook and its central curfew rule.</p>
+                </div>
+                <div class="reveal delay-1">
+                    <div class="media-frame aspect-portrait" style="margin-bottom: 1.5rem;"><span class="media-placeholder-text">[ Ref: mirror &amp; painting legends ]</span></div>
+                    <h3 style="font-size: 1.2rem; margin-bottom: 0.6rem;">Mirror & Painting Folklore</h3>
+                    <p class="text-body" style="font-size: 0.98rem;">Urban legends about vengeful spirits summoned through mirrors, alongside stories of unsettling haunted paintings, shaped the mechanics behind our own Ghost in the Mirror and Ghost in the Painting.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
+            <div class="grid-split">
+                <div class="sticky-col reveal">
+                    <h2>My<br><span class="text-outline">Contribution</span></h2>
+                </div>
+                <div>
+                    <p class="text-lead reveal">As a design team member and the group's team manager, my focus was the cast: giving the bullies and the three bound ghosts believable grievances, and sketching out the school map and character movement routes with the rest of the design team.</p>
+                    <p class="text-body reveal">On the research side, I looked at why horror and games pair so naturally &mdash; genre familiarity, sound design's pull on emotion, and how games like Omori fold real struggles like bullying into a horror frame without losing the player's sympathy for the characters. That reading shaped how we wrote the bullies: as people with a backstory, not just obstacles.</p>
+                    <p class="text-body reveal delay-1">I also managed team logistics day to day &mdash; keeping the Monday/Friday meeting rhythm on track and coordinating the handover as design members rotated onto the technical team. From week 9, my own role shifts the same way: from character and world design into Unity implementation for the rest of the build.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer container">
+        <span class="caption">University of York, Department of Interactive Media &middot; Media Production for Interactive Environment (Group Project)</span>
+        <span class="caption" style="margin-top: 0.75rem; opacity: 0.7;">Group 1: Ewan, Yesunkhusel, Hattie, and Shuhan Zhang. In-engine build in progress &mdash; visuals above are concept placeholders pending capture.</span>
+    </footer>
+
+    <script>
+        (function() {
+            const btn = document.querySelector('.back-home-btn');
+            const exit = document.getElementById('page-exit');
+            if (!btn || !exit) return;
+            btn.addEventListener('click', function(e) {
+                const href = btn.getAttribute('href');
+                if (!href || e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+                e.preventDefault();
+                exit.style.pointerEvents = 'auto';
+                exit.style.opacity = '1';
+                setTimeout(() => { window.location.href = href; }, 650);
+            });
+        })();
+
+        (function() {
+            const cursor = document.getElementById('custom-cursor');
+            if (!cursor) return;
+            let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2, cursorX = mouseX, cursorY = mouseY, lastCursorTime = 0;
+            document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+            function animateCursor(timestamp) {
+                const dt = Math.min((timestamp - (lastCursorTime || timestamp)) / 16.67, 3);
+                lastCursorTime = timestamp;
+                const factor = 1 - Math.pow(0.82, dt);
+                cursorX += (mouseX - cursorX) * factor;
+                cursorY += (mouseY - cursorY) * factor;
+                cursor.style.transform = `translate(${cursorX}px, ${cursorY}px) translate(-50%, -50%)`;
+                requestAnimationFrame(animateCursor);
+            }
+            requestAnimationFrame(animateCursor);
+
+            function bindHoverTargets() {
+                document.querySelectorAll('a, button, [style*="cursor: pointer"], [style*="cursor:pointer"]').forEach(el => {
+                    if (el.dataset.cursorBound) return;
+                    el.dataset.cursorBound = 'true';
+                    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+                    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+                });
+            }
+            bindHoverTargets();
+            const rebindObserver = new MutationObserver(bindHoverTargets);
+            rebindObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+        })();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const reveals = document.querySelectorAll('.reveal');
+            const observerOptions = { root: null, rootMargin: '0px 0px -15% 0px', threshold: 0.1 };
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('in-view');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+            reveals.forEach(element => revealObserver.observe(element));
+
+            const scrollDot = document.getElementById('scrollDot');
+            const updateScrollProgress = () => {
+                const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                if (scrollHeight <= 0) return;
+                const scrollPercent = Math.max(0, Math.min(100, (scrollTop / scrollHeight) * 100));
+                if (scrollDot) scrollDot.style.top = `${scrollPercent}%`;
+            };
+            window.addEventListener('scroll', updateScrollProgress, { passive: true });
+            updateScrollProgress();
+        });
+    </script>
+</body>
+</html>
