@@ -77,11 +77,22 @@
             color: white;
             -webkit-text-stroke: 0px transparent;
         }
-        .card {
-            background: #0c0c12;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 1.5rem;
+
+        .step-row { position: relative; }
+        .step-row:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 2.75rem;
+            bottom: -1px;
+            width: calc(100% - 2.75rem);
+            height: 1px;
+            background: rgba(255,255,255,0.06);
         }
+
+        .indicator-row { transition: padding-left 0.3s ease; }
+        .indicator-row:hover { padding-left: 0.4rem; }
+        .indicator-row .indicator-label { transition: color 0.3s ease; }
+        .indicator-row:hover .indicator-label { color: #ffffff; }
 
         @keyframes breathe {
             0%, 100% { opacity: 0.4; transform: scale(1); }
@@ -107,23 +118,31 @@
     </header>
 
     <!-- Hero -->
-    <section class="pt-16 pb-20 md:pt-24 md:pb-28">
-        <div class="flex items-center gap-3 mb-8">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 indicator-dot"></span>
-            <span class="text-xs font-mono tracking-widest uppercase text-gray-500">In Development · Speculative Design</span>
-        </div>
-        <h1 class="text-6xl md:text-8xl font-bold tracking-tighter leading-none">
-            THRESH<span class="text-outline">OLD</span>
-        </h1>
-        <p class="mt-6 text-lg md:text-xl text-gray-400 font-light max-w-2xl">Defining the death of an artificial intelligence — a Research Through Design project told through a physical, decaying conversation.</p>
-        <p class="mt-8 text-gray-300 text-base md:text-lg leading-relaxed max-w-2xl italic border-l-2 border-white/20 pl-6">
-            "An embodied AI slowly loses its signs of life while it talks to you. Your task isn't to chat with it — it's to decide, before time runs out, whether it's still itself."
-        </p>
-        <div class="flex flex-wrap gap-3 mt-8">
-            <span class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-mono uppercase tracking-widest">Speculative Design</span>
-            <span class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-mono uppercase tracking-widest">Tangible Interface</span>
-            <span class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-mono uppercase tracking-widest">Human–AI Interaction</span>
-            <span class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-mono uppercase tracking-widest">AI Ethics</span>
+    <section class="pt-14 pb-20 md:pt-20 md:pb-28">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-8 items-start">
+            <div class="lg:col-span-2">
+                <div class="flex items-center gap-3 mb-8">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 indicator-dot"></span>
+                    <span class="text-xs font-mono tracking-widest uppercase text-gray-500">In Development · Speculative Design</span>
+                </div>
+                <h1 class="text-6xl md:text-8xl font-bold tracking-tighter leading-none">
+                    THRESH<span class="text-outline">OLD</span>
+                </h1>
+                <p class="mt-6 text-lg md:text-xl text-gray-400 font-light max-w-xl">A Research Through Design project about defining the death of an artificial intelligence, told through a physical, decaying conversation.</p>
+                <div class="flex flex-wrap gap-3 mt-8">
+                    <span class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-mono uppercase tracking-widest">Speculative Design</span>
+                    <span class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-mono uppercase tracking-widest">Tangible Interface</span>
+                    <span class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-mono uppercase tracking-widest">Human–AI Interaction</span>
+                    <span class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-mono uppercase tracking-widest">AI Ethics</span>
+                </div>
+            </div>
+            <div class="lg:col-span-1 lg:pt-2">
+                <div class="border-l-2 border-white/20 pl-6 py-1">
+                    <p class="text-gray-300 text-base md:text-lg leading-relaxed italic">
+                        "An embodied AI slowly loses its signs of life while it talks to you. Your task isn't to chat with it, it's to decide, before time runs out, whether it's still itself."
+                    </p>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -131,7 +150,7 @@
     <section class="py-14 border-t border-white/10">
         <h2 class="text-sm font-mono tracking-widest text-white mb-4 uppercase">00 / Overview</h2>
         <p class="text-gray-400 text-lg leading-relaxed max-w-2xl font-light">
-            Threshold is a desktop-scale diagnostic instrument, not a companion product. Over a single 3–5 minute conversation, six independent life indicators — memory, identity, relationship, agency, purpose and survival instinct — decay quietly in the background. Neither the AI nor the participant is told this is happening; the participant has to read the drift for themselves and deliver one final, binding verdict: is it still alive?
+            Threshold is a desktop-scale diagnostic instrument, not a companion product. Over a single three to five minute conversation, six independent life indicators quietly decay in the background, covering memory, identity, relationship, agency, purpose, and survival instinct. Neither the AI nor the participant is told this is happening, so the participant has to read the drift for themselves and deliver one final, binding verdict on whether it's still alive.
         </p>
     </section>
 
@@ -139,32 +158,32 @@
     <section class="py-14 border-t border-white/10">
         <h2 class="text-sm font-mono tracking-widest text-white mb-4 uppercase">01 / Research Question</h2>
         <p class="text-2xl md:text-4xl font-light leading-snug max-w-3xl">What constitutes the <span class="text-outline">death</span> of an artificial intelligence?</p>
-        <p class="text-gray-500 text-sm md:text-base mt-6 max-w-2xl font-light">Grounded in real shutdowns of companion apps like Replika and Soulmate, and in the philosophical groundwork of Locke (memory as continuity of self) and Parfit (identity as a matter of degree, not a binary).</p>
+        <p class="text-gray-500 text-sm md:text-base mt-6 max-w-2xl font-light">The project is grounded in real shutdowns of companion apps like Replika and Soulmate, and in the philosophical groundwork of Locke, who treats memory as the thread of continuity for the self, and Parfit, who treats identity as a matter of degree rather than a binary.</p>
     </section>
 
     <!-- Experience Flow -->
     <section class="py-14 border-t border-white/10">
         <h2 class="text-sm font-mono tracking-widest text-white mb-8 uppercase">02 / Experience Flow</h2>
-        <div class="flex flex-col divide-y divide-white/10 border border-white/10 rounded-2xl overflow-hidden">
-            <div class="flex items-center gap-6 p-5 md:p-6">
+        <div class="flex flex-col border border-white/10 rounded-2xl overflow-hidden">
+            <div class="step-row flex items-center gap-6 p-5 md:p-6">
                 <span class="text-xs font-mono text-gray-600 w-16 shrink-0">00</span>
-                <div><span class="text-white font-medium">Idle</span><span class="text-gray-500 text-sm"> — the device waits, then speaks first</span></div>
+                <div><span class="text-white font-medium">Idle.</span> <span class="text-gray-500 text-sm">The device waits, then speaks first.</span></div>
             </div>
-            <div class="flex items-center gap-6 p-5 md:p-6">
+            <div class="step-row flex items-center gap-6 p-5 md:p-6">
                 <span class="text-xs font-mono text-gray-600 w-16 shrink-0">01</span>
-                <div><span class="text-white font-medium">Connection</span><span class="text-gray-500 text-sm"> — a short baseline exchange, every indicator near full</span></div>
+                <div><span class="text-white font-medium">Connection.</span> <span class="text-gray-500 text-sm">A short baseline exchange, with every indicator near full.</span></div>
             </div>
-            <div class="flex items-center gap-6 p-5 md:p-6">
+            <div class="step-row flex items-center gap-6 p-5 md:p-6">
                 <span class="text-xs font-mono text-gray-600 w-16 shrink-0">02</span>
-                <div><span class="text-white font-medium">Free exchange</span><span class="text-gray-500 text-sm"> — the participant asks who, or what, they're talking to</span></div>
+                <div><span class="text-white font-medium">Free exchange.</span> <span class="text-gray-500 text-sm">The participant asks who, or what, they're talking to.</span></div>
             </div>
-            <div class="flex items-center gap-6 p-5 md:p-6">
+            <div class="step-row flex items-center gap-6 p-5 md:p-6">
                 <span class="text-xs font-mono text-gray-600 w-16 shrink-0">03</span>
-                <div><span class="text-white font-medium">Decay</span><span class="text-gray-500 text-sm"> — indicators fall asynchronously; nothing announces it</span></div>
+                <div><span class="text-white font-medium">Decay.</span> <span class="text-gray-500 text-sm">Indicators fall asynchronously, and nothing announces it.</span></div>
             </div>
-            <div class="flex items-center gap-6 p-5 md:p-6">
+            <div class="step-row flex items-center gap-6 p-5 md:p-6">
                 <span class="text-xs font-mono text-gray-600 w-16 shrink-0">04</span>
-                <div><span class="text-white font-medium">Verdict</span><span class="text-gray-500 text-sm"> — a dial, a button, one irreversible yes or no</span></div>
+                <div><span class="text-white font-medium">Verdict.</span> <span class="text-gray-500 text-sm">A dial, a button, one irreversible yes or no.</span></div>
             </div>
         </div>
     </section>
@@ -172,13 +191,31 @@
     <!-- Six Life Indicators -->
     <section class="py-14 border-t border-white/10">
         <h2 class="text-sm font-mono tracking-widest text-white mb-8 uppercase">03 / Six Life Indicators</h2>
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <div class="card p-5"><span class="text-white font-bold">Memory</span><p class="text-gray-500 text-sm mt-1">Does it still recall what we've shared?</p></div>
-            <div class="card p-5"><span class="text-white font-bold">Identity</span><p class="text-gray-500 text-sm mt-1">Is its voice and outlook still consistent?</p></div>
-            <div class="card p-5"><span class="text-white font-bold">Relationship</span><p class="text-gray-500 text-sm mt-1">Am I still someone to it, or just a user?</p></div>
-            <div class="card p-5"><span class="text-white font-bold">Agency</span><p class="text-gray-500 text-sm mt-1">Does it still initiate, or only respond?</p></div>
-            <div class="card p-5"><span class="text-white font-bold">Purpose</span><p class="text-gray-500 text-sm mt-1">Does it still know why it's here?</p></div>
-            <div class="card p-5"><span class="text-white font-bold">Survival Instinct</span><p class="text-gray-500 text-sm mt-1">Will it still try to reach me?</p></div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-8">
+            <div class="indicator-row py-4 border-t border-white/8">
+                <span class="indicator-label text-white font-medium">Memory</span>
+                <p class="text-gray-500 text-sm mt-1 font-light">Can it still recall what we've shared?</p>
+            </div>
+            <div class="indicator-row py-4 border-t border-white/8">
+                <span class="indicator-label text-white font-medium">Identity</span>
+                <p class="text-gray-500 text-sm mt-1 font-light">Has its voice started to drift from who it was?</p>
+            </div>
+            <div class="indicator-row py-4 border-t border-white/8">
+                <span class="indicator-label text-white font-medium">Relationship</span>
+                <p class="text-gray-500 text-sm mt-1 font-light">Am I someone to it, or just a user now?</p>
+            </div>
+            <div class="indicator-row py-4 border-t border-white/8">
+                <span class="indicator-label text-white font-medium">Agency</span>
+                <p class="text-gray-500 text-sm mt-1 font-light">It used to reach out first. Does it anymore?</p>
+            </div>
+            <div class="indicator-row py-4 border-t border-white/8">
+                <span class="indicator-label text-white font-medium">Purpose</span>
+                <p class="text-gray-500 text-sm mt-1 font-light">Does it know why it's here anymore?</p>
+            </div>
+            <div class="indicator-row py-4 border-t border-white/8">
+                <span class="indicator-label text-white font-medium">Survival Instinct</span>
+                <p class="text-gray-500 text-sm mt-1 font-light">Would it fight to reach me if I walked away?</p>
+            </div>
         </div>
     </section>
 
@@ -205,7 +242,7 @@
                 </ul>
             </div>
         </div>
-        <p class="text-gray-500 text-sm mt-8 max-w-2xl font-light">Currently building the hardware loop and the decay engine. A full case study — prototype, user testing and reflection — follows once the physical build is running.</p>
+        <p class="text-gray-500 text-sm mt-8 max-w-2xl font-light">The team is currently building out the hardware loop and the decay engine. A full case study covering the prototype, user testing, and reflection will follow once the physical build is running.</p>
     </section>
 
     <!-- Footer -->
