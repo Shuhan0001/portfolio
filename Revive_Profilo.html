@@ -103,28 +103,80 @@
             pointer-events: none;
             z-index: 9999;
             opacity: 0.04;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            mix-blend-mode: overlay;
+            animation: noiseDrift 8s steps(10) infinite;
+        }
+
+        @keyframes noiseDrift {
+            0% { background-position: 0% 0%; opacity: 0.03; }
+            10% { background-position: -5% -5%; opacity: 0.05; }
+            20% { background-position: 5% 10%; opacity: 0.03; }
+            30% { background-position: -10% 5%; opacity: 0.06; }
+            40% { background-position: 10% -5%; opacity: 0.04; }
+            50% { background-position: -5% 15%; opacity: 0.05; }
+            60% { background-position: 15% 5%; opacity: 0.03; }
+            70% { background-position: -10% -10%; opacity: 0.06; }
+            80% { background-position: 5% -15%; opacity: 0.04; }
+            90% { background-position: -15% 10%; opacity: 0.05; }
+            100% { background-position: 0% 0%; opacity: 0.03; }
         }
 
         .ambient-light {
             position: fixed;
-            width: 80vw;
-            height: 80vh;
+            width: 120vw;
+            height: 120vh;
             border-radius: 50%;
-            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
-            top: -20vh;
-            left: -20vw;
+            /* Offset radial gradient for a more natural, non-perfect light source */
+            background: radial-gradient(circle at 40% 40%, rgba(245, 166, 35, 0.12) 0%, rgba(245, 166, 35, 0.03) 40%, transparent 70%);
+            top: -30vh;
+            left: -30vw;
             pointer-events: none;
             z-index: -1;
-            filter: blur(100px);
-            opacity: 0.6;
+            filter: blur(80px);
+            opacity: 0;
+            mix-blend-mode: screen;
+            animation: breatheAmber 14s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            will-change: transform, opacity;
         }
 
         .ambient-light.right {
-            top: 40vh;
+            top: 20vh;
             left: auto;
-            right: -30vw;
-            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+            right: -40vw;
+            width: 100vw;
+            height: 100vh;
+            /* Subtle cool/frost tone to contrast the warm amber */
+            background: radial-gradient(circle at 60% 50%, rgba(255, 255, 255, 0.04) 0%, rgba(120, 150, 255, 0.015) 50%, transparent 80%);
+            animation: breatheFrost 18s cubic-bezier(0.4, 0, 0.2, 1) infinite -7s;
+        }
+
+        .ambient-light.center {
+            top: 50%;
+            left: 50%;
+            width: 80vw;
+            height: 80vh;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle at center, rgba(245, 166, 35, 0.05) 0%, transparent 60%);
+            animation: breatheCore 10s ease-in-out infinite alternate;
+        }
+
+        /* True breathing curves: Exhale (0), Inhale (45), Hold (55), Exhale (100) */
+        @keyframes breatheAmber {
+            0%, 100% { transform: scale(0.9) translate(0, 0); opacity: 0.25; }
+            45% { transform: scale(1.08) translate(3%, 4%); opacity: 0.75; }
+            55% { transform: scale(1.1) translate(3.5%, 4.5%); opacity: 0.8; }
+        }
+
+        @keyframes breatheFrost {
+            0%, 100% { transform: scale(0.95) translate(0, 0); opacity: 0.35; }
+            45% { transform: scale(1.12) translate(-4%, -2%); opacity: 0.85; }
+            55% { transform: scale(1.15) translate(-4.5%, -2.5%); opacity: 0.9; }
+        }
+
+        @keyframes breatheCore {
+            0% { transform: translate(-50%, -50%) scale(0.85); opacity: 0.2; }
+            100% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.7; }
         }
 
         .container {
@@ -367,19 +419,19 @@
         }
 
         .lightbox-figure {
-    width: min(90vw, 1200px);
-    height: min(84vh, 760px);
-}
+            width: min(90vw, 1200px);
+            height: min(84vh, 760px);
+        }
 
-.lightbox-figure img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    display: block;
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-float);
-}
+        .lightbox-figure img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-float);
+        }
 
         .lightbox-caption {
             margin-top: 1.25rem;
@@ -899,6 +951,125 @@
                 text-shadow: 0 0 30px var(--accent-glow);
             }
         }
+
+        /* ============================================================
+           Print / PDF export — lets this page be turned into a portfolio
+           PDF straight from the browser's Print dialog (Cmd/Ctrl+P →
+           Save as PDF), without touching any live-site content, copy,
+           or interaction behaviour. Everything below only ever applies
+           when actually printing.
+           ============================================================ */
+        @media print {
+
+            /* Force backgrounds/gradients to actually print instead of
+               being silently dropped to save ink — this design depends
+               entirely on the black background and amber accents. */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+
+            html, body {
+                background: var(--bg-void) !important;
+                overflow: visible !important;
+                cursor: auto !important;
+            }
+
+            /* Chrome that only makes sense on a live, moving, hover-driven
+               page — a cursor dot, a scroll-progress rail, a "back home"
+               button, film-grain and ambient glows. None of it belongs on
+               a printed page, and fixed-position elements don't paginate
+               reliably anyway, so they're removed rather than left to
+               render however a given browser's print engine feels like. */
+            #custom-cursor,
+            .noise-overlay,
+            .ambient-light,
+            .scroll-track,
+            .back-home-btn,
+            .lightbox-overlay,
+            .stack-btn-prev,
+            .stack-btn-next,
+            .stack-controls {
+                display: none !important;
+            }
+
+            /* .text-outline draws its hollow title look with a transparent
+               fill and a stroke-only outline. Not every print/PDF engine
+               reproduces text-stroke, which can silently turn a heading
+               into blank space — so print gets solid, always-legible
+               text instead. */
+            .text-outline {
+                color: var(--text-primary) !important;
+                -webkit-text-stroke: 0 !important;
+                text-stroke: 0 !important;
+                text-shadow: none !important;
+                animation: none !important;
+            }
+
+            /* Scroll-triggered reveal animations never get a chance to
+               fire during print rendering — there's no real scrolling —
+               so content left at its initial opacity: 0 would otherwise
+               print as empty space. Force the "arrived" state directly. */
+            .reveal {
+                opacity: 1 !important;
+                transform: none !important;
+                filter: none !important;
+                transition: none !important;
+            }
+
+            .subscale-bar-fill {
+                transform: scaleX(1) !important;
+                transition: none !important;
+            }
+
+            /* Sticky positioning has no meaning on a paginated printout
+               and can overlap a heading with the content below it once a
+               page breaks mid-column — use normal flow instead, and drop
+               back to a single column so the layout reads the same
+               regardless of the paper size/orientation someone prints to. */
+            .grid-split {
+                grid-template-columns: 1fr !important;
+                gap: 3rem !important;
+            }
+
+            .sticky-col {
+                position: static !important;
+                top: auto !important;
+            }
+
+            /* 15vh of top/bottom breathing room per section is generous
+               on a scrolling screen; repeated on every printed page it
+               just costs paper, so it's trimmed down for print. Each
+               section still opens on its own page, and smaller
+               self-contained pieces — a figure with its caption, a card,
+               a table — are kept from being sliced across a page break. */
+            .section {
+                padding: 6vh 0 !important;
+                page-break-before: always;
+                break-before: page;
+            }
+
+            figure,
+            .data-card,
+            .preference-card,
+            .subscale-item,
+            .stack-gallery {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            /* No scrollbar exists on a printed page to reveal the rest of
+               a row, so let wide tables wrap instead of clipping columns. */
+            .stat-table-wrap {
+                overflow-x: visible !important;
+            }
+
+            .stat-table th,
+            .stat-table td {
+                white-space: normal !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -916,8 +1087,10 @@
             <figcaption class="lightbox-caption" id="lightboxCaption"></figcaption>
         </figure>
     </div>
+    
     <div class="ambient-light"></div>
     <div class="ambient-light right"></div>
+    <div class="ambient-light center"></div>
 
     <header class="site-header">
         <img src="Image/Revive_Logo.png" alt="Revive logo" class="site-logo-img" width="88" height="88">
