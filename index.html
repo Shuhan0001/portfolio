@@ -211,8 +211,35 @@
         }
 
     </style>
+
+    <!-- ===== Stream background CSS (unmodified from source) ===== -->
+    <style>
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            opacity: 0; /* Fade in on load */
+            transition: opacity 2s cubic-bezier(0.25, 0.1, 0.25, 1);
+            /* Add a subtle vignette */
+            mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+            -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+        }
+
+        #canvas-container.ready {
+            opacity: 1;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;300;400;700&display=swap" rel="stylesheet">
 </head>
 <body class="selection:bg-primary selection:text-white">
+
+<!-- ===== Stream background canvas (unmodified from source) ===== -->
+<div id="canvas-container">
+    <canvas id="codeCanvas"></canvas>
+</div>
 
 <div class="noise-bg"></div>
 
@@ -251,7 +278,7 @@
         </form>
         
         <!-- Associative Search Suggestions Dropdown -->
-        <div id="search-suggestions" class="absolute left-0 right-0 top-[calc(100%+0.5rem)] rounded-2xl overflow-hidden opacity-0 pointer-events-none transition-all duration-400 ease-[cubic-bezier(0.25,1,0.3,1)] translate-y-[-10px]" style="background: rgba(255,255,255,0.065); backdrop-filter: url(#glass-search-distortion) blur(2px) saturate(140%); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(79, 70, 229, 0.4); box-shadow: 0 16px 40px -12px rgba(0,0,0,0.5);">
+        <div id="search-suggestions" class="absolute left-0 right-0 top-[calc(100%+0.5rem)] rounded-2xl overflow-hidden opacity-0 pointer-events-none transition-all duration-400 ease-[cubic-bezier(0.25,1,0.3,1)] translate-y-[-10px]" style="background: rgba(255,255,255,0.045); backdrop-filter: url(#glass-search-distortion) blur(2px) saturate(140%); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 12px 40px -12px rgba(0,0,0,0.5);">
             <ul id="search-suggestions-list" class="flex flex-col py-2 m-0 list-none">
                 <!-- Javascript will populate this dynamically -->
             </ul>
@@ -284,16 +311,16 @@
                         </div>
                     </header>
 
-                    <div id="hero-center" class="absolute top-1/2 left-[5%] md:left-[8%] -translate-y-1/2 text-left transition-opacity duration-1000">
+                    <div id="hero-center" class="absolute top-1/2 left-[5%] md:left-[8%] -translate-y-1/2 text-left transition-opacity duration-1000 pointer-events-auto">
                         <div id="hero-parallax-target" class="tech-corners-wrapper hover-trigger">
                             <div class="tech-corner tech-corner-tl"></div>
                             <div class="tech-corner tech-corner-tr"></div>
                             <div class="tech-corner tech-corner-bl"></div>
                             <div class="tech-corner tech-corner-br"></div>
                             
-                            <h1 class="text-5xl md:text-[8rem] font-bold leading-none tracking-tighter mix-blend-difference">
-                                ASHTON<br>
-                                <span class="text-outline">ZHANG</span>
+                            <h1 class="text-6xl md:text-[10rem] font-bold leading-none tracking-tighter">
+                                <span class="mix-blend-difference">ASHTON</span><br>
+                                <span class="text-white">ZHANG</span>
                             </h1>
                             <p class="mt-4 md:mt-6 text-xs md:text-sm tracking-[0.3em] uppercase text-white/40 font-mono">(Shuhan)</p>
                         </div>
@@ -1219,6 +1246,269 @@
             });
         })();
 
+    </script>
+
+    <!-- ===== Stream background animation script (unmodified from source,
+         only the two hero-button click handlers were removed since this
+         page has no #initBtn / #pulseBtn buttons) ===== -->
+    <script>
+        (function () {
+            const canvas = document.getElementById('codeCanvas');
+            const ctx = canvas.getContext('2d', { alpha: false }); // Optimize for no transparency on base
+            const container = document.getElementById('canvas-container');
+
+            let width, height;
+            let drops = [];
+            let columns;
+
+            // Configuration for the aesthetic
+            const config = {
+                fontSize: 24, // Base font size
+                fontFamily: "'JetBrains Mono', monospace",
+                // Minimalist character set
+                charset: '01ABCDEF/*-+=><{}[]',
+                colors: {
+                    bg: '#050505',
+                    baseText: 'rgba(255, 255, 255, 0.1)',
+                    glowText: 'rgba(255, 255, 255, 0.9)',
+                    trailText: 'rgba(255, 255, 255, 0.4)'
+                },
+                speedBase: 1.5,
+                speedVariance: 2,
+                trailLength: 15,
+                density: 0.6
+            };
+
+            // Depth layers for intense 3D scale and impact
+            const depthLayers = [
+                { scale: 0.35, speedMult: 0.4, alpha: 0.2 },  // Distant background (深空背景)
+                { scale: 1.0, speedMult: 1.0, alpha: 0.8 },   // Midground (正常视角)
+                { scale: 4.5, speedMult: 3.5, alpha: 0.5 }    // Foreground (极近视角的巨型文字)
+            ];
+
+            // Calculate grid based on font size
+            function resize() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+
+                columns = Math.floor(width / config.fontSize);
+
+                // Re-initialize drops on resize to fit new width
+                initDrops();
+            }
+
+            class CodeDrop {
+                constructor(x, layer) {
+                    this.baseX = x;
+                    this.layer = layer;
+                    // x is now passed in as an already-computed absolute
+                    // pixel position (offset to keep the left "clear zone"
+                    // free of characters), so use it directly.
+                    this.x = x;
+                    this.reset();
+                    // Random initial position so they don't all start at top
+                    this.y = Math.random() * -height;
+                }
+
+                reset() {
+                    this.y = Math.random() * -200; // Start slightly above screen
+                    this.speed = (config.speedBase + Math.random() * config.speedVariance) * this.layer.speedMult;
+
+                    // Giant foreground characters should reappear at a fresh
+                    // random horizontal position each time, not the same
+                    // column every time (that repetition read as "fixed").
+                    if (this.layer.scale > 2) {
+                        const offsetX = width * clearZoneRatio;
+                        const availableWidth = Math.max(0, width - offsetX);
+                        this.x = offsetX + Math.random() * availableWidth;
+                    }
+
+                    // Array to hold the characters making up this column's trail
+                    this.chars = [];
+                    // Generate initial characters
+                    for(let i=0; i<config.trailLength; i++) {
+                        this.chars.push(this.getRandomChar());
+                    }
+                }
+
+                getRandomChar() {
+                    return config.charset[Math.floor(Math.random() * config.charset.length)];
+                }
+
+                update() {
+                    this.y += this.speed;
+
+                    // Periodically change characters to create a flickering effect
+                    if (Math.random() > 0.8) {
+                         const idx = Math.floor(Math.random() * this.chars.length);
+                         this.chars[idx] = this.getRandomChar();
+                    }
+
+                    const currentFontSize = config.fontSize * this.layer.scale;
+                    // Reset when completely off screen
+                    if (this.y - (config.trailLength * currentFontSize) > height) {
+                        this.reset();
+                    }
+                }
+
+                draw(ctx) {
+                    const currentFontSize = config.fontSize * this.layer.scale;
+                    ctx.font = `300 ${currentFontSize}px ${config.fontFamily}`;
+
+                    // Ease large foreground characters in/out instead of having
+                    // them pop to full brightness/glow instantly (that sudden
+                    // pop is what read as a "lightning flash" across the page).
+                    let entryFade = 1;
+                    if (this.layer.scale > 2) {
+                        const fadeDistance = currentFontSize * 7;
+                        const distFromTop = this.y;
+                        const distFromBottom = height - (this.y - (config.trailLength * currentFontSize));
+                        const linearFade = Math.max(0, Math.min(1, distFromTop / fadeDistance, distFromBottom / fadeDistance));
+                        // smoothstep easing so the ramp itself has no abrupt corner
+                        entryFade = linearFade * linearFade * (3 - 2 * linearFade);
+                    }
+
+                    // Start drawing from the 'head' (lowest y point) upwards
+                    for (let i = 0; i < this.chars.length; i++) {
+                        const charY = this.y - (i * currentFontSize);
+
+                        // Don't draw if off screen
+                        if (charY < 0 || charY > height + currentFontSize) continue;
+
+                        let fillStyle;
+                        if (i === 0) {
+                            // Head of the stream is brightest, but capped and
+                            // eased so giant foreground glyphs don't flash in
+                            const headAlpha = (this.layer.scale > 2 ? 0.5 : 0.9) * this.layer.alpha * entryFade;
+                            fillStyle = `rgba(255, 255, 255, ${headAlpha})`;
+                            // Cap glow radius so it doesn't wash out large areas of the screen
+                            ctx.shadowBlur = Math.min(12, 15 * this.layer.scale) * entryFade;
+                            ctx.shadowColor = `rgba(255, 255, 255, ${0.4 * this.layer.alpha * entryFade})`;
+                        } else {
+                            // Trail fades out based on distance from head
+                            const opacity = Math.max(0, 0.4 - (i / config.trailLength) * 0.4) * this.layer.alpha * entryFade;
+                            fillStyle = `rgba(255, 255, 255, ${opacity})`;
+                            ctx.shadowBlur = 0;
+                        }
+
+                        ctx.fillStyle = fillStyle;
+                        ctx.fillText(this.chars[i], this.x, charY);
+                    }
+                }
+            }
+
+            // Keep a black, character-free strip on the left where the
+            // "ASHTON ZHANG" title sits, and push the falling code streams
+            // over toward the right side of the page. Shared scope so both
+            // initDrops() and CodeDrop.reset() can use it.
+            const clearZoneRatio = 0.4;
+
+            function initDrops() {
+                drops = [];
+
+                depthLayers.forEach(layer => {
+                    const currentFontSize = config.fontSize * layer.scale;
+                    const offsetX = width * clearZoneRatio;
+                    const availableWidth = Math.max(0, width - offsetX);
+                    const layerColumns = Math.floor(availableWidth / currentFontSize);
+
+                    // Adjust density: huge background, sparse foreground
+                    let currentDensity = config.density;
+                    if (layer.scale > 2) currentDensity = 0.06; // Very few massive drops for dramatic effect
+                    if (layer.scale < 1) currentDensity = 0.95; // Dense background
+
+                    // Guarantee the foreground (close-up) layer always has at least
+                    // a couple of drops on screen. At narrow viewports / when the
+                    // page is zoomed in, layerColumns shrinks and the low density
+                    // above can roll zero drops for many resizes in a row, making
+                    // the giant near-camera characters vanish entirely.
+                    const minDrops = layer.scale > 2 ? Math.min(2, Math.max(1, layerColumns)) : 0;
+
+                    const availableColumns = Array.from({ length: layerColumns }, (_, i) => i);
+                    let spawned = 0;
+
+                    for (let i = 0; i < layerColumns; i++) {
+                        if (Math.random() < currentDensity) {
+                            drops.push(new CodeDrop(offsetX + i * currentFontSize, layer));
+                            spawned++;
+                        }
+                    }
+
+                    // Top up to the guaranteed minimum using columns that
+                    // weren't already picked above.
+                    if (spawned < minDrops) {
+                        const used = new Set(drops.filter(d => d.layer === layer).map(d => d.baseX));
+                        const remaining = availableColumns.filter(i => !used.has(offsetX + i * currentFontSize));
+                        while (spawned < minDrops && remaining.length > 0) {
+                            const idx = Math.floor(Math.random() * remaining.length);
+                            const col = remaining.splice(idx, 1)[0];
+                            drops.push(new CodeDrop(offsetX + col * currentFontSize, layer));
+                            spawned++;
+                        }
+
+                    }
+                });
+
+                // Sort drops so foreground draws last (on top)
+                drops.sort((a, b) => a.layer.scale - b.layer.scale);
+            }
+
+            let animationFrameId;
+            let lastTime = 0;
+            const targetFPS = 60;
+            const interval = 1000 / targetFPS;
+
+            function animate(currentTime) {
+                animationFrameId = requestAnimationFrame(animate);
+
+                // Throttle framerate for consistent speed across devices
+                const deltaTime = currentTime - lastTime;
+                if (deltaTime > interval) {
+                    lastTime = currentTime - (deltaTime % interval);
+
+                    // Fade effect for the background to create motion trails
+                    // We use a solid fill instead of clearRect to leave a ghosting trail
+                    ctx.fillStyle = 'rgba(5, 5, 5, 0.15)'; // Slightly transparent background color
+                    ctx.fillRect(0, 0, width, height);
+
+                    ctx.textAlign = 'center';
+
+                    // Update and draw all active drops
+                    for (let i = 0; i < drops.length; i++) {
+                        drops[i].update();
+                        drops[i].draw(ctx);
+                    }
+                }
+            }
+
+            window.addEventListener('resize', resize);
+
+            // Initial setup
+            resize();
+
+            // Fill background solid initially
+            ctx.fillStyle = config.colors.bg;
+            ctx.fillRect(0, 0, width, height);
+
+            // Start animation
+            requestAnimationFrame(animate);
+
+            // Fade in canvas after a short delay
+            setTimeout(() => {
+                container.classList.add('ready');
+            }, 300);
+
+            // Optional: Mouse movement parallax effect
+            document.addEventListener('mousemove', (e) => {
+                const mouseX = (e.clientX / window.innerWidth) - 0.5;
+                const mouseY = (e.clientY / window.innerHeight) - 0.5;
+
+                // Subtle movement of the canvas container based on mouse
+                container.style.transform = `translate(${mouseX * 20}px, ${mouseY * 20}px) scale(1.02)`;
+            });
+        })();
     </script>
 </body>
 </html>
