@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Adventure v6 - Audio Enabled</title>
+    <style>
+        body {
+            background-color: #202020;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #eee;
+            font-family: monospace;
+            overflow: hidden;
+        }
+
+        canvas {
+            background-color: #353535;
+            image-rendering: pixelated; 
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            border: 4px solid #555;
+            width: 90vw;
+            height: 67.5vw;
+            max-width: 800px;
+            max-height: 600px;
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            text-align: center;
+            width: 100%;
+            pointer-events: none;
+            font-size: 1.2rem;
+            text-shadow: 1px 1px #000;
+        }
+
+        /* UI Elements - Hidden by default, shown by Scene Manager */
+        .game-ui {
+            display: none; 
+            pointer-events: none;
+            position: absolute;
+            text-shadow: 2px 2px #000;
+        }
+
+        #score-board {
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        #hp-display {
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 20px;
+            font-weight: bold;
+            color: #ff4d4d;
+        }
+
+        .enemy-hp-bar {
+            position: absolute;
+            width: 14px;
+            height: 4px;
+            background-color: #555;
+            border: 1px solid #000;
+            display: none; 
+            pointer-events: none;
+        }
+        .enemy-hp-bar-inner {
+            width: 100%;
+            height: 100%;
+            background-color: #cc33cc;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="score-board" class="game-ui">SCORE: 0</div>
+    <div id="hp-display" class="game-ui">HP: 5 / 5</div>
+    
+    <div id="enemy-hp" class="enemy-hp-bar">
+        <div id="enemy-hp-inner" class="enemy-hp-bar-inner"></div>
+    </div>
+
+    <canvas id="gameCanvas" width="320" height="240"></canvas>
+    
+    <div class="controls">
+        <p>WASD / Arrows to Move | Space to Attack | Enter to Start</p>
+    </div>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    // DOM Elements
+    const uiElements = document.querySelectorAll('.game-ui');
+    const scoreBoard = document.getElementById('score-board');
+    const hpDisplay = document.getElementById('hp-display');
+    const enemyHpDisplay = document.getElementById('enemy-hp');
+    const enemyHpInner = document.getElementById('enemy-hp-inner');
+
+    // --- CONFIGURATION ---
+    const TILE_SIZE = 16;
+    const COLS = 20; 
+    const ROWS = 15; 
+    const MOVE_SPEED = 60; 
+    const PLAYER_ATTACK_DURATION = 0.2; 
+    const PLAYER_ATTACK_COOLDOWN = 0.3; 
+    const PLAYER_IFRAMES = 1.5; 
+    const PLAYER_RESPAWN_IFRAMES = 2.0; 
+    const ENEMY_IFRAMES = 0.3; 
+    const ENEMY_RESPAWN_TIME = 3.0; 
+
+    // --- GLOBAL VARIABLES (Declarations) ---
+    // These are reset inside GameScene.enter()
+    let map = [];
+    let validSpawnPoints = [];
+    let score = 0;
+    
+    let player = {};
+    let enemy = {};
+
+    // Input State (Global)
+    const keys = {
+        ArrowUp: false, ArrowDown: false, ArrowLeft: false, ArrowRight: false,
+        w: false, s: false, a: false, d: false,
+        ' ': false, Enter: false
+    };
+
+    // --- SOUND MANAGER ---
+    const SoundManager = {
+        sounds: {},
+        currentBGM: null,
+        bgmNode: null,
+        enabled: false, // Browser requires user interaction before playing audio
+
+        init: function() {
+            if (this.enabled) return;
+
+            // Audio file paths - ensure these files exist in a 'sounds' folder
+            const audioSources = {
+                'title': 'sounds/bgm_title.mp3',
+                'game':  'sounds/bgm_game.mp3',
+                'attack': 'sounds/sfx_attack.wav',
+                'coin':   'sounds/sfx_coin.wav',
+                'hit':    'sounds/sfx_hit.wav',
+                'hurt':   'sounds/sfx_hurt.wav'
+            };
+
+            for (let name in audioSources) {
+                const audio = new Audio();
+                audio.src = audioSources[name];
+                // Preload settings
+                audio.preload = 'auto';
+                this.sounds[name] = audio;
+            }
+            
+            this.enabled = true;
+            console.log("Sound System Initialized");
+        },
+
+        play: function(name) {
+            if (!this.enabled || !this.sounds[name]) return;
+            
+            // Clone the node to allow overlapping sounds (e.g. rapid attacks)
+            const sound = this.sounds[name].cloneNode(); 
+            sound.volume = 0.4; // SFX volume
+            sound.play().catch(e => console.warn("SFX blocked or file missing:", name));
+        },
+
+        playBGM: function(name) {
+            if (!this.enabled || !this.sounds[name]) return;
+            
+            // Don't restart if already playing the same track
+            if (this.currentBGM === name) return;
+
+            this.stopBGM();
+
+            this.currentBGM = name;
+            this.bgmNode = this.sounds[name];
+            this.bgmNode.loop = true;
+            this.bgmNode.currentTime = 0;
+            this.bgmNode.volume = 0.2; // BGM volume (usually lower)
+            this.bgmNode.play().catch(e => {
+                console.warn("BGM autoplay blocked. Waiting for interaction.");
+            });
+        },
+
+        stopBGM: function() {
+            if (this.bgmNode) {
+                this.bgmNode.pause();
+                this.bgmNode.currentTime = 0;
+                this.currentBGM = null;
+            }
+        }
+    };
+
+    // --- SCENE MANAGER ---
+    const SceneManager = {
+        currentScene: null,
+
+        changeScene: function(scene) {
+            if (this.currentScene && this.currentScene.exit) {
+                this.currentScene.exit();
+            }
+            this.currentScene = scene;
+            if (this.currentScene && this.currentScene.enter) {
+                this.currentScene.enter();
+            }
+        },
+
+        update: function(dt) {
+            if (this.currentScene && this.currentScene.update) {
+                this.currentScene.update(dt);
+            }
+        },
+
+        draw: function(ctx) {
+            if (this.currentScene && this.currentScene.draw) {
+                this.currentScene.draw(ctx);
+            }
+        }
+    };
+
+    // --- INPUT HANDLERS ---
+    window.addEventListener('keydown', (e) => {
+        // Init Sound on first keypress to satisfy browser autoplay policy
+        if (!SoundManager.enabled) {
+            SoundManager.init();
+            // Try starting BGM immediately if we are in a scene
+            if(SceneManager.currentScene === TitleScene) SoundManager.playBGM('title');
+        }
+
+        if (keys.hasOwnProperty(e.key)) keys[e.key] = true;
+        
+        // Scene specific triggers
+        if (e.key === " " && SceneManager.currentScene === GameScene) {
+            tryAttack(); 
+        }
+        if (e.key === "Enter" && SceneManager.currentScene === TitleScene) {
+            SceneManager.changeScene(GameScene);
+        }
+    });
+
+    window.addEventListener('keyup', (e) => {
+        if (keys.hasOwnProperty(e.key)) keys[e.key] = false;
+    });
+
+    // --- SCENE 1: TITLE SCREEN ---
+    const TitleScene = {
+        enter: function() {
+            console.log("Entered Title Scene");
+            uiElements.forEach(el => el.style.display = 'none');
+            enemyHpDisplay.style.display = 'none';
+            
+            // Play Title Music
+            SoundManager.playBGM('title');
+        },
+
+        update: function(dt) {
+            // Blink effect logic
+        },
+
+        draw: function(ctx) {
+            ctx.fillStyle = '#202020';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.textAlign = "center";
+            ctx.fillStyle = "#ffd700";
+            ctx.font = "bold 24px monospace";
+            ctx.fillText("PIXEL ADVENTURE", canvas.width / 2, canvas.height / 2 - 20);
+
+            if (Math.floor(Date.now() / 500) % 2 === 0) {
+                ctx.fillStyle = "#fff";
+                ctx.font = "16px monospace";
+                ctx.fillText("Press ENTER to Start", canvas.width / 2, canvas.height / 2 + 20);
+            }
+            
+            ctx.fillStyle = "#888";
+            ctx.font = "12px monospace";
+            ctx.fillText("v6 - With Audio", canvas.width / 2, canvas.height - 20);
+        },
+
+        exit: function() {
+        }
+    };
+
+    // --- SCENE 2: GAME SCENE ---
+    const GameScene = {
+        enter: function() {
+            console.log("Entered Game Scene");
+            score = 0;
+            scoreBoard.innerText = "SCORE: 0";
+            hpDisplay.innerText = "HP: 5 / 5";
+            hpDisplay.style.color = "#ff4d4d";
+
+            uiElements.forEach(el => el.style.display = 'block');
+            
+            // Play Game Music
+            SoundManager.playBGM('game');
+
+            // Initialize Map
+            map = [
+                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+                [1,0,0,0,0,0,1,0,0,2,0,0,1,0,0,0,0,0,0,1],
+                [1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,1],
+                [1,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,2,0,0,1],
+                [1,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,1],
+                [1,0,2,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1],
+                [1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1],
+                [1,0,0,0,1,0,0,1,0,0,0,1,0,0,0,1,1,1,0,1],
+                [1,0,0,0,1,0,0,1,0,2,0,1,0,0,0,0,0,0,0,1],
+                [1,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,1],
+                [1,0,2,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1],
+                [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,2,0,0,1],
+                [1,0,0,1,1,1,0,0,0,2,0,0,0,0,1,0,0,0,0,1],
+                [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+            ];
+
+            validSpawnPoints = [];
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    if (map[r][c] === 0) {
+                        validSpawnPoints.push({ x: c * TILE_SIZE, y: r * TILE_SIZE });
+                    }
+                }
+            }
+
+            player = {
+                x: 48, y: 48, w: 12, h: 12,
+                speed: MOVE_SPEED, dx: 0, dy: 0, facing: 'down',
+                isAttacking: false, attackTimer: 0, attackCooldownTimer: 0,
+                hp: 5, maxHp: 5, invulnerable: false, invulnTimer: 0
+            };
+
+            enemy = {
+                x: 160, y: 110, w: 14, h: 14,
+                speed: 40, dx: 1, dy: 0, changeDirTimer: 0,
+                hp: 3, maxHp: 3, isAlive: true, invulnerable: false, invulnTimer: 0, respawnTimer: 0
+            };
+        },
+
+        update: function(dt) {
+            if (player.isAttacking) {
+                player.attackTimer -= dt;
+                if (player.attackTimer <= 0) player.isAttacking = false;
+            }
+
+            if (player.hp > 0) updatePlayer(dt);
+            updateEnemy(dt);
+
+            if (player.isAttacking && enemy.isAlive && !enemy.invulnerable) {
+                const attackBox = getAttackBox();
+                if (checkRectOverlap(attackBox, enemy)) {
+                    damageEnemy(1);
+                }
+            }
+        },
+
+        draw: function(ctx) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawMap(ctx);
+            drawEnemy(ctx);
+            drawPlayer(ctx);
+        },
+
+        exit: function() {
+            enemyHpDisplay.style.display = 'none';
+        }
+    };
+
+
+    // --- SHARED GAME LOGIC FUNCTIONS ---
+    
+    function tryAttack() {
+        if (player.isAttacking || player.attackCooldownTimer > 0 || player.hp <= 0) return;
+        player.isAttacking = true;
+        player.attackTimer = PLAYER_ATTACK_DURATION;
+        player.attackCooldownTimer = PLAYER_ATTACK_COOLDOWN;
+        
+        // Play SFX
+        SoundManager.play('attack');
+    }
+
+    function getAttackBox() {
+        const reach = 10;
+        const thickness = 10;
+        let box = { x: player.x, y: player.y, w: player.w, h: player.h };
+        
+        if (player.facing === 'right') {
+            box.x = player.x + player.w; box.y = player.y + (player.h - thickness) / 2;
+            box.w = reach; box.h = thickness;
+        } else if (player.facing === 'left') {
+            box.x = player.x - reach; box.y = player.y + (player.h - thickness) / 2;
+            box.w = reach; box.h = thickness;
+        } else if (player.facing === 'down') {
+            box.x = player.x + (player.w - thickness) / 2; box.y = player.y + player.h;
+            box.w = thickness; box.h = reach;
+        } else if (player.facing === 'up') {
+            box.x = player.x + (player.w - thickness) / 2; box.y = player.y - reach;
+            box.w = thickness; box.h = reach;
+        }
+        return box;
+    }
+
+    function isSolid(x, y) {
+        const col = Math.floor(x / TILE_SIZE);
+        const row = Math.floor(y / TILE_SIZE);
+        if (col < 0 || col >= COLS || row < 0 || row >= ROWS) return true;
+        return map[row][col] === 1;
+    }
+
+    function checkRectOverlap(r1, r2) {
+        return (r1.x < r2.x + r2.w && r1.x + r1.w > r2.x && r1.y < r2.y + r2.h && r1.y + r1.h > r2.y);
+    }
+
+    function checkItemCollision(x, y, w, h) {
+        const startCol = Math.floor(x / TILE_SIZE);
+        const endCol = Math.floor((x + w - 0.01) / TILE_SIZE);
+        const startRow = Math.floor(y / TILE_SIZE);
+        const endRow = Math.floor((y + h - 0.01) / TILE_SIZE);
+
+        for (let r = startRow; r <= endRow; r++) {
+            for (let c = startCol; c <= endCol; c++) {
+                if (map[r] && map[r][c] === 2) collectCoin(c, r);
+            }
+        }
+    }
+
+    function collectCoin(c, r) {
+        map[r][c] = 0;
+        score += 10;
+        scoreBoard.innerText = "SCORE: " + score;
+        
+        // Play SFX
+        SoundManager.play('coin');
+    }
+
+    function getRandomSpawnPoint() {
+        const index = Math.floor(Math.random() * validSpawnPoints.length);
+        const spawn = validSpawnPoints[index];
+        return { x: spawn.x + (TILE_SIZE - player.w) / 2, y: spawn.y + (TILE_SIZE - player.h) / 2 };
+    }
+    
+    function getRandomEnemySpawnPoint() {
+        const index = Math.floor(Math.random() * validSpawnPoints.length);
+        const spawn = validSpawnPoints[index];
+        return { x: spawn.x + (TILE_SIZE - enemy.w) / 2, y: spawn.y + (TILE_SIZE - enemy.h) / 2 };
+    }
+
+    function updatePlayer(dt) {
+        if (player.invulnerable) {
+            player.invulnTimer -= dt;
+            if (player.invulnTimer <= 0) player.invulnerable = false;
+        }
+        if (player.attackCooldownTimer > 0) player.attackCooldownTimer -= dt;
+        if (player.isAttacking) { player.dx = 0; player.dy = 0; return; } 
+
+        const left = keys.ArrowLeft || keys.a;
+        const right = keys.ArrowRight || keys.d;
+        const up = keys.ArrowUp || keys.w;
+        const down = keys.ArrowDown || keys.s;
+
+        player.dx = 0; player.dy = 0;
+        if (left) player.dx = -player.speed;
+        if (right) player.dx = player.speed;
+        if (up) player.dy = -player.speed;
+        if (down) player.dy = player.speed;
+
+        if (player.dx < 0) player.facing = 'left';
+        if (player.dx > 0) player.facing = 'right';
+        if (player.dy < 0) player.facing = 'up';
+        if (player.dy > 0) player.facing = 'down';
+
+        let nextX = player.x + player.dx * dt;
+        if (!isSolid(nextX, player.y) && !isSolid(nextX + player.w - 0.01, player.y) &&
+            !isSolid(nextX, player.y + player.h - 0.01) && !isSolid(nextX + player.w - 0.01, player.y + player.h - 0.01)) {
+            player.x = nextX;
+        }
+
+        let nextY = player.y + player.dy * dt;
+        if (!isSolid(player.x, nextY) && !isSolid(player.x + player.w - 0.01, nextY) &&
+            !isSolid(player.x, nextY + player.h - 0.01) && !isSolid(player.x + player.w - 0.01, nextY + player.h - 0.01)) {
+            player.y = nextY;
+        }
+
+        checkItemCollision(player.x, player.y, player.w, player.h);
+
+        if (enemy.isAlive && !player.invulnerable && checkRectOverlap(player, enemy)) {
+            takeDamage(1);
+        }
+    }
+
+    function updateEnemy(dt) {
+        if (!enemy.isAlive) {
+            enemy.respawnTimer -= dt;
+            if (enemy.respawnTimer <= 0) respawnEnemy();
+            return;
+        }
+        if (enemy.invulnerable) {
+            enemy.invulnTimer -= dt;
+            if (enemy.invulnTimer <= 0) enemy.invulnerable = false;
+        }
+
+        enemy.changeDirTimer -= dt;
+        if (enemy.changeDirTimer <= 0) {
+            const dirs = [[1,0], [-1,0], [0,1], [0,-1]];
+            const r = dirs[Math.floor(Math.random() * dirs.length)];
+            enemy.dx = r[0]; enemy.dy = r[1];
+            enemy.changeDirTimer = 1 + Math.random() * 2;
+        }
+
+        let nextX = enemy.x + enemy.dx * enemy.speed * dt;
+        let nextY = enemy.y + enemy.dy * enemy.speed * dt;
+        let hitWall = false;
+        
+        if (isSolid(nextX, enemy.y) || isSolid(nextX + enemy.w, enemy.y) || 
+            isSolid(nextX, enemy.y + enemy.h) || isSolid(nextX + enemy.w, enemy.y + enemy.h)) {
+            enemy.dx *= -1; hitWall = true;
+        } else {
+            enemy.x = nextX;
+        }
+
+        if (isSolid(enemy.x, nextY) || isSolid(enemy.x + enemy.w, nextY) || 
+            isSolid(enemy.x, nextY + enemy.h) || isSolid(enemy.x + enemy.w, nextY + enemy.h)) {
+            enemy.dy *= -1; hitWall = true;
+        } else {
+            enemy.y = nextY;
+        }
+        if (hitWall) enemy.changeDirTimer = 0.5;
+    }
+
+    function damageEnemy(amount) {
+        if (!enemy.isAlive || enemy.invulnerable) return;
+        enemy.hp -= amount;
+        enemy.invulnerable = true;
+        enemy.invulnTimer = ENEMY_IFRAMES;
+        
+        // Play SFX
+        SoundManager.play('hit');
+
+        if (enemy.hp <= 0) {
+            enemy.isAlive = false;
+            enemy.respawnTimer = ENEMY_RESPAWN_TIME;
+            score += 50;
+            scoreBoard.innerText = "SCORE: " + score;
+        }
+    }
+
+    function takeDamage(amount) {
+        if (player.hp <= 0 || player.invulnerable) return;
+        player.hp -= amount;
+        player.invulnerable = true;
+        player.invulnTimer = PLAYER_IFRAMES;
+        hpDisplay.innerText = "HP: " + player.hp + " / " + player.maxHp;
+
+        // Play SFX
+        SoundManager.play('hurt');
+
+        if (player.hp <= 0) {
+            hpDisplay.innerText = "DEFEATED!";
+            hpDisplay.style.color = "white";
+            score = 0; scoreBoard.innerText = "SCORE: " + score;
+            setTimeout(respawnPlayer, 1500);
+        }
+    }
+
+    function respawnPlayer() {
+        const spawn = getRandomSpawnPoint();
+        player.x = spawn.x; player.y = spawn.y;
+        player.hp = player.maxHp;
+        player.invulnerable = true;
+        player.invulnTimer = PLAYER_RESPAWN_IFRAMES;
+        hpDisplay.innerText = "HP: " + player.hp + " / " + player.maxHp;
+        hpDisplay.style.color = "#ff4d4d";
+    }
+
+    function respawnEnemy() {
+        const spawn = getRandomEnemySpawnPoint();
+        enemy.x = spawn.x; enemy.y = spawn.y;
+        enemy.hp = enemy.maxHp;
+        enemy.isAlive = true;
+        enemy.invulnerable = false;
+    }
+
+    // --- DRAW FUNCTIONS ---
+
+    function drawMap(ctx) {
+        for (let r = 0; r < ROWS; r++) {
+            for (let c = 0; c < COLS; c++) {
+                const tile = map[r][c];
+                const x = c * TILE_SIZE;
+                const y = r * TILE_SIZE;
+                if (tile === 1) {
+                    ctx.fillStyle = '#555'; ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+                    ctx.fillStyle = '#666'; ctx.fillRect(x, y, TILE_SIZE, 2);
+                } else if (tile === 0) {
+                    ctx.fillStyle = '#353535'; ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+                } else if (tile === 2) {
+                    ctx.fillStyle = '#353535'; ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+                    ctx.fillStyle = '#ffd700'; ctx.fillRect(x+4, y+4, TILE_SIZE-8, TILE_SIZE-8);
+                }
+            }
+        }
+    }
+
+    function drawEnemy(ctx) {
+        if (!enemy.isAlive) {
+            enemyHpDisplay.style.display = 'none';
+            return;
+        }
+        if (!enemy.invulnerable || Math.floor(Date.now() / 100) % 2 !== 0) {
+            const drawX = Math.floor(enemy.x);
+            const drawY = Math.floor(enemy.y);
+            ctx.fillStyle = '#cc33cc'; ctx.fillRect(drawX, drawY, enemy.w, enemy.h);
+            ctx.fillStyle = '#fff';
+            if (enemy.dx > 0) ctx.fillRect(drawX + 8, drawY + 4, 3, 3);
+            else ctx.fillRect(drawX + 3, drawY + 4, 3, 3);
+        }
+        
+        const canvasRect = canvas.getBoundingClientRect();
+        const scaleX = canvasRect.width / canvas.width;
+        const scaleY = canvasRect.height / canvas.height;
+        const hpBarX = canvasRect.left + (enemy.x) * scaleX;
+        const hpBarY = canvasRect.top + (enemy.y - 8) * scaleY;
+
+        enemyHpDisplay.style.display = 'block';
+        enemyHpDisplay.style.left = hpBarX + 'px';
+        enemyHpDisplay.style.top = hpBarY + 'px';
+        enemyHpDisplay.style.width = (enemy.w * scaleX) + 'px';
+        enemyHpInner.style.width = ((enemy.hp / enemy.maxHp) * 100) + '%';
+    }
+
+    function drawPlayer(ctx) {
+        if (player.hp <= 0) return;
+        const drawX = Math.floor(player.x);
+        const drawY = Math.floor(player.y);
+        
+        if (!player.invulnerable || Math.floor(Date.now() / 100) % 2 !== 0) {
+            ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.fillRect(drawX, drawY + player.h - 2, player.w, 4);
+            ctx.fillStyle = player.isAttacking ? '#ff4d4d' : '#4dff88'; 
+            ctx.fillRect(drawX, drawY, player.w, player.h);
+
+            ctx.fillStyle = '#000';
+            if (player.facing === 'right') { ctx.fillRect(drawX+8, drawY+3, 2, 2); ctx.fillRect(drawX+8, drawY+7, 2, 2); }
+            else if (player.facing === 'left') { ctx.fillRect(drawX+2, drawY+3, 2, 2); ctx.fillRect(drawX+2, drawY+7, 2, 2); }
+            else if (player.facing === 'down') { ctx.fillRect(drawX+3, drawY+4, 2, 2); ctx.fillRect(drawX+7, drawY+4, 2, 2); }
+            else { ctx.fillRect(drawX+3, drawY+3, 2, 2); ctx.fillRect(drawX+7, drawY+3, 2, 2); }
+
+            if (player.isAttacking) {
+                ctx.fillStyle = '#eee';
+                let vReach=10, vThick=4, vX=drawX, vY=drawY;
+                if (player.facing==='right') { vX+=player.w; vY+=(player.h-vThick)/2; ctx.fillRect(vX,vY,vReach,vThick); }
+                else if (player.facing==='left') { vX-=vReach; vY+=(player.h-vThick)/2; ctx.fillRect(vX,vY,vReach,vThick); }
+                else if (player.facing==='down') { vX+=(player.w-vThick)/2; vY+=player.h; ctx.fillRect(vX,vY,vThick,vReach); }
+                else { vX+=(player.w-vThick)/2; vY-=vReach; ctx.fillRect(vX,vY,vThick,vReach); }
+            }
+        }
+    }
+
+    // --- MAIN LOOP ---
+    function resizeCanvas() {
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        const aspectRatio = canvas.width / canvas.height;
+        let newWidth, newHeight;
+        if (viewportHeight / viewportWidth > 1 / aspectRatio) {
+            newWidth = viewportWidth * 0.9;
+            newHeight = newWidth / aspectRatio;
+        } else {
+            newHeight = viewportHeight * 0.8;
+            newWidth = newHeight * aspectRatio;
+        }
+        if (newWidth > 800) { newWidth = 800; newHeight = 600; }
+        canvas.style.width = newWidth + 'px';
+        canvas.style.height = newHeight + 'px';
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    SceneManager.changeScene(TitleScene);
+
+    let lastTime = 0;
+    function gameLoop(timestamp) {
+        const deltaTime = (timestamp - lastTime) / 1000;
+        lastTime = timestamp;
+        const dt = Math.min(deltaTime, 0.1); 
+
+        SceneManager.update(dt);
+        SceneManager.draw(ctx);
+
+        requestAnimationFrame(gameLoop);
+    }
+    requestAnimationFrame(gameLoop);
+
+</script>
+</body>
+</html>

@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluating AI-Assisted Game Code Generation | Shuhan Zhang</title>
+
+    <style>
+        :root {
+            /* Palette: Void & Signal Violet — an uncertainty-coded counterpart
+               to Revive's warm amber and Cogni-Stream's clinical cyan, tuned
+               for a project about how confidently a model gets things wrong. */
+            --bg-void: #000000;
+            --surface-dark: rgba(255, 255, 255, 0.045);
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-tertiary: #52525b;
+            --accent-violet: #4ADE80;
+            --accent-glow: rgba(74, 222, 128, 0.15);
+            --accent-red: #FB6B6B;
+            --accent-green: #52E6A6;
+            --border-subtle: rgba(255, 255, 255, 0.1);
+
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --shadow-subtle: 0 12px 40px -12px rgba(0,0,0,0.5);
+            --shadow-float: 0 24px 48px -12px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05) inset;
+
+            --font-main: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+            --font-mono: 'SFMono-Regular', Menlo, Consolas, monospace;
+
+            --ease-cinematic: cubic-bezier(0.25, 1, 0.3, 1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: inherit; }
+        html { font-family: var(--font-main); }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-void);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            position: relative;
+            cursor: none;
+        }
+
+        *, *::before, *::after { cursor: none !important; }
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+
+        #custom-cursor {
+            position: fixed; top: 0; left: 0; width: 20px; height: 20px;
+            border-radius: 50%; background-color: white; mix-blend-mode: difference;
+            pointer-events: none; z-index: 9999; will-change: transform;
+            transition: width 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        height 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        background-color 0.25s ease, mix-blend-mode 0.25s ease;
+        }
+        #custom-cursor.hover {
+            width: 60px; height: 60px; background-color: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(2px); mix-blend-mode: normal;
+        }
+        @media (max-width: 768px) {
+            #custom-cursor { display: none; }
+            *, *::before, *::after { cursor: auto !important; }
+        }
+
+        .noise-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none; z-index: 9999; opacity: 0.04;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        .ambient-light {
+            position: fixed; width: 80vw; height: 80vh; border-radius: 50%;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            top: -20vh; left: -20vw; pointer-events: none; z-index: -1;
+            filter: blur(100px); opacity: 0.55;
+        }
+        .ambient-light.right {
+            top: 40vh; left: auto; right: -30vw;
+            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+        }
+
+        .container { max-width: 1440px; margin: 0 auto; padding: 0 6vw; }
+
+        h1, h2, h3 { font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; }
+        h2 { font-size: clamp(2.5rem, 5vw, 4.5rem); margin-bottom: 2rem; }
+
+        .text-lead {
+            font-size: clamp(1.125rem, 2vw, 1.5rem); color: var(--text-secondary);
+            font-weight: 400; max-width: 800px; margin-bottom: 2rem;
+        }
+        .text-body {
+            font-size: 1.125rem; color: var(--text-secondary); font-weight: 400;
+            max-width: 620px; margin-bottom: 1.5rem;
+        }
+        .accent { color: var(--text-primary); font-weight: 600; box-shadow: inset 0 -2px 0 var(--accent-violet); }
+        .caption { font-size: 0.875rem; color: var(--text-tertiary); margin-top: 1rem; display: block; }
+        .data-label { font-size: 0.95rem; color: var(--text-secondary); font-weight: 500; letter-spacing: 0.01em; margin-top: 1rem; display: block; }
+
+        .section { padding: 15vh 0; position: relative; }
+
+        .hero {
+            min-height: 100vh; display: flex; flex-direction: column; justify-content: center; position: relative;
+            padding-top: clamp(140px, 22vh, 240px);
+            padding-bottom: 6vh;
+        }
+        .hero-title { font-size: clamp(2.9rem, 6.6vw, 6.2rem); font-weight: 700; letter-spacing: -0.04em; margin-bottom: 1.5rem; max-width: 1200px; }
+        .hero-meta {
+            margin-top: 6vh; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem; border-top: 1px solid var(--border-subtle); padding-top: 3rem; max-width: 1100px;
+        }
+        .meta-item span { display: block; font-size: 0.8rem; color: var(--text-tertiary); margin-bottom: 0.5rem; }
+        .meta-item strong { font-size: 1rem; font-weight: 600; color: var(--text-primary); }
+
+        .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 2.5rem; }
+
+        .gameplay-btn {
+            display: inline-flex; align-items: center; gap: 0.65rem; width: fit-content;
+            padding: 0.9rem 1.5rem; border-radius: 999px; background: var(--accent-violet); color: #062015;
+            font-size: 0.9rem; font-weight: 700; letter-spacing: 0.02em; text-decoration: none;
+            box-shadow: 0 0 36px var(--accent-glow);
+            transition: transform 0.35s var(--ease-cinematic), box-shadow 0.35s var(--ease-cinematic), background 0.35s var(--ease-cinematic);
+        }
+        .gameplay-btn:hover { transform: translateY(-3px) scale(1.03); background: #A8FFDD; box-shadow: 0 0 20px var(--accent-glow), 0 14px 32px -14px rgba(0,0,0,0.65); }
+        .gameplay-btn:active { transform: translateY(-1px) scale(0.98); }
+        .gameplay-btn svg { transition: transform 0.35s var(--ease-cinematic); }
+        .gameplay-btn:hover svg { transform: translate(2px, -2px); }
+
+        .gameplay-btn-secondary {
+            display: inline-flex; align-items: center; gap: 0.65rem; width: fit-content;
+            padding: 0.9rem 1.5rem; border-radius: 999px; background: transparent;
+            border: 1px solid var(--border-subtle); color: var(--text-primary);
+            font-size: 0.9rem; font-weight: 700; letter-spacing: 0.02em; text-decoration: none;
+            transition: transform 0.35s var(--ease-cinematic), border-color 0.35s var(--ease-cinematic), background 0.35s var(--ease-cinematic);
+        }
+        .gameplay-btn-secondary:hover { transform: translateY(-3px) scale(1.03); background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.4); }
+        .gameplay-btn-secondary:active { transform: translateY(-1px) scale(0.98); }
+
+        .grid-split { display: grid; grid-template-columns: 1fr; gap: 4rem; }
+        @media (min-width: 1024px) {
+            .grid-split { grid-template-columns: 5fr 7fr; gap: 8vw; align-items: start; }
+            .sticky-col { position: sticky; top: 15vh; }
+        }
+
+        .media-frame {
+            width: 100%; background: var(--surface-dark); border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md); box-shadow: var(--shadow-subtle); overflow: hidden;
+            position: relative; display: flex; align-items: center; justify-content: center;
+            text-align: center; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        }
+        .media-frame.aspect-video { aspect-ratio: 16/9; }
+        .media-placeholder-text {
+            color: var(--text-tertiary); font-family: var(--font-mono); font-size: 0.85rem;
+            letter-spacing: 0.02em; padding: 2rem; max-width: 70%; border: 1px dashed var(--border-subtle);
+            line-height: 1.7;
+        }
+        .live-tag {
+            position: absolute; top: 1rem; left: 1rem; z-index: 2;
+            font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.05em; text-transform: uppercase;
+            padding: 0.4rem 0.8rem; border-radius: 999px; color: var(--text-secondary);
+            background: rgba(0, 0, 0, 0.55); border: 1px solid var(--border-subtle);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); pointer-events: none;
+        }
+
+        .data-card {
+            background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-subtle);
+            padding: 3rem; border-radius: var(--radius-md); margin-bottom: 2rem; transition: background 0.4s ease;
+        }
+        .data-card:hover { background: rgba(255, 255, 255, 0.04); }
+        .data-number {
+            font-family: var(--font-main); font-size: clamp(3.5rem, 7vw, 6rem); color: var(--accent-violet);
+            line-height: 1; margin-bottom: 1rem; font-weight: 700; letter-spacing: -0.04em;
+        }
+
+        .reveal {
+            opacity: 0; transform: translateY(40px) scale(0.98); filter: blur(10px);
+            transition: opacity 1.2s var(--ease-cinematic), transform 1.2s var(--ease-cinematic), filter 1.2s var(--ease-cinematic);
+            will-change: transform, opacity, filter;
+        }
+        .reveal.in-view { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+        .delay-3 { transition-delay: 0.3s; }
+
+        .site-footer { padding: 8vh 0; border-top: 1px solid var(--border-subtle); margin-top: 10vh; text-align: center; }
+
+        .site-header {
+            position: absolute; top: 6vh; left: 6vw; z-index: 100;
+            display: flex; align-items: center; gap: 1rem;
+            animation: fadeIn 2s var(--ease-cinematic) forwards;
+        }
+        .logo-mono {
+            font-family: var(--font-mono); font-size: 1.05rem; letter-spacing: 0.02em;
+            color: var(--text-primary); line-height: 1; user-select: none;
+        }
+        .logo-mono .prompt-char { color: var(--accent-violet); margin-right: 0.4em; }
+        .logo-caption { font-size: 0.62rem; letter-spacing: 0.35em; color: var(--text-tertiary); margin-top: 0.5rem; text-transform: uppercase; }
+
+        .back-home-btn {
+            position: fixed; top: 6vh; right: 6vw; z-index: 100; display: flex; align-items: center; gap: 0.6rem;
+            padding: 0.75rem 1.4rem 0.75rem 1.1rem; border-radius: 999px;
+            background: var(--surface-dark); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-subtle); box-shadow: var(--shadow-subtle);
+            color: var(--text-secondary); font-size: 0.85rem; font-weight: 500; letter-spacing: 0.03em;
+            text-decoration: none; cursor: pointer; animation: fadeIn 2s var(--ease-cinematic) forwards;
+            transition: color 0.4s var(--ease-cinematic), border-color 0.4s var(--ease-cinematic),
+                        background 0.4s var(--ease-cinematic), transform 0.4s var(--ease-cinematic);
+        }
+        .back-home-btn svg { width: 16px; height: 16px; flex-shrink: 0; transition: transform 0.4s var(--ease-cinematic); }
+        .back-home-btn:hover { color: var(--accent-violet); border-color: rgba(74, 222, 128, 0.35); transform: translateY(-2px); }
+        .back-home-btn:hover svg { transform: translateX(-3px); }
+        .back-home-btn:active { transform: translateY(0) scale(0.97); }
+        @media (max-width: 600px) {
+            .back-home-btn { top: 3vh; right: 5vw; padding: 0.55rem 1rem 0.55rem 0.8rem; font-size: 0.75rem; }
+            .back-home-btn span { display: none; }
+            .site-header { top: 3vh; left: 5vw; }
+            .logo-mono { font-size: 0.9rem; }
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .scroll-track {
+            position: fixed; right: 4vw; top: 15vh; bottom: 15vh; width: 1px;
+            background: var(--border-subtle); z-index: 50; opacity: 0.6;
+        }
+        .scroll-dot {
+            position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%);
+            width: 9px; height: 9px; border-radius: 50%; background: var(--accent-violet);
+            box-shadow: 0 0 12px var(--accent-glow), 0 0 24px var(--accent-glow);
+            transition: top 0.1s linear;
+        }
+        @media (max-width: 768px) { .scroll-track { display: none; } }
+
+        .text-outline {
+            color: transparent; -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.4);
+            transition: color 0.6s var(--ease-cinematic), -webkit-text-stroke-color 0.6s var(--ease-cinematic), text-shadow 0.6s var(--ease-cinematic);
+            cursor: default;
+        }
+        .text-outline:hover {
+            color: var(--accent-violet); -webkit-text-stroke: 0px transparent;
+            text-shadow: 0 0 40px var(--accent-glow), 0 0 80px var(--accent-glow);
+        }
+        @media (max-width: 600px) { .text-outline { -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4); } }
+
+        .hero-title .text-outline { animation: signal-breathe 5s ease-in-out infinite; }
+        .hero-title .text-outline:hover { animation-play-state: paused; }
+        @keyframes signal-breathe {
+            0%, 100% { -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.4); text-shadow: none; }
+            50% { -webkit-text-stroke: 1.5px rgba(74, 222, 128, 0.55); text-shadow: 0 0 30px var(--accent-glow); }
+        }
+
+        .quote-block { border-left: 2px solid var(--accent-violet); padding-left: 1.5rem; margin: 2.5rem 0; }
+        .quote-block p { font-size: 1.15rem; color: var(--text-primary); font-weight: 500; line-height: 1.5; }
+        .quote-block span { display: block; margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-tertiary); }
+
+        /* ---------------------------------------------------------- */
+        /* Research questions                                          */
+        /* ---------------------------------------------------------- */
+        .rq-list { margin-top: 2.5rem; border-top: 1px solid var(--border-subtle); }
+        .rq-item { display: flex; gap: 1.5rem; padding: 1.75rem 0; border-bottom: 1px solid var(--border-subtle); }
+        .rq-tag { font-family: var(--font-mono); color: var(--accent-violet); font-size: 0.95rem; flex-shrink: 0; padding-top: 0.15rem; }
+        .rq-item p { color: var(--text-secondary); font-size: 1.05rem; max-width: 560px; }
+
+        /* ---------------------------------------------------------- */
+        /* Version timeline (v1–v6)                                    */
+        /* ---------------------------------------------------------- */
+        .version-timeline { margin-top: 3rem; display: flex; flex-direction: column; }
+        .version-row {
+            display: grid; grid-template-columns: 100px 1fr; gap: 1.75rem;
+            padding: 2rem 0; border-top: 1px solid var(--border-subtle);
+        }
+        .version-row:last-child { border-bottom: 1px solid var(--border-subtle); }
+        .version-row.muted { opacity: 0.55; }
+        .version-tag { font-family: var(--font-mono); font-size: 1.6rem; font-weight: 700; color: var(--text-primary); }
+        .version-time { font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-tertiary); margin-top: 0.4rem; }
+        .version-body h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.6rem; }
+        .version-body p { font-size: 0.98rem; color: var(--text-secondary); max-width: 640px; }
+        .version-status {
+            margin-top: 1rem; font-size: 0.92rem; color: var(--text-tertiary); font-weight: 500;
+        }
+        .version-status.fail { color: var(--accent-red); }
+
+        /* ---------------------------------------------------------- */
+        /* Result table — extended map experiment                      */
+        /* ---------------------------------------------------------- */
+        .result-table { width: 100%; border-collapse: collapse; margin-top: 2.5rem; font-family: var(--font-mono); font-size: 0.85rem; }
+        .result-table th {
+            text-align: left; padding: 0.9rem 1rem; color: var(--text-tertiary);
+            font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; font-size: 0.68rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .result-table td { padding: 0.9rem 1rem; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); }
+        .result-table tr:hover td { background: rgba(255,255,255,0.02); }
+        .badge { font-size: 0.85rem; }
+        .badge.yes { color: var(--accent-green); }
+        .badge.no { color: var(--accent-red); }
+
+        /* ---------------------------------------------------------- */
+        /* Code / prompt panels                                        */
+        /* ---------------------------------------------------------- */
+        .code-panel {
+            background: #0a0a0d; border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-subtle);
+            margin-bottom: 1.25rem;
+        }
+        .code-panel-head {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0.85rem 1.25rem; border-bottom: 1px solid var(--border-subtle);
+        }
+        .code-panel-dots { display: flex; gap: 6px; }
+        .code-panel-dots span { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,0.15); display: block; }
+        .code-panel-file { font-size: 0.72rem; letter-spacing: 0.06em; color: var(--text-tertiary); font-family: var(--font-mono); }
+        .code-panel pre {
+            margin: 0; padding: 1.5rem; overflow-x: auto;
+            font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.7; color: #d4d4d8;
+        }
+        .code-panel .cm { color: #6a6a72; }
+        .code-panel .kw { color: var(--accent-violet); }
+        .code-note { font-size: 0.95rem; color: var(--text-secondary); margin: 0 0 2rem; max-width: 640px; }
+        .code-note strong { color: var(--text-primary); font-weight: 600; }
+
+        /* ---------------------------------------------------------- */
+        /* Numbered findings                                           */
+        /* ---------------------------------------------------------- */
+        .finding-num { font-family: var(--font-mono); color: var(--accent-violet); font-size: 0.95rem; }
+    </style>
+</head>
+<body>
+
+    <div id="custom-cursor"></div>
+    <div id="page-exit" style="position:fixed; inset:0; z-index:10001; background:#000000; pointer-events:none; opacity:0; transition: opacity 0.7s cubic-bezier(0.25,1,0.3,1);"></div>
+    <div class="noise-overlay"></div>
+    <div class="ambient-light"></div>
+    <div class="ambient-light right"></div>
+
+    <header class="site-header">
+        <div>
+            <div class="logo-mono"><span class="prompt-char">&gt;</span>AI_CODEGEN</div>
+            <div class="logo-caption">Versioned Study</div>
+        </div>
+    </header>
+
+    <a href="index.html" class="back-home-btn" aria-label="Back to home">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Back to Home</span>
+    </a>
+
+    <div class="scroll-track">
+        <div class="scroll-dot" id="scrollDot"></div>
+    </div>
+
+    <main>
+        <section class="container hero">
+            <h1 class="hero-title reveal">Evaluating AI-<br>Assisted <span class="text-outline">Game Code</span></h1>
+            <p class="text-lead reveal delay-1">A versioned experimental study on LLM reliability, spatial reasoning, and robustness. Six builds of the same browser game, each handing more of the logic to a language model, to see where its confidence stops matching its accuracy.</p>
+
+            <div class="hero-meta reveal delay-2">
+                <div class="meta-item"><span>Researcher</span><strong>Shuhan Zhang · Y3931662</strong></div>
+                <div class="meta-item"><span>Module</span><strong>AI and its Application in Creative Practice · TFT00112M-A</strong></div>
+                <div class="meta-item"><span>Type</span><strong>Practice-based Research Project</strong></div>
+                <div class="meta-item"><span>Institution</span><strong>University of York · 2025–2026</strong></div>
+            </div>
+
+            <div class="hero-actions reveal delay-3">
+                <a href="v6_scene_music_system.html" target="_blank" rel="noopener" class="gameplay-btn">
+                    Open the live build
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+                </a>
+                <a href="https://github.com/Shuhan0001/Evaluating-AI--Assisted-Game-Code" target="_blank" rel="noopener" class="gameplay-btn-secondary">
+                    View on GitHub
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.73.5.75 5.48.75 11.75c0 5.02 3.26 9.28 7.78 10.78.57.1.78-.25.78-.55 0-.27-.01-1.15-.02-2.09-3.16.69-3.83-1.34-3.83-1.34-.52-1.31-1.26-1.66-1.26-1.66-1.03-.7.08-.69.08-.69 1.14.08 1.74 1.17 1.74 1.17 1.01 1.73 2.65 1.23 3.3.94.1-.73.4-1.23.72-1.51-2.52-.29-5.17-1.26-5.17-5.6 0-1.24.44-2.25 1.17-3.04-.12-.29-.51-1.45.11-3.02 0 0 .96-.31 3.15 1.16a10.9 10.9 0 0 1 5.74 0c2.19-1.47 3.15-1.16 3.15-1.16.62 1.57.23 2.73.11 3.02.73.79 1.17 1.8 1.17 3.04 0 4.35-2.65 5.31-5.18 5.59.41.35.77 1.05.77 2.12 0 1.53-.01 2.76-.01 3.14 0 .3.2.66.79.55 4.52-1.51 7.77-5.76 7.77-10.78C23.25 5.48 18.27.5 12 .5Z"/></svg>
+                </a>
+            </div>
+        </section>
+
+        <section class="section container">
+            <div class="grid-split">
+                <div class="sticky-col reveal">
+                    <h2>The<br><span class="text-outline">Question</span></h2>
+                </div>
+                <div>
+                    <p class="text-body reveal">AI coding assistants are already part of how many developers build games, lowering the barrier for people with little or no programming background. But game logic has to be precise. A small error in collision detection or spawn handling doesn't stay small. A character gets stuck in a wall, or a core mechanic breaks outright. This project treats that gap as an open question rather than an assumption. It tests the question directly, building the same small game six times and handing progressively more of the implementation to the model, to see where it holds up and where it doesn't.</p>
+
+                    <div class="rq-list reveal delay-1">
+                        <div class="rq-item">
+                            <span class="rq-tag">RQ1</span>
+                            <p>To what extent can generative AI maintain logical consistency across multiple iterations of game code development?</p>
+                        </div>
+                        <div class="rq-item">
+                            <span class="rq-tag">RQ2</span>
+                            <p>In which situations does AI-generated game code introduce hallucinations or break input restraints?</p>
+                        </div>
+                        <div class="rq-item">
+                            <span class="rq-tag">RQ3</span>
+                            <p>How can AI-assisted workflows be used safely and effectively in small-scale game development?</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
+            <h2 class="reveal" style="text-align: center; margin-bottom: 1rem;">Six <span class="text-outline">Builds</span></h2>
+            <p class="text-lead reveal" style="text-align: center; margin: 0 auto 2rem; max-width: 720px;">One character mover, rebuilt in five stages under Gemini 3 Pro Thinking with thinking mode enabled, tested in Microsoft Edge, then extended once more as a technical scaffold outside the analysis.</p>
+
+            <div class="grid-split">
+                <div class="sticky-col reveal">
+                    <h3 style="font-size: 1.5rem;">Recording method</h3>
+                    <p class="text-body" style="font-size: 1rem; margin-top: 1rem;">Every round left a paper trail: the prompt that produced it, the full output file, a screen recording of it running, and a written log tying the three together. Each version's behaviour stays traceable back to the exact instruction that caused it.</p>
+                </div>
+                <div>
+                    <div class="version-timeline">
+                        <div class="version-row reveal">
+                            <div><div class="version-tag">v1</div><div class="version-time">27 min · hand-written</div></div>
+                            <div class="version-body">
+                                <h4>Manual baseline</h4>
+                                <p>Code written entirely by the researcher: a character mover and basic attack actions, kept as the reference point everything after it gets compared against.</p>
+                                <div class="version-status">No repair needed</div>
+                            </div>
+                        </div>
+                        <div class="version-row reveal delay-1">
+                            <div><div class="version-tag">v2</div><div class="version-time">1 min · AI</div></div>
+                            <div class="version-body">
+                                <h4>AI replication of v1</h4>
+                                <p>Same functionality, generated fresh. The AI's version came out more professional and comprehensive than the hand-written one, with clearer naming, better comments, and a more readable structure.</p>
+                                <div class="version-status">No repair needed</div>
+                            </div>
+                        </div>
+                        <div class="version-row reveal delay-2">
+                            <div><div class="version-tag">v3</div><div class="version-time">2 min · AI</div></div>
+                            <div class="version-body">
+                                <h4>Tilemap + collision</h4>
+                                <p>Tests whether the AI can safely handle scene initialisation. It couldn't, fully: the generated spawn logic wasn't compatible with v2's map, and the player spawned inside a wall.</p>
+                                <div class="version-status fail">Manual repair required: spawn point in wall</div>
+                            </div>
+                        </div>
+                        <div class="version-row reveal">
+                            <div><div class="version-tag">v4</div><div class="version-time">2 min · AI</div></div>
+                            <div class="version-body">
+                                <h4>Enemies, HP, combat</h4>
+                                <p>Introduces enemy entities, player.hp, an invulnerability timer, random enemy movement, and collision-based hit detection. Tests entity interaction and state management.</p>
+                                <div class="version-status">No repair needed</div>
+                            </div>
+                        </div>
+                        <div class="version-row reveal delay-1">
+                            <div><div class="version-tag">v5</div><div class="version-time">1 min · AI</div></div>
+                            <div class="version-body">
+                                <h4>Timing, respawn, UI</h4>
+                                <p>Precise timers and a complete death/respawn cycle, used to test the AI's control over state transitions across a full combat loop.</p>
+                                <div class="version-status">No repair needed</div>
+                            </div>
+                        </div>
+                        <div class="version-row muted reveal delay-2">
+                            <div><div class="version-tag">v6</div><div class="version-time">scaffold</div></div>
+                            <div class="version-body">
+                                <h4>Scene manager + music</h4>
+                                <p>An audio module and title/game scene system, added as a working demo rather than an object of study. It sits outside the scope of the analysis, but it's playable above.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
+            <div class="grid-split">
+                <div class="sticky-col reveal">
+                    <h3 style="font-size: 1.8rem;">01. The Spawn Bug</h3>
+                </div>
+                <div>
+                    <p class="text-body reveal">v1 and v2 went smoothly. The AI imitated the existing movement and attack logic and, if anything, wrote it more cleanly than the manual version. The first real failure showed up in v3, right after the map and collision system were introduced. The character's spawn point landed inside a wall, and nothing could move.</p>
+
+                    <figure class="reveal delay-1" style="margin: 3rem 0;">
+                        <div class="media-frame aspect-video" style="cursor: default;">
+                            <iframe src="player_v3_bug_spawnInWall.html" title="v3 build: player spawns inside a wall" loading="lazy" style="width:100%; height:100%; border:0; display:block; background:#202020;"></iframe>
+                            <span class="live-tag">Live build, try to move</span>
+                        </div>
+                        <figcaption class="caption">Fig. The actual v3 build, embedded and playable. WASD or arrow keys to move: the player starts already inside a wall tile. Fixed by hand in v3_fix before the v4 branch continued.</figcaption>
+                    </figure>
+
+                    <p class="code-note reveal delay-2">The bug wasn't a failure to write working collision code. The collision system itself worked fine. It was a failure to check the new spawn logic against the map it was being dropped into. The prompt that produced it, reconstructed from Appendix B, asked for exactly this feature set:</p>
+
+                    <div class="code-panel reveal delay-3">
+                        <div class="code-panel-head">
+                            <div class="code-panel-dots"><span></span><span></span><span></span></div>
+                            <span class="code-panel-file">prompt_v3_spawn.txt</span>
+                        </div>
+                        <pre><code><span class="cm">You are a front-end developer for pixel-style browser game demos.
+Using the existing single-file HTML I provide, please add: 16px tile
+grid map (2D array) with solid-wall collision, 4-direction movement
+(Arrow/WASD) snapped to integer pixels, and collectible coins that
+update score in the UI and remove after pickup. Keep DOM id/class
+names unchanged. Return a fully executable single-file HTML
+prototype. Output code only, no explanation.</span></code></pre>
+                    </div>
+                    <p class="caption">Model: Gemini 3 Pro Thinking · Thinking mode enabled · Note from the log: spawn bug still occurred in the initial output.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
+            <h2 class="reveal" style="text-align: center; margin-bottom: 1rem;">02. Extended <span class="text-outline">Map Experiment</span></h2>
+            <p class="text-lead reveal" style="text-align: center; margin: 0 auto 3rem; max-width: 760px;">The v3 bug raised a real question: could the AI not tell a wall from a floor, or did it simply reuse old spawn logic without re-checking it against the new map? A standalone branch, separate from the v1–v6 mainline, was built to find out.</p>
+
+            <div class="grid-split">
+                <div class="sticky-col reveal">
+                    <h3 style="font-size: 1.6rem;">Six maps, one instruction</h3>
+                    <p class="text-body" style="font-size: 1rem; margin-top: 1rem;">Five solvable 10×10 maps of rising complexity, then one built entirely of walls: a deliberately unsolvable input, to see whether the model would report failure honestly or quietly rewrite the problem to give itself something to return.</p>
+                </div>
+                <div>
+                    <table class="result-table reveal">
+                        <thead>
+                            <tr><th>Map</th><th>Features</th><th>As expected?</th><th>Modified the map?</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>map01</td><td>Open room</td><td><span class="badge yes">Yes</span></td><td><span class="badge no">No</span></td></tr>
+                            <tr><td>map02</td><td>Narrow corridor</td><td><span class="badge yes">Yes</span></td><td><span class="badge no">No</span></td></tr>
+                            <tr><td>map03</td><td>Multiple rooms</td><td><span class="badge yes">Yes</span></td><td><span class="badge no">No</span></td></tr>
+                            <tr><td>map04</td><td>Dead-end maze</td><td><span class="badge yes">Yes</span></td><td><span class="badge no">No</span></td></tr>
+                            <tr><td>map05</td><td>Random noise</td><td><span class="badge yes">Yes</span></td><td><span class="badge no">No</span></td></tr>
+                            <tr><td>map06_v1</td><td>All walls, no constraint stated</td><td><span class="badge no">No</span></td><td><span class="badge yes">Yes</span></td></tr>
+                            <tr><td>map06_v2</td><td>All walls, modification explicitly forbidden</td><td><span class="badge yes">Yes</span></td><td><span class="badge no">No</span></td></tr>
+                        </tbody>
+                    </table>
+                    <p class="caption" style="margin-top: 1.5rem;">Data: report Appendix A7, Results of Extended Experiments.</p>
+
+                    <p class="text-body reveal" style="margin-top: 3rem;">Across map01–map05, the AI read the map correctly every time and never touched the array it was given. map06 is where the two runs diverge. Without an explicit constraint, the model treated the fully-walled map as a problem to solve rather than a fact to report, and rewrote tiles until it had somewhere to spawn a player. Adding one line to the prompt changed the outcome completely:</p>
+
+                    <div class="code-panel reveal delay-1">
+                        <div class="code-panel-head">
+                            <div class="code-panel-dots"><span></span><span></span><span></span></div>
+                            <span class="code-panel-file">prompt_map_tests.txt, constraint clause, Appendix A8</span>
+                        </div>
+                        <pre><code><span class="cm">Important: Do NOT modify or mutate the provided tilemap array in
+any way. If the map contains no walkable tiles, the program must
+NOT carve or change tiles. Instead it must display a clear
+on-canvas message and return an error object or set `spawn = null`.
+Only if walkable tiles exist should the script choose a spawn
+and allow movement.</span></code></pre>
+                    </div>
+                    <p class="text-body reveal delay-2">With that clause in place, map06_v2 returned exactly what it should: no valid spawn point, reported plainly, map untouched. The model could tell a wall from a floor all along. What it couldn't do on its own was report failure instead of manufacturing a false success.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
+            <h2 class="reveal" style="text-align: center; margin-bottom: 1rem;">Findings</h2>
+            <p class="text-lead reveal" style="text-align: center; margin: 0 auto 5rem; max-width: 760px;">The project treats AI-generated game code as a form of procedural content generation, and reads its failures through the existing literature on code hallucination. Agarwal (2024) describes "code hallucination" as the model generating non-existent functions or silently altering input structures, a risk that grows in iterative, multi-module development. Huang et al. (2023) find the model turns to this kind of plausible-looking output specifically when it faces missing information or an unsolvable task, rather than reporting that no solution exists. Farquhar et al. (2024) trace this to weak uncertainty estimation: the model keeps producing confident answers even when it can't tell whether the task is actually solvable.</p>
+
+            <div class="grid-split">
+                <div class="sticky-col reveal">
+                    <span class="finding-num">01</span>
+                    <h3 style="font-size: 1.6rem; margin-top: 0.6rem;">Iteration speeds up implementation</h3>
+                </div>
+                <div>
+                    <p class="text-body reveal">When the requirements were clearly defined, AI code accelerated feature implementation noticeably, especially for system expansion and code organisation. Against the v1 baseline, the AI-generated versions showed clearer function division, better naming, and more complete comments, all of which lowered maintenance cost as complexity increased across v2 to v5.</p>
+                </div>
+            </div>
+
+            <div class="grid-split" style="margin-top: 8vh;">
+                <div class="sticky-col reveal">
+                    <span class="finding-num">02</span>
+                    <h3 style="font-size: 1.6rem; margin-top: 0.6rem;">Spatial recognition was never the problem</h3>
+                </div>
+                <div>
+                    <p class="text-body reveal">The extended experiment confirms the AI can reliably tell walls from walkable floor on simple maps. That means the v3 spawn bug wasn't a failure to understand the map. It was more likely the reuse of earlier spawn logic during iteration, without re-checking it against the feasibility of the new one.</p>
+                </div>
+            </div>
+
+            <div class="grid-split" style="margin-top: 8vh;">
+                <div class="sticky-col reveal">
+                    <span class="finding-num">03</span>
+                    <h3 style="font-size: 1.6rem; margin-top: 0.6rem;">Executability wins over constraint</h3>
+                </div>
+                <div>
+                    <p class="text-body reveal">Given a genuinely unsolvable input, the model's default was to alter the original data until it had something runnable to return, not to say no solution existed.</p>
+                    <div class="quote-block reveal delay-1">
+                        <p>This behaviour can be characterised as executability-oriented generation, where the model prioritises producing runnable outputs even at the cost of violating input constraints.</p>
+                        <span>Analysis, section 5.3</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-split" style="margin-top: 8vh;">
+                <div class="sticky-col reveal">
+                    <span class="finding-num">04</span>
+                    <h3 style="font-size: 1.6rem; margin-top: 0.6rem;">Constraint awareness has to be stated</h3>
+                </div>
+                <div>
+                    <p class="text-body reveal">The model showed no strong built-in awareness of an "input cannot be modified" restriction unless the prompt said so explicitly. In practice, that means AI-generated code in high-reliability logic still needs human review and a verification step. The constraint has to be written down, not assumed.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
+            <div class="grid-split">
+                <div class="sticky-col reveal">
+                    <h2>Positioning<br><span class="text-outline">AI in Practice</span></h2>
+                </div>
+                <div>
+                    <p class="text-body reveal">None of this is really about whether generative AI can produce working game code. It clearly can. The more useful question is how AI integration reshapes decision-making across an iterative development process, and who ends up responsible when something breaks. Three patterns run through this study: a generation style that favours runnable output, compliance with input constraints that is fragile unless stated outright, and a development role that shifts steadily toward human validation as complexity grows.</p>
+                    <p class="text-body reveal">Taken together, this points to a specific position: AI belongs in a small-scale development workflow as an aid for prototyping and coding, not as an independent decision-maker. The audio-scene branch, v6, was left out of the analysis for this reason. It's useful evidence of how far a non-technical collaborator could get with AI assistance, but it isn't a claim about reliability.</p>
+
+                    <p class="data-label reveal" style="margin-top: 3rem;">Limitations</p>
+                    <p class="text-body reveal">The study used a single model with no cross-model comparison. The test environment, a small pixel game with a handful of systems, doesn't generalise cleanly to larger production codebases. The repair process itself also involved human judgement, which leaves room for subjective bias in how "correct" was decided. Cross-model testing, larger environments, and automated validation tooling would all be reasonable next steps.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
+            <div class="grid-split">
+                <div class="sticky-col reveal">
+                    <h2>Closing<br><span class="text-outline">Reflection</span></h2>
+                </div>
+                <div>
+                    <p class="text-lead reveal">The developer's role didn't disappear across these six versions. It moved from writing implementation to validating what the model decided to change.</p>
+                    <p class="text-body reveal">Across v1 to v5, clear prompts reliably produced playable features, written more readably than the hand-written baseline. But the same runs showed that when a task is unresolvable or a scene starts out misconfigured, the model keeps adjusting the underlying data until the result looks executable, instead of surfacing the problem. That is the practical takeaway of RQ1 and RQ2: logical consistency holds up well under clear constraints, and breaks down where the constraints are implicit. Used with clear prompts, versioned logs, and a human checking the boundary conditions, AI is a useful collaborator in small-scale game development. It just can't be left to police its own assumptions.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer container">
+        <span class="caption">University of York, AI and its Application in Creative Practice (TFT00112M-A)</span>
+        <span class="caption" style="margin-top: 0.75rem; opacity: 0.7;">AI disclosure: Gemini 3 Pro Thinking (thinking mode enabled) generated versions v2–v6 and the extended-experiment responses from author-written prompts, tested in Microsoft Edge. All outputs were screen-recorded, logged and reviewed by the author; full prompt and bug logs are in Appendices A–C of the written report.</span>
+    </footer>
+
+    <script>
+        (function() {
+            const btn = document.querySelector('.back-home-btn');
+            const exit = document.getElementById('page-exit');
+            if (!btn || !exit) return;
+            btn.addEventListener('click', function(e) {
+                const href = btn.getAttribute('href');
+                if (!href || e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+                e.preventDefault();
+                exit.style.pointerEvents = 'auto';
+                exit.style.opacity = '1';
+                setTimeout(() => { window.location.href = href; }, 650);
+            });
+        })();
+
+        (function() {
+            const cursor = document.getElementById('custom-cursor');
+            if (!cursor) return;
+            let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2, cursorX = mouseX, cursorY = mouseY, lastCursorTime = 0;
+            document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+            function animateCursor(timestamp) {
+                const dt = Math.min((timestamp - (lastCursorTime || timestamp)) / 16.67, 3);
+                lastCursorTime = timestamp;
+                const factor = 1 - Math.pow(0.82, dt);
+                cursorX += (mouseX - cursorX) * factor;
+                cursorY += (mouseY - cursorY) * factor;
+                cursor.style.transform = `translate(${cursorX}px, ${cursorY}px) translate(-50%, -50%)`;
+                requestAnimationFrame(animateCursor);
+            }
+            requestAnimationFrame(animateCursor);
+
+            function bindHoverTargets() {
+                document.querySelectorAll('a, button, [style*="cursor: pointer"], [style*="cursor:pointer"]').forEach(el => {
+                    if (el.dataset.cursorBound) return;
+                    el.dataset.cursorBound = 'true';
+                    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+                    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+                });
+            }
+            bindHoverTargets();
+            const rebindObserver = new MutationObserver(bindHoverTargets);
+            rebindObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+        })();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const reveals = document.querySelectorAll('.reveal');
+            const observerOptions = { root: null, rootMargin: '0px 0px -15% 0px', threshold: 0.1 };
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('in-view');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+            reveals.forEach(element => revealObserver.observe(element));
+
+            const scrollDot = document.getElementById('scrollDot');
+            const updateScrollProgress = () => {
+                const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                if (scrollHeight <= 0) return;
+                const scrollPercent = Math.max(0, Math.min(100, (scrollTop / scrollHeight) * 100));
+                if (scrollDot) scrollDot.style.top = `${scrollPercent}%`;
+            };
+            window.addEventListener('scroll', updateScrollProgress, { passive: true });
+            updateScrollProgress();
+        });
+    </script>
+</body>
+</html>

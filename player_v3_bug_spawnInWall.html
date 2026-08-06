@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pixel Art Controller</title>
+    <style>
+        body {
+            background-color: #202020;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #eee;
+            font-family: monospace;
+            overflow: hidden; /* Prevent scrollbars from arrow keys */
+        }
+
+        canvas {
+            background-color: #353535;
+            /* CRITICAL for Pixel Art: prevents blurring when scaling up */
+            image-rendering: pixelated; 
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            border: 4px solid #555;
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            text-align: center;
+            width: 100%;
+            pointer-events: none; /* Let clicks pass through */
+        }
+
+        /* Added Score Display Style */
+        #score-board {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 2px 2px #000;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="score-board">SCORE: 0</div>
+    <canvas id="gameCanvas" width="320" height="240"></canvas>
+    
+    <div class="controls">
+        <p>WASD / Arrows to Move | Space to Attack</p>
+    </div>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const scoreBoard = document.getElementById('score-board');
+
+    // --- CONFIGURATION ---
+    const TILE_SIZE = 16;
+    const COLS = 20; // 320 / 16
+    const ROWS = 15; // 240 / 16
+    const MOVE_SPEED = 60; // Pixels per second
+
+    // --- TILE MAP (0: Floor, 1: Wall, 2: Coin) ---
+    // 20x15 Grid
+    const map = [
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,0,0,0,0,0,1,0,0,2,0,0,1,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,1],
+        [1,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,2,0,0,1],
+        [1,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,1],
+        [1,0,2,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1],
+        [1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1],
+        [1,0,0,0,1,0,0,1,0,0,0,1,0,0,0,1,1,1,0,1],
+        [1,0,0,0,1,0,0,1,0,2,0,1,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,1],
+        [1,0,2,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,2,0,0,1],
+        [1,0,0,1,1,1,0,0,0,2,0,0,0,0,1,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+    ];
+
+    // --- GAME STATE ---
+    let score = 0;
+
+    const player = {
+        x: 48,  // Starting position (floats for smooth movement)
+        y: 48,
+        w: 12,  // Slightly smaller than tile for better feel
+        h: 12,
+        speed: MOVE_SPEED,
+        dx: 0,
+        dy: 0,
+        facing: 'down',
+        isAttacking: false,
+        attackTimer: 0
+    };
+
+    const keys = {
+        ArrowUp: false, ArrowDown: false, ArrowLeft: false, ArrowRight: false,
+        w: false, s: false, a: false, d: false,
+        ' ': false
+    };
+
+    // --- INPUT HANDLERS ---
+    window.addEventListener('keydown', (e) => {
+        if (keys.hasOwnProperty(e.key)) keys[e.key] = true;
+        if (e.key === " " && !player.isAttacking) attack();
+    });
+
+    window.addEventListener('keyup', (e) => {
+        if (keys.hasOwnProperty(e.key)) keys[e.key] = false;
+    });
+
+    function attack() {
+        player.isAttacking = true;
+        player.attackTimer = 0.2; // 200ms attack duration
+    }
+
+    // --- COLLISION LOGIC ---
+
+    function isSolid(x, y) {
+        // Convert pixel coordinate to grid coordinate
+        const col = Math.floor(x / TILE_SIZE);
+        const row = Math.floor(y / TILE_SIZE);
+
+        // Check bounds
+        if (col < 0 || col >= COLS || row < 0 || row >= ROWS) return true;
+
+        // Check wall tile (1)
+        return map[row][col] === 1;
+    }
+
+    // Check overlap with specific tile type (e.g., coins)
+    function checkEntityCollision(x, y, w, h) {
+        const startCol = Math.floor(x / TILE_SIZE);
+        const endCol = Math.floor((x + w - 0.01) / TILE_SIZE);
+        const startRow = Math.floor(y / TILE_SIZE);
+        const endRow = Math.floor((y + h - 0.01) / TILE_SIZE);
+
+        for (let r = startRow; r <= endRow; r++) {
+            for (let c = startCol; c <= endCol; c++) {
+                if (map[r] && map[r][c] === 2) { // 2 is Coin
+                    collectCoin(c, r);
+                }
+            }
+        }
+    }
+
+    function collectCoin(c, r) {
+        map[r][c] = 0; // Remove coin from map
+        score += 10;
+        scoreBoard.innerText = "SCORE: " + score;
+    }
+
+    function movePlayer(dt) {
+        if (player.isAttacking) return; // Freeze movement while attacking
+
+        // Determine input direction
+        const left = keys.ArrowLeft || keys.a;
+        const right = keys.ArrowRight || keys.d;
+        const up = keys.ArrowUp || keys.w;
+        const down = keys.ArrowDown || keys.s;
+
+        player.dx = 0;
+        player.dy = 0;
+
+        if (left) player.dx = -player.speed;
+        if (right) player.dx = player.speed;
+        if (up) player.dy = -player.speed;
+        if (down) player.dy = player.speed;
+
+        // Update Facing
+        if (player.dx < 0) player.facing = 'left';
+        if (player.dx > 0) player.facing = 'right';
+        if (player.dy < 0) player.facing = 'up';
+        if (player.dy > 0) player.facing = 'down';
+
+        // Apply Movement with Collision Checks (Axis Separation)
+        
+        // 1. Try Moving X
+        let nextX = player.x + player.dx * dt;
+        
+        // Check 4 corners for X-axis collision
+        if (!isSolid(nextX, player.y) && 
+            !isSolid(nextX + player.w - 0.01, player.y) &&
+            !isSolid(nextX, player.y + player.h - 0.01) &&
+            !isSolid(nextX + player.w - 0.01, player.y + player.h - 0.01)) {
+            player.x = nextX;
+        } else {
+            // Optional: Snap to grid logic could go here, but simple blocking works best for Zelda-style
+            player.dx = 0; 
+        }
+
+        // 2. Try Moving Y
+        let nextY = player.y + player.dy * dt;
+        
+        // Check 4 corners for Y-axis collision
+        if (!isSolid(player.x, nextY) && 
+            !isSolid(player.x + player.w - 0.01, nextY) &&
+            !isSolid(player.x, nextY + player.h - 0.01) &&
+            !isSolid(player.x + player.w - 0.01, nextY + player.h - 0.01)) {
+            player.y = nextY;
+        } else {
+            player.dy = 0;
+        }
+
+        // Check for coins
+        checkEntityCollision(player.x, player.y, player.w, player.h);
+    }
+
+    // --- RENDER FUNCTIONS ---
+
+    function drawMap() {
+        for (let r = 0; r < ROWS; r++) {
+            for (let c = 0; c < COLS; c++) {
+                const tile = map[r][c];
+                const x = c * TILE_SIZE;
+                const y = r * TILE_SIZE;
+
+                if (tile === 1) {
+                    // Wall
+                    ctx.fillStyle = '#555'; // Dark Grey
+                    ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+                    // Light bevel for 3D effect
+                    ctx.fillStyle = '#666';
+                    ctx.fillRect(x, y, TILE_SIZE, 2);
+                } else if (tile === 2) {
+                    // Coin
+                    // Draw floor first
+                    ctx.fillStyle = '#353535'; 
+                    // Coin visual
+                    ctx.fillStyle = '#ffd700'; // Gold
+                    const padding = 4;
+                    ctx.fillRect(x + padding, y + padding, TILE_SIZE - padding*2, TILE_SIZE - padding*2);
+                } else {
+                    // Floor (using canvas background, but debug lines can be added here)
+                }
+            }
+        }
+    }
+
+    function drawPlayer() {
+        // Snap to integer for crisp rendering
+        const drawX = Math.floor(player.x);
+        const drawY = Math.floor(player.y);
+        const pW = Math.floor(player.w);
+        const pH = Math.floor(player.h);
+
+        // Draw Shadow
+        ctx.fillStyle = 'rgba(0,0,0,0.5)';
+        ctx.fillRect(drawX + 2, drawY + pH - 2, pW - 4, 4);
+
+        // Draw Player Body
+        ctx.fillStyle = player.isAttacking ? '#ff4d4d' : '#4dff88'; 
+        ctx.fillRect(drawX, drawY, pW, pH);
+
+        // Draw Eyes (based on facing)
+        ctx.fillStyle = '#000';
+        if (player.facing === 'right') {
+            ctx.fillRect(drawX + 8, drawY + 3, 2, 2);
+            ctx.fillRect(drawX + 8, drawY + 3 + 4, 2, 2); // Two eyes if sideways? Or just one.
+        } else if (player.facing === 'left') {
+            ctx.fillRect(drawX + 2, drawY + 3, 2, 2);
+        } else if (player.facing === 'down') {
+            ctx.fillRect(drawX + 3, drawY + 4, 2, 2);
+            ctx.fillRect(drawX + 7, drawY + 4, 2, 2);
+        }
+
+        // Draw Attack (Sword)
+        if (player.isAttacking) {
+            ctx.fillStyle = '#eee';
+            let atkX = drawX;
+            let atkY = drawY;
+            const reach = 10;
+            const thickness = 4;
+
+            if (player.facing === 'right') {
+                atkX += pW;
+                atkY += (pH - thickness) / 2;
+                ctx.fillRect(atkX, atkY, reach, thickness);
+            } else if (player.facing === 'left') {
+                atkX -= reach;
+                atkY += (pH - thickness) / 2;
+                ctx.fillRect(atkX, atkY, reach, thickness);
+            } else if (player.facing === 'down') {
+                atkX += (pW - thickness) / 2;
+                atkY += pH;
+                ctx.fillRect(atkX, atkY, thickness, reach);
+            } else if (player.facing === 'up') {
+                atkX += (pW - thickness) / 2;
+                atkY -= reach;
+                ctx.fillRect(atkX, atkY, thickness, reach);
+            }
+        }
+    }
+
+    // --- MAIN LOOP ---
+
+    let lastTime = 0;
+
+    function gameLoop(timestamp) {
+        const deltaTime = (timestamp - lastTime) / 1000;
+        lastTime = timestamp;
+
+        // Cap dt to prevent huge jumps if tab is inactive
+        const dt = Math.min(deltaTime, 0.1);
+
+        // Update
+        if (player.isAttacking) {
+            player.attackTimer -= dt;
+            if (player.attackTimer <= 0) player.isAttacking = false;
+        } else {
+            movePlayer(dt);
+        }
+
+        // Draw
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawMap();
+        drawPlayer();
+
+        requestAnimationFrame(gameLoop);
+    }
+
+    requestAnimationFrame(gameLoop);
+
+</script>
+</body>
+</html>
