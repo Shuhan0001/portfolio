@@ -83,7 +83,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            opacity: 0.35; /* Keeps it strictly in the background */
+            opacity: 0.7; /* 提高不透明度，使背景明显提亮 */
             transform: scale(1.05);
             transition: transform 10s linear;
         }
@@ -97,8 +97,9 @@
         .console-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(90deg, #000000 0%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0.1) 100%),
-                        linear-gradient(0deg, #000000 0%, transparent 20%, transparent 80%, #000000 100%);
+            /* 减轻暗调渐变，让背景图透出更多细节 */
+            background: linear-gradient(90deg, #000000 0%, rgba(0,0,0,0.6) 45%, transparent 100%),
+                        linear-gradient(0deg, rgba(0,0,0,0.8) 0%, transparent 20%, transparent 80%, rgba(0,0,0,0.8) 100%);
             z-index: 1;
         }
 
@@ -472,7 +473,7 @@
                     <!-- Moved AI Codegen to the 4th position -->
                     <a href="AICodeGen_Profilo.html"
                        class="project-row hover-trigger group flex flex-col md:flex-row md:items-center py-5 md:py-6 border-b border-white/5 md:border-none relative"
-                       data-category="prototype" data-pattern="radial-gradient(circle at 50% 50%, rgba(74, 222, 128, 0.15) 0%, transparent 70%)" data-bg="#000000">
+                       data-category="prototype" data-img="Image/Index_AI.png" data-bg="#000000">
                         <div class="flex items-center gap-6 w-full">
                             <span class="text-xs font-mono text-white/30 tabular-nums shrink-0 w-8">04</span>
                             <div class="flex-grow min-w-0 flex flex-col md:flex-row md:items-baseline md:gap-8">
