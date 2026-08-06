@@ -10,6 +10,11 @@
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary">
 
+    <!-- Fragment Mono for consistency with the homepage -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital@0;1&display=swap" rel="stylesheet">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -18,7 +23,7 @@
                 extend: {
                     fontFamily: {
                         sans: ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', 'Arial', 'sans-serif'],
-                        mono: ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Text', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                        mono: ['Fragment Mono', '-apple-system', 'BlinkMacSystemFont', 'SF Pro Text', 'Helvetica Neue', 'Arial', 'sans-serif'],
                     },
                     colors: {
                         dark: '#050505',
@@ -41,24 +46,71 @@
             cursor: none;
             margin: 0;
             padding: 0;
+            overflow-x: hidden;
         }
 
+        /* Override Tailwind pointer cursors */
         *, *::before, *::after {
             cursor: none !important;
         }
 
-        header, footer, nav, label, span, p, a, div {
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+        header, footer, nav, label, span, p, a, div, h1, h2, h3, h4, h5, h6 {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
         }
         .font-mono {
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif !important;
-            letter-spacing: 0.02em;
+            font-family: 'Fragment Mono', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif !important;
+            letter-spacing: 0.03em;
         }
         ::-webkit-scrollbar {
             width: 0px;
             background: transparent;
         }
 
+        /* Console Background Layer */
+        #console-bg-wrapper {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 0.7s cubic-bezier(0.25, 1, 0.3, 1);
+            pointer-events: none;
+        }
+        
+        #console-bg-img,
+        #console-bg-pattern {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.35; /* Keeps it strictly in the background */
+            transform: scale(1.05);
+            transition: transform 10s linear;
+        }
+        
+        .bg-active #console-bg-img,
+        .bg-active #console-bg-pattern {
+            transform: scale(1);
+        }
+
+        /* Dramatic Vignette & Scanlines for the console feel */
+        .console-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, #000000 0%, rgba(0,0,0,0.8) 40%, rgba(0,0,0,0.1) 100%),
+                        linear-gradient(0deg, #000000 0%, transparent 20%, transparent 80%, #000000 100%);
+            z-index: 1;
+        }
+
+        .scanlines {
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px);
+            z-index: 2;
+            mix-blend-mode: overlay;
+        }
+
+        /* Custom Cursor */
         #custom-cursor {
             position: fixed;
             top: 0;
@@ -85,35 +137,165 @@
             mix-blend-mode: normal;
         }
 
-        .text-outline {
-            color: transparent;
-            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
-            transition: all 0.3s ease;
-        }
-        .text-outline:hover {
-            color: white;
-            -webkit-text-stroke: 0px transparent;
+        /* Modern Console (PS5) List Selection Styling */
+        #project-list {
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* Minimal text filters */
+        #project-list:hover .project-row:not(:hover) {
+            opacity: 0.25;
+            transform: scale(0.98) translateX(-4px);
+            filter: blur(1px);
+        }
+
+        .project-title {
+            color: transparent;
+            -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.25);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            transform-origin: left center;
+        }
+        
+        .project-row {
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            z-index: 1;
+            border-radius: 16px;
+        }
+        
+        .project-row::before {
+            /* Soft glowing focus ring & background plate */
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0), 0 0 0 rgba(255, 255, 255, 0);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Glowing vertical line indicator on the left */
+        .project-row::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 15%;
+            bottom: 15%;
+            width: 3px;
+            background: #ffffff;
+            border-radius: 4px;
+            box-shadow: 0 0 10px 1px rgba(255, 255, 255, 0.6), 0 0 4px rgba(255, 255, 255, 0.8);
+            opacity: 0;
+            transform: scaleY(0);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .project-row:hover {
+            background: linear-gradient(90deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.01) 100%);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding-left: 32px !important;
+            padding-right: 32px !important;
+            margin-left: -32px;
+            margin-right: -32px;
+            transform: scale(1.03) translateX(8px);
+            z-index: 10;
+        }
+
+        .project-row:hover::before {
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2), 
+                        0 20px 40px rgba(0, 0, 0, 0.5);
+            background: radial-gradient(circle at 0% 50%, rgba(255,255,255,0.05) 0%, transparent 60%);
+        }
+
+        .project-row:hover::after {
+            opacity: 1;
+            transform: scaleY(1);
+        }
+
+        .project-row:hover .project-title {
+            color: #ffffff;
+            -webkit-text-stroke-color: transparent;
+            text-shadow: 0 4px 20px rgba(255, 255, 255, 0.4);
+            letter-spacing: 0.01em;
+        }
+
+        .project-meta {
+            opacity: 0.4;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .project-row:hover .project-meta {
+            opacity: 1;
+            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
+        }
+
+        /* 纯箭头 Hover 提示（无外圈背景，水平压扁放大） */
+        .start-prompt {
+            opacity: 0;
+            transform: translateX(16px);
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.3, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+        }
+
+        .start-prompt .start-arrow {
+            width: 32px;
+            height: 32px;
+            transform: scaleX(0.5);
+            transform-origin: center;
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.3, 1), color 0.3s ease;
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+        }
+
+        .project-row:hover .start-prompt {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .project-row:hover .start-prompt .start-arrow {
+            transform: scaleX(0.5) translateX(4px);
+        }
+
+        .start-prompt.prompt-blocked {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: none;
+            color: rgba(255, 255, 255, 0.4);
+            width: auto;
+            height: auto;
+            padding: 8px 18px;
+            border-radius: 999px;
+        }
+
+        /* Minimal text filters mimicking console tabs */
         .filter-text {
             color: rgba(255,255,255,0.35);
-            transition: color 0.3s ease;
+            transition: color 0.3s ease, transform 0.2s ease;
+            position: relative;
         }
         .filter-text.active,
         .filter-text:hover {
             color: #ffffff;
         }
-        .filter-text.active {
-            text-decoration: underline;
-            text-underline-offset: 6px;
-            text-decoration-color: rgba(255,255,255,0.4);
+        .filter-text.active::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #fff;
         }
 
-        /* Row list */
+        /* Row list entrance */
         .project-row {
             opacity: 0;
-            transform: translateY(18px);
+            transform: translateY(24px);
             transition: opacity 0.6s cubic-bezier(0.25,1,0.3,1), transform 0.6s cubic-bezier(0.25,1,0.3,1);
         }
         .project-row.in-view {
@@ -121,39 +303,7 @@
             transform: translateY(0);
         }
         .project-row.is-hidden {
-            display: none;
-        }
-
-        /* Floating hover preview */
-        #hover-preview {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 320px;
-            height: 210px;
-            pointer-events: none;
-            border-radius: 18px;
-            overflow: hidden;
-            opacity: 0;
-            transform: scale(0.96);
-            transition: opacity 0.35s cubic-bezier(0.25,1,0.3,1), transform 0.35s cubic-bezier(0.25,1,0.3,1);
-            z-index: 40;
-            border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
-            will-change: transform, opacity;
-        }
-        #hover-preview.active {
-            opacity: 1;
-            transform: scale(1);
-        }
-        #hover-preview img,
-        #hover-preview .preview-pattern {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        @media (max-width: 767px) {
-            #hover-preview { display: none; }
+            display: none !important;
         }
 
         /* Back to Home — matched to Revive_Profilo.html */
@@ -185,12 +335,14 @@
             transition: transform 0.4s cubic-bezier(0.25,1,0.3,1);
         }
         .back-home-btn:hover {
-            color: #4F46E5;
-            border-color: rgba(79, 70, 229, 0.35);
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2), 0 12px 40px -12px rgba(0, 0, 0, 0.6);
             transform: translateY(-2px);
         }
         .back-home-btn:hover svg {
             transform: translateX(-3px);
+            filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.6));
         }
         .back-home-btn:active {
             transform: translateY(0) scale(0.97);
@@ -203,6 +355,7 @@
 </head>
 <body class="selection:bg-primary selection:text-white">
 
+<!-- Page Transition Layers -->
 <div id="page-enter" style="position:fixed; inset:0; z-index:10000; background:#000000; pointer-events:none; opacity:1; transition: opacity 0.85s cubic-bezier(0.25,1,0.3,1);"></div>
 <div id="page-exit" style="position:fixed; inset:0; z-index:10001; background:#000000; pointer-events:none; opacity:0; transition: opacity 0.65s cubic-bezier(0.25,1,0.3,1);"></div>
 <svg style="position:absolute; width:0; height:0; overflow:hidden;" aria-hidden="true">
@@ -214,145 +367,270 @@
         </filter>
     </defs>
 </svg>
+
 <div id="custom-cursor"></div>
-<div id="hover-preview">
-    <img id="hover-preview-img" src="" alt="" style="display:none;">
-    <div id="hover-preview-pattern" class="preview-pattern" style="display:none;"></div>
+
+<!-- Console Immersive Background -->
+<div id="console-bg-wrapper">
+    <img id="console-bg-img" src="" alt="" style="display:none;">
+    <div id="console-bg-pattern" style="display:none;"></div>
+    <div class="console-overlay"></div>
+    <div class="scanlines"></div>
 </div>
 
-<main class="relative z-10 min-h-screen bg-[#050505]">
-
-    <!-- Header -->
-    <header class="flex justify-between items-center w-full p-8 md:p-12">
-        <a href="index.html" class="back-home-btn hover-trigger" aria-label="Back to home">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span>Back to Home</span>
-        </a>
-        <div class="flex items-center gap-6">
-            <a href="Ashton_Zhang_CV.pdf" download class="hover-trigger text-sm uppercase tracking-widest border-b border-white/30 pb-1 hover:border-white transition-colors">Resume</a>
-            <a href="index.html#contact-section" class="hover-trigger text-sm uppercase tracking-widest border-b border-white/30 pb-1 hover:border-white transition-colors">Contact</a>
-        </div>
-    </header>
-
-    <!-- Title -->
-    <section class="px-8 md:px-24 pt-12 pb-10">
-        <div class="max-w-6xl mx-auto w-full">
-            <h2 class="text-sm font-mono tracking-widest text-primary mb-4 uppercase">05 / Full Archive</h2>
-            <h3 class="text-4xl md:text-6xl font-bold tracking-tight">All <span class="text-outline">Projects</span></h3>
-        </div>
-    </section>
-
-    <!-- Filters -->
-    <section class="px-8 md:px-24 mb-6">
-        <div class="max-w-6xl mx-auto w-full flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-xs md:text-sm uppercase tracking-widest" id="filter-bar">
-            <button class="filter-text hover-trigger active" data-filter="all">All</button>
-            <button class="filter-text hover-trigger" data-filter="prototype">Prototype</button>
-            <button class="filter-text hover-trigger" data-filter="demo">Demo</button>
-            <button class="filter-text hover-trigger" data-filter="internship">Internship</button>
-        </div>
-    </section>
-
-    <!-- Project List -->
-    <section class="px-8 md:px-24 pb-32">
-        <div class="max-w-6xl mx-auto w-full border-t border-white/10" id="project-list">
-
-            <a href="Revive_Profilo.html"
-               class="project-row hover-trigger group flex items-center justify-between gap-6 py-8 md:py-10 border-b border-white/10"
-               data-category="prototype" data-img="Image/Index_Revive.png">
-                <div class="flex items-baseline gap-5 md:gap-10 min-w-0">
-                    <span class="text-xs font-mono text-gray-600 tabular-nums shrink-0">01</span>
-                    <div class="min-w-0">
-                        <h4 class="text-3xl md:text-5xl font-bold tracking-tight text-gray-500 group-hover:text-white transition-colors duration-500 truncate">Revive</h4>
-                        <span class="text-[11px] md:text-xs font-mono text-gray-600 tracking-widest uppercase mt-1 flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-primary inline-block"></span>
-                            UE5 · Prototype · 2025
-                        </span>
-                    </div>
-                </div>
-                <svg class="w-5 h-5 md:w-6 md:h-6 text-gray-600 group-hover:text-white group-hover:translate-x-1 transition-all duration-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+<main class="relative z-10 min-h-screen flex flex-col justify-between" id="smooth-wrapper">
+    <div id="smooth-content" class="flex flex-col min-h-screen">
+        
+        <!-- Header (Kept fixed at the top) -->
+        <header class="flex justify-between items-center w-full p-6 md:p-10 relative z-20">
+            <a href="index.html" class="back-home-btn hover-trigger" aria-label="Back to home">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
+                <span>Back to Home</span>
             </a>
-
-            <a href="CogniStream_Profilo.html"
-               class="project-row hover-trigger group flex items-center justify-between gap-6 py-8 md:py-10 border-b border-white/10"
-               data-category="prototype" data-img="Image/Index_CogniStream.png">
-                <div class="flex items-baseline gap-5 md:gap-10 min-w-0">
-                    <span class="text-xs font-mono text-gray-600 tabular-nums shrink-0">02</span>
-                    <div class="min-w-0">
-                        <h4 class="text-3xl md:text-5xl font-bold tracking-tight text-gray-500 group-hover:text-white transition-colors duration-500 truncate">Cogni-Stream</h4>
-                        <span class="text-[11px] md:text-xs font-mono text-gray-600 tracking-widest uppercase mt-1 flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-primary inline-block"></span>
-                            Speculative Design · 2025
-                        </span>
-                    </div>
-                </div>
-                <svg class="w-5 h-5 md:w-6 md:h-6 text-gray-600 group-hover:text-white group-hover:translate-x-1 transition-all duration-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                </svg>
-            </a>
-
-            <a href="MiniQuest_Profilo.html"
-               class="project-row hover-trigger group flex items-center justify-between gap-6 py-8 md:py-10 border-b border-white/10"
-               data-category="demo" data-pattern="radial-gradient(circle at 75% 30%, rgba(74,222,148,0.35) 0%, transparent 55%), repeating-linear-gradient(0deg, rgba(74,222,148,0.1) 0px, rgba(74,222,148,0.1) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(90deg, rgba(74,222,148,0.1) 0px, rgba(74,222,148,0.1) 2px, transparent 2px, transparent 22px)" data-bg="#06120c">
-                <div class="flex items-baseline gap-5 md:gap-10 min-w-0">
-                    <span class="text-xs font-mono text-gray-600 tabular-nums shrink-0">03</span>
-                    <div class="min-w-0">
-                        <h4 class="text-3xl md:text-5xl font-bold tracking-tight text-gray-500 group-hover:text-white transition-colors duration-500 truncate">MiniQuest</h4>
-                        <span class="text-[11px] md:text-xs font-mono text-gray-600 tracking-widest uppercase mt-1 flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-primary inline-block"></span>
-                            Android · Demo · 2025
-                        </span>
-                    </div>
-                </div>
-                <svg class="w-5 h-5 md:w-6 md:h-6 text-gray-600 group-hover:text-white group-hover:translate-x-1 transition-all duration-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                </svg>
-            </a>
-
-            <a href="HauntedSchool_Profilo.html"
-               class="project-row hover-trigger group flex items-center justify-between gap-6 py-8 md:py-10 border-b border-white/10"
-               data-category="demo" data-img="Image/Index_SilentNight.png" data-pattern="radial-gradient(circle at 30% 70%, rgba(244,63,94,0.35) 0%, transparent 55%), repeating-linear-gradient(0deg, rgba(244,63,94,0.1) 0px, rgba(244,63,94,0.1) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(90deg, rgba(244,63,94,0.1) 0px, rgba(244,63,94,0.1) 2px, transparent 2px, transparent 22px)" data-bg="#12060a">
-                <div class="flex items-baseline gap-5 md:gap-10 min-w-0">
-                    <span class="text-xs font-mono text-gray-600 tabular-nums shrink-0">04</span>
-                    <div class="min-w-0">
-                        <h4 class="text-3xl md:text-5xl font-bold tracking-tight text-gray-500 group-hover:text-white transition-colors duration-500 truncate">Silent Night at the Haunted School</h4>
-                        <span class="text-[11px] md:text-xs font-mono text-gray-600 tracking-widest uppercase mt-1 flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-rose-500 inline-block"></span>
-                            Unity · Group Project · 2025
-                        </span>
-                    </div>
-                </div>
-                <svg class="w-5 h-5 md:w-6 md:h-6 text-gray-600 group-hover:text-white group-hover:translate-x-1 transition-all duration-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                </svg>
-            </a>
-
-            <div class="project-row group flex items-center justify-between gap-6 py-8 md:py-10 border-b border-white/10"
-                 data-category="internship" data-pattern="radial-gradient(circle at 70% 30%, rgba(79,70,229,0.4) 0%, transparent 55%), repeating-linear-gradient(0deg, rgba(79,70,229,0.1) 0px, rgba(79,70,229,0.1) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(90deg, rgba(79,70,229,0.1) 0px, rgba(79,70,229,0.1) 2px, transparent 2px, transparent 22px)" data-bg="#07070f">
-                <div class="flex items-baseline gap-5 md:gap-10 min-w-0">
-                    <span class="text-xs font-mono text-gray-600 tabular-nums shrink-0">05</span>
-                    <div class="min-w-0">
-                        <h4 class="text-3xl md:text-5xl font-bold tracking-tight text-gray-500 group-hover:text-white transition-colors duration-500 truncate">Game Assistant Internship</h4>
-                        <span class="text-[11px] md:text-xs font-mono text-gray-600 tracking-widest uppercase mt-1 block">Live-Ops · Internship · 2025</span>
-                    </div>
-                </div>
-                <span class="text-[11px] font-mono text-gray-600 uppercase tracking-widest whitespace-nowrap shrink-0">Coming Soon</span>
+            <div class="flex items-center gap-6">
+                <a href="Ashton_Zhang_CV.pdf" download class="hover-trigger magnetic text-sm font-sans uppercase tracking-widest border-b border-transparent hover:border-white/50 transition-colors pb-1 p-2">Resume</a>
+                <a href="index.html#contact-section" class="hover-trigger magnetic text-sm font-sans uppercase tracking-widest border-b border-transparent hover:border-white/50 transition-colors pb-1 p-2">Contact</a>
             </div>
+        </header>
 
+        <!-- Main Content Grid: Shifted upward using justify-start & adjusted top padding -->
+        <div class="flex-grow flex flex-col justify-start px-8 md:px-24 pt-2 md:pt-6 pb-16 md:pb-20">
+            <div class="max-w-7xl w-full mx-auto relative z-20">
+                
+                <!-- Title & Filters (Optimized bottom margin for vertical hierarchy) -->
+                <div class="mb-8 md:mb-12">
+                    <h2 class="text-xs font-mono tracking-widest text-white/50 mb-3 uppercase flex items-center gap-3">
+                        05 / SYSTEM STORAGE
+                    </h2>
+                    <h3 class="text-4xl md:text-5xl font-bold tracking-tight uppercase mb-6">Data Archive</h3>
+                    
+                    <!-- Console-style Filter Bar (Updated to Apple SF Pro font-sans & uppercase text) -->
+                    <div class="flex flex-wrap items-center gap-x-8 gap-y-4 font-sans font-medium text-xs md:text-sm uppercase tracking-widest" id="filter-bar">
+                        <button class="filter-text hover-trigger active" data-filter="all">ALL DATA</button>
+                        <button class="filter-text hover-trigger" data-filter="prototype">PROTOTYPES</button>
+                        <button class="filter-text hover-trigger" data-filter="demo">DEMOS</button>
+                        <button class="filter-text hover-trigger" data-filter="internship">INTERNSHIPS</button>
+                    </div>
+                </div>
+
+                <!-- Project List (Arcade Selection Style) -->
+                <div class="flex flex-col gap-2" id="project-list">
+
+                    <a href="Revive_Profilo.html"
+                       class="project-row hover-trigger group flex flex-col md:flex-row md:items-center py-5 md:py-6 border-b border-white/5 md:border-none relative"
+                       data-category="prototype" data-img="Image/Index_Revive.png">
+                        <div class="flex items-center gap-6 w-full">
+                            <span class="text-xs font-mono text-white/30 tabular-nums shrink-0 w-8">01</span>
+                            <div class="flex-grow min-w-0 flex flex-col md:flex-row md:items-baseline md:gap-8">
+                                <h4 class="project-title text-4xl md:text-6xl font-black uppercase tracking-tighter truncate">Revive</h4>
+                                <span class="project-meta text-[11px] md:text-xs font-mono uppercase tracking-widest mt-2 md:mt-0">
+                                    UE5 · Prototype · 2025
+                                </span>
+                            </div>
+                            <div class="start-prompt hidden md:flex">
+                                <svg class="start-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="CogniStream_Profilo.html"
+                       class="project-row hover-trigger group flex flex-col md:flex-row md:items-center py-5 md:py-6 border-b border-white/5 md:border-none relative"
+                       data-category="prototype" data-img="Image/Index_CogniStream.png">
+                        <div class="flex items-center gap-6 w-full">
+                            <span class="text-xs font-mono text-white/30 tabular-nums shrink-0 w-8">02</span>
+                            <div class="flex-grow min-w-0 flex flex-col md:flex-row md:items-baseline md:gap-8">
+                                <h4 class="project-title text-4xl md:text-6xl font-black uppercase tracking-tighter truncate">Cogni-Stream</h4>
+                                <span class="project-meta text-[11px] md:text-xs font-mono uppercase tracking-widest mt-2 md:mt-0">
+                                    Speculative Design · 2025
+                                </span>
+                            </div>
+                            <div class="start-prompt hidden md:flex">
+                                <svg class="start-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="MiniQuest_Profilo.html"
+                       class="project-row hover-trigger group flex flex-col md:flex-row md:items-center py-5 md:py-6 border-b border-white/5 md:border-none relative"
+                       data-category="demo" data-pattern="radial-gradient(circle at 75% 30%, rgba(74,222,148,0.3) 0%, transparent 60%), repeating-linear-gradient(0deg, rgba(74,222,148,0.05) 0px, rgba(74,222,148,0.05) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(90deg, rgba(74,222,148,0.05) 0px, rgba(74,222,148,0.05) 2px, transparent 2px, transparent 22px)" data-bg="#020804">
+                        <div class="flex items-center gap-6 w-full">
+                            <span class="text-xs font-mono text-white/30 tabular-nums shrink-0 w-8">03</span>
+                            <div class="flex-grow min-w-0 flex flex-col md:flex-row md:items-baseline md:gap-8">
+                                <h4 class="project-title text-4xl md:text-6xl font-black uppercase tracking-tighter truncate">MiniQuest</h4>
+                                <span class="project-meta text-[11px] md:text-xs font-mono uppercase tracking-widest mt-2 md:mt-0">
+                                    Android · Demo · 2025
+                                </span>
+                            </div>
+                            <div class="start-prompt hidden md:flex">
+                                <svg class="start-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="HauntedSchool_Profilo.html"
+                       class="project-row hover-trigger group flex flex-col md:flex-row md:items-center py-5 md:py-6 border-b border-white/5 md:border-none relative"
+                       data-category="demo" data-img="Image/Index_SilentNight.png" data-pattern="radial-gradient(circle at 30% 70%, rgba(244,63,94,0.3) 0%, transparent 60%), repeating-linear-gradient(0deg, rgba(244,63,94,0.05) 0px, rgba(244,63,94,0.05) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(90deg, rgba(244,63,94,0.05) 0px, rgba(244,63,94,0.05) 2px, transparent 2px, transparent 22px)">
+                        <div class="flex items-center gap-6 w-full">
+                            <span class="text-xs font-mono text-white/30 tabular-nums shrink-0 w-8">04</span>
+                            <div class="flex-grow min-w-0 flex flex-col md:flex-row md:items-baseline md:gap-8">
+                                <h4 class="project-title text-4xl md:text-6xl font-black uppercase tracking-tighter truncate">Silent Night</h4>
+                                <span class="project-meta text-[11px] md:text-xs font-mono uppercase tracking-widest mt-2 md:mt-0">
+                                    Unity · Demo · 2024
+                                </span>
+                            </div>
+                            <div class="start-prompt hidden md:flex">
+                                <svg class="start-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="Supermarket_Simulator_Profilo.html"
+                       class="project-row hover-trigger group flex flex-col md:flex-row md:items-center py-5 md:py-6 border-b border-white/5 md:border-none relative"
+                       data-category="demo" data-pattern="radial-gradient(circle at 50% 50%, rgba(255,255,255,0.1) 0%, transparent 70%)" data-bg="#050505">
+                        <div class="flex items-center gap-6 w-full">
+                            <span class="text-xs font-mono text-white/30 tabular-nums shrink-0 w-8">05</span>
+                            <div class="flex-grow min-w-0 flex flex-col md:flex-row md:items-baseline md:gap-8">
+                                <h4 class="project-title text-4xl md:text-6xl font-black uppercase tracking-tighter truncate">Supermarket</h4>
+                                <span class="project-meta text-[11px] md:text-xs font-mono uppercase tracking-widest mt-2 md:mt-0">
+                                    Unity · In Dev · 2026
+                                </span>
+                            </div>
+                            <div class="start-prompt hidden md:flex">
+                                <svg class="start-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="Threshold_Profilo.html"
+                       class="project-row hover-trigger group flex flex-col md:flex-row md:items-center py-5 md:py-6 border-b border-white/5 md:border-none relative"
+                       data-category="prototype" data-pattern="radial-gradient(circle at 60% 40%, rgba(139,92,246,0.2) 0%, transparent 70%)" data-bg="#050505">
+                        <div class="flex items-center gap-6 w-full">
+                            <span class="text-xs font-mono text-white/30 tabular-nums shrink-0 w-8">06</span>
+                            <div class="flex-grow min-w-0 flex flex-col md:flex-row md:items-baseline md:gap-8">
+                                <h4 class="project-title text-4xl md:text-6xl font-black uppercase tracking-tighter truncate">Threshold</h4>
+                                <span class="project-meta text-[11px] md:text-xs font-mono uppercase tracking-widest mt-2 md:mt-0">
+                                    Tangible Interface · In Dev
+                                </span>
+                            </div>
+                            <div class="start-prompt hidden md:flex">
+                                <svg class="start-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="CogniStream_Profilo.html"
+                       class="project-row hover-trigger group flex flex-col md:flex-row md:items-center py-5 md:py-6 border-b border-white/5 md:border-none relative"
+                       data-category="prototype" data-img="Image/Index_CogniStream.png">
+                        <div class="flex items-center gap-6 w-full">
+                            <span class="text-xs font-mono text-white/30 tabular-nums shrink-0 w-8">02</span>
+                            <div class="flex-grow min-w-0 flex flex-col md:flex-row md:items-baseline md:gap-8">
+                                <h4 class="project-title text-4xl md:text-6xl font-black uppercase tracking-tighter truncate">Cogni-Stream</h4>
+                                <span class="project-meta text-[11px] md:text-xs font-mono uppercase tracking-widest mt-2 md:mt-0">
+                                    Speculative Design · 2025
+                                </span>
+                            </div>
+                            <div class="start-prompt hidden md:flex">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="MiniQuest_Profilo.html"
+                       class="project-row hover-trigger group flex flex-col md:flex-row md:items-center py-5 md:py-6 border-b border-white/5 md:border-none relative"
+                       data-category="demo" data-pattern="radial-gradient(circle at 75% 30%, rgba(74,222,148,0.3) 0%, transparent 60%), repeating-linear-gradient(0deg, rgba(74,222,148,0.05) 0px, rgba(74,222,148,0.05) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(90deg, rgba(74,222,148,0.05) 0px, rgba(74,222,148,0.05) 2px, transparent 2px, transparent 22px)" data-bg="#020804">
+                        <div class="flex items-center gap-6 w-full">
+                            <span class="text-xs font-mono text-white/30 tabular-nums shrink-0 w-8">03</span>
+                            <div class="flex-grow min-w-0 flex flex-col md:flex-row md:items-baseline md:gap-8">
+                                <h4 class="project-title text-4xl md:text-6xl font-black uppercase tracking-tighter truncate">MiniQuest</h4>
+                                <span class="project-meta text-[11px] md:text-xs font-mono uppercase tracking-widest mt-2 md:mt-0">
+                                    Android · Demo · 2025
+                                </span>
+                            </div>
+                            <div class="start-prompt hidden md:flex">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="HauntedSchool_Profilo.html"
+                       class="project-row hover-trigger group flex flex-col md:flex-row md:items-center py-5 md:py-6 border-b border-white/5 md:border-none relative"
+                       data-category="demo" data-img="Image/Index_SilentNight.png" data-pattern="radial-gradient(circle at 30% 70%, rgba(244,63,94,0.3) 0%, transparent 60%), repeating-linear-gradient(0deg, rgba(244,63,94,0.05) 0px, rgba(244,63,94,0.05) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(90deg, rgba(244,63,94,0.05) 0px, rgba(244,63,94,0.05) 2px, transparent 2px, transparent 22px)">
+                        <div class="flex items-center gap-6 w-full">
+                            <span class="text-xs font-mono text-white/30 tabular-nums shrink-0 w-8">04</span>
+                            <div class="flex-grow min-w-0 flex flex-col md:flex-row md:items-baseline md:gap-8">
+                                <h4 class="project-title text-4xl md:text-6xl font-black uppercase tracking-tighter truncate">Silent Night</h4>
+                                <span class="project-meta text-[11px] md:text-xs font-mono uppercase tracking-widest mt-2 md:mt-0">
+                                    Unity · Demo · 2024
+                                </span>
+                            </div>
+                            <div class="start-prompt hidden md:flex">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="Supermarket_Simulator_Profilo.html"
+                       class="project-row hover-trigger group flex flex-col md:flex-row md:items-center py-5 md:py-6 border-b border-white/5 md:border-none relative"
+                       data-category="demo" data-pattern="radial-gradient(circle at 50% 50%, rgba(255,255,255,0.1) 0%, transparent 70%)" data-bg="#050505">
+                        <div class="flex items-center gap-6 w-full">
+                            <span class="text-xs font-mono text-white/30 tabular-nums shrink-0 w-8">05</span>
+                            <div class="flex-grow min-w-0 flex flex-col md:flex-row md:items-baseline md:gap-8">
+                                <h4 class="project-title text-4xl md:text-6xl font-black uppercase tracking-tighter truncate">Supermarket</h4>
+                                <span class="project-meta text-[11px] md:text-xs font-mono uppercase tracking-widest mt-2 md:mt-0">
+                                    Unity · In Dev · 2026
+                                </span>
+                            </div>
+                            <div class="start-prompt hidden md:flex">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="Threshold_Profilo.html"
+                       class="project-row hover-trigger group flex flex-col md:flex-row md:items-center py-5 md:py-6 border-b border-white/5 md:border-none relative"
+                       data-category="prototype" data-pattern="radial-gradient(circle at 60% 40%, rgba(139,92,246,0.2) 0%, transparent 70%)" data-bg="#050505">
+                        <div class="flex items-center gap-6 w-full">
+                            <span class="text-xs font-mono text-white/30 tabular-nums shrink-0 w-8">06</span>
+                            <div class="flex-grow min-w-0 flex flex-col md:flex-row md:items-baseline md:gap-8">
+                                <h4 class="project-title text-4xl md:text-6xl font-black uppercase tracking-tighter truncate">Threshold</h4>
+                                <span class="project-meta text-[11px] md:text-xs font-mono uppercase tracking-widest mt-2 md:mt-0">
+                                    Tangible Interface · In Dev
+                                </span>
+                            </div>
+                            <div class="start-prompt hidden md:flex">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="#"
+                       class="project-row hover-trigger group flex flex-col md:flex-row md:items-center py-5 md:py-6 border-b border-white/5 md:border-none relative"
+                       data-category="internship" data-bg="#030303">
+                        <div class="flex items-center gap-6 w-full">
+                            <span class="text-xs font-mono text-white/30 tabular-nums shrink-0 w-8">07</span>
+                            <div class="flex-grow min-w-0 flex flex-col md:flex-row md:items-baseline md:gap-8">
+                                <h4 class="project-title text-4xl md:text-6xl font-black uppercase tracking-tighter truncate">QQ Dance</h4>
+                                <span class="project-meta text-[11px] md:text-xs font-mono uppercase tracking-widest mt-2 md:mt-0">
+                                    Live-Ops Internship · 2025
+                                </span>
+                            </div>
+                            <div class="start-prompt prompt-blocked hidden md:flex font-mono text-xs uppercase tracking-[0.15em]">
+                                <span>Blocked</span>
+                            </div>
+                        </div>
+                    </a>
+
+                </div>
+            </div>
         </div>
-    </section>
 
-    <!-- Footer -->
-    <footer class="px-8 md:px-24 pb-16">
-        <div class="max-w-6xl mx-auto w-full pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-gray-600 text-xs font-mono tracking-widest">
-            <span>© 2026 ASHTON ZHANG</span>
-            <span>GAME DESIGN PORTFOLIO</span>
-        </div>
-    </footer>
+        <footer class="w-full text-center text-xs font-mono text-white/30 uppercase tracking-[0.2em] py-8 z-20 mt-auto">
+            © 2026 ASHTON (SHUHAN) ZHANG
+        </footer>
 
+    </div>
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -360,35 +638,7 @@
 
 <script>
     // --------------------------------------------------------
-    // Smooth Scrolling (Lenis) — same feel as the home page
-    // --------------------------------------------------------
-    const lenis = new Lenis({
-        duration: 1.2,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        smooth: true,
-    });
-    gsap.ticker.add((time) => { lenis.raf(time * 1000); });
-    gsap.ticker.lagSmoothing(0);
-
-    // --------------------------------------------------------
-    // Back to Home — fade transition, matched to Revive_Profilo.html
-    // --------------------------------------------------------
-    (function() {
-        const btn = document.querySelector('.back-home-btn');
-        const exit = document.getElementById('page-exit');
-        if (!btn || !exit) return;
-        btn.addEventListener('click', function(e) {
-            const href = btn.getAttribute('href');
-            if (!href || e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
-            e.preventDefault();
-            exit.style.pointerEvents = 'auto';
-            exit.style.opacity = '1';
-            setTimeout(() => { window.location.href = href; }, 650);
-        });
-    })();
-
-    // --------------------------------------------------------
-    // Custom Cursor
+    // 1. Custom Cursor & Magnetic Hover (Matched to Index)
     // --------------------------------------------------------
     const cursor = document.getElementById('custom-cursor');
     let mouseX = window.innerWidth / 2;
@@ -418,96 +668,146 @@
         el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
     });
 
-    // Entrance fade — mirrors the home page so arriving here reads as
-    // a continuation, not a hard cut.
-    requestAnimationFrame(() => {
+    document.querySelectorAll('.magnetic').forEach(elem => {
+        elem.addEventListener('mousemove', (e) => {
+            const rect = elem.getBoundingClientRect();
+            const x = (e.clientX - rect.left - rect.width / 2) * 0.4;
+            const y = (e.clientY - rect.top - rect.height / 2) * 0.4;
+            gsap.to(elem, { x: x, y: y, duration: 0.3, ease: "power2.out" });
+        });
+        elem.addEventListener('mouseleave', () => {
+            gsap.to(elem, { x: 0, y: 0, duration: 0.8, ease: "elastic.out(1, 0.3)" });
+        });
+    });
+
+    // --------------------------------------------------------
+    // 2. Smooth Scrolling (Lenis)
+    // --------------------------------------------------------
+    if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+    }
+
+    const lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smooth: true,
+    });
+
+    gsap.ticker.add((time) => {
+        lenis.raf(time * 1000);
+    });
+    gsap.ticker.lagSmoothing(0);
+
+    // --------------------------------------------------------
+    // 3. Page Transitions
+    // --------------------------------------------------------
+    window.addEventListener('load', () => {
         const enter = document.getElementById('page-enter');
         if (enter) {
             enter.style.opacity = '0';
             setTimeout(() => enter.remove(), 900);
         }
+        
+        // Stagger list entrance
+        setTimeout(() => {
+            document.querySelectorAll('.project-row').forEach((row, index) => {
+                setTimeout(() => {
+                    row.classList.add('in-view');
+                }, index * 100);
+            });
+        }, 300);
+    });
+
+    // Link transitions
+    document.querySelectorAll('a').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            const target = this.getAttribute('target');
+            
+            if (href && href.startsWith('#')) return; // Ignore hash links
+            if (target === '_blank' || e.ctrlKey || e.metaKey || href.includes('.pdf') || href === '#') return; // Ignore external/new tabs/downloads/empty
+            
+            e.preventDefault();
+            const exit = document.getElementById('page-exit');
+            if (exit) {
+                exit.style.opacity = '1';
+                setTimeout(() => {
+                    window.location.href = href;
+                }, 650);
+            }
+        });
     });
 
     // --------------------------------------------------------
-    // Floating hover preview — follows the cursor, swaps content
-    // per row. This is the page's one signature interaction.
+    // 4. Hover Backgrounds & Filtering System
     // --------------------------------------------------------
-    const preview = document.getElementById('hover-preview');
-    const previewImg = document.getElementById('hover-preview-img');
-    const previewPattern = document.getElementById('hover-preview-pattern');
-    let previewX = 0, previewY = 0, targetX = 0, targetY = 0;
+    const bgWrapper = document.getElementById('console-bg-wrapper');
+    const bgImg = document.getElementById('console-bg-img');
+    const bgPattern = document.getElementById('console-bg-pattern');
+    const rows = document.querySelectorAll('.project-row');
+    const filterBtns = document.querySelectorAll('.filter-text');
 
-    document.addEventListener('mousemove', (e) => {
-        targetX = e.clientX + 28;
-        targetY = e.clientY - 105;
-    });
-
-    function animatePreview() {
-        previewX += (targetX - previewX) * 0.18;
-        previewY += (targetY - previewY) * 0.18;
-        preview.style.transform = `translate(${previewX}px, ${previewY}px) scale(${preview.classList.contains('active') ? 1 : 0.96})`;
-        requestAnimationFrame(animatePreview);
-    }
-    animatePreview();
-
-    document.querySelectorAll('.project-row').forEach(row => {
+    // Hover System
+    rows.forEach(row => {
         row.addEventListener('mouseenter', () => {
-            const img = row.dataset.img;
-            const pattern = row.dataset.pattern;
-            const bg = row.dataset.bg;
+            const img = row.getAttribute('data-img');
+            const pattern = row.getAttribute('data-pattern');
+            const bgColor = row.getAttribute('data-bg') || '#000000';
+
+            bgWrapper.style.opacity = '1';
+            bgWrapper.classList.add('bg-active');
 
             if (img) {
-                previewImg.src = img;
-                previewImg.style.display = 'block';
-                previewPattern.style.display = 'none';
+                bgImg.src = img;
+                bgImg.style.display = 'block';
+                bgPattern.style.display = 'none';
             } else if (pattern) {
-                previewPattern.style.backgroundImage = pattern;
-                previewPattern.style.backgroundColor = bg || '#000';
-                previewPattern.style.display = 'block';
-                previewImg.style.display = 'none';
+                bgImg.style.display = 'none';
+                bgPattern.style.display = 'block';
+                bgPattern.style.background = pattern;
+                bgPattern.style.backgroundColor = bgColor;
+            } else {
+                bgImg.style.display = 'none';
+                bgPattern.style.display = 'block';
+                bgPattern.style.background = 'none';
+                bgPattern.style.backgroundColor = bgColor;
             }
-            preview.classList.add('active');
         });
+
         row.addEventListener('mouseleave', () => {
-            preview.classList.remove('active');
+            bgWrapper.style.opacity = '0';
+            bgWrapper.classList.remove('bg-active');
         });
     });
 
-    // --------------------------------------------------------
-    // Filter bar
-    // --------------------------------------------------------
-    const filterBar = document.getElementById('filter-bar');
-    const rows = Array.from(document.querySelectorAll('.project-row'));
-
-    filterBar.addEventListener('click', (e) => {
-        const btn = e.target.closest('.filter-text');
-        if (!btn) return;
-
-        filterBar.querySelectorAll('.filter-text').forEach(p => p.classList.remove('active'));
-        btn.classList.add('active');
-
-        const filter = btn.dataset.filter;
-        rows.forEach(row => {
-            const match = filter === 'all' || row.dataset.category === filter;
-            row.classList.toggle('is-hidden', !match);
+    // Filter System
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Update active state on buttons
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            const filter = btn.getAttribute('data-filter');
+            
+            rows.forEach((row, index) => {
+                const category = row.getAttribute('data-category');
+                
+                // Hide row initially for transition
+                row.classList.remove('in-view');
+                
+                setTimeout(() => {
+                    if (filter === 'all' || category === filter) {
+                        row.classList.remove('is-hidden');
+                        // Small delay to allow display block to take effect before transitioning opacity
+                        setTimeout(() => {
+                            row.classList.add('in-view');
+                        }, 50 + (index * 30)); // Stagger re-entry slightly
+                    } else {
+                        row.classList.add('is-hidden');
+                    }
+                }, 400); // Wait for fade out
+            });
         });
-    });
-
-    // --------------------------------------------------------
-    // Reveal rows on scroll
-    // --------------------------------------------------------
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('in-view');
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.15 });
-
-    rows.forEach((row, i) => {
-        row.style.transitionDelay = `${Math.min(i, 5) * 60}ms`;
-        observer.observe(row);
     });
 </script>
 </body>
