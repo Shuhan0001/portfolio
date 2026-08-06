@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -11,7 +11,7 @@
 
     <style>
         :root {
-            /* Palette: Terminal Moss â€?a low-saturation RPG green paired with
+            /* Palette: Terminal Moss ?a low-saturation RPG green paired with
                a warm quest-gold, tuned for a behavioral-health / gamification brief.
                Cooler and quieter than Revive's amber, warmer than Cogni-Stream's cyan. */
             --bg-void: #000000;
@@ -244,7 +244,7 @@
         .prototype-btn:active { transform: translateY(-1px) scale(0.98); }
 
         /* ---------------------------------------------------------- */
-        /* Quest log â€?recreated as a small RPG-style task list to     */
+        /* Quest log ?recreated as a small RPG-style task list to     */
         /* echo MiniQuest's own in-app aesthetic                       */
         /* ---------------------------------------------------------- */
         .quest-grid {
@@ -313,12 +313,12 @@
         .perm-table td { padding: 1.1rem 1rem; border-bottom: 1px solid var(--border-subtle); font-size: 0.95rem; color: var(--text-secondary); vertical-align: top; }
         .perm-table td:first-child { color: var(--text-primary); font-weight: 600; white-space: nowrap; }
 
-        /* Quote block â€?pull quotes, same treatment as Cogni-Stream */
+        /* Quote block ?pull quotes, same treatment as Cogni-Stream */
         .quote-block { border-left: 2px solid var(--accent-moss); padding-left: 1.5rem; margin: 2.5rem 0; }
         .quote-block p { font-size: 1.15rem; color: var(--text-primary); font-weight: 500; line-height: 1.5; }
         .quote-block span { display: block; margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-tertiary); }
 
-        /* Reference grid â€?image + title + text, mirrors Cogni-Stream's
+        /* Reference grid ?image + title + text, mirrors Cogni-Stream's
            "Design Background" moodboard layout */
         .media-frame.on-light {
             background: #f4f4f2; border-color: rgba(0,0,0,0.08);
@@ -327,8 +327,8 @@
         .media-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .media-frame img.contain { object-fit: contain; padding: 1.5rem; }
 
-        /* Three-state machine cards â€?same card grammar as Cogni-Stream's
-           halo-grid, adapted to MiniQuest's Idle â†?Thinking â†?Reply flow */
+        /* Three-state machine cards ?same card grammar as Cogni-Stream's
+           halo-grid, adapted to MiniQuest's Idle ?Thinking ?Reply flow */
         .state-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1.5rem; margin-top: 2.5rem;
@@ -352,8 +352,8 @@
 
         .limit-list, .future-list { list-style: none; margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; }
         .limit-list li, .future-list li { padding-left: 1.75rem; position: relative; color: var(--text-secondary); font-size: 1rem; line-height: 1.6; }
-        .limit-list li::before { content: "â€?; position: absolute; left: 0; color: var(--accent-red); }
-        .future-list li::before { content: "â€?; position: absolute; left: 0; color: var(--accent-moss); }
+        .limit-list li::before { content: "â€¢"; position: absolute; left: 0; color: var(--accent-red); }
+        .future-list li::before { content: "â€¢"; position: absolute; left: 0; color: var(--accent-moss); }
         .limit-list strong, .future-list strong { color: var(--text-primary); }
     </style>
 </head>
@@ -498,12 +498,12 @@
                             <div class="arch-layer-title">View</div>
                             <div class="arch-layer-body">Jetpack Compose UI: a passive consumer that maps <code>StateFlow</code> to screen and forwards user intent upward. No business logic lives here.</div>
                         </div>
-                        <div class="arch-arrow">â†?StateFlow updates Â· â†?user intent</div>
+                        <div class="arch-arrow">?StateFlow updates Â· ?user intent</div>
                         <div class="arch-layer">
                             <div class="arch-layer-title">ViewModel: AppViewModel</div>
                             <div class="arch-layer-body">Holds the immutable <code>StateFlow&lt;T&gt;</code>, orchestrates repository calls, sensor input and the AI API, and scopes every coroutine to <code>viewModelScope</code> so nothing outlives the screen.</div>
                         </div>
-                        <div class="arch-arrow">â†?raw data streams Â· â†?read / write calls</div>
+                        <div class="arch-arrow">?raw data streams Â· ?read / write calls</div>
                         <div class="arch-layer">
                             <div class="arch-layer-title">Model</div>
                             <div class="arch-layer-body"><code>QuestRepository</code> (Room persistence) Â· <code>StepSensorManager</code> (hardware abstraction) Â· <code>OkClient</code> (web service): each with a single responsibility, none aware of the UI.</div>
@@ -532,7 +532,7 @@
                 </div>
                 <div>
                     <p class="text-body reveal">Android's dedicated step-counter sensor is missing on many low-end or older devices. MiniQuest sidesteps that entirely by reading the raw tri-axis accelerometer directly, a sensor present on nearly every Android phone, and computing motion magnitude itself, so step detection is never limited by hardware tier.</p>
-                    <p class="code-note reveal">The vector magnitude <code>âˆ?xÂ² + yÂ² + zÂ²)</code> is orientation-independent: however the phone is carried, any real motion changes the scalar, which is what drives the step-counting logic.</p>
+                    <p class="code-note reveal">The vector magnitude <code>?xÂ² + yÂ² + zÂ²)</code> is orientation-independent: however the phone is carried, any real motion changes the scalar, which is what drives the step-counting logic.</p>
                     <div class="code-panel reveal">
                         <div class="code-panel-head">
                             <div class="code-panel-dots"><span></span><span></span><span></span></div>

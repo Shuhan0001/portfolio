@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,11 +7,11 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+39+Text&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2family=Libre+Barcode+39+Text&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            /* Palette: Void & Synaptic Cyan â€?cold clinical-tech counterpart
+            /* Palette: Void & Synaptic Cyan cold clinical-tech counterpart
                to Revive's warm amber, tuned for a neuro-corporate brief */
             --bg-void: #000000;
             --surface-dark: rgba(255, 255, 255, 0.045);
@@ -174,7 +174,7 @@
             position: fixed; top: 6vh; right: 6vw; z-index: 100; display: flex; align-items: center; gap: 0.6rem;
             padding: 0.75rem 1.4rem 0.75rem 1.1rem; border-radius: 999px;
 
-            /* Same restrained glass treatment as the rest of the site â€?               flat surface color, one border, one soft shadow. The
+            /* Same restrained glass treatment as the rest of the site                flat surface color, one border, one soft shadow. The
                refraction is carried entirely by the distortion filter. */
             background: var(--surface-dark); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             backdrop-filter: url(#glass-distortion) blur(2px) saturate(140%);
@@ -228,8 +228,9 @@
             50% { -webkit-text-stroke: 1.5px rgba(69, 230, 255, 0.55); text-shadow: 0 0 30px var(--accent-glow); }
         }
 
+        .prototype-btn-group { margin-top: 3rem; display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
         .prototype-btn {
-            margin-top: 3rem; display: inline-flex; align-items: center; gap: 0.6rem; width: fit-content;
+            margin-top: 0; display: inline-flex; align-items: center; gap: 0.6rem; width: fit-content;
             padding: 0.9rem 1.6rem; border-radius: 999px; background: var(--accent-cyan); color: #001014;
             font-weight: 600; font-size: 0.9rem; letter-spacing: 0.02em; text-decoration: none;
             box-shadow: 0 0 40px var(--accent-glow);
@@ -243,9 +244,17 @@
         }
         .prototype-btn:hover svg { transform: translate(2px, -2px); }
         .prototype-btn:active { transform: translateY(-1px) scale(0.98); }
+        .prototype-btn.secondary {
+            background: transparent; color: var(--text-primary); box-shadow: none;
+            border: 1px solid var(--border-subtle);
+        }
+        .prototype-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.06); color: var(--text-primary); border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: none;
+        }
 
         /* ---------------------------------------------------------- */
-        /* Subscription tier cards â€?recreated from the actual        */
+        /* Subscription tier cards recreated from the actual        */
         /* Cogni-Stream "Select your tier of evolution" pricing table */
         /* ---------------------------------------------------------- */
         .tier-grid {
@@ -267,7 +276,7 @@
         .tier-block p { font-size: 0.9rem; color: var(--text-secondary); margin: 0.2rem 0; }
 
         /* ---------------------------------------------------------- */
-        /* Status Halo â€?the device's public-facing class indicator   */
+        /* Status Halo the device's public-facing class indicator   */
         /* ---------------------------------------------------------- */
         .halo-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -314,7 +323,7 @@
         .quote-block span { display: block; margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-tertiary); }
 
         /* ---------------------------------------------------------- */
-        /* Source-code excerpts â€?real snippets pulled from            */
+        /* Source-code excerpts real snippets pulled from            */
         /* EnGram__Web.html, annotated inline                          */
         /* ---------------------------------------------------------- */
         .code-panel {
@@ -390,10 +399,16 @@
                 <div class="meta-item"><span>Programme</span><strong>University of York</strong></div>
             </div>
 
-            <a href="EnGram_Web.html" target="_blank" rel="noopener" class="prototype-btn reveal delay-3">
-                Open the live prototype
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
-            </a>
+            <div class="prototype-btn-group">
+                <a href="https://youtu.be/ltnBEEefctw" target="_blank" rel="noopener" class="prototype-btn reveal delay-3">
+                    Watch the test video
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+                </a>
+                <a href="https://github.com/Shuhan0001/Cogni-Stream_Website" target="_blank" rel="noopener" class="prototype-btn secondary reveal delay-3">
+                    View on GitHub
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                </a>
+            </div>
         </section>
 
         <section class="section container">
@@ -462,7 +477,7 @@
                 <div>
                     <p class="text-body reveal">Under technocapitalism (Suarez-Villa, 2000; 2012), knowledge and innovation are steadily absorbed into corporate-controlled infrastructure, displacing public institutions as the gatekeepers of learning. Napoleoni (2024) argues this concentration of infrastructural control lets a handful of firms accumulate wealth and influence at an unprecedented scale.</p>
                     <div class="quote-block reveal delay-1">
-                        <p>Who will ultimately control access to human cognition in the neural infrastructure of the future?</p>
+                        <p>Who will ultimately control access to human cognition in the neural infrastructure of the future</p>
                         <span>Framing question raised by Napoleoni's (2024) account of technocapitalism, applied to Cogni-Stream's fictional world</span>
                     </div>
                     <p class="text-body reveal delay-2">In Cogni-Stream's world, education has fully migrated from public good to corporate product. Cognition itself becomes a pawn of capital: not just a shift in business model, but a descent of power from institutions into the neural sphere.</p>
@@ -557,7 +572,7 @@
                         <div class="tweet-card reveal delay-2">
                             <div class="tweet-head"><div class="tweet-avatar"></div><span class="tweet-name">404NotFound_Wy</span><span class="tweet-handle">@Wy_2028831</span></div>
                             <p class="tweet-body">My EnGram+ subscription ran out and it auto-downgraded me. Didn't think it'd be a big deal, but some of what I downloaded is just gone, and a few normal memories feel blurry too.</p>
-                            <p class="tweet-body">And this thing on my temple won't stop blinking yellow. Removal costs a surgery fee I can't afford right now. Anyone else dealt with this?</p>
+                            <p class="tweet-body">And this thing on my temple won't stop blinking yellow. Removal costs a surgery fee I can't afford right now. Anyone else dealt with this</p>
                             <div class="halo-inline"><span class="dot"></span> Status Halo: Limited</div>
                         </div>
                     </div>
@@ -652,7 +667,7 @@
 &lt;<span class="tg">div</span> <span class="st">class="tweet reveal"</span>&gt;
     &lt;<span class="tg">div</span> <span class="st">class="tweet-name"</span>&gt;404NotFound_Wy&lt;/<span class="tg">div</span>&gt;
     &lt;<span class="tg">div</span> <span class="st">class="tweet-body"</span>&gt;
-        My Engram+ subscription ran out and it auto-downgraded meâ€?    &lt;/<span class="tg">div</span>&gt;
+        My Engram+ subscription ran out and it auto-downgraded me    &lt;/<span class="tg">div</span>&gt;
 &lt;/<span class="tg">div</span>&gt;</code></pre>
                     </div>
                 </div>
@@ -676,7 +691,7 @@
 
     loader.load(modelPath, <span class="tg">function</span>(gltf) {
         model = gltf.scene;
-        <span class="cm">// centre, scale to fit, add to sceneâ€?/span>
+        <span class="cm">// centre, scale to fit, add to scene/span>
         scene.add(group);
     });
 

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -23,7 +23,7 @@
             --shadow-subtle: 0 12px 40px -12px rgba(0,0,0,0.5);
             --shadow-float: 0 24px 48px -12px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05) inset;
             
-            /* Typography �?one unified system font stack for the whole page,
+            /* Typography ?one unified system font stack for the whole page,
                matched to Index.html but without the Display/Text split
                that made headings and body copy render differently */
             --font-main: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
@@ -62,10 +62,10 @@
             cursor: none !important;
         }
 
-        /* 隐藏滚动条以增强沉浸感，但保留功�?*/
+        /* 隐藏滚动条以增强沉浸感，但保留功?*/
         ::-webkit-scrollbar { width: 0px; background: transparent; }
 
-        /* Custom cursor �?matched to Index.html */
+        /* Custom cursor ?matched to Index.html */
         #custom-cursor {
             position: fixed;
             top: 0;
@@ -384,7 +384,7 @@
             border: 1px dashed var(--border-subtle);
         }
 
-        /* Technical Execution �?click-to-expand lightbox */
+        /* Technical Execution ?click-to-expand lightbox */
         .zoomable-media {
             border: 1px solid rgba(255, 255, 255, 0.18);
             transition: transform 0.4s var(--ease-cinematic), border-color 0.4s var(--ease-cinematic);
@@ -406,7 +406,7 @@
             outline-offset: 4px;
         }
 
-        /* While the lightbox is open, use the normal system cursor �?           the site's custom dot cursor is hidden via JS at the same time. */
+        /* While the lightbox is open, use the normal system cursor ?           the site's custom dot cursor is hidden via JS at the same time. */
         .lightbox-overlay, .lightbox-overlay * {
             cursor: auto !important;
         }
@@ -555,13 +555,13 @@
             transform: translateY(-50%);
             background: transparent;
             border: none;
-            color: rgba(255, 255, 255, 0.6); /* 默认微暗，融入背�?*/
+            color: rgba(255, 255, 255, 0.6); /* 默认微暗，融入背?*/
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             z-index: 100;
-            padding: 20px; /* 隐形的加大触控区�?*/
+            padding: 20px; /* 隐形的加大触控区?*/
             transition: all 0.5s var(--ease-cinematic);
         }
         
@@ -593,7 +593,7 @@
         .stack-btn-prev svg, .stack-btn-next svg {
             width: 44px; /* 加大箭头尺寸 */
             height: 44px;
-            /* 为箭头本身添加阴影，确保在任何色彩的图片上都能看�?*/
+            /* 为箭头本身添加阴影，确保在任何色彩的图片上都能看?*/
             filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
             transition: all 0.4s ease;
         }
@@ -628,7 +628,7 @@
         .stack-caption {
             text-align: center;
             margin-top: 1.5rem;
-            color: var(--text-secondary); /* 稍微提亮让文字融入环�?*/
+            color: var(--text-secondary); /* 稍微提亮让文字融入环?*/
         }
 
         .data-card {
@@ -704,7 +704,7 @@
             border-radius: 999px;
 
             /* Same restrained glass treatment as the rest of the site
-               (.stack-slide, .preference-card) �?flat surface color,
+               (.stack-slide, .preference-card) ?flat surface color,
                one border, one soft shadow. The refraction is carried
                entirely by the distortion filter, not extra layers. */
             background: var(--surface-dark);
@@ -814,7 +814,7 @@
             }
         }
 
-        /* Key Findings �?data table */
+        /* Key Findings ?data table */
         .stat-table {
             width: 100%;
             border-collapse: collapse;
@@ -938,7 +938,7 @@
             margin-top: 0.5rem;
         }
 
-        /* Hollow / outline type �?referenced from the main portfolio homepage,
+        /* Hollow / outline type ?referenced from the main portfolio homepage,
            re-tuned here to fill with the lantern's amber glow on hover/reveal */
         .text-outline {
             color: transparent;
@@ -983,8 +983,8 @@
         }
 
         /* ============================================================
-           Print / PDF export �?lets this page be turned into a portfolio
-           PDF straight from the browser's Print dialog (Cmd/Ctrl+P �?           Save as PDF), without touching any live-site content, copy,
+           Print / PDF export ?lets this page be turned into a portfolio
+           PDF straight from the browser's Print dialog (Cmd/Ctrl+P ?           Save as PDF), without touching any live-site content, copy,
            or interaction behaviour. Everything below only ever applies
            when actually printing.
            ============================================================ */
@@ -1006,7 +1006,7 @@
             }
 
             /* Force backgrounds/gradients to actually print instead of
-               being silently dropped to save ink �?this design depends
+               being silently dropped to save ink ?this design depends
                entirely on the black background and amber accents. */
             * {
                 -webkit-print-color-adjust: exact !important;
@@ -1016,7 +1016,7 @@
 
             /* backdrop-filter (the frosted-glass look on media frames and
                gallery slides) isn't reliably supported by every print
-               pipeline �?Windows' own "Microsoft Print to PDF" driver in
+               pipeline ?Windows' own "Microsoft Print to PDF" driver in
                particular can render a blurred glass panel as a solid
                opaque block instead of translucent blur. Disabling it for
                print keeps every engine showing the same plain dark panel
@@ -1033,7 +1033,7 @@
             }
 
             /* Chrome that only makes sense on a live, moving, hover-driven
-               page �?a cursor dot, a scroll-progress rail, a "back home"
+               page ?a cursor dot, a scroll-progress rail, a "back home"
                button, film-grain and ambient glows. None of it belongs on
                a printed page, and fixed-position elements don't paginate
                reliably anyway, so they're removed rather than left to
@@ -1054,7 +1054,7 @@
             /* .text-outline draws its hollow title look with a transparent
                fill and a stroke-only outline. Not every print/PDF engine
                reproduces text-stroke, which can silently turn a heading
-               into blank space �?so print gets solid, always-legible
+               into blank space ?so print gets solid, always-legible
                text instead. */
             .text-outline {
                 color: var(--accent-amber) !important;
@@ -1065,7 +1065,7 @@
             }
 
             /* Scroll-triggered reveal animations never get a chance to
-               fire during print rendering �?there's no real scrolling �?               so content left at its initial opacity: 0 would otherwise
+               fire during print rendering ?there's no real scrolling ?               so content left at its initial opacity: 0 would otherwise
                print as empty space. Force the "arrived" state directly. */
             .reveal {
                 opacity: 1 !important;
@@ -1080,7 +1080,7 @@
             }
 
             /* Sticky positioning has no meaning on a paginated printout,
-               so it's turned off. The two-column split itself is kept �?               and tightened up �?because stacking heading/text/image
+               so it's turned off. The two-column split itself is kept ?               and tightened up ?because stacking heading/text/image
                into a single column on a short landscape page is what was
                pushing each section past one page and slicing images in
                half across the break. Side-by-side columns keep every
@@ -1119,8 +1119,8 @@
                on a scrolling screen; on a landscape page that's short on
                vertical space it's trimmed down further still. Each
                section still opens on its own page, and smaller
-               self-contained pieces �?a figure with its caption, a card,
-               a table �?are kept from being sliced across a page break. */
+               self-contained pieces ?a figure with its caption, a card,
+               a table ?are kept from being sliced across a page break. */
             .section {
                 padding: 4vh 0 !important;
                 page-break-before: always;
@@ -1140,7 +1140,7 @@
                a narrow scrolling column. On a wide landscape page that
                same full-width portrait image becomes taller than the
                page itself and gets sliced across a page break despite
-               break-inside: avoid �?avoid only works when the box can
+               break-inside: avoid ?avoid only works when the box can
                actually fit on one page. Bound it by height instead and
                let width follow the aspect ratio, so it always fits. */
             .media-frame {
@@ -1153,7 +1153,7 @@
 
             /* Each section has a different amount of spare vertical room
                once its text and cards are accounted for, so each aspect
-               ratio gets its own tuned cap rather than one size for all �?               this is what actually lets the images run larger while every
+               ratio gets its own tuned cap rather than one size for all ?               this is what actually lets the images run larger while every
                section still lands on a single page. */
             .media-frame.aspect-video {
                 max-height: 44vh !important;
@@ -1194,7 +1194,7 @@
             }
 
             /* Technical Execution's four cards use auto-fit minmax(300px),
-               which only fits three per row at this page width �?pushing
+               which only fits three per row at this page width ?pushing
                the fourth card onto its own near-empty page. Forcing a
                single row of four keeps the whole section on one page. */
             [style*="minmax(300px, 1fr)"] {
@@ -1473,7 +1473,7 @@
 
                 <div class="reveal delay-3">
                     <div class="media-frame aspect-portrait zoomable-media" style="margin-bottom: 2rem; cursor: pointer;">
-                        <img src="Image/Revive_Img6.webp" alt="S_LightingConfig struct definition in Unreal Engine, containing a SunPitch float and three Linear Color variables �?SunColor, FogColor and SkyColor �?used to drive the Timeline-based Day, Sunset and Night lighting states." style="width: 100%; height: 100%; object-fit: cover; object-position: left top; display: block;">
+                        <img src="Image/Revive_Img6.webp" alt="S_LightingConfig struct definition in Unreal Engine, containing a SunPitch float and three Linear Color variables ?SunColor, FogColor and SkyColor ?used to drive the Timeline-based Day, Sunset and Night lighting states." style="width: 100%; height: 100%; object-fit: cover; object-position: left top; display: block;">
                     </div>
                     <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Data & Environment</h3>
                     <p class="text-body">A custom S_LightingConfig structure drives Timeline-based Lerp transitions between Day, Sunset, and Night, while a live telemetry system records completion time and lantern usage for each trial.</p>
@@ -1482,7 +1482,7 @@
         </section>
 
         <section class="section container" style="border-top: 1px solid var(--border-subtle);">
-            <!-- 去除了附带的段落描述，标题保持干净简�?-->
+            <!-- 去除了附带的段落描述，标题保持干净简?-->
             <h2 class="reveal" style="text-align: center; margin-bottom: 3rem;"><span class="text-outline">Gallery</span></h2>
 
             <div class="stack-gallery reveal delay-1">
@@ -1512,7 +1512,7 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
                 </button>
 
-                <!-- 极简UI控件�?-->
+                <!-- 极简UI控件?-->
                 <div class="stack-controls">
                     <div class="stack-dots" id="stackDots"></div>
                 </div>
@@ -1703,7 +1703,7 @@
 
     <script>
         // --------------------------------------------------------
-        // Back to Home �?fade transition, matched to CogniStream_Profilo.html
+        // Back to Home ?fade transition, matched to CogniStream_Profilo.html
         // --------------------------------------------------------
         (function() {
             const btn = document.querySelector('.back-home-btn');
@@ -1720,7 +1720,7 @@
         })();
 
         // --------------------------------------------------------
-        // Custom Cursor �?matched to Index.html
+        // Custom Cursor ?matched to Index.html
         // --------------------------------------------------------
         (function() {
             const cursor = document.getElementById('custom-cursor');
@@ -1764,7 +1764,7 @@
         })();
 
         // --------------------------------------------------------
-        // Technical Execution �?click-to-expand lightbox
+        // Technical Execution ?click-to-expand lightbox
         // --------------------------------------------------------
         (function() {
             const overlay = document.getElementById('lightboxOverlay');
@@ -1790,7 +1790,7 @@
                 overlay.classList.remove('is-open');
                 document.body.style.overflow = '';
                 if (customCursor) customCursor.style.display = '';
-                // Don't leave the card showing a focus box behind �?blur it
+                // Don't leave the card showing a focus box behind ?blur it
                 // whether the lightbox was closed by mouse or by Esc.
                 if (lastTrigger && typeof lastTrigger.blur === 'function') lastTrigger.blur();
                 lastTrigger = null;
@@ -1805,7 +1805,7 @@
 
             document.querySelectorAll('.zoomable-media').forEach((frame) => {
                 const img = frame.querySelector('img');
-                if (!img) return; // still a placeholder �?nothing to expand yet
+                if (!img) return; // still a placeholder ?nothing to expand yet
                 frame.setAttribute('role', 'button');
                 frame.setAttribute('tabindex', '0');
                 frame.setAttribute('aria-label', 'Expand image');
