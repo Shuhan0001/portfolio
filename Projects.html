@@ -753,12 +753,13 @@
     }
 
     function schedulePreload() {
-        // Stagger requests slightly instead of firing all at once, so
-        // they don't all fight over the browser's limited concurrent
-        // connections and slow each other down.
-        imgSrcs.forEach((src, i) => {
-            setTimeout(() => preloadOne(src), i * 120);
-        });
+        // Only 5 images totaling ~240KB combined — not enough to fight
+        // over bandwidth, so load them all in parallel instead of
+        // staggering. The old 120ms-per-item stagger meant the last
+        // row(s) in the list (Silent Night, Supermarket) didn't start
+        // downloading until 360-480ms after idle even fired, which is
+        // exactly why those two felt slower to preview on hover.
+        imgSrcs.forEach(src => preloadOne(src));
     }
 
     if ('requestIdleCallback' in window) {
