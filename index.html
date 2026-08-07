@@ -11,10 +11,10 @@
     <meta name="twitter:card" content="summary">
 
     <!-- Small-text typeface (index numbers, tags, labels) ?kept separate
-         from the big display headings, which stay on the system font. -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital@0;1&display=swap" rel="stylesheet">
+         from the big display headings, which stay on the system font.
+         Self-hosted instead of loaded from fonts.googleapis.com so the
+         page doesn't stall on a third-party font request. -->
+    <link rel="preload" href="Fonts/FragmentMono-Regular.ttf" as="font" type="font/ttf" crossorigin>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -39,6 +39,14 @@
 
     <!-- Custom CSS -->
     <style>
+        @font-face {
+            font-family: 'Fragment Mono';
+            src: url('Fonts/FragmentMono-Regular.ttf') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
         body {
             background-color: #000000;
             color: #ffffff;
