@@ -13,7 +13,7 @@
     <!-- Fragment Mono for consistency with the homepage -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2family=Fragment+Mono:ital@0;1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital@0;1&display=swap" rel="stylesheet">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -72,24 +72,54 @@
             inset: 0;
             z-index: 0;
             opacity: 0;
-            transition: opacity 0.7s cubic-bezier(0.25, 1, 0.3, 1);
+            transition: opacity 0.5s cubic-bezier(0.25, 1, 0.3, 1);
             pointer-events: none;
         }
-        
+
         #console-bg-img,
-        #console-bg-pattern {
+        #console-bg-img-2,
+        #console-bg-pattern,
+        #console-bg-pattern-2 {
             position: absolute;
             inset: 0;
             width: 100%;
             height: 100%;
             object-fit: cover;
-            opacity: 0.7; /* 提高不透明度，使背景明显提*/
             transform: scale(1.05);
             transition: transform 10s linear;
         }
-        
-        .bg-active #console-bg-img,
-        .bg-active #console-bg-pattern {
+
+        /* PS5-dashboard-style crossfade: two stacked layers, each with its
+           own opacity + fast fade. Whichever one is "active" fades to the
+           target opacity; the other fades out underneath it. Because the
+           outgoing layer keeps showing its (already-loaded) image the
+           whole time, there is never a moment where the background goes
+           blank/black while a new image is fetched - the old one just
+           stays put until the new one is ready to take over. */
+        #console-bg-img,
+        #console-bg-img-2 {
+            opacity: 0;
+            transition: transform 10s linear, opacity 0.45s ease;
+        }
+        #console-bg-img.bg-layer-active,
+        #console-bg-img-2.bg-layer-active {
+            opacity: 0.7; /* 提高不透明度，使背景明显提*/
+            z-index: 1;
+        }
+
+        #console-bg-pattern,
+        #console-bg-pattern-2 {
+            opacity: 0;
+            transition: opacity 0.45s ease;
+        }
+        #console-bg-pattern.bg-layer-active,
+        #console-bg-pattern-2.bg-layer-active {
+            opacity: 0.7;
+            z-index: 1;
+        }
+
+        .bg-active #console-bg-img.bg-layer-active,
+        .bg-active #console-bg-img-2.bg-layer-active {
             transform: scale(1);
         }
 
@@ -374,7 +404,9 @@
 <!-- Console Immersive Background -->
 <div id="console-bg-wrapper">
     <img id="console-bg-img" src="" alt="" style="display:none;">
+    <img id="console-bg-img-2" src="" alt="" style="display:none;">
     <div id="console-bg-pattern" style="display:none;"></div>
+    <div id="console-bg-pattern-2" style="display:none;"></div>
     <div class="console-overlay"></div>
     <div class="scanlines"></div>
 </div>
@@ -636,7 +668,7 @@
     // --------------------------------------------------------
     // 3. Page Transitions
     // --------------------------------------------------------
-    window.addEventListener('load', () => {
+    window.addEventListener('DOMContentLoaded', () => {
         const enter = document.getElementById('page-enter');
         if (enter) {
             enter.style.opacity = '0';
@@ -677,12 +709,120 @@
     // 4. Hover Backgrounds & Filtering System
     // --------------------------------------------------------
     const bgWrapper = document.getElementById('console-bg-wrapper');
-    const bgImg = document.getElementById('console-bg-img');
-    const bgPattern = document.getElementById('console-bg-pattern');
+    const imgLayers = [
+        document.getElementById('console-bg-img'),
+        document.getElementById('console-bg-img-2')
+    ];
+    const patternLayers = [
+        document.getElementById('console-bg-pattern'),
+        document.getElementById('console-bg-pattern-2')
+    ];
     const rows = document.querySelectorAll('.project-row');
     const filterBtns = document.querySelectorAll('.filter-text');
 
-    // Hover System
+    // Preload all background images so hovering never has to wait on a
+    // network request. This used to run immediately and (via new Image())
+    // was counted as a pending page resource, which delayed the entrance
+    // animation (it was tied to window 'load', which waits for every
+    // resource incl. these). Two changes fix that:
+    //   1. The entrance overlay above now dismisses on DOMContentLoaded,
+    //      so it no longer waits on these image fetches at all.
+    //   2. Preloading itself is deferred to idle time and staggered, so
+    //      it quietly finishes in the background without competing for
+    //      bandwidth with fonts/scripts/first paint. By the time someone
+    //      actually starts hovering, most images are typically ready.
+    const loadedImages = new Set();
+    const imgSrcs = [];
+    rows.forEach(row => {
+        const src = row.getAttribute('data-img');
+        if (src && !imgSrcs.includes(src)) imgSrcs.push(src);
+    });
+
+    function preloadOne(src) {
+        const preloadImg = new Image();
+        preloadImg.onload = () => loadedImages.add(src);
+        preloadImg.src = src;
+    }
+
+    function schedulePreload() {
+        // Stagger requests slightly instead of firing all at once, so
+        // they don't all fight over the browser's limited concurrent
+        // connections and slow each other down.
+        imgSrcs.forEach((src, i) => {
+            setTimeout(() => preloadOne(src), i * 120);
+        });
+    }
+
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(schedulePreload, { timeout: 2000 });
+    } else {
+        setTimeout(schedulePreload, 600);
+    }
+
+    // Double-buffered crossfade, PS5-dashboard style: two image layers
+    // and two pattern layers are stacked on top of each other. Whichever
+    // one is currently "active" (bg-layer-active) is visible; switching
+    // targets always load into the OTHER (currently hidden) layer, then
+    // flip which one is active once ready. Because the outgoing layer
+    // keeps its image intact the whole time, the previous background
+    // never disappears/blanks out while the next one is being fetched -
+    // it just gets crossfaded over once the new one is ready. This is
+    // what lets fast back-and-forth hovering stay smooth instead of
+    // flashing black.
+    let activeImgIndex = -1;   // -1 = none active yet
+    let activePatternIndex = -1;
+    let currentImgSrc = null;
+    let currentToken = 0; // guards against a stale/slow load activating late
+
+    function showImageLayer(src) {
+        const token = ++currentToken;
+        const nextIndex = activeImgIndex === 0 ? 1 : 0;
+        const nextLayer = imgLayers[nextIndex];
+        const prevLayer = activeImgIndex === -1 ? null : imgLayers[activeImgIndex];
+
+        patternLayers.forEach(p => p.classList.remove('bg-layer-active'));
+
+        const activate = () => {
+            if (token !== currentToken) return; // a newer hover target won the race
+            nextLayer.style.display = 'block';
+            nextLayer.classList.add('bg-layer-active');
+            if (prevLayer) prevLayer.classList.remove('bg-layer-active');
+            activeImgIndex = nextIndex;
+            currentImgSrc = src;
+        };
+
+        if (loadedImages.has(src)) {
+            nextLayer.src = src;
+            activate(); // already cached - swap immediately, no wait
+        } else {
+            nextLayer.onload = () => {
+                loadedImages.add(src);
+                activate();
+            };
+            nextLayer.src = src;
+            // prevLayer simply stays visible until activate() runs
+        }
+    }
+
+    function showPatternLayer(pattern, bgColor) {
+        currentToken++; // cancel any in-flight image load from taking over
+        currentImgSrc = null;
+        const nextIndex = activePatternIndex === 0 ? 1 : 0;
+        const nextLayer = patternLayers[nextIndex];
+        const prevLayer = activePatternIndex === -1 ? null : patternLayers[activePatternIndex];
+
+        nextLayer.style.background = pattern || 'none';
+        nextLayer.style.backgroundColor = bgColor;
+        nextLayer.style.display = 'block';
+        nextLayer.classList.add('bg-layer-active');
+        if (prevLayer) prevLayer.classList.remove('bg-layer-active');
+        activePatternIndex = nextIndex;
+
+        imgLayers.forEach(l => l.classList.remove('bg-layer-active'));
+    }
+
+    // Hover System - instant, no artificial delay, so switching feels as
+    // snappy as a console dashboard.
     rows.forEach(row => {
         row.addEventListener('mouseenter', () => {
             const img = row.getAttribute('data-img');
@@ -693,19 +833,11 @@
             bgWrapper.classList.add('bg-active');
 
             if (img) {
-                bgImg.src = img;
-                bgImg.style.display = 'block';
-                bgPattern.style.display = 'none';
+                if (img !== currentImgSrc) showImageLayer(img);
             } else if (pattern) {
-                bgImg.style.display = 'none';
-                bgPattern.style.display = 'block';
-                bgPattern.style.background = pattern;
-                bgPattern.style.backgroundColor = bgColor;
+                showPatternLayer(pattern, bgColor);
             } else {
-                bgImg.style.display = 'none';
-                bgPattern.style.display = 'block';
-                bgPattern.style.background = 'none';
-                bgPattern.style.backgroundColor = bgColor;
+                showPatternLayer('none', bgColor);
             }
         });
 

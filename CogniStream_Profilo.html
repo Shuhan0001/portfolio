@@ -7,7 +7,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2family=Libre+Barcode+39+Text&display=swap" rel="stylesheet">
+    <link href="https://fonts.google<link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+39+Text&display=swap" rel="stylesheet">apis.com/css2family=Libre+Barcode+39+Text&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -350,6 +350,131 @@
             font-size: 0.95rem; color: var(--text-secondary); margin: 0 0 3rem; max-width: 620px;
         }
         .code-note strong { color: var(--text-primary); font-weight: 600; }
+
+        /* ============================================================
+           Print / PDF export — lets this page be turned into a portfolio
+           PDF straight from the browser's Print dialog (Cmd/Ctrl+P →
+           Save as PDF), without touching any live-site content, copy,
+           or interaction behaviour. Everything below only ever applies
+           when actually printing.
+           ============================================================ */
+        @media print {
+
+            @page {
+                size: 13.33in 7.5in;
+                margin: 10mm 14mm;
+            }
+
+            /* Nearly every font-size, margin and gap on this page is set
+               in rem, sized for a tall scrolling column. Scaling the root
+               down shrinks all of them together, proportionally, which is
+               what actually lets the denser sections (tier cards, code
+               panel) fit on one short landscape page instead of spilling
+               a lone card or row onto a near-empty next page. */
+            html {
+                font-size: 80% !important;
+            }
+
+            /* Force backgrounds/gradients to actually print instead of
+               being silently dropped to save ink — this design depends
+               entirely on the black background and cyan accents. */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+
+            /* backdrop-filter (the frosted-glass look on cards and
+               panels) isn't reliably supported by every print
+               pipeline — Windows' own "Microsoft Print to PDF" driver in
+               particular can render a blurred glass panel as a solid
+               opaque block instead of translucent blur. Disabling it for
+               print keeps every engine showing the same plain dark panel
+               rather than some engines showing a wrong solid fill. */
+            * {
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+            }
+
+            html, body {
+                background: var(--bg-void) !important;
+                overflow: visible !important;
+                cursor: auto !important;
+            }
+
+            /* Chrome that only makes sense on a live, moving, hover-driven
+               page — a cursor dot, a scroll-progress rail, a "back home"
+               button, film-grain and ambient glows. None of it belongs on
+               a printed page, and fixed-position elements don't paginate
+               reliably anyway, so they're removed rather than left to
+               render however a given browser's print engine feels like. */
+            #custom-cursor,
+            .noise-overlay,
+            .ambient-light,
+            .scroll-track,
+            .back-home-btn,
+            .site-header {
+                display: none !important;
+            }
+
+            /* .text-outline draws its hollow title look with a transparent
+               fill and a stroke-only outline. Not every print/PDF engine
+               reproduces text-stroke, which can silently turn a heading
+               into blank space — so print gets solid, always-legible
+               text instead. */
+            .text-outline {
+                color: var(--accent-cyan) !important;
+                -webkit-text-stroke: 0 !important;
+                text-stroke: 0 !important;
+                text-shadow: none !important;
+                animation: none !important;
+            }
+
+            /* Scroll-triggered reveal animations never get a chance to
+               fire during print rendering — there's no real scrolling —
+               so content left at its initial opacity: 0 would otherwise
+               print as empty space. Force the "arrived" state directly. */
+            .reveal {
+                opacity: 1 !important;
+                transform: none !important;
+                filter: none !important;
+                transition: none !important;
+            }
+
+            /* Sticky positioning has no meaning on a paginated printout,
+               so it's turned off. The two-column split itself is kept —
+               and tightened up — because stacking heading/text into a
+               single column on a short landscape page is what was
+               pushing each section past one page. Side-by-side columns
+               keep every section's total height low enough to land on
+               one page. */
+            .grid-split {
+                grid-template-columns: 0.85fr 1.3fr !important;
+                gap: 3rem !important;
+                align-items: start !important;
+            }
+
+            .sticky-col {
+                position: static !important;
+                top: auto !important;
+            }
+
+            /* Text columns are narrow because they're designed for a
+               vertical scroll layout; on a wide landscape page that
+               leaves a lot of unused width. Give print more breathing
+               room without stretching lines past a comfortable length. */
+            .text-body { max-width: 780px !important; }
+            .text-lead { max-width: 900px !important; }
+
+            /* Code panel's horizontal scroll has no meaning on a static
+               printout, and a long unwrapped line would just run off
+               the edge of the page and get clipped. Wrap it instead. */
+            .code-panel pre {
+                white-space: pre-wrap !important;
+                word-break: break-word !important;
+                overflow-x: visible !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -526,21 +651,21 @@
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem;">
                 <div class="reveal">
                     <div class="media-frame aspect-portrait" style="margin-bottom: 1.5rem;">
-                        <img src="image/CogniStream_Img2.webp" alt="Neuralink implant, exploded view, clinical white aesthetic" style="width: 100%; height: 100%; object-fit: cover; object-position: 85% center; display: block;">
+                        <img loading="lazy" src="image/CogniStream_Img2.webp" alt="Neuralink implant, exploded view, clinical white aesthetic" style="width: 100%; height: 100%; object-fit: cover; object-position: 85% center; display: block;">
                     </div>
                     <h3 style="font-size: 1.3rem; margin-bottom: 0.8rem;">Neuralink: Clinical Aesthetics</h3>
                     <p class="text-body" style="font-size: 1rem;">Neuralink's real-world BCI research is the project's technical anchor. Its streamlined, consumer-electronics-white surgical robot reframes brain surgery as routine. The Cogni-Stream manual borrows this strategy directly, recasting implantation as "hardware configuration" performed by a "Certified Neural Technician."</p>
                 </div>
                 <div class="reveal delay-1">
                     <div class="media-frame aspect-portrait" style="margin-bottom: 1.5rem;">
-                        <img src="image/CogniStream_Img3.webp" alt="Apple.com MacBook Pro product page, restrained type and grid" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                        <img loading="lazy" src="image/CogniStream_Img3.webp" alt="Apple.com MacBook Pro product page, restrained type and grid" style="width: 100%; height: 100%; object-fit: cover; display: block;">
                     </div>
                     <h3 style="font-size: 1.3rem; margin-bottom: 0.8rem;">Apple: the Visual Disguise of Power</h3>
                     <p class="text-body" style="font-size: 1rem;">Apple's expansive white space and precise typographic grid read as premium and transparent (Apple Inc., 2026), while quietly disguising a closed ecosystem. Cogni-Stream borrows this "Corporate Minimalism" so its predatory downgrade clauses sit inside pages elegant enough that users skim past them.</p>
                 </div>
                 <div class="reveal delay-2">
                     <div class="media-frame aspect-portrait" style="margin-bottom: 1.5rem;">
-                        <img src="image/CogniStream_Img4.webp" alt="Black Mirror, Nosedive, social rating overlay" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                        <img loading="lazy" src="image/CogniStream_Img4.webp" alt="Black Mirror, Nosedive, social rating overlay" style="width: 100%; height: 100%; object-fit: cover; display: block;">
                     </div>
                     <h3 style="font-size: 1.3rem; margin-bottom: 0.8rem;">Black Mirror: Visible Class Anxiety</h3>
                     <p class="text-body" style="font-size: 1rem;">"Nosedive" (2016) turns social standing into a number superimposed on everyday life. It directly informed the Status Halo and the simulated X community: a device that makes economic status legible to strangers, and a feed where that visibility turns into public discrimination.</p>
