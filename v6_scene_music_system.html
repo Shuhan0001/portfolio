@@ -649,7 +649,7 @@
         
         if (!player.invulnerable || Math.floor(Date.now() / 100) % 2 !== 0) {
             ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.fillRect(drawX, drawY + player.h - 2, player.w, 4);
-            ctx.fillStyle = player.isAttacking  '#ff4d4d' : '#4dff88'; 
+            ctx.fillStyle = player.isAttacking ? '#ff4d4d' : '#4dff88';
             ctx.fillRect(drawX, drawY, player.w, player.h);
 
             ctx.fillStyle = '#000';
