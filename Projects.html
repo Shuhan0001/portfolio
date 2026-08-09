@@ -51,16 +51,12 @@
             color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
             -webkit-font-smoothing: antialiased;
-            cursor: none;
             margin: 0;
             padding: 0;
             overflow-x: hidden;
         }
 
         /* Override Tailwind pointer cursors */
-        *, *::before, *::after {
-            cursor: none !important;
-        }
 
         header, footer, nav, label, span, p, a, div, h1, h2, h3, h4, h5, h6 {
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
@@ -149,32 +145,7 @@
             mix-blend-mode: overlay;
         }
 
-        /* Custom Cursor */
-        #custom-cursor {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background-color: white;
-            mix-blend-mode: difference;
-            pointer-events: none;
-            z-index: 9999;
-            will-change: transform;
-            transition: width 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                        height 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                        background-color 0.25s ease,
-                        mix-blend-mode 0.25s ease;
-        }
 
-        #custom-cursor.hover {
-            width: 60px;
-            height: 60px;
-            background-color: rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(2px);
-            mix-blend-mode: normal;
-        }
 
         /* Modern Console (PS5) List Selection Styling */
         #project-list {
@@ -407,7 +378,6 @@
     </defs>
 </svg>
 
-<div id="custom-cursor"></div>
 
 <!-- Console Immersive Background -->
 <div id="console-bg-wrapper">
@@ -613,35 +583,7 @@
 
 <script>
     // --------------------------------------------------------
-    // 1. Custom Cursor & Magnetic Hover (Matched to Index)
     // --------------------------------------------------------
-    const cursor = document.getElementById('custom-cursor');
-    let mouseX = window.innerWidth / 2;
-    let mouseY = window.innerHeight / 2;
-    let cursorX = mouseX;
-    let cursorY = mouseY;
-    let lastCursorTime = 0;
-
-    document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-    });
-
-    function animateCursor(timestamp) {
-        const dt = Math.min((timestamp - (lastCursorTime || timestamp)) / 16.67, 3);
-        lastCursorTime = timestamp;
-        const factor = 1 - Math.pow(0.82, dt);
-        cursorX += (mouseX - cursorX) * factor;
-        cursorY += (mouseY - cursorY) * factor;
-        cursor.style.transform = `translate(${cursorX}px, ${cursorY}px) translate(-50%, -50%)`;
-        requestAnimationFrame(animateCursor);
-    }
-    animateCursor(0);
-
-    document.querySelectorAll('.hover-trigger').forEach(el => {
-        el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-        el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-    });
 
     document.querySelectorAll('.magnetic').forEach(elem => {
         elem.addEventListener('mousemove', (e) => {

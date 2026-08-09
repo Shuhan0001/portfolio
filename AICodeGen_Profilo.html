@@ -18,7 +18,7 @@
             --accent-violet: #8B5CF6;
             --accent-glow: rgba(139, 92, 246, 0.15);
             --accent-red: #FB6B6B;
-            --accent-green: #C084FC;
+            --accent-green: #4ADE80;
             --border-subtle: rgba(255, 255, 255, 0.1);
 
             --radius-md: 16px;
@@ -44,28 +44,10 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             position: relative;
-            cursor: none;
         }
 
-        *, *::before, *::after { cursor: none !important; }
         ::-webkit-scrollbar { width: 0px; background: transparent; }
 
-        #custom-cursor {
-            position: fixed; top: 0; left: 0; width: 20px; height: 20px;
-            border-radius: 50%; background-color: white; mix-blend-mode: difference;
-            pointer-events: none; z-index: 9999; will-change: transform;
-            transition: width 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                        height 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                        background-color 0.25s ease, mix-blend-mode 0.25s ease;
-        }
-        #custom-cursor.hover {
-            width: 60px; height: 60px; background-color: rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(2px); mix-blend-mode: normal;
-        }
-        @media (max-width: 768px) {
-            #custom-cursor { display: none; }
-            *, *::before, *::after { cursor: auto !important; }
-        }
 
         .noise-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
@@ -204,6 +186,7 @@
             position: fixed; top: 6vh; right: 6vw; z-index: 100; display: flex; align-items: center; gap: 0.6rem;
             padding: 0.75rem 1.4rem 0.75rem 1.1rem; border-radius: 999px;
             background: var(--surface-dark); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: url(#glass-distortion) blur(2px) saturate(140%);
             border: 1px solid var(--border-subtle); box-shadow: var(--shadow-subtle);
             color: var(--text-secondary); font-size: 0.85rem; font-weight: 500; letter-spacing: 0.03em;
             text-decoration: none; cursor: pointer; animation: fadeIn 2s var(--ease-cinematic) forwards;
@@ -337,11 +320,20 @@
 </head>
 <body>
 
-    <div id="custom-cursor"></div>
     <div id="page-exit" style="position:fixed; inset:0; z-index:10001; background:#000000; pointer-events:none; opacity:0; transition: opacity 0.7s cubic-bezier(0.25,1,0.3,1);"></div>
     <div class="noise-overlay"></div>
     <div class="ambient-light"></div>
     <div class="ambient-light right"></div>
+
+    <svg style="position:absolute; width:0; height:0; overflow:hidden;" aria-hidden="true">
+        <defs>
+            <filter id="glass-distortion" x="-20%" y="-20%" width="140%" height="140%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.010 0.012" numOctaves="2" seed="7" result="noise"/>
+                <feGaussianBlur in="noise" stdDeviation="3" result="blurredNoise"/>
+                <feDisplacementMap in="SourceGraphic" in2="blurredNoise" scale="40" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+        </defs>
+    </svg>
 
     <a href="index.html" class="back-home-btn" aria-label="Back to home">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -645,34 +637,6 @@ and allow movement.</span></code></pre>
             });
         })();
 
-        (function() {
-            const cursor = document.getElementById('custom-cursor');
-            if (!cursor) return;
-            let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2, cursorX = mouseX, cursorY = mouseY, lastCursorTime = 0;
-            document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
-            function animateCursor(timestamp) {
-                const dt = Math.min((timestamp - (lastCursorTime || timestamp)) / 16.67, 3);
-                lastCursorTime = timestamp;
-                const factor = 1 - Math.pow(0.82, dt);
-                cursorX += (mouseX - cursorX) * factor;
-                cursorY += (mouseY - cursorY) * factor;
-                cursor.style.transform = `translate(${cursorX}px, ${cursorY}px) translate(-50%, -50%)`;
-                requestAnimationFrame(animateCursor);
-            }
-            requestAnimationFrame(animateCursor);
-
-            function bindHoverTargets() {
-                document.querySelectorAll('a, button, [style*="cursor: pointer"], [style*="cursor:pointer"]').forEach(el => {
-                    if (el.dataset.cursorBound) return;
-                    el.dataset.cursorBound = 'true';
-                    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-                    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-                });
-            }
-            bindHoverTargets();
-            const rebindObserver = new MutationObserver(bindHoverTargets);
-            rebindObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
-        })();
 
         document.addEventListener('DOMContentLoaded', () => {
             const reveals = document.querySelectorAll('.reveal');

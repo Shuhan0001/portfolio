@@ -34,33 +34,11 @@
             color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
             -webkit-font-smoothing: antialiased;
-            cursor: none;
             margin: 0;
             padding: 0;
         }
-        *, *::before, *::after { cursor: none !important; }
         ::-webkit-scrollbar { width: 0px; background: transparent; }
 
-        #custom-cursor {
-            position: fixed;
-            top: 0; left: 0;
-            width: 20px; height: 20px;
-            border-radius: 50%;
-            background-color: white;
-            mix-blend-mode: difference;
-            pointer-events: none;
-            z-index: 9999;
-            will-change: transform;
-            transition: width 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                        height 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                        background-color 0.25s ease;
-        }
-        #custom-cursor.hover {
-            width: 60px; height: 60px;
-            background-color: rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(2px);
-            mix-blend-mode: normal;
-        }
 
         .text-outline {
             color: transparent;
@@ -126,7 +104,6 @@
 <body class="selection:bg-primary selection:text-white">
 
 <div id="page-enter" style="position:fixed; inset:0; z-index:10000; background:#000000; pointer-events:none; opacity:1; transition: opacity 0.85s cubic-bezier(0.25,1,0.3,1);"></div>
-<div id="custom-cursor"></div>
 
 <main class="relative z-10 max-w-5xl mx-auto px-6 md:px-12">
 
@@ -301,26 +278,6 @@
             enter.style.opacity = '0';
             setTimeout(() => enter.remove(), 900);
         }
-    });
-
-    // Custom cursor
-    const cursor = document.getElementById('custom-cursor');
-    let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
-    let cursorX = mouseX, cursorY = mouseY, lastTime = 0;
-    document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
-    function animateCursor(ts) {
-        const dt = Math.min((ts - (lastTime || ts)) / 16.67, 3);
-        lastTime = ts;
-        const factor = 1 - Math.pow(0.82, dt);
-        cursorX += (mouseX - cursorX) * factor;
-        cursorY += (mouseY - cursorY) * factor;
-        cursor.style.transform = `translate(${cursorX}px, ${cursorY}px) translate(-50%, -50%)`;
-        requestAnimationFrame(animateCursor);
-    }
-    animateCursor(0);
-    document.querySelectorAll('.hover-trigger').forEach(el => {
-        el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-        el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
     });
 </script>
 </body>

@@ -52,16 +52,8 @@
             color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
             -webkit-font-smoothing: antialiased;
-            cursor: none; 
             margin: 0;
             padding: 0;
-        }
-
-        /* Some elements use Tailwind's cursor-pointer utility class,
-           which overrides the inherited "none" from body. Force it
-           everywhere so the system cursor never reappears. */
-        *, *::before, *::after {
-            cursor: none !important;
         }
 
         /* Ensure ALL small text uses Apple font */
@@ -83,31 +75,7 @@
             background: transparent;
         }
 
-        #custom-cursor {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background-color: white;
-            mix-blend-mode: difference;
-            pointer-events: none;
-            z-index: 9999;
-            will-change: transform;
-            transition: width 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                        height 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                        background-color 0.25s ease,
-                        mix-blend-mode 0.25s ease;
-        }
         
-        #custom-cursor.hover {
-            width: 60px;
-            height: 60px;
-            background-color: rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(2px);
-            mix-blend-mode: normal;
-        }
 
         .glass-panel {
             background: rgba(10, 10, 15, 0.4);
@@ -263,7 +231,6 @@
 <div class="noise-bg"></div>
 
 <div id="page-enter" style="position:fixed; inset:0; z-index:10000; background:#000000; pointer-events:none; opacity:1; transition: opacity 0.85s cubic-bezier(0.25,1,0.3,1);"></div>
-<div id="custom-cursor"></div>
 
 <!-- Glass distortion filter for the search box ?same recipe as the
      "Back to Home" pill on the Revive project page (feTurbulence +
@@ -410,7 +377,7 @@
                             <div class="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent opacity-0 group-hover/row:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
                             
                             <!-- Massive Interactive Row -->
-                            <div class="py-8 md:py-12 flex flex-col md:flex-row md:items-center justify-between cursor-none hover-trigger px-4">
+                            <div class="py-8 md:py-12 flex flex-col md:flex-row md:items-center justify-between hover-trigger px-4">
                                 <div class="flex items-start md:items-center gap-6 md:gap-12">
                                     <span class="text-white/20 font-mono text-sm tracking-widest mt-2 md:mt-0 group-hover/row:text-white transition-colors duration-500">01</span>
                                     <h4 class="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tighter text-white/80 group-hover/row:text-white transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] uppercase group-hover/row:translate-x-6">
@@ -429,21 +396,21 @@
                                     <div class="pb-12 md:pb-16 px-4 md:ml-[5.5rem] lg:ml-[8rem] md:pr-12">
                                         <div class="w-full flex flex-col border-t border-white/10">
 
-                                            <div class="group/spec flex items-center justify-between gap-6 md:gap-10 py-6 md:py-7 border-b border-white/[0.06] hover:border-white/15 transition-colors duration-500 cursor-none hover-trigger">
+                                            <div class="group/spec flex items-center justify-between gap-6 md:gap-10 py-6 md:py-7 border-b border-white/[0.06] hover:border-white/15 transition-colors duration-500 hover-trigger">
                                                 <div class="flex flex-col gap-1.5 min-w-0">
                                                     <span class="text-white/90 text-xl md:text-2xl font-medium tracking-tight group-hover/spec:text-white transition-colors duration-500">Unreal Engine 5</span>
                                                     <span class="text-white/35 text-xs md:text-sm font-light tracking-wide group-hover/spec:text-white/55 transition-colors duration-500">Real-time 3D · Blueprint · Lumen</span>
                                                 </div>
                                                 <span class="text-white/15 font-mono text-[10px] tracking-[0.2em] shrink-0 group-hover/spec:text-white transition-colors duration-500">01</span>
                                             </div>
-                                            <div class="group/spec flex items-center justify-between gap-6 md:gap-10 py-6 md:py-7 border-b border-white/[0.06] hover:border-white/15 transition-colors duration-500 cursor-none hover-trigger">
+                                            <div class="group/spec flex items-center justify-between gap-6 md:gap-10 py-6 md:py-7 border-b border-white/[0.06] hover:border-white/15 transition-colors duration-500 hover-trigger">
                                                 <div class="flex flex-col gap-1.5 min-w-0">
                                                     <span class="text-white/90 text-xl md:text-2xl font-medium tracking-tight group-hover/spec:text-white transition-colors duration-500">Unity 3D</span>
                                                     <span class="text-white/35 text-xs md:text-sm font-light tracking-wide group-hover/spec:text-white/55 transition-colors duration-500">C# Scripting · Physics · Cross-platform</span>
                                                 </div>
                                                 <span class="text-white/15 font-mono text-[10px] tracking-[0.2em] shrink-0 group-hover/spec:text-white transition-colors duration-500">02</span>
                                             </div>
-                                            <div class="group/spec flex items-center justify-between gap-6 md:gap-10 py-6 md:py-7 border-b border-white/[0.06] hover:border-white/15 transition-colors duration-500 cursor-none hover-trigger">
+                                            <div class="group/spec flex items-center justify-between gap-6 md:gap-10 py-6 md:py-7 border-b border-white/[0.06] hover:border-white/15 transition-colors duration-500 hover-trigger">
                                                 <div class="flex flex-col gap-1.5 min-w-0">
                                                     <span class="text-white/90 text-xl md:text-2xl font-medium tracking-tight group-hover/spec:text-white transition-colors duration-500">C# / C++</span>
                                                     <span class="text-white/35 text-xs md:text-sm font-light tracking-wide group-hover/spec:text-white/55 transition-colors duration-500">Object-Oriented · Engine-level Integration</span>
@@ -460,7 +427,7 @@
                         <div class="group/row relative border-b border-white/15 transition-colors duration-500 hover:bg-white/[0.02]">
                             <div class="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent opacity-0 group-hover/row:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
                             
-                            <div class="py-8 md:py-12 flex flex-col md:flex-row md:items-center justify-between cursor-none hover-trigger px-4">
+                            <div class="py-8 md:py-12 flex flex-col md:flex-row md:items-center justify-between hover-trigger px-4">
                                 <div class="flex items-start md:items-center gap-6 md:gap-12">
                                     <span class="text-white/20 font-mono text-sm tracking-widest mt-2 md:mt-0 group-hover/row:text-white transition-colors duration-500">02</span>
                                     <h4 class="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tighter text-white/80 group-hover/row:text-white transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] uppercase group-hover/row:translate-x-6">
@@ -478,21 +445,21 @@
                                     <div class="pb-12 md:pb-16 px-4 md:ml-[5.5rem] lg:ml-[8rem] md:pr-12">
                                         <div class="w-full flex flex-col border-t border-white/10">
 
-                                            <div class="group/spec flex items-center justify-between gap-6 md:gap-10 py-6 md:py-7 border-b border-white/[0.06] hover:border-white/15 transition-colors duration-500 cursor-none hover-trigger">
+                                            <div class="group/spec flex items-center justify-between gap-6 md:gap-10 py-6 md:py-7 border-b border-white/[0.06] hover:border-white/15 transition-colors duration-500 hover-trigger">
                                                 <div class="flex flex-col gap-1.5 min-w-0">
                                                     <span class="text-white/90 text-xl md:text-2xl font-medium tracking-tight group-hover/spec:text-white transition-colors duration-500">Android Native</span>
                                                     <span class="text-white/35 text-xs md:text-sm font-light tracking-wide group-hover/spec:text-white/55 transition-colors duration-500">Mobile Ecosystem · Sensor Access</span>
                                                 </div>
                                                 <span class="text-white/15 font-mono text-[10px] tracking-[0.2em] shrink-0 group-hover/spec:text-white transition-colors duration-500">01</span>
                                             </div>
-                                            <div class="group/spec flex items-center justify-between gap-6 md:gap-10 py-6 md:py-7 border-b border-white/[0.06] hover:border-white/15 transition-colors duration-500 cursor-none hover-trigger">
+                                            <div class="group/spec flex items-center justify-between gap-6 md:gap-10 py-6 md:py-7 border-b border-white/[0.06] hover:border-white/15 transition-colors duration-500 hover-trigger">
                                                 <div class="flex flex-col gap-1.5 min-w-0">
                                                     <span class="text-white/90 text-xl md:text-2xl font-medium tracking-tight group-hover/spec:text-white transition-colors duration-500">MVVM Structure</span>
                                                     <span class="text-white/35 text-xs md:text-sm font-light tracking-wide group-hover/spec:text-white/55 transition-colors duration-500">Reactive UI · Clean Architecture</span>
                                                 </div>
                                                 <span class="text-white/15 font-mono text-[10px] tracking-[0.2em] shrink-0 group-hover/spec:text-white transition-colors duration-500">02</span>
                                             </div>
-                                            <div class="group/spec flex items-center justify-between gap-6 md:gap-10 py-6 md:py-7 border-b border-white/[0.06] hover:border-white/15 transition-colors duration-500 cursor-none hover-trigger">
+                                            <div class="group/spec flex items-center justify-between gap-6 md:gap-10 py-6 md:py-7 border-b border-white/[0.06] hover:border-white/15 transition-colors duration-500 hover-trigger">
                                                 <div class="flex flex-col gap-1.5 min-w-0">
                                                     <span class="text-white/90 text-xl md:text-2xl font-medium tracking-tight group-hover/spec:text-white transition-colors duration-500">HTML / CSS / JS</span>
                                                     <span class="text-white/35 text-xs md:text-sm font-light tracking-wide group-hover/spec:text-white/55 transition-colors duration-500">DOM Manipulation · GSAP Animation</span>
@@ -509,7 +476,7 @@
                         <div class="group/row relative border-b border-white/15 transition-colors duration-500 hover:bg-white/[0.02]">
                             <div class="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent opacity-0 group-hover/row:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
                             
-                            <div class="py-8 md:py-12 flex flex-col md:flex-row md:items-center justify-between cursor-none hover-trigger px-4">
+                            <div class="py-8 md:py-12 flex flex-col md:flex-row md:items-center justify-between hover-trigger px-4">
                                 <div class="flex items-start md:items-center gap-6 md:gap-12">
                                     <span class="text-white/20 font-mono text-sm tracking-widest mt-2 md:mt-0 group-hover/row:text-white transition-colors duration-500">03</span>
                                     <h4 class="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tighter text-white/80 group-hover/row:text-white transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] uppercase group-hover/row:translate-x-6">
@@ -527,21 +494,21 @@
                                     <div class="pb-12 md:pb-16 px-4 md:ml-[5.5rem] lg:ml-[8rem] md:pr-12">
                                         <div class="w-full flex flex-col border-t border-white/10">
 
-                                            <div class="group/spec flex items-center justify-between gap-6 md:gap-10 py-6 md:py-7 border-b border-white/[0.06] hover:border-white/15 transition-colors duration-500 cursor-none hover-trigger">
+                                            <div class="group/spec flex items-center justify-between gap-6 md:gap-10 py-6 md:py-7 border-b border-white/[0.06] hover:border-white/15 transition-colors duration-500 hover-trigger">
                                                 <div class="flex flex-col gap-1.5 min-w-0">
                                                     <span class="text-white/90 text-xl md:text-2xl font-medium tracking-tight group-hover/spec:text-white transition-colors duration-500">Systems Design</span>
                                                     <span class="text-white/35 text-xs md:text-sm font-light tracking-wide group-hover/spec:text-white/55 transition-colors duration-500">Economic Loops · Progression Scaling</span>
                                                 </div>
                                                 <span class="text-white/15 font-mono text-[10px] tracking-[0.2em] shrink-0 group-hover/spec:text-white transition-colors duration-500">01</span>
                                             </div>
-                                            <div class="group/spec flex items-center justify-between gap-6 md:gap-10 py-6 md:py-7 border-b border-white/[0.06] hover:border-white/15 transition-colors duration-500 cursor-none hover-trigger">
+                                            <div class="group/spec flex items-center justify-between gap-6 md:gap-10 py-6 md:py-7 border-b border-white/[0.06] hover:border-white/15 transition-colors duration-500 hover-trigger">
                                                 <div class="flex flex-col gap-1.5 min-w-0">
                                                     <span class="text-white/90 text-xl md:text-2xl font-medium tracking-tight group-hover/spec:text-white transition-colors duration-500">Level Blockouts</span>
                                                     <span class="text-white/35 text-xs md:text-sm font-light tracking-wide group-hover/spec:text-white/55 transition-colors duration-500">Spatial Pacing · Line-of-Sight</span>
                                                 </div>
                                                 <span class="text-white/15 font-mono text-[10px] tracking-[0.2em] shrink-0 group-hover/spec:text-white transition-colors duration-500">02</span>
                                             </div>
-                                            <div class="group/spec flex items-center justify-between gap-6 md:gap-10 py-6 md:py-7 border-b border-white/[0.06] hover:border-white/15 transition-colors duration-500 cursor-none hover-trigger">
+                                            <div class="group/spec flex items-center justify-between gap-6 md:gap-10 py-6 md:py-7 border-b border-white/[0.06] hover:border-white/15 transition-colors duration-500 hover-trigger">
                                                 <div class="flex flex-col gap-1.5 min-w-0">
                                                     <span class="text-white/90 text-xl md:text-2xl font-medium tracking-tight group-hover/spec:text-white transition-colors duration-500">HCI Research</span>
                                                     <span class="text-white/35 text-xs md:text-sm font-light tracking-wide group-hover/spec:text-white/55 transition-colors duration-500">Usability · Critical Play Analysis</span>
@@ -828,34 +795,7 @@
             }
         </style>`);
 
-        // --------------------------------------------------------
-        // 1. Custom Cursor
-        // --------------------------------------------------------
-        const cursor = document.getElementById('custom-cursor');
-        let mouseX = window.innerWidth / 2;
-        let mouseY = window.innerHeight / 2;
-        let cursorX = mouseX;
-        let cursorY = mouseY;
-        let lastCursorTime = 0;
-
-        document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        });
-
-        function animateCursor(timestamp) {
-            const dt = Math.min((timestamp - (lastCursorTime || timestamp)) / 16.67, 3);
-            lastCursorTime = timestamp;
-            const factor = 1 - Math.pow(0.82, dt); // 帧率无关的平滑插?
-            cursorX += (mouseX - cursorX) * factor;
-            cursorY += (mouseY - cursorY) * factor;
-            // translate(-50%,-50%) 保证指针以自身中心为原点，不随尺寸变化跳?
-            cursor.style.transform = `translate(${cursorX}px, ${cursorY}px) translate(-50%, -50%)`;
-            requestAnimationFrame(animateCursor);
-        }
-        animateCursor(0);
-
-        // Entrance fade ?pairs with the exit transition on the Revive
+        // Entrance fade — pairs with the exit transition on the Revive
         // page, so arriving here reads as a continuation, not a hard cut.
         requestAnimationFrame(() => {
             const enter = document.getElementById('page-enter');
@@ -880,26 +820,26 @@
                 trigger: heroSection,
                 start: "top top",
                 end: "bottom top",
-                pin: true,         // 将大标题区域固定在原?
-                pinSpacing: false, // 关键点：取消占位，让下方?00 About"卡片能顺滑地滑上来遮盖它
+                pin: true,         // 将大标题区域固定在原地
+                pinSpacing: false, // 关键点：取消占位，让下方"00 About"卡片能顺滑地滑上来遮盖它
                 scrub: true
             }
         });
 
         heroTl.to("#hero-content-wrapper", {
-            scale: 0.75,       // 缩小，营造向背景折叠退后的空间?
-            y: "8vh",          // 稍微往下沉一?
+            scale: 0.75,       // 缩小，营造向背景折叠退后的空间感
+            y: "8vh",          // 稍微往下沉一点
             ease: "none",
             duration: 1
         }, 0).to("#hero-content-wrapper", {
             opacity: 0,        // 逐渐完全消失
             ease: "power2.inOut",
             duration: 0.8
-        }, 0.2); // 稍微延迟一点开始渐隐，使得卡片上滑的遮盖感更强?
+        }, 0.2); // 稍微延迟一点开始渐隐，使得卡片上滑的遮盖感更强烈
 
         // 注：搜索框已经被搬到 #site-search-fixed（固定定位，位于
-        // #hero-content-wrapper 之外），不再?Hero 区一起缩?淡出?
-        // 所以这里不需要再给它单独同步一?opacity 补间了?
+        // #hero-content-wrapper 之外），不再跟 Hero 区一起缩放/淡出，
+        // 所以这里不需要再给它单独同步一个 opacity 补间了。
 
         const stackCards = gsap.utils.toArray('.stack-card-wrapper');
         stackCards.forEach((card, index) => {
@@ -935,7 +875,7 @@
         });
 
         // --------------------------------------------------------
-        // 3.5 Logic & Form 手风?展开/收起 同步 ScrollTrigger
+        // 3.5 Logic & Form 手风琴展开/收起 同步 ScrollTrigger
         // --------------------------------------------------------
         const accordionStack = document.querySelector('.group\\/accordion');
         if (accordionStack && window.ResizeObserver) {
@@ -950,14 +890,6 @@
             };
             new ResizeObserver(syncScrollTrigger).observe(accordionStack);
         }
-
-        // --------------------------------------------------------
-        // 4. UI 聚光灯效?
-        // --------------------------------------------------------
-        document.querySelectorAll('.hover-trigger').forEach(el => {
-            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-        });
 
         // --------------------------------------------------------
         // 5. 新增高级交互：视差、磁性元素与滚动揭示
@@ -1178,7 +1110,7 @@
                 suggestionsList.innerHTML = '';
                 matches.forEach(match => {
                     const li = document.createElement('li');
-                    li.className = 'px-4 py-2 text-xs md:text-sm tracking-wide text-white/70 hover:text-white hover:bg-white/10 cursor-none hover-trigger transition-colors';
+                    li.className = 'px-4 py-2 text-xs md:text-sm tracking-wide text-white/70 hover:text-white hover:bg-white/10 hover-trigger transition-colors';
                     li.style.fontFamily = 'inherit';
                     li.textContent = match;
                     
@@ -1189,10 +1121,6 @@
                         performSiteSearch(match);
                         hideSuggestions();
                     });
-                    
-                    // Bind custom cursor logic to dynamically created items
-                    li.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-                    li.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
                     
                     suggestionsList.appendChild(li);
                 });
