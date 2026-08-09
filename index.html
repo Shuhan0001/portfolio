@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ashton (Shuhan) Zhang | Game Design Portfolio</title>
-    <meta name="description" content="Ashton (Shuhan) Zhang ?Game Designer and Interactive Media graduate of the University of York, building gameplay systems, prototypes and interactive experiences in Unity, Unreal Engine 5 and Android.">
+    <meta name="description" content="Ashton (Shuhan) Zhang is a Game Designer and Interactive Media graduate of the University of York. He builds gameplay systems, prototypes and interactive experiences in Unity, Unreal Engine 5 and Android.">
     <meta property="og:title" content="Ashton (Shuhan) Zhang | Game Design Portfolio">
-    <meta property="og:description" content="Game Designer and Interactive Media graduate of the University of York, building gameplay systems, prototypes and interactive experiences in Unity, Unreal Engine 5 and Android.">
+    <meta property="og:description" content="Game Designer and Interactive Media graduate of the University of York. Builds gameplay systems, prototypes and interactive experiences in Unity, Unreal Engine 5 and Android.">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary">
 
@@ -78,11 +78,25 @@
         
 
         .glass-panel {
-            background: rgba(10, 10, 15, 0.4);
+            background: linear-gradient(160deg, rgba(26, 26, 32, 0.46) 0%, rgba(10, 10, 14, 0.38) 45%, rgba(4, 4, 5, 0.42) 100%);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            box-shadow:
+                0 1px 0 0 rgba(255, 255, 255, 0.09) inset,
+                0 -1px 0 0 rgba(0, 0, 0, 0.4) inset,
+                0 24px 50px -16px rgba(0, 0, 0, 0.6),
+                0 8px 20px -10px rgba(0, 0, 0, 0.5);
+            transition: transform 0.7s cubic-bezier(0.16,1,0.3,1), box-shadow 0.7s cubic-bezier(0.16,1,0.3,1), border-color 0.5s ease;
+        }
+        .glass-panel:hover {
+            transform: translateY(-6px);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow:
+                0 1px 0 0 rgba(255, 255, 255, 0.14) inset,
+                0 -1px 0 0 rgba(0, 0, 0, 0.4) inset,
+                0 36px 70px -18px rgba(0, 0, 0, 0.7),
+                0 14px 30px -10px rgba(0, 0, 0, 0.55);
         }
 
         .text-outline {
@@ -100,10 +114,51 @@
         }
         .archive-row:hover {
             background: rgba(255,255,255,0.03);
+            box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.06);
+        }
+
+        /* Rim light for stacked section edges: a soft gradient line reads as
+           where one glass pane ends and the next begins, standing in for the
+           flat 1px border previously used at these seams. */
+        .layer-edge {
+            position: relative;
+        }
+        .layer-edge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg,
+                rgba(255,255,255,0) 0%,
+                rgba(255,255,255,0.16) 18%,
+                rgba(255,255,255,0.32) 50%,
+                rgba(255,255,255,0.16) 82%,
+                rgba(255,255,255,0) 100%);
+            pointer-events: none;
+        }
+
+        /* Shared elevation treatment for standalone content cards (in-progress
+           project rows, spec/accordion rows) so hover state reads as the card
+           lifting a touch off the surface behind it, not just a color change. */
+        .card-elevate {
+            transition: transform 0.5s cubic-bezier(0.16,1,0.3,1), box-shadow 0.5s cubic-bezier(0.16,1,0.3,1), border-color 0.4s ease, background-color 0.3s ease;
+            box-shadow: 0 1px 0 0 rgba(255,255,255,0.05) inset, 0 10px 24px -14px rgba(0,0,0,0.55);
+        }
+        .card-elevate:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 1px 0 0 rgba(255,255,255,0.08) inset, 0 20px 40px -16px rgba(0,0,0,0.65);
         }
 
         .horizontal-scroll-container {
             overflow: hidden;
+        }
+
+        /* The spec list revealed on row hover reads as a shallow recess below
+           the raised title row rather than flush, same-plane content. */
+        .accordion-panel > .overflow-hidden {
+            box-shadow: 0 12px 20px -16px rgba(0, 0, 0, 0.6) inset;
         }
 
         /* GPU 层提升：卡片图片和文字区?*/
@@ -322,12 +377,12 @@
             </section>
 
             <!-- Zone About: Introduction -->
-            <section id="zone-about" class="w-full bg-[#050505]/25 backdrop-blur-md relative z-20 rounded-t-[3rem] shadow-[0_-20px_50px_rgba(0,0,0,0.5)] border-t border-white/10 pointer-events-auto pt-32 pb-20 px-8 md:px-24">
+            <section id="zone-about" class="w-full bg-[#050505]/25 backdrop-blur-md relative z-20 rounded-t-[3rem] shadow-[0_-20px_50px_rgba(0,0,0,0.5),0_1px_0_0_rgba(255,255,255,0.09)_inset] border-t border-white/[0.12] pointer-events-auto pt-32 pb-20 px-8 md:px-24">
                 <div class="max-w-4xl mx-auto w-full">
                     <h2 class="text-sm font-mono tracking-widest text-white mb-4 uppercase gsap-reveal">00 / About</h2>
                     <h3 class="text-4xl md:text-6xl font-bold tracking-tight mb-6 gsap-reveal">Hi, I'm <span class="text-outline">Ashton (Shuhan)</span>.</h3>
                     <p class="text-gray-400 text-lg leading-relaxed max-w-2xl font-light gsap-reveal">
-                        I grew up with a controller in my hands, and that early love of play grew into a career spent designing systems and mechanics that reward mastery. Now I want to push further, into the space where game design overlaps with real engineering practice.
+                        I'm a BSc (Hons) Interactive Media graduate of the University of York, with Upper Second-Class Honours. I work where game systems design meets human-computer interaction. My practice ranges from controlled in-engine experiments on player behaviour to speculative and critical design that makes its argument through an interface rather than an essay. Lately I've been moving toward tangible and embodied interaction, building instruments you hold rather than screens you tap.
                     </p>
                 </div>
             </section>
@@ -335,7 +390,7 @@
             <!-- ========================================== -->
             <!-- Zone 1: Approach & Stack (Avant-Garde Redesign) -->
             <!-- ========================================== -->
-            <section id="zone-1" class="w-full bg-[#050505] relative z-20 pointer-events-auto flex flex-col pt-32 pb-40 overflow-hidden border-t border-white/10">
+            <section id="zone-1" class="layer-edge w-full bg-[#050505] relative z-20 pointer-events-auto flex flex-col pt-32 pb-40 overflow-hidden">
                 <!-- Ambient Glow Effect for depth -->
                 <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-white/[0.02] blur-[120px] rounded-full pointer-events-none"></div>
 
@@ -362,7 +417,7 @@
                             <div class="lg:col-span-4 lg:pt-4">
                                 <div class="w-8 h-[1px] bg-white/40 mb-6"></div>
                                 <p class="text-white/50 text-sm md:text-base leading-relaxed font-light">
-                                    Operating at the intersection of systemic complexity and human intuition. I don't just draft concepts on paper—I build, prototype, and iterate in-engine to guarantee the visceral feel of play.
+                                    I work where systemic complexity meets human intuition. Rather than stopping at concepts on paper, I build, prototype and iterate in engine to get the feel of play right.
                                 </p>
                             </div>
                         </div>
@@ -417,6 +472,13 @@
                                                 </div>
                                                 <span class="text-white/15 font-mono text-[10px] tracking-[0.2em] shrink-0 group-hover/spec:text-white transition-colors duration-500">03</span>
                                             </div>
+                                            <div class="group/spec flex items-center justify-between gap-6 md:gap-10 py-6 md:py-7 border-b border-white/[0.06] hover:border-white/15 transition-colors duration-500 hover-trigger">
+                                                <div class="flex flex-col gap-1.5 min-w-0">
+                                                    <span class="text-white/90 text-xl md:text-2xl font-medium tracking-tight group-hover/spec:text-white transition-colors duration-500">Figma / Maya</span>
+                                                    <span class="text-white/35 text-xs md:text-sm font-light tracking-wide group-hover/spec:text-white/55 transition-colors duration-500">Interface Prototyping · 3D Modelling & Art Direction</span>
+                                                </div>
+                                                <span class="text-white/15 font-mono text-[10px] tracking-[0.2em] shrink-0 group-hover/spec:text-white transition-colors duration-500">04</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -465,6 +527,13 @@
                                                     <span class="text-white/35 text-xs md:text-sm font-light tracking-wide group-hover/spec:text-white/55 transition-colors duration-500">DOM Manipulation · GSAP Animation</span>
                                                 </div>
                                                 <span class="text-white/15 font-mono text-[10px] tracking-[0.2em] shrink-0 group-hover/spec:text-white transition-colors duration-500">03</span>
+                                            </div>
+                                            <div class="group/spec flex items-center justify-between gap-6 md:gap-10 py-6 md:py-7 border-b border-white/[0.06] hover:border-white/15 transition-colors duration-500 hover-trigger">
+                                                <div class="flex flex-col gap-1.5 min-w-0">
+                                                    <span class="text-white/90 text-xl md:text-2xl font-medium tracking-tight group-hover/spec:text-white transition-colors duration-500">Arduino / Embedded</span>
+                                                    <span class="text-white/35 text-xs md:text-sm font-light tracking-wide group-hover/spec:text-white/55 transition-colors duration-500">Physical Prototyping · Sensor-driven Interaction</span>
+                                                </div>
+                                                <span class="text-white/15 font-mono text-[10px] tracking-[0.2em] shrink-0 group-hover/spec:text-white transition-colors duration-500">04</span>
                                             </div>
                                         </div>
                                     </div>
@@ -515,6 +584,13 @@
                                                 </div>
                                                 <span class="text-white/15 font-mono text-[10px] tracking-[0.2em] shrink-0 group-hover/spec:text-white transition-colors duration-500">03</span>
                                             </div>
+                                            <div class="group/spec flex items-center justify-between gap-6 md:gap-10 py-6 md:py-7 border-b border-white/[0.06] hover:border-white/15 transition-colors duration-500 hover-trigger">
+                                                <div class="flex flex-col gap-1.5 min-w-0">
+                                                    <span class="text-white/90 text-xl md:text-2xl font-medium tracking-tight group-hover/spec:text-white transition-colors duration-500">Research through Design</span>
+                                                    <span class="text-white/35 text-xs md:text-sm font-light tracking-wide group-hover/spec:text-white/55 transition-colors duration-500">Speculative & Critical Design · Controlled Experimental Methods</span>
+                                                </div>
+                                                <span class="text-white/15 font-mono text-[10px] tracking-[0.2em] shrink-0 group-hover/spec:text-white transition-colors duration-500">04</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -530,7 +606,7 @@
             <!-- ========================================== -->
 
             <!-- Zone 2: Works (Completed + In Progress) -->
-            <section id="zone-2-works" class="w-full border-t border-b border-white/10 pointer-events-auto relative">
+            <section id="zone-2-works" class="layer-edge w-full border-b border-white/10 pointer-events-auto relative">
 
                 <div id="zone-2-featured" class="horizontal-scroll-container w-full bg-[#050505]/20 backdrop-blur-md relative h-screen flex flex-col justify-center">
                     <div class="absolute top-20 left-8 md:left-24 z-10">
@@ -546,7 +622,7 @@
                             <div class="absolute bottom-10 left-10 z-10 transition-transform duration-500 group-hover:-translate-y-2">
                                 <span class="text-white font-mono text-sm tracking-widest">2.5D NARRATIVE DEMO · UE5</span>
                                 <h4 class="text-4xl md:text-5xl font-bold mt-2 text-white">Revive</h4>
-                                <p class="text-white text-sm md:text-base mt-3 max-w-md">A 2.5D demo pairing hand-drawn pixel art with real-time UE5 lighting, exploring how visual style and dynamic light can carry an emotional narrative.</p>
+                                <p class="text-white text-sm md:text-base mt-3 max-w-md">A controlled UE5 study on how lighting shapes player behaviour. A 3×3 Latin square with nine participants found that everyone rated the Night setting hardest, yet over half found it the most immersive. Custom Blueprint systems, including S_LightingConfig and a lantern-scan mechanic, kept every response uninstructed.</p>
                             </div>
                         </a>
                         <a href="CogniStream_Profilo.html?from=index" class="w-[80vw] md:w-[50vw] h-full shrink-0 relative group rounded-3xl overflow-hidden glass-panel border border-white/10 hover-trigger cursor-pointer block">
@@ -555,16 +631,16 @@
                             <div class="absolute bottom-10 left-10 z-10 transition-transform duration-500 group-hover:-translate-y-2">
                                 <span class="text-emerald-500 font-mono text-sm tracking-widest">SPECULATIVE DESIGN · CRITICAL RESEARCH · HTML</span>
                                 <h4 class="text-4xl md:text-5xl font-bold mt-2">Cogni-Stream</h4>
-                                <p class="text-gray-300 text-sm md:text-base mt-3 max-w-md">A speculative critical-design report built around EnGram+, an invasive brain-computer interface that turns knowledge into a subscription tier ?and class into a light on your temple.</p>
+                                <p class="text-gray-300 text-sm md:text-base mt-3 max-w-md">A speculative critical-design report built around EnGram+, an invasive brain-computer interface that turns knowledge into a subscription tier. Pricing, downgrade penalties and a visible "Status Halo" turn Van Dijk's digital-divide theory and Suarez-Villa's technocapitalism into something you click through, not just read about.</p>
                             </div>
                         </a>
                         <a href="MiniQuest_Profilo.html?from=index" class="w-[80vw] md:w-[50vw] h-full shrink-0 relative group rounded-3xl overflow-hidden glass-panel border border-white/10 hover-trigger cursor-pointer block">
-                            <img src="Image/Index_MinQuest.webp" class="absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-1000 group-hover:scale-105 group-hover:opacity-100">
+                            <img src="Image/Index_MiniQuest.webp" class="absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-1000 group-hover:scale-105 group-hover:opacity-100">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
                             <div class="absolute bottom-10 left-10 z-10 transition-transform duration-500 group-hover:-translate-y-2">
                                 <span class="text-emerald-400 font-mono text-sm tracking-widest">ANDROID · GAMIFIED BEHAVIORAL INTERVENTION</span>
                                 <h4 class="text-4xl md:text-5xl font-bold mt-2">MiniQuest</h4>
-                                <p class="text-gray-300 text-sm md:text-base mt-3 max-w-md">A native Android app that turns everyday accelerometer data into an RPG reward loop, applying response interruption and environmental enrichment to break behavioral rigidity ?built on MVVM, Kotlin Flow and coroutine-driven AI.</p>
+                                <p class="text-gray-300 text-sm md:text-base mt-3 max-w-md">A native Android app that turns everyday accelerometer data into an RPG reward loop. It grounds response interruption and environmental enrichment in stereotyped-behaviour research from Rapp and Vollmer, and Gross et al. Built offline-first with MVVM, it uses a custom raw-accelerometer step detector that works without native step-counter hardware.</p>
                             </div>
                         </a>
                         <a href="Projects.html" class="hover-trigger magnetic shrink-0 relative group flex flex-col items-center justify-center gap-3 pl-4 pr-10 md:pr-16 inline-block">
@@ -580,19 +656,19 @@
                     <div class="max-w-6xl mx-auto w-full">
                         <p class="text-xs font-mono tracking-widest text-gray-500 uppercase mb-6">In Progress</p>
                         <div class="flex flex-col gap-4">
-                            <a href="Supermarket_Simulator_Profilo.html" class="hover-trigger cursor-pointer rounded-2xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-300 p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                            <a href="Supermarket_Simulator_Profilo.html" class="card-elevate hover-trigger cursor-pointer rounded-2xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/20 p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                                 <div>
                                     <span class="text-gray-500 font-mono text-xs tracking-widest uppercase">Unity · Management Sim · Collaborative</span>
                                     <h4 class="text-xl md:text-2xl font-bold mt-1 text-white/80">Supermarket Together</h4>
-                                    <p class="text-gray-500 text-sm mt-2 max-w-lg font-light">A low-poly management sim blending RPG and building mechanics, where players design their own store layout and run a restock-price-sell loop. Game design &amp; interaction design on a small team.</p>
+                                    <p class="text-gray-500 text-sm mt-2 max-w-lg font-light">A low-poly management sim that blends RPG and building mechanics. Players design their own store layout and run a restock, price and sell loop, with a fluctuating wholesale-pricing system and a staff-morale AI. I handle game design and interaction design, working alongside a dedicated narrative designer and artist.</p>
                                 </div>
                                 <span class="text-xs font-mono tracking-widest uppercase text-gray-500 border border-white/15 rounded-full px-4 py-1.5 self-start md:self-auto shrink-0">In Development</span>
                             </a>
-                            <a href="Threshold_Profilo.html" class="hover-trigger cursor-pointer rounded-2xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.04] transition-colors duration-300 p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                            <a href="Threshold_Profilo.html" class="card-elevate hover-trigger cursor-pointer rounded-2xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/20 p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                                 <div>
                                     <span class="text-gray-500 font-mono text-xs tracking-widest uppercase">Speculative Design · Tangible Interface · Research Through Design</span>
                                     <h4 class="text-xl md:text-2xl font-bold mt-1 text-white/80">Threshold</h4>
-                                    <p class="text-gray-500 text-sm mt-2 max-w-lg font-light">A desktop-scale diagnostic instrument, not a companion. Six life indicators decay in real time across a conversation, and participants must decide, under time pressure and with incomplete information, whether the AI in front of them is still itself.</p>
+                                    <p class="text-gray-500 text-sm mt-2 max-w-lg font-light">A desktop-scale diagnostic instrument, not a companion. Six life indicators, including memory, identity, relationship, agency, purpose and survival instinct, decay silently across a conversation. The project is framed against Locke's continuity-of-memory account of selfhood and Parfit's degree-based identity theory, and against the real shutdowns of companion apps like Replika and Soulmate.</p>
                                 </div>
                                 <span class="text-xs font-mono tracking-widest uppercase text-gray-500 border border-white/15 rounded-full px-4 py-1.5 self-start md:self-auto shrink-0">In Development</span>
                             </a>
@@ -602,8 +678,9 @@
             </section>
 
             <!-- Zone 3: Archive Index -->
-            <section class="min-h-[80vh] w-full bg-[#050505]/35 backdrop-blur-md pointer-events-auto py-32 px-8 md:px-24" id="zone-3-archive">
-                <div class="max-w-6xl mx-auto w-full">
+            <section class="min-h-[80vh] w-full bg-[#050505]/35 backdrop-blur-md pointer-events-auto py-32 px-8 md:px-24 relative overflow-hidden" id="zone-3-archive">
+                <div class="absolute top-0 right-1/4 w-[600px] h-[300px] bg-white/[0.015] blur-[120px] rounded-full pointer-events-none"></div>
+                <div class="max-w-6xl mx-auto w-full relative z-10">
                     <h2 class="text-sm font-sans font-bold tracking-widest text-white mb-16 uppercase">03 / ARCHIVE INDEX</h2>
                     <div class="grid grid-cols-12 gap-4 text-xs font-bold text-gray-500 uppercase tracking-widest pb-4 border-b border-white/20">
                         <div class="col-span-1">Year</div>
@@ -628,6 +705,14 @@
                                 <span class="text-xs uppercase tracking-widest text-gray-500 border border-gray-600 rounded-full px-3 py-1">Internship</span>
                             </div>
                         </a>
+                        <a href="#" class="archive-row hover-trigger grid grid-cols-12 gap-4 py-8 border-b border-white/10 items-center cursor-pointer transition-colors">
+                            <div class="col-span-1 text-gray-400 font-mono text-sm">2025</div>
+                            <div class="col-span-5 md:col-span-4 text-2xl font-bold text-gray-300">Evaluating AI-Assisted Code Gen</div>
+                            <div class="col-span-6 md:col-span-5 text-gray-400 hidden md:block">A six-build controlled study comparing prompt-level constraints with model failure</div>
+                            <div class="col-span-6 md:col-span-2 text-right flex justify-end">
+                                <span class="text-xs uppercase tracking-widest text-gray-500 border border-gray-600 rounded-full px-3 py-1">Research</span>
+                            </div>
+                        </a>
                     </div>
                     <div class="flex justify-center mt-16">
                         <a href="Projects.html" class="hover-trigger inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/5 border border-white/10 text-sm font-mono tracking-widest uppercase hover:border-white/30 hover:bg-white/10 transition-all duration-300">
@@ -639,7 +724,8 @@
             </section>
 
             <!-- Zone 4: Contact -->
-            <section id="contact-section" class="min-h-screen w-full flex items-center justify-center relative overflow-hidden bg-[#050505]/60 backdrop-blur-md pointer-events-auto border-t border-white/10 py-32 px-8 md:px-24">
+            <section id="contact-section" class="layer-edge min-h-screen w-full flex items-center justify-center relative overflow-hidden bg-[#050505]/60 backdrop-blur-md pointer-events-auto py-32 px-8 md:px-24">
+                <div class="absolute bottom-0 left-1/3 w-[700px] h-[350px] bg-white/[0.015] blur-[130px] rounded-full pointer-events-none"></div>
                 <div class="w-full max-w-5xl z-10" id="contact-content">
                     <div class="mb-16">
                         <h2 class="text-sm font-mono tracking-widest text-white mb-4 uppercase gsap-reveal">04 / Connect</h2>
@@ -662,10 +748,10 @@
                                 <label class="text-xs font-mono tracking-widest text-gray-500 uppercase">Message</label>
                                 <textarea id="contact-message" placeholder="Tell me about your project..." rows="5" class="bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-gray-600 focus:outline-none focus:border-white/60 focus:bg-white/8 transition-all duration-300 resize-none hover-trigger" required></textarea>
                             </div>
-                            <button type="submit" id="contact-submit-btn" class="hover-trigger magnetic mt-2 px-8 py-4 bg-white text-black rounded-xl font-bold tracking-widest uppercase text-sm transition-all duration-300 hover:bg-white/85 hover:shadow-[0_0_30px_rgba(255,255,255,0.25)] active:scale-95 inline-block">
+                            <button type="submit" id="contact-submit-btn" class="hover-trigger mt-2 px-8 py-4 bg-white text-black rounded-xl font-bold tracking-widest uppercase text-sm transition-all duration-300 hover:bg-white/85 hover:shadow-[0_0_30px_rgba(255,255,255,0.25)] active:scale-95 inline-block">
                                 Send Message
                             </button>
-                            <p id="contact-success" class="hidden text-emerald-400 font-mono text-sm tracking-wider">?Message sent! I'll be in touch soon.</p>
+                            <p id="contact-success" class="hidden text-emerald-400 font-mono text-sm tracking-wider">Message sent! I'll be in touch soon.</p>
                         </form>
 
                         <!-- Contact Info -->
@@ -673,9 +759,9 @@
                             <div class="flex flex-col gap-8">
                                 <div>
                                     <p class="text-xs font-mono tracking-widest text-gray-500 uppercase mb-2">Email</p>
-                                    <a href="mailto:zhangshuhan2023@163.com" class="hover-trigger text-white text-lg hover:text-primary transition-colors">zhangshuhan2023@163.com</a>
+                                    <a href="mailto:zhangshuhan2023@163.com" class="hover-trigger text-white text-lg transition-all duration-300 hover:[text-shadow:0_0_16px_rgba(255,255,255,0.85)]">zhangshuhan2023@163.com</a>
                                     <p class="text-white text-lg mt-1">
-                                        <a href="mailto:ashton.v.zhang@gmail.com" class="hover-trigger hover:text-primary transition-colors">ashton.v.zhang@gmail.com</a>
+                                        <a href="mailto:ashton.v.zhang@gmail.com" class="hover-trigger transition-all duration-300 hover:[text-shadow:0_0_16px_rgba(255,255,255,0.85)]">ashton.v.zhang@gmail.com</a>
                                         <span class="text-gray-500 text-sm"> (outside Mainland China)</span>
                                     </p>
                                 </div>
@@ -693,9 +779,10 @@
                             <div>
                                 <p class="text-xs font-mono tracking-widest text-gray-500 uppercase mb-4">Find Me On</p>
                                 <div class="flex gap-4">
-                                    <a href="#" class="hover-trigger px-5 py-3 bg-white/5 border border-white/10 rounded-xl text-sm font-mono tracking-widest hover:border-white/30 hover:bg-white/10 transition-all duration-300">GitHub</a>
-                                    <a href="#" class="hover-trigger px-5 py-3 bg-white/5 border border-white/10 rounded-xl text-sm font-mono tracking-widest hover:border-white/30 hover:bg-white/10 transition-all duration-300">LinkedIn</a>
-                                    <a href="#" class="hover-trigger px-5 py-3 bg-white/5 border border-white/10 rounded-xl text-sm font-mono tracking-widest hover:border-white/30 hover:bg-white/10 transition-all duration-300">Twitter</a>
+                                    <a href="https://github.com/Shuhan0001" target="_blank" rel="noopener noreferrer" class="hover-trigger px-5 py-3 bg-white/5 border border-white/10 rounded-xl text-sm font-mono tracking-widest hover:border-white/30 hover:bg-white/10 transition-all duration-300 inline-flex items-center gap-2">
+                                        <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                                        GitHub (Shuhan0001)
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -996,7 +1083,7 @@
                 window.location.href = mailtoLink;
                 btn.style.display = 'none';
                 success.classList.remove('hidden');
-                success.textContent = '?Opening your email client to send this ?if nothing happens, feel free to email me directly.';
+                success.textContent = 'Opening your email client to send this. If nothing happens, feel free to email me directly.';
             }, 500);
         }
 
