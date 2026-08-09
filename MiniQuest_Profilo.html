@@ -707,7 +707,25 @@
         (function() {
             const btn = document.querySelector('.back-home-btn');
             const exit = document.getElementById('page-exit');
-            if (!btn || !exit) return;
+            if (!btn) return;
+
+            // Route the back button based on where the visitor came from.
+            const from = new URLSearchParams(window.location.search).get('from');
+            if (from === 'projects') {
+                btn.setAttribute('href', 'Projects.html');
+                const label = btn.querySelector('span');
+                if (label) label.textContent = 'Back to Projects';
+            } else {
+                // The only entry point into this page from index.html is
+                // this card inside the "Selected Artifacts" rail, so
+                // sending the visitor back there (instead of the very top)
+                // keeps the return feeling continuous.
+                btn.setAttribute('href', 'index.html#zone-2-featured');
+                const label = btn.querySelector('span');
+                if (label) label.textContent = 'Back to Home';
+            }
+
+            if (!exit) return;
             btn.addEventListener('click', function(e) {
                 const href = btn.getAttribute('href');
                 if (!href || e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
