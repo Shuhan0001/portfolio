@@ -243,6 +243,22 @@
 
     </style>
 
+    <!-- Reduced-motion: strip GPU-heavy/continuous motion, keep instant
+         state changes. Kept separate from the reveal/hover styles above
+         so it always wins as the last rule. -->
+    <style>
+        @media (prefers-reduced-motion: reduce) {
+            #canvas-container { display: none !important; }
+            .gsap-reveal { opacity: 1 !important; visibility: visible !important; transform: none !important; }
+            *, *::before, *::after {
+                animation-duration: 0.001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.001ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
+
     <!-- ===== Stream background CSS (unmodified from source) ===== -->
     <style>
         #canvas-container {
@@ -311,10 +327,7 @@
     <!-- Wrap the form and the suggestions dropdown to keep them anchored together -->
     <div class="relative pointer-events-auto flex flex-col">
         <form id="site-search-form" class="hover-trigger flex items-center gap-2 pl-4 pr-1.5 py-1.5 rounded-full" style="background: rgba(255,255,255,0.045); backdrop-filter: url(#glass-search-distortion) blur(2px) saturate(140%); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 12px 40px -12px rgba(0,0,0,0.5); transition: border-color 0.4s cubic-bezier(0.25,1,0.3,1), background 0.4s cubic-bezier(0.25,1,0.3,1), transform 0.4s cubic-bezier(0.25,1,0.3,1);">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="flex-shrink:0; color: rgba(255,255,255,0.45); transition: color 0.4s cubic-bezier(0.25,1,0.3,1);">
-                <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
-                <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
+            <i data-lucide="search" style="flex-shrink:0; width:14px; height:14px; color: rgba(255,255,255,0.45); transition: color 0.4s cubic-bezier(0.25,1,0.3,1);" aria-hidden="true"></i>
             <input id="site-search-input" type="text" placeholder="Search" autocomplete="off" class="bg-transparent border-none outline-none text-xs md:text-sm tracking-wide text-white/80 placeholder-white/30 w-20 md:w-32" style="font-family: inherit;">
         </form>
         
@@ -341,10 +354,7 @@
                                  section (see #site-search-fixed below <body>) so it no longer
                                  scales/fades away with the ASHTON ZHANG title on scroll. -->
                             <div id="site-search-placeholder" aria-hidden="true" class="invisible flex items-center gap-2 pl-4 pr-1.5 py-1.5 rounded-full">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;">
-                                    <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
-                                    <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                                </svg>
+                                <i data-lucide="search" style="flex-shrink:0; width:14px; height:14px;"></i>
                                 <span class="text-xs md:text-sm tracking-wide w-20 md:w-32 inline-block">Search</span>
                             </div>
                             <a href="Ashton_Zhang_CV.pdf" download class="hover-trigger magnetic text-sm uppercase tracking-widest border-b border-white/30 pb-1 hover:border-white transition-colors block p-2">Resume</a>
@@ -617,7 +627,7 @@
 
                     <div id="featured-track" class="flex w-[250vw] md:w-[200vw] h-[60vh] px-8 md:px-24 gap-10 md:gap-16 items-center mt-12">
                         <a href="Revive_Profilo.html?from=index" class="w-[80vw] md:w-[50vw] h-full shrink-0 relative group rounded-3xl overflow-hidden glass-panel border border-white/10 hover-trigger cursor-pointer block">
-                            <img src="Image/Index_Revive.webp" class="absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-1000 group-hover:scale-105 group-hover:opacity-100">
+                            <img src="Image/Index_Revive.webp" alt="Revive, a 2.5D narrative demo built in Unreal Engine 5" class="absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-1000 group-hover:scale-105 group-hover:opacity-100">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
                             <div class="absolute bottom-10 left-10 z-10 transition-transform duration-500 group-hover:-translate-y-2">
                                 <span class="text-white font-mono text-sm tracking-widest">2.5D NARRATIVE DEMO · UE5</span>
@@ -626,7 +636,7 @@
                             </div>
                         </a>
                         <a href="CogniStream_Profilo.html?from=index" class="w-[80vw] md:w-[50vw] h-full shrink-0 relative group rounded-3xl overflow-hidden glass-panel border border-white/10 hover-trigger cursor-pointer block">
-                            <img src="Image/Index_CogniStream.webp" class="absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-1000 group-hover:scale-105 group-hover:opacity-100">
+                            <img src="Image/Index_CogniStream.webp" alt="Cogni-Stream, a speculative critical-design report on a brain-computer interface" class="absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-1000 group-hover:scale-105 group-hover:opacity-100">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
                             <div class="absolute bottom-10 left-10 z-10 transition-transform duration-500 group-hover:-translate-y-2">
                                 <span class="text-emerald-500 font-mono text-sm tracking-widest">SPECULATIVE DESIGN · CRITICAL RESEARCH · HTML</span>
@@ -635,7 +645,7 @@
                             </div>
                         </a>
                         <a href="MiniQuest_Profilo.html?from=index" class="w-[80vw] md:w-[50vw] h-full shrink-0 relative group rounded-3xl overflow-hidden glass-panel border border-white/10 hover-trigger cursor-pointer block">
-                            <img src="Image/Index_MiniQuest.webp" class="absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-1000 group-hover:scale-105 group-hover:opacity-100">
+                            <img src="Image/Index_MiniQuest.webp" alt="MiniQuest, a native Android app that turns accelerometer data into an RPG reward loop" class="absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-1000 group-hover:scale-105 group-hover:opacity-100">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
                             <div class="absolute bottom-10 left-10 z-10 transition-transform duration-500 group-hover:-translate-y-2">
                                 <span class="text-emerald-400 font-mono text-sm tracking-widest">ANDROID · GAMIFIED BEHAVIORAL INTERVENTION</span>
@@ -644,9 +654,7 @@
                             </div>
                         </a>
                         <a href="Projects.html" class="hover-trigger magnetic shrink-0 relative group flex flex-col items-center justify-center gap-3 pl-4 pr-10 md:pr-16 inline-block">
-                            <svg class="w-10 h-10 md:w-12 md:h-12 text-white/70 transition-all duration-500 ease-out group-hover:text-white group-hover:translate-x-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                            </svg>
+                            <i data-lucide="chevron-right" class="w-10 h-10 md:w-12 md:h-12 text-white/70 transition-all duration-500 ease-out group-hover:text-white group-hover:translate-x-3" style="stroke-width:1.5;" aria-hidden="true"></i>
                             <span class="text-white/70 font-mono text-xs md:text-sm tracking-widest uppercase transition-colors duration-500 group-hover:text-white whitespace-nowrap mt-2">See More</span>
                         </a>
                     </div>
@@ -697,27 +705,27 @@
                                 <span class="text-xs uppercase tracking-widest text-gray-500 border border-gray-600 rounded-full px-3 py-1">Graduation</span>
                             </div>
                         </div>
-                        <a href="#" class="archive-row hover-trigger grid grid-cols-12 gap-4 py-8 border-b border-white/10 items-center cursor-pointer transition-colors">
+                        <div class="archive-row grid grid-cols-12 gap-4 py-8 border-b border-white/10 items-center transition-colors">
                             <div class="col-span-1 text-gray-400 font-mono text-sm">2025</div>
                             <div class="col-span-5 md:col-span-4 text-2xl font-bold text-gray-300">Game Assistant Internship</div>
                             <div class="col-span-6 md:col-span-5 text-gray-400 hidden md:block">Shanghai Sanyi Culture · QQ Dance Live-Ops Team</div>
                             <div class="col-span-6 md:col-span-2 text-right flex justify-end">
                                 <span class="text-xs uppercase tracking-widest text-gray-500 border border-gray-600 rounded-full px-3 py-1">Internship</span>
                             </div>
-                        </a>
-                        <a href="#" class="archive-row hover-trigger grid grid-cols-12 gap-4 py-8 border-b border-white/10 items-center cursor-pointer transition-colors">
+                        </div>
+                        <div class="archive-row grid grid-cols-12 gap-4 py-8 border-b border-white/10 items-center transition-colors">
                             <div class="col-span-1 text-gray-400 font-mono text-sm">2025</div>
                             <div class="col-span-5 md:col-span-4 text-2xl font-bold text-gray-300">Evaluating AI-Assisted Code Gen</div>
                             <div class="col-span-6 md:col-span-5 text-gray-400 hidden md:block">A six-build controlled study comparing prompt-level constraints with model failure</div>
                             <div class="col-span-6 md:col-span-2 text-right flex justify-end">
                                 <span class="text-xs uppercase tracking-widest text-gray-500 border border-gray-600 rounded-full px-3 py-1">Research</span>
                             </div>
-                        </a>
+                        </div>
                     </div>
                     <div class="flex justify-center mt-16">
                         <a href="Projects.html" class="hover-trigger inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/5 border border-white/10 text-sm font-mono tracking-widest uppercase hover:border-white/30 hover:bg-white/10 transition-all duration-300">
                             View All Projects
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+                            <i data-lucide="chevron-right" class="w-4 h-4" style="stroke-width:1.5;" aria-hidden="true"></i>
                         </a>
                     </div>
                 </div>
@@ -771,6 +779,7 @@
                                 </div>
                                 <div>
                                     <a href="Ashton_Zhang_CV.pdf" download class="hover-trigger inline-flex items-center gap-2 px-5 py-3 bg-white/5 border border-white/10 rounded-xl text-sm font-mono tracking-widest hover:border-white/30 hover:bg-white/10 transition-all duration-300">
+                                        <i data-lucide="download" class="w-4 h-4" style="stroke-width:1.5;" aria-hidden="true"></i>
                                         Download CV
                                     </a>
                                 </div>
@@ -780,7 +789,7 @@
                                 <p class="text-xs font-mono tracking-widest text-gray-500 uppercase mb-4">Find Me On</p>
                                 <div class="flex gap-4">
                                     <a href="https://github.com/Shuhan0001" target="_blank" rel="noopener noreferrer" class="hover-trigger px-5 py-3 bg-white/5 border border-white/10 rounded-xl text-sm font-mono tracking-widest hover:border-white/30 hover:bg-white/10 transition-all duration-300 inline-flex items-center gap-2">
-                                        <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                                        <i data-lucide="github" class="w-4 h-4 shrink-0" style="stroke-width:1.5;" aria-hidden="true"></i>
                                         GitHub (Shuhan0001)
                                     </a>
                                 </div>
@@ -801,6 +810,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
     <script>
         // --------------------------------------------------------
@@ -835,10 +845,17 @@
             history.replaceState(null, '', window.location.pathname + window.location.search);
         }
 
+        // Shared feature flags: reduced-motion users get native discrete
+        // scrolling and no cursor-driven effects; coarse-pointer (touch)
+        // devices skip mouse-follow effects since there's no hovering
+        // cursor to drive them, and get a lighter canvas background.
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
+
         const lenis = new Lenis({
             duration: 1.2,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-            smooth: true,
+            smooth: !prefersReducedMotion,
         });
 
         // 只用 gsap.ticker 驱动 Lenis，避免双?tick
@@ -896,6 +913,9 @@
         // 2. GSAP 注册
         // --------------------------------------------------------
         gsap.registerPlugin(ScrollTrigger);
+
+        // Render every data-lucide="..." marker into its SVG icon.
+        if (window.lucide) lucide.createIcons();
 
         // --------------------------------------------------------
         // 3. GSAP 核心滚动交互逻辑
@@ -982,23 +1002,28 @@
         // 5. 新增高级交互：视差、磁性元素与滚动揭示
         // --------------------------------------------------------
         
-        // 5.1 鼠标微距视差 (Hero Parallax)
+        // 5.1 鼠标微距视差 (Hero Parallax) — skipped for reduced-motion and
+        // touch/coarse-pointer visitors: there's no hovering cursor to
+        // drive it on touch, and reduced-motion users asked for less
+        // continuous movement.
         const heroTarget = document.getElementById('hero-parallax-target');
-        document.addEventListener('mousemove', (e) => {
-            if (!heroTarget) return;
-            // 计算鼠标偏离中心的距?(-0.5 ?0.5)
-            const x = (e.clientX / window.innerWidth - 0.5) * 40; 
-            const y = (e.clientY / window.innerHeight - 0.5) * 40;
-            gsap.to(heroTarget, {
-                x: x,
-                y: y,
-                duration: 1.5,
-                ease: "power2.out"
+        if (!prefersReducedMotion && !isCoarsePointer) {
+            document.addEventListener('mousemove', (e) => {
+                if (!heroTarget) return;
+                // 计算鼠标偏离中心的距?(-0.5 ?0.5)
+                const x = (e.clientX / window.innerWidth - 0.5) * 40; 
+                const y = (e.clientY / window.innerHeight - 0.5) * 40;
+                gsap.to(heroTarget, {
+                    x: x,
+                    y: y,
+                    duration: 1.5,
+                    ease: "power2.out"
+                });
             });
-        });
+        }
 
-        // 5.2 磁性按钮吸附效?(Magnetic Hover)
-        document.querySelectorAll('.magnetic').forEach(elem => {
+        // 5.2 磁性按钮吸附效?(Magnetic Hover) — same guard as above.
+        if (!prefersReducedMotion && !isCoarsePointer) document.querySelectorAll('.magnetic').forEach(elem => {
             elem.addEventListener('mousemove', (e) => {
                 const rect = elem.getBoundingClientRect();
                 // 计算鼠标相对于元素中心的偏移
@@ -1334,7 +1359,10 @@
                 speedBase: 1.5,
                 speedVariance: 2,
                 trailLength: 15,
-                density: 0.6
+                // Lighter density on touch devices, which are more often
+                // lower-powered and never benefit from the cursor-driven
+                // parallax that the desktop density was tuned around.
+                density: (typeof isCoarsePointer !== 'undefined' && isCoarsePointer) ? 0.32 : 0.6
             };
 
             // Depth layers for intense 3D scale and impact
@@ -1550,22 +1578,32 @@
             ctx.fillStyle = config.colors.bg;
             ctx.fillRect(0, 0, width, height);
 
-            // Start animation
-            requestAnimationFrame(animate);
+            // Start animation — reduced-motion visitors get a single
+            // static frame instead of a continuous 60fps loop (the
+            // canvas is also hidden via CSS for them; this just avoids
+            // burning battery/CPU on a background nobody sees).
+            if (typeof prefersReducedMotion === 'undefined' || !prefersReducedMotion) {
+                requestAnimationFrame(animate);
+            }
 
             // Fade in canvas after a short delay
             setTimeout(() => {
                 container.classList.add('ready');
             }, 300);
 
-            // Optional: Mouse movement parallax effect
-            document.addEventListener('mousemove', (e) => {
-                const mouseX = (e.clientX / window.innerWidth) - 0.5;
-                const mouseY = (e.clientY / window.innerHeight) - 0.5;
+            // Optional: Mouse movement parallax effect — skipped on
+            // touch/coarse-pointer devices, which have no hovering
+            // cursor to drive it, and for reduced-motion visitors.
+            if ((typeof isCoarsePointer === 'undefined' || !isCoarsePointer) &&
+                (typeof prefersReducedMotion === 'undefined' || !prefersReducedMotion)) {
+                document.addEventListener('mousemove', (e) => {
+                    const mouseX = (e.clientX / window.innerWidth) - 0.5;
+                    const mouseY = (e.clientY / window.innerHeight) - 0.5;
 
-                // Subtle movement of the canvas container based on mouse
-                container.style.transform = `translate(${mouseX * 20}px, ${mouseY * 20}px) scale(1.02)`;
-            });
+                    // Subtle movement of the canvas container based on mouse
+                    container.style.transform = `translate(${mouseX * 20}px, ${mouseY * 20}px) scale(1.02)`;
+                });
+            }
         })();
     </script>
 </body>
