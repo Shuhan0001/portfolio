@@ -7,7 +7,26 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.google<link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+39+Text&display=swap" rel="stylesheet">apis.com/css2family=Libre+Barcode+39+Text&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+39+Text&display=swap" rel="stylesheet">
+
+    <script>
+        // Optional capture mode for turning this page into portfolio-PDF
+        // screenshots. Append ?pdf=1 to the URL before capturing (with a
+        // full-page screenshot tool, or the browser's own Print-to-PDF).
+        // It forces every scroll-triggered ".reveal" element into its
+        // final visible state and hides the floating/fixed chrome (logo,
+        // back button, scroll rail, film grain) that only makes sense on
+        // a live, scrolling page. The normal site is completely
+        // unaffected when the parameter is absent.
+        (function () {
+            try {
+                var params = new URLSearchParams(window.location.search);
+                if (params.get('pdf') === '1' || params.get('capture') === '1') {
+                    document.documentElement.classList.add('pdf-capture');
+                }
+            } catch (e) { /* no-op if URLSearchParams unsupported */ }
+        })();
+    </script>
 
     <style>
         :root {
@@ -50,7 +69,6 @@
         }
 
         ::-webkit-scrollbar { width: 0px; background: transparent; }
-
 
         .noise-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
@@ -235,10 +253,6 @@
             box-shadow: none;
         }
 
-        /* ---------------------------------------------------------- */
-        /* Subscription tier cards recreated from the actual        */
-        /* Cogni-Stream "Select your tier of evolution" pricing table */
-        /* ---------------------------------------------------------- */
         .tier-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 1.5rem; margin-top: 3rem;
@@ -257,9 +271,6 @@
         .tier-block span.label { display: block; font-size: 0.7rem; letter-spacing: 0.12em; color: var(--text-tertiary); text-transform: uppercase; margin-bottom: 0.6rem; }
         .tier-block p { font-size: 0.9rem; color: var(--text-secondary); margin: 0.2rem 0; }
 
-        /* ---------------------------------------------------------- */
-        /* Status Halo the device's public-facing class indicator   */
-        /* ---------------------------------------------------------- */
         .halo-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 2rem; margin-top: 3rem;
@@ -278,9 +289,6 @@
         .halo-text .name { font-size: 0.95rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 0.3rem; }
         .halo-text .desc { font-size: 0.9rem; color: var(--text-secondary); }
 
-        /* ---------------------------------------------------------- */
-        /* Simulated X / community discussion mockup                  */
-        /* ---------------------------------------------------------- */
         .tweet-stack { display: flex; flex-direction: column; gap: 1.25rem; margin-top: 3rem; max-width: 620px; }
         .tweet-card {
             border: 1px solid var(--border-subtle); border-radius: var(--radius-md);
@@ -304,10 +312,6 @@
         .quote-block p { font-size: 1.15rem; color: var(--text-primary); font-weight: 500; line-height: 1.5; }
         .quote-block span { display: block; margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-tertiary); }
 
-        /* ---------------------------------------------------------- */
-        /* Source-code excerpts real snippets pulled from            */
-        /* EnGram__Web.html, annotated inline                          */
-        /* ---------------------------------------------------------- */
         .code-panel {
             background: #0a0a0d; border: 1px solid var(--border-subtle);
             border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-subtle);
@@ -334,11 +338,98 @@
         .code-note strong { color: var(--text-primary); font-weight: 600; }
 
         /* ============================================================
+           Screenshot-capture mode (?pdf=1 or ?capture=1 in the URL) —
+           Optimized layout for taking continuous full-page screenshots
+           for a portfolio PDF, without losing the original design sense.
+           ============================================================ */
+        html.pdf-capture {
+            font-size: 90%;
+        }
+
+        /* Hide ONLY the interactive chrome (scroll track, back button) */
+        html.pdf-capture .scroll-track,
+        html.pdf-capture .back-home-btn {
+            display: none !important;
+        }
+
+        /* PRESERVE design elements, but switch them from fixed to absolute
+           so they stretch correctly across the document and don't cause
+           banding/tiling artifacts in stitched screenshots. */
+        html.pdf-capture .noise-overlay {
+            display: block !important;
+            position: absolute !important;
+            height: 100% !important;
+            min-height: 100vh !important;
+        }
+        html.pdf-capture .ambient-light {
+            display: block !important;
+            position: absolute !important;
+            width: 1200px !important;
+            height: 1200px !important;
+            top: -200px !important;
+            left: -200px !important;
+        }
+        html.pdf-capture .ambient-light.right {
+            top: 40% !important;
+            left: auto !important;
+            right: -300px !important;
+        }
+
+        /* Make header static relative to the document top */
+        html.pdf-capture .site-header {
+            position: absolute !important;
+            top: 4rem !important;
+            left: 6vw !important;
+        }
+
+        /* Tighten layout to eliminate massive vertical whitespace */
+        html.pdf-capture .container {
+            max-width: 1100px !important;
+            padding: 0 4rem !important;
+        }
+        html.pdf-capture .section {
+            padding: 6rem 0 !important;
+        }
+        html.pdf-capture .hero {
+            padding-top: 10rem !important;
+            padding-bottom: 4rem !important;
+            min-height: auto !important;
+        }
+        html.pdf-capture .hero-meta {
+            margin-top: 4rem !important;
+        }
+
+        html.pdf-capture .reveal {
+            opacity: 1 !important;
+            transform: none !important;
+            filter: none !important;
+            transition: none !important;
+        }
+        html.pdf-capture .sticky-col {
+            position: static !important;
+            top: auto !important;
+        }
+        html.pdf-capture .grid-split {
+            gap: 4rem !important;
+        }
+
+        /* Prevent elements from being sliced awkwardly if the screenshot
+           is later split into A4 pages */
+        html.pdf-capture .tier-card,
+        html.pdf-capture .halo-item,
+        html.pdf-capture .tweet-card,
+        html.pdf-capture .code-panel,
+        html.pdf-capture .media-frame,
+        html.pdf-capture .quote-block,
+        html.pdf-capture .prototype-btn-group,
+        html.pdf-capture img {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+        
+        /* ============================================================
            Print / PDF export — lets this page be turned into a portfolio
-           PDF straight from the browser's Print dialog (Cmd/Ctrl+P →
-           Save as PDF), without touching any live-site content, copy,
-           or interaction behaviour. Everything below only ever applies
-           when actually printing.
+           PDF straight from the browser's Print dialog.
            ============================================================ */
         @media print {
 
@@ -347,32 +438,16 @@
                 margin: 10mm 14mm;
             }
 
-            /* Nearly every font-size, margin and gap on this page is set
-               in rem, sized for a tall scrolling column. Scaling the root
-               down shrinks all of them together, proportionally, which is
-               what actually lets the denser sections (tier cards, code
-               panel) fit on one short landscape page instead of spilling
-               a lone card or row onto a near-empty next page. */
             html {
                 font-size: 80% !important;
             }
 
-            /* Force backgrounds/gradients to actually print instead of
-               being silently dropped to save ink — this design depends
-               entirely on the black background and cyan accents. */
             * {
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
                 color-adjust: exact !important;
             }
 
-            /* backdrop-filter (the frosted-glass look on cards and
-               panels) isn't reliably supported by every print
-               pipeline — Windows' own "Microsoft Print to PDF" driver in
-               particular can render a blurred glass panel as a solid
-               opaque block instead of translucent blur. Disabling it for
-               print keeps every engine showing the same plain dark panel
-               rather than some engines showing a wrong solid fill. */
             * {
                 backdrop-filter: none !important;
                 -webkit-backdrop-filter: none !important;
@@ -384,25 +459,39 @@
                 cursor: auto !important;
             }
 
-            /* Chrome that only makes sense on a live, moving, hover-driven
-               page — a scroll-progress rail, a "back home"
-               button, film-grain and ambient glows. None of it belongs on
-               a printed page, and fixed-position elements don't paginate
-               reliably anyway, so they're removed rather than left to
-               render however a given browser's print engine feels like. */
-            .noise-overlay,
-            .ambient-light,
+            /* Hide ONLY interactive elements */
             .scroll-track,
-            .back-home-btn,
-            .site-header {
+            .back-home-btn {
                 display: none !important;
             }
+            
+            .site-header {
+                position: absolute !important;
+                top: 2rem !important;
+                left: 14mm !important;
+            }
 
-            /* .text-outline draws its hollow title look with a transparent
-               fill and a stroke-only outline. Not every print/PDF engine
-               reproduces text-stroke, which can silently turn a heading
-               into blank space — so print gets solid, always-legible
-               text instead. */
+            /* PRESERVE design layers for print, using absolute positioning */
+            .noise-overlay, 
+            .ambient-light {
+                display: block !important;
+                position: absolute !important;
+            }
+            .noise-overlay {
+                height: 100% !important;
+            }
+            .ambient-light {
+                width: 1000px !important;
+                height: 1000px !important;
+                top: -100px !important;
+                left: -100px !important;
+            }
+            .ambient-light.right {
+                top: 40% !important;
+                left: auto !important;
+                right: -200px !important;
+            }
+
             .text-outline {
                 color: var(--accent-cyan) !important;
                 -webkit-text-stroke: 0 !important;
@@ -411,10 +500,6 @@
                 animation: none !important;
             }
 
-            /* Scroll-triggered reveal animations never get a chance to
-               fire during print rendering — there's no real scrolling —
-               so content left at its initial opacity: 0 would otherwise
-               print as empty space. Force the "arrived" state directly. */
             .reveal {
                 opacity: 1 !important;
                 transform: none !important;
@@ -422,13 +507,6 @@
                 transition: none !important;
             }
 
-            /* Sticky positioning has no meaning on a paginated printout,
-               so it's turned off. The two-column split itself is kept —
-               and tightened up — because stacking heading/text into a
-               single column on a short landscape page is what was
-               pushing each section past one page. Side-by-side columns
-               keep every section's total height low enough to land on
-               one page. */
             .grid-split {
                 grid-template-columns: 0.85fr 1.3fr !important;
                 gap: 3rem !important;
@@ -440,20 +518,23 @@
                 top: auto !important;
             }
 
-            /* Text columns are narrow because they're designed for a
-               vertical scroll layout; on a wide landscape page that
-               leaves a lot of unused width. Give print more breathing
-               room without stretching lines past a comfortable length. */
             .text-body { max-width: 780px !important; }
             .text-lead { max-width: 900px !important; }
 
-            /* Code panel's horizontal scroll has no meaning on a static
-               printout, and a long unwrapped line would just run off
-               the edge of the page and get clipped. Wrap it instead. */
             .code-panel pre {
                 white-space: pre-wrap !important;
                 word-break: break-word !important;
                 overflow-x: visible !important;
+            }
+            
+            /* Prevent awkward component slicing across print pages */
+            .tier-card, .halo-item, .tweet-card, .code-panel, .media-frame, .quote-block, img {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            h2, h3, h4, .data-label {
+                page-break-after: avoid !important;
+                break-after: avoid !important;
             }
         }
     </style>
@@ -922,6 +1003,17 @@
 
 
         document.addEventListener('DOMContentLoaded', () => {
+            // In capture mode, most full-page screenshot tools never
+            // actually scroll the page, so native loading="lazy" images
+            // below the fold may never fire their load. Force them
+            // eager so every image is guaranteed to be in the DOM and
+            // rendered before a screenshot is taken.
+            if (document.documentElement.classList.contains('pdf-capture')) {
+                document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+                    img.loading = 'eager';
+                });
+            }
+
             const reveals = document.querySelectorAll('.reveal');
             const observerOptions = { root: null, rootMargin: '0px 0px -15% 0px', threshold: 0.1 };
             const revealObserver = new IntersectionObserver((entries, observer) => {
