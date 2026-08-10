@@ -647,7 +647,12 @@
         .site-header {
             position: absolute;
             top: 6vh;
-            left: 6vw;
+            /* Match .container's actual content edge: below the 1440px
+               max-width breakpoint this equals 6vw same as before, but
+               above it the container centers itself, so a plain 6vw
+               drifts left of the title. max() reproduces the container's
+               own math (see .container) so the logo always lines up. */
+            left: max(6vw, calc(56vw - 720px));
             z-index: 100;
             display: flex;
             align-items: center;
@@ -658,7 +663,10 @@
         .back-home-btn {
             position: fixed;
             top: 6vh;
-            right: 6vw;
+            /* Same fix as .site-header, mirrored for the right edge, so
+               this stays flush with the container's content edge past
+               the 1440px breakpoint instead of drifting right of it. */
+            right: max(6vw, calc(56vw - 720px));
             z-index: 100;
             display: flex;
             align-items: center;
