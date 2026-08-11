@@ -1,11 +1,11 @@
 ﻿<!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Bridge of Pixel and Light | Shuhan Zhang</title>
-
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Bridge of Pixel and Light | Shuhan Zhang</title>
+<style>
         :root {
             /* Palette: Void & Amber */
             --bg-void: #000000;
@@ -60,6 +60,139 @@
 
 
 
+
+
+        /* ============================================================
+           FUSED CINEMATIC MESH — from The Bridge of Pixel & Light
+           Kept deliberately subtle so it complements Revive's
+           ambient-light system rather than replacing it.
+           ============================================================ */
+        .mesh-container {
+            position: fixed;
+            inset: 0;
+            z-index: -3;
+            overflow: hidden;
+            pointer-events: none;
+            background: #000;
+        }
+
+        .mesh-blur {
+            position: absolute;
+            inset: -10%;
+            width: 120%;
+            height: 120%;
+            filter: blur(90px) saturate(135%);
+            transform: translateZ(0);
+            will-change: transform;
+            opacity: 0.55;
+        }
+
+        .mesh-blob {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            border-radius: 50%;
+            mix-blend-mode: screen;
+            will-change: transform;
+        }
+
+        .mesh-blob-1 {
+            margin-top: -40vh;
+            margin-left: -35vw;
+            width: 70vw;
+            height: 50vh;
+            background: radial-gradient(ellipse at center,
+                rgba(245,166,35,.55) 0%,
+                rgba(245,166,35,.12) 38%,
+                transparent 68%);
+            animation: fusedWrithe1 28s infinite ease-in-out;
+        }
+
+        .mesh-blob-2 {
+            margin-top: -30vh;
+            margin-left: -20vw;
+            width: 50vw;
+            height: 70vh;
+            background: radial-gradient(ellipse at center,
+                rgba(255,69,58,.28) 0%,
+                rgba(255,94,0,.10) 42%,
+                transparent 70%);
+            animation: fusedWrithe2 32s infinite ease-in-out reverse;
+        }
+
+        .mesh-blob-3 {
+            margin-top: -10vh;
+            margin-left: -40vw;
+            width: 80vw;
+            height: 60vh;
+            background: radial-gradient(ellipse at center,
+                rgba(255,94,0,.25) 0%,
+                transparent 65%);
+            animation: fusedWrithe3 36s infinite ease-in-out;
+        }
+
+        .mesh-blob-4 {
+            margin-top: -20vh;
+            margin-left: -20vw;
+            width: 40vw;
+            height: 40vh;
+            background: radial-gradient(circle at center,
+                rgba(255,214,10,.20) 0%,
+                transparent 72%);
+            animation: fusedBreathe 20s infinite ease-in-out alternate;
+        }
+
+        @keyframes fusedWrithe1 {
+            0% { transform: translate3d(-5vw,-5vh,0) scale(1) rotate(0deg); }
+            33% { transform: translate3d(15vw,10vh,0) scale(1.12) rotate(120deg); }
+            66% { transform: translate3d(-10vw,15vh,0) scale(.92) rotate(240deg); }
+            100% { transform: translate3d(-5vw,-5vh,0) scale(1) rotate(360deg); }
+        }
+
+        @keyframes fusedWrithe2 {
+            0% { transform: translate3d(10vw,10vh,0) scale(1.05) rotate(0deg); }
+            33% { transform: translate3d(-15vw,-5vh,0) scale(.92) rotate(120deg); }
+            66% { transform: translate3d(5vw,-15vh,0) scale(1.15) rotate(240deg); }
+            100% { transform: translate3d(10vw,10vh,0) scale(1.05) rotate(360deg); }
+        }
+
+        @keyframes fusedWrithe3 {
+            0% { transform: translate3d(5vw,-15vh,0) scale(.92) rotate(0deg); }
+            50% { transform: translate3d(-10vw,5vh,0) scale(1.15) rotate(180deg); }
+            100% { transform: translate3d(5vw,-15vh,0) scale(.92) rotate(360deg); }
+        }
+
+        @keyframes fusedBreathe {
+            0% { transform: translate3d(0,0,0) scale(.82) rotate(0deg); opacity:.45; }
+            50% { transform: translate3d(10vw,-10vh,0) scale(1.35) rotate(90deg); opacity:.9; }
+            100% { transform: translate3d(-5vw,10vh,0) scale(.92) rotate(180deg); opacity:.55; }
+        }
+
+        /* Bridge visual language: outlined display type */
+        .text-outline {
+            color: transparent;
+            -webkit-text-stroke: 1.5px rgba(255,255,255,.32);
+            text-stroke: 1.5px rgba(255,255,255,.32);
+            transition: color .7s var(--ease-cinematic),
+                        -webkit-text-stroke-color .7s var(--ease-cinematic),
+                        text-shadow .7s var(--ease-cinematic);
+        }
+
+        .text-outline:hover {
+            color: var(--accent-amber);
+            -webkit-text-stroke-color: transparent;
+            text-stroke-color: transparent;
+            text-shadow: 0 0 48px var(--accent-glow);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .mesh-blob-1,
+            .mesh-blob-2,
+            .mesh-blob-3,
+            .mesh-blob-4 {
+                animation: none;
+            }
+        }
 
         .noise-overlay {
             position: fixed;
@@ -506,10 +639,13 @@
         /* 极简风画廊控制区 */
         .stack-controls {
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 1.5rem;
+            width: 100%;
+            gap: 1rem;
             margin-top: 2.5rem;
+            text-align: center;
         }
 
         .stack-btn-prev, .stack-btn-next {
@@ -589,9 +725,16 @@
         }
 
         .stack-caption {
+            width: 100%;
+            max-width: 760px;
+            margin: 0 auto;
             text-align: center;
-            margin-top: 1.5rem;
-            color: var(--text-secondary); /* 稍微提亮让文字融入环?*/
+            color: var(--text-secondary);
+        }
+
+        .stack-dots {
+            justify-content: center;
+            width: 100%;
         }
 
         .data-card {
@@ -1278,399 +1421,420 @@
                 page-break-after: avoid;
                 break-after: avoid;
             }
+
+            /* "Watch Gameplay Video" / "View on GitHub" are dead ends on
+               paper -- nothing to click. The live glowing amber pill is a
+               screen affordance for a clickable target; kept as-is it just
+               reads as a stray highlighter block on a printed page. Strip
+               it down to the same quiet label/value pattern already used
+               by .meta-item elsewhere on this page (small caption over a
+               value, hung off a thin rule) so the two links read as part
+               of the document's own typography instead of leftover UI. */
+            .gameplay-btn,
+            .gameplay-btn-secondary {
+                display: inline-flex !important;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 0.35em !important;
+                width: auto !important;
+                background: none !important;
+                border: none !important;
+                border-left: 1px solid var(--border-subtle) !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                padding: 0.1rem 0 0.1rem 0.85rem !important;
+                color: var(--text-tertiary) !important;
+                font-size: 0.7rem !important;
+                font-weight: 600 !important;
+                letter-spacing: 0.06em !important;
+                text-transform: uppercase !important;
+            }
+
+            .gameplay-btn svg,
+            .gameplay-btn-secondary svg {
+                display: none !important;
+            }
+
+            .gameplay-btn::after,
+            .gameplay-btn-secondary::after {
+                content: attr(href);
+                display: block;
+                font-size: 0.62rem;
+                font-weight: 400;
+                letter-spacing: 0;
+                text-transform: none;
+                text-decoration: none;
+                color: var(--text-secondary) !important;
+                word-break: break-all;
+            }
         }
     </style>
 </head>
 <body>
-
-    <div id="page-exit" style="position:fixed; inset:0; z-index:10001; background:#000000; pointer-events:none; opacity:0; transition: opacity 0.7s cubic-bezier(0.25,1,0.3,1);"></div>
-    <div class="noise-overlay"></div>
-
-    <div class="lightbox-overlay" id="lightboxOverlay">
-        <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Close expanded image">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
-        </button>
-        <figure class="lightbox-figure">
-            <img id="lightboxImg" src="" alt="">
-            <figcaption class="lightbox-caption" id="lightboxCaption"></figcaption>
-        </figure>
-    </div>
-    
-    <div class="ambient-light"></div>
-    <div class="ambient-light right"></div>
-    <div class="ambient-light center"></div>
-
-    <header class="site-header">
-        <img src="Image/Revive_Logo.webp" alt="Revive logo" class="site-logo-img" width="88" height="88">
-    </header>
-
-    <svg style="position:absolute; width:0; height:0; overflow:hidden;" aria-hidden="true">
-        <defs>
-            <filter id="glass-distortion" x="-20%" y="-20%" width="140%" height="140%">
-                <feTurbulence type="fractalNoise" baseFrequency="0.010 0.012" numOctaves="2" seed="7" result="noise"/>
-                <feGaussianBlur in="noise" stdDeviation="3" result="blurredNoise"/>
-                <feDisplacementMap in="SourceGraphic" in2="blurredNoise" scale="40" xChannelSelector="R" yChannelSelector="G"/>
-            </filter>
-        </defs>
-    </svg>
-
-    <a href="index.html" class="back-home-btn" aria-label="Back to home">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <span>Back to Home</span>
-    </a>
-
-    <div class="scroll-track">
-        <div class="scroll-character" id="scrollCharacter">
-            <img src="Image/Revive_Character.webp" alt="Pixel character scroll progress indicator" class="scroll-character-img">
-        </div>
-    </div>
-
-    <main>
-        <section class="container hero">
-            <h1 class="hero-title reveal">The Bridge of<br>Pixel and <span class="text-outline">Light</span></h1>
-            <p class="text-lead reveal delay-1">Blending hand-drawn pixel art with real-time lighting technology in Unreal Engine 5 to redefine spatial cognition.</p>
-            
-            <div class="hero-meta reveal delay-2">
-                <div class="meta-item">
-                    <span>Researcher</span>
-                    <strong>Shuhan Zhang</strong>
-                </div>
-                <div class="meta-item">
-                    <span>Prototype</span>
-                    <strong>Revive</strong>
-                </div>
-                <div class="meta-item">
-                    <span>Programme</span>
-                    <strong>BSc Interactive Media '25</strong>
-                </div>
-            </div>
-            <div class="hero-actions reveal delay-3">
-                <a href="https://youtu.be/-3xa17G_q5k" target="_blank" rel="noopener" class="gameplay-btn">
+<!-- Fused cinematic mesh background -->
+<div aria-hidden="true" class="mesh-container">
+<div class="mesh-blur">
+<div class="mesh-blob mesh-blob-1"></div>
+<div class="mesh-blob mesh-blob-2"></div>
+<div class="mesh-blob mesh-blob-3"></div>
+<div class="mesh-blob mesh-blob-4"></div>
+</div>
+</div>
+<div id="page-exit" style="position:fixed; inset:0; z-index:10001; background:#000000; pointer-events:none; opacity:0; transition: opacity 0.7s cubic-bezier(0.25,1,0.3,1);"></div>
+<div class="noise-overlay"></div>
+<div class="lightbox-overlay" id="lightboxOverlay">
+<button aria-label="Close expanded image" class="lightbox-close" id="lightboxClose" type="button">
+<svg aria-hidden="true" fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" viewbox="0 0 24 24" width="18"><path d="M18 6L6 18M6 6l12 12"></path></svg>
+</button>
+<figure class="lightbox-figure">
+<img alt="Revive project visual 1" id="lightboxImg" src=""/>
+<figcaption class="lightbox-caption" id="lightboxCaption"></figcaption>
+</figure>
+</div>
+<div class="ambient-light"></div>
+<div class="ambient-light right"></div>
+<div class="ambient-light center"></div>
+<header class="site-header">
+<img alt="Revive logo" class="site-logo-img" height="88" src="Image/Revive_Logo.webp" width="88"/>
+</header>
+<svg aria-hidden="true" style="position:absolute; width:0; height:0; overflow:hidden;">
+<defs>
+<filter height="140%" id="glass-distortion" width="140%" x="-20%" y="-20%">
+<feturbulence basefrequency="0.010 0.012" numoctaves="2" result="noise" seed="7" type="fractalNoise"></feturbulence>
+<fegaussianblur in="noise" result="blurredNoise" stddeviation="3"></fegaussianblur>
+<fedisplacementmap in="SourceGraphic" in2="blurredNoise" scale="40" xchannelselector="R" ychannelselector="G"></fedisplacementmap>
+</filter>
+</defs>
+</svg>
+<a aria-label="Back to home" class="back-home-btn" href="index.html">
+<svg fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M15 18L9 12L15 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Back to Home</span>
+</a>
+<div class="scroll-track">
+<div class="scroll-character" id="scrollCharacter">
+<img alt="Pixel character scroll progress indicator" class="scroll-character-img" src="Image/Revive_Character.webp"/>
+</div>
+</div>
+<main>
+<section class="container hero">
+<h1 class="hero-title reveal">The Bridge of<br/>Pixel and <span class="text-outline">Light</span></h1>
+<p class="text-lead reveal delay-1">A controlled study of how lighting changes visibility, search behaviour and immersion in a 2.5D pixel environment.</p>
+<div class="hero-meta reveal delay-2">
+<div class="meta-item">
+<span>Researcher</span>
+<strong>Shuhan Zhang</strong>
+</div>
+<div class="meta-item">
+<span>Prototype</span>
+<strong>Revive</strong>
+</div>
+<div class="meta-item">
+<span>Programme</span>
+<strong>BSc Interactive Media 2025 to 2026</strong>
+</div>
+</div>
+<div class="hero-actions reveal delay-3">
+<a class="gameplay-btn" href="https://youtu.be/-3xa17G_q5k" rel="noopener" target="_blank">
                     Watch Gameplay Video
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M7 7h10v10"/></svg>
-                </a>
-                <a href="https://github.com/Shuhan0001/Revive" target="_blank" rel="noopener" class="gameplay-btn-secondary">
+                    <svg aria-hidden="true" fill="none" height="15" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" viewbox="0 0 24 24" width="15"><path d="M7 17L17 7M7 7h10v10"></path></svg>
+</a>
+<a class="gameplay-btn-secondary" href="https://github.com/Shuhan0001/Revive" rel="noopener" target="_blank">
                     View on GitHub
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58 0-.29-.01-1.04-.02-2.04-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.21.08 1.85 1.24 1.85 1.24 1.07 1.84 2.81 1.31 3.5 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22 0 1.6-.02 2.89-.02 3.29 0 .32.22.7.83.58C20.56 21.79 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
-                </a>
-            </div>
-        </section>
-
-        <section class="section container">
-            <div class="grid-split">
-                <div class="sticky-col reveal">
-                    <h2>Redefining<br><span class="text-outline">Perception</span></h2>
-                </div>
-                <div>
-                    <p class="text-body reveal">In contemporary video game design, 2.5D pixel art combines two-dimensional sprites with three-dimensional spatial environments. However, due to the inherent low resolution of pixel art, this style often lacks genuine volumetric cues.</p>
-                    <p class="text-body reveal">Players depend heavily on lighting distribution and luminance contrast to judge depth and distinguish boundaries. This project explores lighting not merely as decoration, but as the <span class="accent">primary structural language</span> for how players read the scene.</p>
-                    
-                    <figure class="reveal delay-1" style="margin-top: 4rem;">
-                        <div class="media-frame aspect-video">
-                            <img src="Image/Index_Revive.webp" alt="Two pixel-art characters sit beside a glowing campfire in a dark forest, illustrating the contrast between intense local illumination and the surrounding environmental darkness." style="width: 100%; height: 100%; object-fit: cover; display: block;">
-                        </div>
-                        <figcaption class="caption">Fig 1. Contrast between intense local illumination and profound environmental darkness.</figcaption>
-                    </figure>
-                </div>
-            </div>
-        </section>
-
-        <section class="section container">
-            <div class="grid-split">
-                <div class="sticky-col reveal">
-                    <h2>Controlled<br><span class="text-outline">Environment</span></h2>
-                </div>
-                <div>
-                    <p class="text-body reveal">To isolate the impact of lighting, we conducted a structured analysis of player behavior across dynamic lighting states. Testing occurred under three distinct conditions: Day, Sunset, and Night.</p>
-                    
-                    <div style="margin: 4rem 0;">
-                        <figure class="reveal">
-                            <div class="media-frame aspect-cinema">
-                                <img loading="lazy" src="Image/Revive_Img2.webp" alt="Unreal Engine Blueprint editor showing the BP_TimeManager LightingSettings array with three indexed states, each storing SunPitch, SunColor, FogColor and SkyColor values that drive the global illumination state." style="width: 100%; height: 100%; object-fit: cover; display: block;">
-                            </div>
-                            <figcaption class="caption">Fig 2. Global illumination state variables.</figcaption>
-                        </figure>
-                    </div>
-
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem;">
-                        <div class="reveal delay-1" style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
-                            <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Methodology</h3>
-                            <p class="text-body" style="font-size: 1rem;">A 3x3 Latin Square counterbalanced nine participants across Day, Sunset and Night to eliminate order and learning effects.</p>
-                        </div>
-                        <div class="reveal delay-2" style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
-                            <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Instruments</h3>
-                            <p class="text-body" style="font-size: 1rem;">Post-session Likert questionnaires measured readability, difficulty and lantern dependency alongside recorded gameplay footage.</p>
-                        </div>
-                        <div class="reveal delay-3" style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
-                            <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Telemetry</h3>
-                            <p class="text-body" style="font-size: 1rem;">Automated UE5 Blueprint logging captured completion time, lantern utilisation, fragments found, and spatial backtracks.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
-            <h2 class="reveal" style="text-align: center; margin-bottom: 6rem;">Technical <span class="text-outline">Execution</span></h2>
-            
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 4rem;">
-                <div class="reveal">
-                    <div class="media-frame aspect-portrait zoomable-media" style="margin-bottom: 2rem; cursor: pointer;">
-                        <img loading="lazy" src="Image/Revive_Img3.webp" alt="Unreal Engine 5 viewport in Lit mode showing point lights and spotlights placed within the pixel-art forest scene to build up Lumen-driven global illumination." style="width: 100%; height: 100%; object-fit: cover; display: block;">
-                    </div>
-                    <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Engine & Rendering</h3>
-                    <p class="text-body">Powered by Unreal Engine 5's Lumen global illumination. 2D pixel sprites were mapped precisely within 3D spatial geometry across background, midground, and foreground layers.</p>
-                </div>
-                
-                <div class="reveal delay-1">
-                    <div class="media-frame aspect-portrait zoomable-media" style="margin-bottom: 2rem; cursor: pointer;">
-                        <img loading="lazy" src="Image/Revive_Img4.webp" alt="Test level screen showing the character's handheld lantern lit and active, with repeated on-screen debug prints reading 'Fragment' confirming the scanning collision volume is detecting nearby targets." style="width: 100%; height: 100%; object-fit: cover; display: block;">
-                    </div>
-                    <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Lantern & Scanning</h3>
-                    <p class="text-body">A handheld lantern utilizes a Blueprint-driven spherical collision volume to detect targets, providing critical local lighting and tracking player progression dynamically.</p>
-                </div>
-
-                <div class="reveal delay-2">
-                    <div class="media-frame aspect-portrait zoomable-media" style="margin-bottom: 2rem; cursor: pointer;">
-                        <img loading="lazy" src="Image/Revive_Img5.webp" alt="BP_Fragment EventGraph in Unreal Engine, showing an On Component Begin Overlap (Sphere) event cast to BP_MainRole that sets Collected Fragments, plays a pickup sound, hides the actor and disables its collision." style="width: 100%; height: 100%; object-fit: cover; display: block;">
-                    </div>
-                    <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Fragment Collection</h3>
-                    <p class="text-body">Collision-triggered overlap events validate player interaction, increment collected fragments, trigger audio feedback, and hide objects to prevent redundant re-collection.</p>
-                </div>
-
-                <div class="reveal delay-3">
-                    <div class="media-frame aspect-portrait zoomable-media" style="margin-bottom: 2rem; cursor: pointer;">
-                        <img loading="lazy" src="Image/Revive_Img6.webp" alt="S_LightingConfig struct definition in Unreal Engine, containing a SunPitch float and three Linear Color variables ?SunColor, FogColor and SkyColor ?used to drive the Timeline-based Day, Sunset and Night lighting states." style="width: 100%; height: 100%; object-fit: cover; object-position: left top; display: block;">
-                    </div>
-                    <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Data & Environment</h3>
-                    <p class="text-body">A custom S_LightingConfig structure drives Timeline-based Lerp transitions between Day, Sunset, and Night, while a live telemetry system records completion time and lantern usage for each trial.</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
-            <!-- 去除了附带的段落描述，标题保持干净简?-->
-            <h2 class="reveal" style="text-align: center; margin-bottom: 3rem;"><span class="text-outline">Gallery</span></h2>
-
-            <div class="stack-gallery reveal delay-1">
-                <button class="stack-btn-prev" id="stackPrev" aria-label="Previous image" type="button">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                </button>
-
-                <div class="stack-viewport" id="stackViewport">
-                    <div class="stack-slide" data-caption="01 / The Void Environment">
-                        <img loading="lazy" src="Image/Revive_Img7.webp" alt="Unreal Engine 5 editor viewport of the blockout level in Lit mode, showing wireframe debug volumes over a foggy blue void environment with a single bright vertical light shaft cutting through drifting ambient particles.">
-                    </div>
-                    <div class="stack-slide" data-caption="02 / Lumen Setup">
-                        <img loading="lazy" src="Image/Revive_Img8.webp" alt="In-game screenshot of the pixel-art character standing in a dim forest clearing, lit by Lumen global illumination, with a soft point light glowing overhead, red flowers in the foreground, and a mushroom-topped structure in the background haze.">
-                    </div>
-                    <div class="stack-slide" data-caption="03 / Lighting Radius">
-                        <img loading="lazy" src="Image/Revive_Img9.webp" alt="The same forest clearing as the previous state but with the light source dimmed far down, leaving the pixel-art character and surrounding flowers barely visible against near-total darkness.">
-                    </div>
-                    <div class="stack-slide" data-caption="04 / Scene Blocking">
-                        <img loading="lazy" src="Image/Revive_Img10.webp" alt="The same clearing rendered in a cool blue-lavender lighting state, with the character, grass, flowers and distant foliage all tinted in muted cold tones instead of the warm palette of the earlier states.">
-                    </div>
-                    <div class="stack-slide" data-caption="05 / Pixel Translation">
-                        <img loading="lazy" src="Image/Revive_Img11.webp" alt="A different area of the game showing a small dog-like pixel-art character standing in a dense flower meadow, with a lit lamppost, an overturned bench, and hazy blue-toned architecture in the background.">
-                    </div>
-                </div>
-
-                <button class="stack-btn-next" id="stackNext" aria-label="Next image" type="button">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                </button>
-
-                <!-- 极简UI控件?-->
-                <div class="stack-controls">
-                    <div class="stack-dots" id="stackDots"></div>
-                </div>
-            </div>
-        </section>
-
-        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
-            <div class="grid-split">
-                <div class="sticky-col reveal">
-                    <h2>Key<br><span class="text-outline">Findings</span></h2>
-                    <p class="text-body reveal delay-1">Across nine participants, objective telemetry and subjective ratings moved in the same direction: less light meant slower, more deliberate, more thorough play.</p>
-                </div>
-                <div>
-                    <p class="data-label reveal">Objective behavioural measures (N=9)</p>
-                    <div class="stat-table-wrap reveal delay-1">
-                        <table class="stat-table">
-                            <thead>
-                                <tr>
-                                    <th>Measure</th>
-                                    <th>Day</th>
-                                    <th>Sunset</th>
-                                    <th>Night</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Completion time (s)</td>
-                                    <td>106.01</td>
-                                    <td>96.26</td>
-                                    <td class="highlight">124.41</td>
-                                </tr>
-                                <tr>
-                                    <td>Fragments collected (mean)</td>
-                                    <td>0.33</td>
-                                    <td>1.44</td>
-                                    <td class="highlight">3.00</td>
-                                </tr>
-                                <tr>
-                                    <td>Lantern uses (mean)</td>
-                                    <td>0.56</td>
-                                    <td>0.67</td>
-                                    <td class="highlight">1.00</td>
-                                </tr>
-                                <tr>
-                                    <td>Lantern duration (s)</td>
-                                    <td>11.64</td>
-                                    <td>42.97</td>
-                                    <td class="highlight">98.67</td>
-                                </tr>
-                                <tr>
-                                    <td>Backtracks (mean)</td>
-                                    <td>0.33</td>
-                                    <td>0.22</td>
-                                    <td class="highlight">0.78</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <p class="data-label reveal delay-1" style="margin-top: 3rem;">Likert subscale means (1&ndash;5 scale)</p>
-                    <div class="subscale-grid">
-                        <div class="subscale-item reveal delay-1">
-                            <span class="label">Visibility</span>
-                            <div class="subscale-bars">
-                                <div class="subscale-bar-row"><span class="cond">Day</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 84.8%;"></div></div><span class="val">4.24</span></div>
-                                <div class="subscale-bar-row"><span class="cond">Sunset</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 75.6%;"></div></div><span class="val">3.78</span></div>
-                                <div class="subscale-bar-row"><span class="cond">Night</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 49.4%;"></div></div><span class="val">2.47</span></div>
-                            </div>
-                        </div>
-                        <div class="subscale-item reveal delay-2">
-                            <span class="label">Search Efficiency</span>
-                            <div class="subscale-bars">
-                                <div class="subscale-bar-row"><span class="cond">Day</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 67.4%;"></div></div><span class="val">3.37</span></div>
-                                <div class="subscale-bar-row"><span class="cond">Sunset</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 69%;"></div></div><span class="val">3.45</span></div>
-                                <div class="subscale-bar-row"><span class="cond">Night</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 74.8%;"></div></div><span class="val">3.74</span></div>
-                            </div>
-                        </div>
-                        <div class="subscale-item reveal delay-3">
-                            <span class="label">Attention & Exploration</span>
-                            <div class="subscale-bars">
-                                <div class="subscale-bar-row"><span class="cond">Day</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 66.6%;"></div></div><span class="val">3.33</span></div>
-                                <div class="subscale-bar-row"><span class="cond">Sunset</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 70%;"></div></div><span class="val">3.50</span></div>
-                                <div class="subscale-bar-row"><span class="cond">Night</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 79.4%;"></div></div><span class="val">3.97</span></div>
-                            </div>
-                        </div>
-                        <div class="subscale-item reveal delay-3">
-                            <span class="label">Atmosphere & Immersion</span>
-                            <div class="subscale-bars">
-                                <div class="subscale-bar-row"><span class="cond">Day</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 83.6%;"></div></div><span class="val">4.18</span></div>
-                                <div class="subscale-bar-row"><span class="cond">Sunset</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 79.2%;"></div></div><span class="val">3.96</span></div>
-                                <div class="subscale-bar-row"><span class="cond">Night</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 77.8%;"></div></div><span class="val">3.89</span></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <p class="data-label reveal" style="margin-top: 3rem;">Participant preference (N=9)</p>
-                    <div class="preference-grid">
-                        <div class="preference-card reveal delay-1">
-                            <div class="pct">66.7%</div>
-                            <p class="desc">picked Day for identifying objects at a glance</p>
-                        </div>
-                        <div class="preference-card reveal delay-2">
-                            <div class="pct">88.9%</div>
-                            <p class="desc">rated Sunset as having the best atmosphere</p>
-                        </div>
-                        <div class="preference-card reveal delay-3">
-                            <div class="pct">100%</div>
-                            <p class="desc">rated Night as the most difficult overall</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="section container">
-            <div class="grid-split">
-                <div class="sticky-col reveal">
-                    <h2>The Paradox<br>of <span class="text-outline">Darkness</span></h2>
-                </div>
-                <div>
-                    <p class="text-lead reveal">Difficulty and immersion can be safely separated.</p>
-                    <p class="text-body reveal">While the "Day" condition provided the best functional visibility, it paradoxically incurred the lowest rate of fragment collection. Conversely, the "Night" condition performed poorest on visibility, yet recorded full task accomplishment.</p>
-
-                    <div style="margin-top: 4rem;">
-                        <div class="data-card reveal delay-1">
-                            <div class="data-number">100%</div>
-                            <p class="text-body" style="max-width: none;">of participants considered the "Night" condition the most challenging environment to navigate.</p>
-                        </div>
-                        <div class="data-card reveal delay-2">
-                            <div class="data-number">55.6%</div>
-                            <p class="text-body" style="max-width: none;">simultaneously rated profound darkness as the <span class="accent">most immersive</span> experience.</p>
-                        </div>
-                    </div>
-
-                    <p class="text-body reveal delay-3" style="margin-top: 3rem;">Lower illumination forced players to transition from rapid visual sampling to systematic, tool-dependent exploration. Lighting in 2.5D pixel games actively shapes spatial cognition.</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
-            <div class="grid-split">
-                <div class="sticky-col reveal">
-                    <h2>Design<br><span class="text-outline">Implications</span></h2>
-                </div>
-                <div>
-                    <p class="text-body reveal">Light is not simply atmosphere here. It is a core interactive bridge that shapes player focus, pacing and method of search, without a single change to level geometry.</p>
-
-                    <div style="margin-top: 2.5rem; display: grid; gap: 2rem;">
-                        <div class="reveal delay-1" style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
-                            <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Lighting as behavioural instrument</h3>
-                            <p class="text-body" style="font-size: 1rem;">Darkness encourages measured, systematic search; abundant light invites faster, shallower traversal.</p>
-                        </div>
-                        <div class="reveal delay-2" style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
-                            <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Balance efficiency against immersion</h3>
-                            <p class="text-body" style="font-size: 1rem;">Dim lighting suits narrative high points; bright lighting suits tutorials and time-critical tasks.</p>
-                        </div>
-                        <div class="reveal delay-3" style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
-                            <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Diegetic tools as guidance</h3>
-                            <p class="text-body" style="font-size: 1rem;">The handheld lantern sustained near-perfect performance in the dark without breaking stylistic integrity.</p>
-                        </div>
-                        <div class="reveal delay-3" style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
-                            <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Treat lighting as a dial, not a switch</h3>
-                            <p class="text-body" style="font-size: 1rem;">Sunset's balanced profile, with the shortest completion time and the strongest atmosphere, shows the value of graded, adjustable illumination.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="section container">
-            <div class="grid-split">
-                <div class="sticky-col reveal">
-                    <h2>Reflection<br>& <span class="text-outline">Next Steps</span></h2>
-                </div>
-                <div>
-                    <p class="text-body reveal">Choosing Unreal Engine 5 over Unity for its Lumen pipeline was the project's most consequential technical decision; treating the lantern's scan as an invisible collision volume, rather than a visible highlight, kept the recorded behaviour honest rather than prompted.</p>
-                    <p class="text-body reveal delay-1">The study's main constraint is its sample size (N=9), which limits it to descriptive statistics. Future iterations plan a larger cohort (N&ge;30) for inferential testing, eye-tracking for objective attention data, and separating the lantern's lighting and scanning functions into independent conditions.</p>
-                    <p class="text-body reveal delay-2" style="margin-top: 1.5rem;">All testing followed University of York ethics approval, with anonymous, voluntary participation and informed consent throughout.</p>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer class="site-footer container">
-        <span class="caption">University of York, Department of Interactive Media</span>
-        <span class="caption" style="margin-top: 0.75rem; opacity: 0.7;">Pixel and sound assets courtesy of itch.io creators; 3D props via Sketchfab (CC BY 4.0). Full credits in the written report.</span>
-    </footer>
-
-    <script>
+                    <svg aria-hidden="true" fill="currentColor" height="16" viewbox="0 0 24 24" width="16"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58 0-.29-.01-1.04-.02-2.04-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.21.08 1.85 1.24 1.85 1.24 1.07 1.84 2.81 1.31 3.5 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22 0 1.6-.02 2.89-.02 3.29 0 .32.22.7.83.58C20.56 21.79 24 17.3 24 12c0-6.63-5.37-12-12-12z"></path></svg>
+</a>
+</div>
+</section>
+<section class="section container">
+<div class="grid-split">
+<div class="sticky-col reveal">
+<h2>Research<br/><span class="text-outline">Question</span></h2>
+</div>
+<div>
+<p class="text-body reveal">2.5D pixel art combines hand drawn sprites with three dimensional space. Its compressed visual language removes many of the depth cues found in conventional 3D scenes. Lighting therefore carries more responsibility for separating objects, revealing space and directing attention.</p>
+<p class="text-body reveal">The study asks how changes in illumination affect scene readability and player behaviour. It focuses on visibility, search efficiency, attention and exploration. The central premise is that lighting is a <span class="accent">structural cue</span> rather than a purely aesthetic layer. The analysis is informed by visual perception research from Ware and navigation research from Darken and Sibert. Cognitive load and limited attention provide the main behavioural framework.</p>
+<figure class="reveal delay-1" style="margin-top: 4rem;">
+<div class="media-frame aspect-video">
+<img alt="Two pixel-art characters sit beside a glowing campfire in a dark forest, illustrating the contrast between intense local illumination and the surrounding environmental darkness." src="Image/Index_Revive.webp" style="width: 100%; height: 100%; object-fit: cover; display: block;"/>
+</div>
+<figcaption class="caption">Fig 1. A local light source can reveal spatial information that is otherwise compressed by the pixel art style.</figcaption>
+</figure>
+</div>
+</div>
+</section>
+<section class="section container">
+<div class="grid-split">
+<div class="sticky-col reveal">
+<h2>Research<br/><span class="text-outline">Method</span></h2>
+</div>
+<div>
+<p class="text-body reveal">The experiment used one fixed environment with three lighting conditions. Day provided high visibility. Sunset reduced ambient illumination while retaining strong environmental structure. Night removed most ambient light and made the handheld lantern central to navigation and search. Scene layout, fragment positions, controls and mechanics remained unchanged.</p>
+<div style="margin: 4rem 0;">
+<figure class="reveal">
+<div class="media-frame aspect-cinema">
+<img alt="Unreal Engine Blueprint editor showing the BP_TimeManager LightingSettings array with three indexed states, each storing SunPitch, SunColor, FogColor and SkyColor values that drive the global illumination state." loading="lazy" src="Image/Revive_Img2.webp" style="width: 100%; height: 100%; object-fit: cover; display: block;"/>
+</div>
+<figcaption class="caption">Fig 2. Fixed lighting parameters were stored as reusable states so each experimental condition could be reproduced consistently.</figcaption>
+</figure>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem;">
+<div class="reveal delay-1" style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
+<h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Experimental design</h3>
+<p class="text-body" style="font-size: 1rem;">Nine participants completed all three conditions. A 3 by 3 Latin square balanced the order of Day, Sunset and Night to reduce learning, order and fatigue effects.</p>
+</div>
+<div class="reveal delay-2" style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
+<h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Participant measures</h3>
+<p class="text-body" style="font-size: 1rem;">After each condition, participants rated visibility, search efficiency, attention, exploration, atmosphere and immersion on a five point Likert scale. Gameplay was also recorded for later observation.</p>
+</div>
+<div class="reveal delay-3" style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
+<h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Behaviour and analysis</h3>
+<p class="text-body" style="font-size: 1rem;">UE5 Blueprints recorded completion time and lantern duration. Lantern uses, fragments found through scanning and backtracks were also documented during each trial. Because the sample was small, the final analysis focused on descriptive statistics and cross condition patterns.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="section container" style="border-top: 1px solid var(--border-subtle);">
+<h2 class="reveal" style="text-align: center; margin-bottom: 6rem;">Technical <span class="text-outline">Implementation</span></h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 4rem;">
+<div class="reveal">
+<div class="media-frame aspect-portrait zoomable-media" style="margin-bottom: 2rem; cursor: pointer;">
+<img alt="Unreal Engine 5 viewport in Lit mode showing point lights and spotlights placed within the pixel-art forest scene to build up Lumen-driven global illumination." loading="lazy" src="Image/Revive_Img3.webp" style="width: 100%; height: 100%; object-fit: cover; display: block;"/>
+</div>
+<h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Engine and rendering</h3>
+<p class="text-body">Unreal Engine 5 was selected for its real time Lumen global illumination and its support for 2D sprites inside a 3D scene. Directional Light, Sky Light and Volumetric Fog were tuned for each condition. Bloom and colour grading supported the visual atmosphere. Pixel assets were arranged across background, midground and foreground layers to create a controlled 2.5D space.</p>
+</div>
+<div class="reveal delay-1">
+<div class="media-frame aspect-portrait zoomable-media" style="margin-bottom: 2rem; cursor: pointer;">
+<img alt="Test level screen showing the character's handheld lantern lit and active, with repeated on-screen debug prints reading 'Fragment' confirming the scanning collision volume is detecting nearby targets." loading="lazy" src="Image/Revive_Img4.webp" style="width: 100%; height: 100%; object-fit: cover; display: block;"/>
+</div>
+<h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Lantern and scanning</h3>
+<p class="text-body">The lantern combines local illumination with a spherical scanning volume. A Boolean state controls the Point Light and collision volume together. Overlap checks identify nearby fragments without adding visible prompts that could bias the experiment.</p>
+</div>
+<div class="reveal delay-2">
+<div class="media-frame aspect-portrait zoomable-media" style="margin-bottom: 2rem; cursor: pointer;">
+<img alt="BP_Fragment EventGraph in Unreal Engine, showing an On Component Begin Overlap (Sphere) event cast to BP_MainRole that sets Collected Fragments, plays a pickup sound, hides the actor and disables its collision." loading="lazy" src="Image/Revive_Img5.webp" style="width: 100%; height: 100%; object-fit: cover; display: block;"/>
+</div>
+<h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Fragment collection</h3>
+<p class="text-body">An OnComponentBeginOverlap event validates the player actor. A successful pickup increments the collection count, plays audio feedback, hides the fragment and disables its collision. This keeps collection state consistent across trials.</p>
+</div>
+<div class="reveal delay-3">
+<div class="media-frame aspect-portrait zoomable-media" style="margin-bottom: 2rem; cursor: pointer;">
+<img alt="S_LightingConfig struct definition in Unreal Engine, containing a SunPitch float and three Linear Color variables ?SunColor, FogColor and SkyColor ?used to drive the Timeline-based Day, Sunset and Night lighting states." loading="lazy" src="Image/Revive_Img6.webp" style="width: 100%; height: 100%; object-fit: cover; object-position: left top; display: block;"/>
+</div>
+<h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Environment and data</h3>
+<p class="text-body">A custom S_LightingConfig structure stores SunPitch, SunColor, FogColor and SkyColor. Timeline and Lerp nodes interpolate between fixed lighting states. The same system supports repeatable transitions and trial logging.</p>
+</div>
+</div>
+</section>
+<section class="section container" style="border-top: 1px solid var(--border-subtle);">
+<!-- 去除了附带的段落描述，标题保持干净简?-->
+<h2 class="reveal" style="text-align: center; margin-bottom: 3rem;"><span class="text-outline">Prototype Development</span></h2>
+<div class="stack-gallery reveal delay-1">
+<button aria-label="Previous image" class="stack-btn-prev" id="stackPrev" type="button">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewbox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+</button>
+<div class="stack-viewport" id="stackViewport">
+<div class="stack-slide" data-caption="01 / Environment blockout">
+<img alt="Unreal Engine 5 blockout view used to establish the spatial structure before lighting calibration." loading="lazy" src="Image/Revive_Img7.webp"/>
+</div>
+<div class="stack-slide" data-caption="02 / Lumen lighting">
+<img alt="In game view showing the pixel character within the Lumen lit forest environment." loading="lazy" src="Image/Revive_Img8.webp"/>
+</div>
+<div class="stack-slide" data-caption="03 / Low light test">
+<img alt="Low illumination test showing how reduced ambient light changes object visibility and local contrast." loading="lazy" src="Image/Revive_Img9.webp"/>
+</div>
+<div class="stack-slide" data-caption="04 / Colour and atmosphere">
+<img alt="Lighting calibration test showing a cool colour state and controlled environmental atmosphere." loading="lazy" src="Image/Revive_Img10.webp"/>
+</div>
+<div class="stack-slide" data-caption="05 / Pixel art in 3D space">
+<img alt="Final environment view showing the integration of pixel assets with three dimensional space." loading="lazy" src="Image/Revive_Img11.webp"/>
+</div>
+</div>
+<button aria-label="Next image" class="stack-btn-next" id="stackNext" type="button">
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewbox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+</button>
+<!-- 极简UI控件?-->
+<div class="stack-controls">
+<div class="stack-caption" id="stackCaption">Development moved from scene blocking to lighting calibration, interaction testing and final visual tuning.</div>
+<div class="stack-dots" id="stackDots"></div>
+</div>
+</div>
+</section>
+<section class="section container" style="border-top: 1px solid var(--border-subtle);">
+<div class="grid-split">
+<div class="sticky-col reveal">
+<h2>Results<br/><span class="text-outline">Findings</span></h2>
+<p class="text-body reveal delay-1">Across nine participants, the three lighting conditions produced distinct behavioural patterns. Lower illumination reduced perceived visibility and increased the need for careful search. It also increased lantern use, backtracking and task time. The strongest result was not a simple bright versus dark effect. Each condition changed how players searched.</p>
+</div>
+<div>
+<p class="data-label reveal">Objective behavioural measures from nine participants</p>
+<div class="stat-table-wrap reveal delay-1">
+<table class="stat-table">
+<thead>
+<tr>
+<th>Measure</th>
+<th>Day</th>
+<th>Sunset</th>
+<th>Night</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Completion time (s)</td>
+<td>106.01</td>
+<td>96.26</td>
+<td class="highlight">124.41</td>
+</tr>
+<tr>
+<td>Fragments collected (mean)</td>
+<td>0.33</td>
+<td>1.44</td>
+<td class="highlight">3.00</td>
+</tr>
+<tr>
+<td>Lantern uses (mean)</td>
+<td>0.56</td>
+<td>0.67</td>
+<td class="highlight">1.00</td>
+</tr>
+<tr>
+<td>Lantern duration (s)</td>
+<td>11.64</td>
+<td>42.97</td>
+<td class="highlight">98.67</td>
+</tr>
+<tr>
+<td>Backtracks (mean)</td>
+<td>0.33</td>
+<td>0.22</td>
+<td class="highlight">0.78</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="data-label reveal delay-1" style="margin-top: 3rem;">Subjective ratings on a five point scale</p>
+<div class="subscale-grid">
+<div class="subscale-item reveal delay-1">
+<span class="label">Visibility</span>
+<div class="subscale-bars">
+<div class="subscale-bar-row"><span class="cond">Day</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 84.8%;"></div></div><span class="val">4.24</span></div>
+<div class="subscale-bar-row"><span class="cond">Sunset</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 75.6%;"></div></div><span class="val">3.78</span></div>
+<div class="subscale-bar-row"><span class="cond">Night</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 49.4%;"></div></div><span class="val">2.47</span></div>
+</div>
+</div>
+<div class="subscale-item reveal delay-2">
+<span class="label">Search Efficiency</span>
+<div class="subscale-bars">
+<div class="subscale-bar-row"><span class="cond">Day</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 67.4%;"></div></div><span class="val">3.37</span></div>
+<div class="subscale-bar-row"><span class="cond">Sunset</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 69%;"></div></div><span class="val">3.45</span></div>
+<div class="subscale-bar-row"><span class="cond">Night</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 74.8%;"></div></div><span class="val">3.74</span></div>
+</div>
+</div>
+<div class="subscale-item reveal delay-3">
+<span class="label">Attention &amp; Exploration</span>
+<div class="subscale-bars">
+<div class="subscale-bar-row"><span class="cond">Day</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 66.6%;"></div></div><span class="val">3.33</span></div>
+<div class="subscale-bar-row"><span class="cond">Sunset</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 70%;"></div></div><span class="val">3.50</span></div>
+<div class="subscale-bar-row"><span class="cond">Night</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 79.4%;"></div></div><span class="val">3.97</span></div>
+</div>
+</div>
+<div class="subscale-item reveal delay-3">
+<span class="label">Atmosphere &amp; Immersion</span>
+<div class="subscale-bars">
+<div class="subscale-bar-row"><span class="cond">Day</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 83.6%;"></div></div><span class="val">4.18</span></div>
+<div class="subscale-bar-row"><span class="cond">Sunset</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 79.2%;"></div></div><span class="val">3.96</span></div>
+<div class="subscale-bar-row"><span class="cond">Night</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 77.8%;"></div></div><span class="val">3.89</span></div>
+</div>
+</div>
+</div>
+<p class="data-label reveal" style="margin-top: 3rem;">Participant preferences from nine participants</p>
+<div class="preference-grid">
+<div class="preference-card reveal delay-1">
+<div class="pct">66.7%</div>
+<p class="desc">selected Day as the easiest condition for identifying objects at a glance</p>
+</div>
+<div class="preference-card reveal delay-2">
+<div class="pct">88.9%</div>
+<p class="desc">selected Sunset as the strongest atmosphere</p>
+</div>
+<div class="preference-card reveal delay-3">
+<div class="pct">100%</div>
+<p class="desc">selected Night as the most difficult condition</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="section container">
+<div class="grid-split">
+<div class="sticky-col reveal">
+<h2>What<br/><span class="text-outline">Darkness Changed</span></h2>
+</div>
+<div>
+<p class="text-lead reveal">Difficulty and immersion did not move together.</p>
+<p class="text-body reveal">Day produced the strongest visibility ratings, yet participants collected the fewest fragments. Night produced the weakest visibility ratings, yet every participant collected all three fragments. The difference came with a clear change in search strategy.</p>
+<div style="margin-top: 4rem;">
+<div class="data-card reveal delay-1">
+<div class="data-number">100%</div>
+<p class="text-body" style="max-width: none;">of participants considered Night the most difficult condition.</p>
+</div>
+<div class="data-card reveal delay-2">
+<div class="data-number">55.6%</div>
+<p class="text-body" style="max-width: none;">selected Night as the <span class="accent">most immersive</span> condition.</p>
+</div>
+</div>
+<p class="text-body reveal delay-3" style="margin-top: 3rem;">Night increased scanning, slowing and backtracking. Participants moved from broad visual sampling toward more deliberate tool assisted search. This suggests that reduced illumination changes the way spatial information is acquired rather than simply reducing visibility.</p>
+</div>
+</div>
+</section>
+<section class="section container" style="border-top: 1px solid var(--border-subtle);">
+<div class="grid-split">
+<div class="sticky-col reveal">
+<h2>Design<br/><span class="text-outline">Implications</span></h2>
+</div>
+<div>
+<p class="text-body reveal">Lighting can shape behaviour without changing the level itself. The findings suggest four practical principles for 2.5D pixel games.</p>
+<div style="margin-top: 2.5rem; display: grid; gap: 2rem;">
+<div class="reveal delay-1" style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
+<h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Use light to guide behaviour</h3>
+<p class="text-body" style="font-size: 1rem;">Reduced visibility encouraged slower movement, scanning and path revisiting. Bright conditions supported faster visual sampling but also produced more omissions.</p>
+</div>
+<div class="reveal delay-2" style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
+<h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Balance efficiency and immersion</h3>
+<p class="text-body" style="font-size: 1rem;">Night created the strongest challenge and the highest immersion preference. Sunset offered the shortest completion time and the strongest atmosphere. Lighting can therefore be tuned to the intended experience.</p>
+</div>
+<div class="reveal delay-3" style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
+<h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Use diegetic tools as guidance</h3>
+<p class="text-body" style="font-size: 1rem;">The lantern restored access to local information without adding an external interface prompt. Its use supported complete fragment collection in Night.</p>
+</div>
+<div class="reveal delay-3" style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
+<h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Treat lighting as a continuous parameter</h3>
+<p class="text-body" style="font-size: 1rem;">Sunset combined the shortest completion time with the strongest atmosphere preference. This supports a graded approach to illumination rather than a simple bright or dark choice.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="section container">
+<div class="grid-split">
+<div class="sticky-col reveal">
+<h2>Reflection<br/>&amp; <span class="text-outline">Next Steps</span></h2>
+</div>
+<div>
+<p class="text-body reveal">Unreal Engine 5 was chosen because Lumen allowed real time changes in illumination while keeping the 2.5D scene intact. The lantern scan was implemented through an invisible collision volume. This avoided visual prompts that could have influenced participant behaviour.</p>
+<p class="text-body reveal delay-1">The main limitation is the small sample of nine participants. The study therefore reports descriptive patterns rather than inferential claims. Future work could use a larger sample, eye tracking, more varied level geometry and finer lighting gradients. Separating the lantern's lighting and scanning functions would also help isolate their individual effects.</p>
+<p class="text-body reveal delay-2" style="margin-top: 1.5rem;">Participation was voluntary and anonymised. Informed consent and data protection procedures were followed under the University of York research ethics process. Generative AI was used only for technical assistance with Blueprint refinement and a small number of 2D textures. It was not used for data collection, recruitment, writing or analysis.</p>
+</div>
+</div>
+</section>
+</main>
+<footer class="site-footer container">
+<span class="caption">University of York · School of Arts and Creative Technologies</span>
+<span class="caption" style="margin-top: 0.75rem; opacity: 0.7;">Pixel and sound assets were sourced from credited creators on itch.io. 3D props were sourced through Sketchfab under the stated licences. Full credits are provided in the written report.</span>
+</footer>
+<script>
         // --------------------------------------------------------
         // Back to Home ?fade transition, matched to CogniStream_Profilo.html
         // --------------------------------------------------------
