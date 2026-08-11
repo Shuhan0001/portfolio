@@ -1052,6 +1052,47 @@
             margin-top: 0.5rem;
         }
 
+        .participant-voice {
+            margin-top: 3rem;
+        }
+
+        .participant-voice-label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-bottom: 1.25rem;
+        }
+
+        .quote-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1rem;
+        }
+
+        .quote-card {
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            background: rgba(255,255,255,0.02);
+        }
+
+        .quote-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .quote-card strong {
+            display: block;
+            margin-top: 0.85rem;
+            color: var(--text-tertiary);
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
         /* Hollow / outline type ?referenced from the main portfolio homepage,
            re-tuned here to fill with the lantern's amber glow on hover/reveal */
         .text-outline {
@@ -1688,7 +1729,7 @@
 <td class="highlight">124.41</td>
 </tr>
 <tr>
-<td>Fragments collected (mean)</td>
+<td>Lantern-scanned fragments (mean)</td>
 <td>0.33</td>
 <td>1.44</td>
 <td class="highlight">3.00</td>
@@ -1719,36 +1760,30 @@
 <div class="subscale-item reveal delay-1">
 <span class="label">Visibility</span>
 <div class="subscale-bars">
-<div class="subscale-bar-row"><span class="cond">Day</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 84.8%;"></div></div><span class="val">4.24</span></div>
+<div class="subscale-bar-row"><span class="cond">Day</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 84.9%;"></div></div><span class="val">4.24</span></div>
 <div class="subscale-bar-row"><span class="cond">Sunset</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 75.6%;"></div></div><span class="val">3.78</span></div>
-<div class="subscale-bar-row"><span class="cond">Night</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 49.4%;"></div></div><span class="val">2.47</span></div>
+<div class="subscale-bar-row"><span class="cond">Night</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 49.3%;"></div></div><span class="val">2.47</span></div>
 </div>
 </div>
 <div class="subscale-item reveal delay-2">
 <span class="label">Search Efficiency</span>
 <div class="subscale-bars">
-<div class="subscale-bar-row"><span class="cond">Day</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 67.4%;"></div></div><span class="val">3.37</span></div>
-<div class="subscale-bar-row"><span class="cond">Sunset</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 69%;"></div></div><span class="val">3.45</span></div>
-<div class="subscale-bar-row"><span class="cond">Night</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 74.8%;"></div></div><span class="val">3.74</span></div>
+<div class="subscale-bar-row"><span class="cond">Day</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 61.7%;"></div></div><span class="val">3.08</span></div>
+<div class="subscale-bar-row"><span class="cond">Sunset</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 53.9%;"></div></div><span class="val">2.69</span></div>
+<div class="subscale-bar-row"><span class="cond">Night</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 35%;"></div></div><span class="val">1.75</span></div>
 </div>
 </div>
 <div class="subscale-item reveal delay-3">
 <span class="label">Attention &amp; Exploration</span>
 <div class="subscale-bars">
-<div class="subscale-bar-row"><span class="cond">Day</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 66.6%;"></div></div><span class="val">3.33</span></div>
-<div class="subscale-bar-row"><span class="cond">Sunset</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 70%;"></div></div><span class="val">3.50</span></div>
-<div class="subscale-bar-row"><span class="cond">Night</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 79.4%;"></div></div><span class="val">3.97</span></div>
-</div>
-</div>
-<div class="subscale-item reveal delay-3">
-<span class="label">Atmosphere &amp; Immersion</span>
-<div class="subscale-bars">
-<div class="subscale-bar-row"><span class="cond">Day</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 83.6%;"></div></div><span class="val">4.18</span></div>
-<div class="subscale-bar-row"><span class="cond">Sunset</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 79.2%;"></div></div><span class="val">3.96</span></div>
-<div class="subscale-bar-row"><span class="cond">Night</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 77.8%;"></div></div><span class="val">3.89</span></div>
+<div class="subscale-bar-row"><span class="cond">Day</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 75.2%;"></div></div><span class="val">3.76</span></div>
+<div class="subscale-bar-row"><span class="cond">Sunset</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 74.4%;"></div></div><span class="val">3.72</span></div>
+<div class="subscale-bar-row"><span class="cond">Night</span><div class="subscale-bar-track"><div class="subscale-bar-fill" style="width: 77%;"></div></div><span class="val">3.85</span></div>
 </div>
 </div>
 </div>
+<p class="caption reveal" style="margin-top: 1.5rem;">Means are calculated from the nine participants' five point ratings. Negatively worded search items were reverse coded so higher scores indicate more efficient searching.</p>
+
 <p class="data-label reveal" style="margin-top: 3rem;">Participant preferences from nine participants</p>
 <div class="preference-grid">
 <div class="preference-card reveal delay-1">
@@ -1757,11 +1792,45 @@
 </div>
 <div class="preference-card reveal delay-2">
 <div class="pct">88.9%</div>
-<p class="desc">selected Sunset as the strongest atmosphere</p>
+<p class="desc">selected Day as the easiest condition for finding objects</p>
 </div>
 <div class="preference-card reveal delay-3">
+<div class="pct">77.8%</div>
+<p class="desc">selected Sunset as the strongest atmosphere</p>
+</div>
+<div class="preference-card reveal delay-1">
+<div class="pct">55.6%</div>
+<p class="desc">selected Night as the most immersive condition</p>
+</div>
+<div class="preference-card reveal delay-2">
 <div class="pct">100%</div>
 <p class="desc">selected Night as the most difficult condition</p>
+</div>
+</div>
+
+<div class="participant-voice reveal delay-3">
+<span class="participant-voice-label">Participant voice</span>
+<div class="quote-grid">
+<div class="quote-card">
+<p>“Very dark!”</p>
+<strong>Night</strong>
+</div>
+<div class="quote-card">
+<p>“Hard to see clearly.”</p>
+<strong>Night</strong>
+</div>
+<div class="quote-card">
+<p>“Nice atmosphere.”</p>
+<strong>Sunset / atmosphere feedback</strong>
+</div>
+<div class="quote-card">
+<p>“The atmosphere at night feels the best as it feels like actually exploring a forest and guiding yourself through.”</p>
+<strong>Night / immersion feedback</strong>
+</div>
+<div class="quote-card">
+<p>“Location memory of objects made it easier to find all required objects in day and sunset settings.”</p>
+<strong>Search behaviour</strong>
+</div>
 </div>
 </div>
 </div>
@@ -1785,7 +1854,7 @@
 <p class="text-body" style="max-width: none;">selected Night as the <span class="accent">most immersive</span> condition.</p>
 </div>
 </div>
-<p class="text-body reveal delay-3" style="margin-top: 3rem;">Night increased scanning, slowing and backtracking. Participants moved from broad visual sampling toward more deliberate tool assisted search. This suggests that reduced illumination changes the way spatial information is acquired rather than simply reducing visibility.</p>
+<p class="text-body reveal delay-3" style="margin-top: 3rem;">Night produced the lowest search efficiency rating at 1.75, compared with 3.08 in Day and 2.69 in Sunset. Participants also reported more scanning and slower searching. The qualitative responses suggest that reduced illumination changed how spatial information was acquired rather than simply making the scene darker.</p>
 </div>
 </div>
 </section>
