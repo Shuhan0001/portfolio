@@ -103,7 +103,8 @@
         .meta-item span { display: block; font-size: 0.8rem; color: var(--text-tertiary); margin-bottom: 0.5rem; }
         .meta-item strong { font-size: 1rem; font-weight: 600; color: var(--text-primary); }
 
-        .grid-split { display: grid; grid-template-columns: 1fr; gap: 4rem; }
+        .grid-split { display: grid; grid-template-columns: 1fr; gap: 4rem; min-width: 0; }
+        .grid-split > div { min-width: 0; }
         @media (min-width: 1024px) {
             .grid-split { grid-template-columns: 5fr 7fr; gap: 8vw; align-items: start; }
             .sticky-col { position: sticky; top: 15vh; }
@@ -259,8 +260,37 @@
             .quest-row-mech { display: none; }
         }
 
-        /* ---------------------------------------------------------- */
-        /* Source-code excerpts pulled straight from the report's      */
+        /* Screenshot carousel — two slides visible at a time,      */
+        /* extras collapsed off-canvas, navigated with prev/next    */
+        .shots-carousel { position: relative; margin: 2rem 0; padding: 0 44px; min-width: 0; }
+        .shots-viewport { overflow: hidden; min-width: 0; }
+        .shots-track {
+            display: flex; gap: 1.5rem;
+            transition: transform 0.6s var(--ease-cinematic);
+        }
+        .shots-slide { width: 320px; flex-shrink: 0; }
+        .shots-slide img {
+            display: block; width: 100%; height: auto; border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 40px 80px -24px rgba(0,0,0,0.65);
+        }
+        .shots-nav {
+            position: absolute; top: 50%;
+            width: 40px; height: 64px;
+            background: transparent; border: none;
+            color: var(--text-primary); font-size: 2.4rem; line-height: 1; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; z-index: 2;
+            transition: color 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+            transform: translateY(-50%) scaleY(1.6);
+        }
+        .shots-nav:hover { color: var(--accent-moss); transform: translateY(-50%) scaleY(1.6) scale(1.1); }
+        .shots-nav.prev { left: 0; }
+        .shots-nav.next { right: 0; }
+        .shots-nav:disabled { opacity: 0.25; cursor: default; pointer-events: none; }
+        .shots-dots { display: flex; gap: 6px; margin-top: 1.25rem; }
+        .shots-dot { width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.2); transition: background 0.3s ease, width 0.3s ease; }
+        .shots-dot.active { background: var(--accent-moss); width: 18px; }
+
+
         /* appendix, annotated inline                                  */
         /* ---------------------------------------------------------- */
         .code-panel {
@@ -419,14 +449,21 @@
                         <span>The design premise behind MiniQuest's dual reward system</span>
                     </div>
 
-                    <div class="reveal" style="display: flex; gap: 1.5rem; margin: 2rem 0;">
-                        <div style="width: 320px; flex-shrink: 0;">
-                            <img src="Image/MiniQuest_HomeScreen.webp" alt="MiniQuest home screen: Quest Log, Player Stats & the pixel-art HUD" style="display: block; width: 100%; height: auto; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 40px 80px -24px rgba(0,0,0,0.65);">
+                    <div class="reveal shots-carousel" id="homeScreenCarousel">
+                        <div class="shots-viewport">
+                            <div class="shots-track" id="homeScreenTrack">
+                                <div class="shots-slide"><img src="Image/MiniQuest_HomeScreen.webp" alt="MiniQuest home screen: Quest Log, Player Stats & the pixel-art HUD"></div>
+                                <div class="shots-slide"><img src="Image/MiniQuest_HomeScreen_2.webp" alt="MiniQuest Adventure Tools screen: Adventure Log, Ask Wizard, Wooden Fish and Relax Music modules"></div>
+                                <div class="shots-slide"><img src="Image/MiniQuest_Placeholder_03.webp" alt="Placeholder — replace with next screenshot"></div>
+                                <div class="shots-slide"><img src="Image/MiniQuest_Placeholder_04.webp" alt="Placeholder — replace with next screenshot"></div>
+                                <div class="shots-slide"><img src="Image/MiniQuest_Placeholder_05.webp" alt="Placeholder — replace with next screenshot"></div>
+                                <div class="shots-slide"><img src="Image/MiniQuest_Placeholder_06.webp" alt="Placeholder — replace with next screenshot"></div>
+                            </div>
                         </div>
-                        <div style="width: 320px; flex-shrink: 0;">
-                            <img src="Image/MiniQuest_HomeScreen_2.webp" alt="MiniQuest Adventure Tools screen: Adventure Log, Ask Wizard, Wooden Fish and Relax Music modules" style="display: block; width: 100%; height: auto; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 40px 80px -24px rgba(0,0,0,0.65);">
-                        </div>
+                        <button class="shots-nav prev" aria-label="Previous screenshots">‹</button>
+                        <button class="shots-nav next" aria-label="Next screenshots">›</button>
                     </div>
+                    <div class="shots-dots" id="homeScreenDots"></div>
                     <p class="caption reveal">Fig. Home screen, rendered with vector pixel fonts and the custom HardShadowBox component to keep edges sharp on high-DPI displays.</p>
 
                     <p class="data-label reveal" style="margin-top: 3rem;">Two evidence-based interventions (Boyd, McDonough & Bodfish, 2012)</p>
@@ -700,6 +737,59 @@
         <span class="caption">University of York, Mobile Interaction (TFT00069H)</span>
         <span class="caption" style="margin-top: 0.75rem; opacity: 0.7;">AI disclosure: Level 3 (AI-assisted editing), used for refactoring suggestions and debugging assistance during development; Level 2 (AI-assisted idea development only) for the written report. All design decisions, implementation logic and final code were independently produced and validated by the author. Full disclosure in the written report.</span>
     </footer>
+
+    <script>
+        // Screenshot carousel — groups slides two-per-page automatically,
+        // so adding more <div class="shots-slide"> images later just works.
+        function initShotsCarousel(rootId, dotsId) {
+            const root = document.getElementById(rootId);
+            if (!root) return;
+            const track = root.querySelector('.shots-track');
+            const slides = Array.from(track.children);
+            const perPage = 2;
+            const pageCount = Math.ceil(slides.length / perPage);
+            const prevBtn = root.querySelector('.prev');
+            const nextBtn = root.querySelector('.next');
+            const dotsWrap = document.getElementById(dotsId);
+            let page = 0;
+
+            if (pageCount <= 1) {
+                prevBtn.disabled = true;
+                nextBtn.disabled = true;
+                if (dotsWrap) dotsWrap.style.display = 'none';
+                return;
+            }
+
+            if (dotsWrap) {
+                dotsWrap.innerHTML = '';
+                for (let i = 0; i < pageCount; i++) {
+                    const dot = document.createElement('span');
+                    dot.className = 'shots-dot' + (i === 0 ? ' active' : '');
+                    dotsWrap.appendChild(dot);
+                }
+            }
+
+            function update() {
+                const slideWidth = slides[0].getBoundingClientRect().width;
+                const gap = 24; // 1.5rem
+                const offset = page * perPage * (slideWidth + gap);
+                track.style.transform = `translateX(-${offset}px)`;
+                prevBtn.disabled = page === 0;
+                nextBtn.disabled = page === pageCount - 1;
+                if (dotsWrap) {
+                    Array.from(dotsWrap.children).forEach((d, i) => d.classList.toggle('active', i === page));
+                }
+            }
+
+            prevBtn.addEventListener('click', () => { if (page > 0) { page--; update(); } });
+            nextBtn.addEventListener('click', () => { if (page < pageCount - 1) { page++; update(); } });
+            window.addEventListener('resize', update);
+            update();
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            initShotsCarousel('homeScreenCarousel', 'homeScreenDots');
+        });
+    </script>
 
     <script>
         (function() {
