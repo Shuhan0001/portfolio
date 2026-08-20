@@ -238,22 +238,26 @@
         /* Quest log ?recreated as a small RPG-style task list to     */
         /* echo MiniQuest's own in-app aesthetic                       */
         /* ---------------------------------------------------------- */
-        .quest-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 1.5rem; margin-top: 3rem;
+        .quest-log { margin-top: 3rem; border-top: 1px solid var(--border-subtle); }
+        .quest-row {
+            display: grid; grid-template-columns: 2.25rem 1fr auto; gap: 1.25rem; align-items: start;
+            padding: 1.75rem 0; border-bottom: 1px solid var(--border-subtle);
         }
-        .quest-card {
-            border: 1px solid var(--border-subtle); border-radius: var(--radius-md);
-            padding: 2rem 1.75rem; background: rgba(255,255,255,0.02);
-            display: flex; flex-direction: column; gap: 1rem;
-            transition: border-color 0.4s ease, background 0.4s ease, transform 0.4s var(--ease-cinematic);
-        }
-        .quest-card:hover { border-color: rgba(74, 222, 148, 0.3); background: rgba(255,255,255,0.04); transform: translateY(-4px); }
-        .quest-card.emergency { border-color: rgba(240, 201, 74, 0.35); }
+        .quest-row-index { font-family: var(--font-pixel); font-size: 1.4rem; color: var(--text-tertiary); line-height: 1.4; }
+        .quest-row.emergency .quest-row-index { color: var(--accent-gold); }
+        .quest-row:not(.emergency) .quest-row-index { color: var(--accent-moss); }
         .quest-tag { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-moss); }
-        .quest-card.emergency .quest-tag { color: var(--accent-gold); }
-        .quest-name { font-size: 1.15rem; font-weight: 600; }
-        .quest-desc { font-size: 0.92rem; color: var(--text-secondary); line-height: 1.55; }
+        .quest-row.emergency .quest-tag { color: var(--accent-gold); }
+        .quest-name { font-size: 1.15rem; font-weight: 600; margin: 0.3rem 0 0.5rem; }
+        .quest-desc { font-size: 0.92rem; color: var(--text-secondary); line-height: 1.55; max-width: 480px; }
+        .quest-row-mech {
+            font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-tertiary);
+            border: 1px solid var(--border-subtle); border-radius: 100px; padding: 0.4rem 0.9rem; white-space: nowrap;
+        }
+        @media (max-width: 560px) {
+            .quest-row { grid-template-columns: 2.25rem 1fr; }
+            .quest-row-mech { display: none; }
+        }
 
         /* ---------------------------------------------------------- */
         /* Source-code excerpts pulled straight from the report's      */
@@ -426,16 +430,24 @@
                     <p class="caption reveal">Fig. Home screen, rendered with vector pixel fonts and the custom HardShadowBox component to keep edges sharp on high-DPI displays.</p>
 
                     <p class="data-label reveal" style="margin-top: 3rem;">Two evidence-based interventions (Boyd, McDonough & Bodfish, 2012)</p>
-                    <div class="quest-grid">
-                        <div class="quest-card reveal">
-                            <span class="quest-tag">Response Interruption / Redirection</span>
-                            <div class="quest-name">Emergency Quests</div>
-                            <p class="quest-desc">When a stereotyped pattern would otherwise continue, the app interrupts it and redirects attention toward a new action. It's effective in the short term for low-level rigidity.</p>
+                    <div class="quest-log">
+                        <div class="quest-row reveal">
+                            <span class="quest-row-index">01</span>
+                            <div>
+                                <span class="quest-tag">Response Interruption / Redirection</span>
+                                <div class="quest-name">Urgent Quests</div>
+                                <p class="quest-desc">When a stereotyped pattern would otherwise continue, the app interrupts it and redirects attention toward a new action. It's effective in the short term for low-level rigidity.</p>
+                            </div>
+                            <span class="quest-row-mech">In-app</span>
                         </div>
-                        <div class="quest-card emergency reveal delay-1">
-                            <span class="quest-tag">Environmental Enrichment</span>
-                            <div class="quest-name">Adventure Tools</div>
-                            <p class="quest-desc">A menu of activity modules offering several relaxation and exploration choices, adding the sensory and interactive variety monotonous days are missing.</p>
+                        <div class="quest-row emergency reveal delay-1">
+                            <span class="quest-row-index">02</span>
+                            <div>
+                                <span class="quest-tag">Environmental Enrichment</span>
+                                <div class="quest-name">Adventure Tools</div>
+                                <p class="quest-desc">A menu of activity modules offering several relaxation and exploration choices, adding the sensory and interactive variety monotonous days are missing.</p>
+                            </div>
+                            <span class="quest-row-mech">In-app</span>
                         </div>
                     </div>
                     <p class="caption reveal">MiniQuest builds directly on this pair: the Emergency Loop coroutine handles interruption, and the Adventure Tools area handles enrichment.</p>
