@@ -199,11 +199,12 @@
         .ethics-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2.5rem 3rem; margin-top: 3rem;
         }
-        .ethics-item { display: flex; align-items: flex-start; gap: 1.1rem; }
-        .ethics-ring {
-            width: 12px; height: 12px; border-radius: 50%; margin-top: 0.35rem; flex-shrink: 0;
-            background: var(--ring-color, var(--accent-red));
-            box-shadow: 0 0 10px var(--ring-glow, var(--accent-glow)), 0 0 22px var(--ring-glow, var(--accent-glow));
+        .ethics-item {
+            border-left: 2px solid var(--item-accent, var(--accent-red)); padding-left: 1.4rem;
+        }
+        .ethics-item .index {
+            display: block; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em;
+            color: var(--item-accent, var(--accent-red)); margin-bottom: 0.7rem;
         }
         .ethics-text .name { font-size: 0.95rem; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; margin-bottom: 0.4rem; color: var(--text-primary); }
         .ethics-text .desc { font-size: 0.92rem; color: var(--text-secondary); line-height: 1.55; }
@@ -366,7 +367,7 @@
                     </figure>
 
                     <figure class="reveal delay-3" style="margin-top: 3rem;">
-                        <div class="media-frame" style="aspect-ratio: 2/3; background: #fff;">
+                        <div class="media-frame" style="aspect-ratio: 4/3; background: #fff;">
                             <img loading="lazy" src="Image/SilentNight_Map.webp" alt="Top-down school map with a locker-room corridor and a courtyard, marked up with roads, obstacles, water, and colour-coded locked and opened doors" style="width:100%; height:100%; object-fit: contain;">
                         </div>
                         <figcaption class="caption">Fig 2. Level map showing the locker corridor and courtyard, with locked (red) and opened (green) doors gating the route between them.</figcaption>
@@ -472,28 +473,28 @@
 
             <div class="ethics-grid">
                 <div class="ethics-item reveal">
-                    <div class="ethics-ring"></div>
+                    <span class="index">01</span>
                     <div class="ethics-text">
                         <div class="name">Age Appropriateness</div>
                         <div class="desc">Rated 18+, with a clear age warning shown before the game starts.</div>
                     </div>
                 </div>
-                <div class="ethics-item reveal delay-1">
-                    <div class="ethics-ring" style="--ring-color: var(--accent-amber); --ring-glow: rgba(245,166,35,0.3);"></div>
+                <div class="ethics-item reveal delay-1" style="--item-accent: var(--accent-amber);">
+                    <span class="index">02</span>
                     <div class="ethics-text">
                         <div class="name">Player Wellbeing</div>
                         <div class="desc">Upfront warnings for jump scares and photosensitive content, plus a planned "Reduced Horror Mode" that tones down noise and visuals for players who want the story without the full intensity.</div>
                     </div>
                 </div>
-                <div class="ethics-item reveal delay-2">
-                    <div class="ethics-ring" style="--ring-color: var(--accent-sick); --ring-glow: rgba(125,190,106,0.3);"></div>
+                <div class="ethics-item reveal delay-2" style="--item-accent: var(--accent-sick);">
+                    <span class="index">03</span>
                     <div class="ethics-text">
                         <div class="name">Cultural Sensitivity</div>
                         <div class="desc">Set during the Hungry Ghost Festival (Zhongyuan), a real Chinese Ghost Month tradition. The team's aim is to represent it respectfully, with in-game context rather than exaggeration.</div>
                     </div>
                 </div>
                 <div class="ethics-item reveal delay-3">
-                    <div class="ethics-ring"></div>
+                    <span class="index">04</span>
                     <div class="ethics-text">
                         <div class="name">Privacy & Consent</div>
                         <div class="desc">The microphone captures screams to drive gameplay, gated behind an explicit consent prompt. Players who decline get a button-based alternative for the same interactions.</div>
