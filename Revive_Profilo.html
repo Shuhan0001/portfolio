@@ -74,6 +74,7 @@
             overflow: hidden;
             pointer-events: none;
             background: #000;
+            contain: paint;
         }
 
         .mesh-blur {
@@ -81,10 +82,11 @@
             inset: -10%;
             width: 120%;
             height: 120%;
-            filter: blur(90px) saturate(135%);
-            transform: translateZ(0);
+            filter: blur(60px) saturate(130%);
+            transform: translateZ(0) translate3d(calc(var(--mx, 0) * 1px), calc(var(--my, 0) * 1px), 0);
             will-change: transform;
-            opacity: 0.55;
+            opacity: 0.7;
+            transition: transform 1.4s cubic-bezier(0.25, 1, 0.3, 1);
         }
 
         .mesh-blob {
@@ -102,10 +104,10 @@
             width: 70vw;
             height: 50vh;
             background: radial-gradient(ellipse at center,
-                rgba(245,166,35,.55) 0%,
-                rgba(245,166,35,.12) 38%,
+                rgba(245,166,35,.65) 0%,
+                rgba(245,166,35,.16) 38%,
                 transparent 68%);
-            animation: fusedWrithe1 28s infinite ease-in-out;
+            animation: fusedWrithe1 15s infinite ease-in-out;
         }
 
         .mesh-blob-2 {
@@ -114,10 +116,10 @@
             width: 50vw;
             height: 70vh;
             background: radial-gradient(ellipse at center,
-                rgba(255,69,58,.28) 0%,
-                rgba(255,94,0,.10) 42%,
+                rgba(255,69,58,.38) 0%,
+                rgba(255,94,0,.14) 42%,
                 transparent 70%);
-            animation: fusedWrithe2 32s infinite ease-in-out reverse;
+            animation: fusedWrithe2 18s infinite ease-in-out reverse;
         }
 
         .mesh-blob-3 {
@@ -126,9 +128,9 @@
             width: 80vw;
             height: 60vh;
             background: radial-gradient(ellipse at center,
-                rgba(255,94,0,.25) 0%,
+                rgba(255,94,0,.32) 0%,
                 transparent 65%);
-            animation: fusedWrithe3 36s infinite ease-in-out;
+            animation: fusedWrithe3 20s infinite ease-in-out;
         }
 
         .mesh-blob-4 {
@@ -137,35 +139,35 @@
             width: 40vw;
             height: 40vh;
             background: radial-gradient(circle at center,
-                rgba(255,214,10,.20) 0%,
+                rgba(255,179,71,.32) 0%,
                 transparent 72%);
-            animation: fusedBreathe 20s infinite ease-in-out alternate;
+            animation: fusedBreathe 11s infinite ease-in-out alternate;
         }
 
         @keyframes fusedWrithe1 {
-            0% { transform: translate3d(-5vw,-5vh,0) scale(1) rotate(0deg); }
-            33% { transform: translate3d(15vw,10vh,0) scale(1.12) rotate(120deg); }
-            66% { transform: translate3d(-10vw,15vh,0) scale(.92) rotate(240deg); }
-            100% { transform: translate3d(-5vw,-5vh,0) scale(1) rotate(360deg); }
+            0% { transform: translate3d(-14vw,-12vh,0) scale(.95) rotate(0deg); }
+            33% { transform: translate3d(26vw,18vh,0) scale(1.28) rotate(130deg); }
+            66% { transform: translate3d(-22vw,22vh,0) scale(.82) rotate(250deg); }
+            100% { transform: translate3d(-14vw,-12vh,0) scale(.95) rotate(360deg); }
         }
 
         @keyframes fusedWrithe2 {
-            0% { transform: translate3d(10vw,10vh,0) scale(1.05) rotate(0deg); }
-            33% { transform: translate3d(-15vw,-5vh,0) scale(.92) rotate(120deg); }
-            66% { transform: translate3d(5vw,-15vh,0) scale(1.15) rotate(240deg); }
-            100% { transform: translate3d(10vw,10vh,0) scale(1.05) rotate(360deg); }
+            0% { transform: translate3d(18vw,16vh,0) scale(1.1) rotate(0deg); }
+            33% { transform: translate3d(-26vw,-10vh,0) scale(.8) rotate(130deg); }
+            66% { transform: translate3d(12vw,-24vh,0) scale(1.3) rotate(250deg); }
+            100% { transform: translate3d(18vw,16vh,0) scale(1.1) rotate(360deg); }
         }
 
         @keyframes fusedWrithe3 {
-            0% { transform: translate3d(5vw,-15vh,0) scale(.92) rotate(0deg); }
-            50% { transform: translate3d(-10vw,5vh,0) scale(1.15) rotate(180deg); }
-            100% { transform: translate3d(5vw,-15vh,0) scale(.92) rotate(360deg); }
+            0% { transform: translate3d(10vw,-24vh,0) scale(.85) rotate(0deg); }
+            50% { transform: translate3d(-20vw,10vh,0) scale(1.3) rotate(180deg); }
+            100% { transform: translate3d(10vw,-24vh,0) scale(.85) rotate(360deg); }
         }
 
         @keyframes fusedBreathe {
-            0% { transform: translate3d(0,0,0) scale(.82) rotate(0deg); opacity:.45; }
-            50% { transform: translate3d(10vw,-10vh,0) scale(1.35) rotate(90deg); opacity:.9; }
-            100% { transform: translate3d(-5vw,10vh,0) scale(.92) rotate(180deg); opacity:.55; }
+            0% { transform: translate3d(0,0,0) scale(.68) rotate(0deg); opacity:.35; }
+            50% { transform: translate3d(18vw,-18vh,0) scale(1.55) rotate(120deg); opacity:1; }
+            100% { transform: translate3d(-12vw,18vh,0) scale(.82) rotate(220deg); opacity:.5; }
         }
 
         /* Bridge visual language: outlined display type */
@@ -230,10 +232,10 @@
             left: -30vw;
             pointer-events: none;
             z-index: -1;
-            filter: blur(80px);
+            filter: blur(60px);
             opacity: 0;
             mix-blend-mode: screen;
-            animation: breatheAmber 14s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            animation: breatheAmber 9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
             will-change: transform, opacity;
         }
 
@@ -243,9 +245,10 @@
             right: -40vw;
             width: 100vw;
             height: 100vh;
-            /* Subtle cool/frost tone to contrast the warm amber */
-            background: radial-gradient(circle at 60% 50%, rgba(255, 255, 255, 0.04) 0%, rgba(120, 150, 255, 0.015) 50%, transparent 80%);
-            animation: breatheFrost 18s cubic-bezier(0.4, 0, 0.2, 1) infinite -7s;
+            /* Warm secondary glow — soft copper/rose to stay in the same
+               warm family as the amber primary, no cool/blue undertone */
+            background: radial-gradient(circle at 60% 50%, rgba(255, 138, 76, 0.045) 0%, rgba(255, 90, 54, 0.02) 50%, transparent 80%);
+            animation: breatheFrost 12s cubic-bezier(0.4, 0, 0.2, 1) infinite -7s;
         }
 
         .ambient-light.center {
@@ -255,25 +258,25 @@
             height: 80vh;
             transform: translate(-50%, -50%);
             background: radial-gradient(circle at center, rgba(245, 166, 35, 0.05) 0%, transparent 60%);
-            animation: breatheCore 10s ease-in-out infinite alternate;
+            animation: breatheCore 6s ease-in-out infinite alternate;
         }
 
         /* True breathing curves: Exhale (0), Inhale (45), Hold (55), Exhale (100) */
         @keyframes breatheAmber {
-            0%, 100% { transform: scale(0.9) translate(0, 0); opacity: 0.25; }
-            45% { transform: scale(1.08) translate(3%, 4%); opacity: 0.75; }
-            55% { transform: scale(1.1) translate(3.5%, 4.5%); opacity: 0.8; }
+            0%, 100% { transform: scale(0.85) translate(0, 0); opacity: 0.2; }
+            45% { transform: scale(1.2) translate(6%, 8%); opacity: 0.9; }
+            55% { transform: scale(1.24) translate(7%, 9%); opacity: 1; }
         }
 
         @keyframes breatheFrost {
-            0%, 100% { transform: scale(0.95) translate(0, 0); opacity: 0.35; }
-            45% { transform: scale(1.12) translate(-4%, -2%); opacity: 0.85; }
-            55% { transform: scale(1.15) translate(-4.5%, -2.5%); opacity: 0.9; }
+            0%, 100% { transform: scale(0.9) translate(0, 0); opacity: 0.3; }
+            45% { transform: scale(1.28) translate(-8%, -4%); opacity: 1; }
+            55% { transform: scale(1.32) translate(-9%, -5%); opacity: 1; }
         }
 
         @keyframes breatheCore {
-            0% { transform: translate(-50%, -50%) scale(0.85); opacity: 0.2; }
-            100% { transform: translate(-50%, -50%) scale(1.15); opacity: 0.7; }
+            0% { transform: translate(-50%, -50%) scale(0.75); opacity: 0.15; }
+            100% { transform: translate(-50%, -50%) scale(1.35); opacity: 0.85; }
         }
 
         .container {
@@ -1513,7 +1516,7 @@
 </head>
 <body>
 <!-- Fused cinematic mesh background -->
-<div aria-hidden="true" class="mesh-container">
+<div aria-hidden="true" class="mesh-container" id="meshContainer">
 <div class="mesh-blur">
 <div class="mesh-blob mesh-blob-1"></div>
 <div class="mesh-blob mesh-blob-2"></div>
@@ -2002,6 +2005,79 @@
             });
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape' && overlay.classList.contains('is-open')) closeLightbox();
+            });
+        })();
+
+        // Pause the always-on CSS background animations (mesh blobs +
+        // ambient light) while the tab is hidden, so a backgrounded tab
+        // doesn't keep compositing/blurring on every frame for nothing.
+        (function () {
+            const bgAnimated = document.querySelectorAll(
+                '.mesh-blob, .ambient-light'
+            );
+            if (!bgAnimated.length) return;
+
+            document.addEventListener('visibilitychange', () => {
+                const state = document.visibilityState === 'visible' ? 'running' : 'paused';
+                bgAnimated.forEach((el) => { el.style.animationPlayState = state; });
+            });
+        })();
+
+        // Mouse-driven parallax for the cinematic mesh background —
+        // gives the ambient motion a tangible, interactive feel.
+        // Optimized: the rAF loop only runs while it's actually converging
+        // toward a new target (i.e. right after the mouse moves) or while
+        // the tab is visible, instead of running forever at 60fps.
+        (function () {
+            const blur = document.querySelector('.mesh-blur');
+            if (!blur || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+            let targetX = 0, targetY = 0, curX = 0, curY = 0;
+            const strength = 55; // px of max drift
+            const SETTLE_EPSILON = 0.05; // px — close enough to stop animating
+            let rafId = null;
+            let idleTimer = null;
+
+            function tick() {
+                curX += (targetX - curX) * 0.06;
+                curY += (targetY - curY) * 0.06;
+                blur.style.setProperty('--mx', curX.toFixed(2));
+                blur.style.setProperty('--my', curY.toFixed(2));
+
+                const stillMoving =
+                    Math.abs(targetX - curX) > SETTLE_EPSILON ||
+                    Math.abs(targetY - curY) > SETTLE_EPSILON;
+
+                if (stillMoving && document.visibilityState === 'visible') {
+                    rafId = requestAnimationFrame(tick);
+                } else {
+                    rafId = null; // loop stops until the next mousemove wakes it
+                }
+            }
+
+            function ensureLoopRunning() {
+                if (rafId === null && document.visibilityState === 'visible') {
+                    rafId = requestAnimationFrame(tick);
+                }
+            }
+
+            window.addEventListener('mousemove', (e) => {
+                const nx = (e.clientX / window.innerWidth) - 0.5;
+                const ny = (e.clientY / window.innerHeight) - 0.5;
+                targetX = nx * strength * 2;
+                targetY = ny * strength * 2;
+                ensureLoopRunning();
+            }, { passive: true });
+
+            // Pause entirely when the tab is backgrounded; resume cleanly
+            // (and re-sync the target so it doesn't jump) when it returns.
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') {
+                    ensureLoopRunning();
+                } else if (rafId !== null) {
+                    cancelAnimationFrame(rafId);
+                    rafId = null;
+                }
             });
         })();
 

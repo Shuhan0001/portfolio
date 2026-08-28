@@ -53,6 +53,123 @@
 
         ::-webkit-scrollbar { width: 0px; background: transparent; }
 
+        /* ============================================================
+           CINEMATIC MESH — Moss variant
+           Same motion system as Revive's amber mesh, retuned to this
+           page's mossy/organic palette (moss-green primary, gold/red
+           as sparks — echoing the quest-row/state-dot accent colors
+           used elsewhere on this page) instead of a warm palette.
+           ============================================================ */
+        .mesh-container {
+            position: fixed;
+            inset: 0;
+            z-index: -3;
+            overflow: hidden;
+            pointer-events: none;
+            background: #000;
+            contain: paint;
+        }
+
+        .mesh-blur {
+            position: absolute;
+            inset: -10%;
+            width: 120%;
+            height: 120%;
+            filter: blur(60px) saturate(130%);
+            transform: translateZ(0) translate3d(calc(var(--mx, 0) * 1px), calc(var(--my, 0) * 1px), 0);
+            will-change: transform;
+            opacity: 0.7;
+            transition: transform 1.4s cubic-bezier(0.25, 1, 0.3, 1);
+        }
+
+        .mesh-blob {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            border-radius: 50%;
+            mix-blend-mode: screen;
+            will-change: transform;
+        }
+
+        .mesh-blob-1 {
+            margin-top: -40vh;
+            margin-left: -35vw;
+            width: 70vw;
+            height: 50vh;
+            background: radial-gradient(ellipse at center,
+                rgba(74,222,148,.55) 0%,
+                rgba(74,222,148,.14) 38%,
+                transparent 68%);
+            animation: fusedWrithe1 15s infinite ease-in-out;
+        }
+
+        .mesh-blob-2 {
+            margin-top: -30vh;
+            margin-left: -20vw;
+            width: 50vw;
+            height: 70vh;
+            background: radial-gradient(ellipse at center,
+                rgba(251,91,91,.28) 0%,
+                rgba(251,91,91,.10) 42%,
+                transparent 70%);
+            animation: fusedWrithe2 18s infinite ease-in-out reverse;
+        }
+
+        .mesh-blob-3 {
+            margin-top: -10vh;
+            margin-left: -40vw;
+            width: 80vw;
+            height: 60vh;
+            background: radial-gradient(ellipse at center,
+                rgba(74,222,148,.28) 0%,
+                transparent 65%);
+            animation: fusedWrithe3 20s infinite ease-in-out;
+        }
+
+        .mesh-blob-4 {
+            margin-top: -20vh;
+            margin-left: -20vw;
+            width: 40vw;
+            height: 40vh;
+            background: radial-gradient(circle at center,
+                rgba(240,201,74,.24) 0%,
+                transparent 72%);
+            animation: fusedBreathe 11s infinite ease-in-out alternate;
+        }
+
+        @keyframes fusedWrithe1 {
+            0% { transform: translate3d(-14vw,-12vh,0) scale(.95) rotate(0deg); }
+            33% { transform: translate3d(26vw,18vh,0) scale(1.28) rotate(130deg); }
+            66% { transform: translate3d(-22vw,22vh,0) scale(.82) rotate(250deg); }
+            100% { transform: translate3d(-14vw,-12vh,0) scale(.95) rotate(360deg); }
+        }
+
+        @keyframes fusedWrithe2 {
+            0% { transform: translate3d(18vw,16vh,0) scale(1.1) rotate(0deg); }
+            33% { transform: translate3d(-26vw,-10vh,0) scale(.8) rotate(130deg); }
+            66% { transform: translate3d(12vw,-24vh,0) scale(1.3) rotate(250deg); }
+            100% { transform: translate3d(18vw,16vh,0) scale(1.1) rotate(360deg); }
+        }
+
+        @keyframes fusedWrithe3 {
+            0% { transform: translate3d(10vw,-24vh,0) scale(.85) rotate(0deg); }
+            50% { transform: translate3d(-20vw,10vh,0) scale(1.3) rotate(180deg); }
+            100% { transform: translate3d(10vw,-24vh,0) scale(.85) rotate(360deg); }
+        }
+
+        @keyframes fusedBreathe {
+            0% { transform: translate3d(0,0,0) scale(.68) rotate(0deg); opacity:.35; }
+            50% { transform: translate3d(18vw,-18vh,0) scale(1.55) rotate(120deg); opacity:1; }
+            100% { transform: translate3d(-12vw,18vh,0) scale(.82) rotate(220deg); opacity:.5; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .mesh-blob-1, .mesh-blob-2, .mesh-blob-3, .mesh-blob-4 {
+                animation: none;
+            }
+        }
+
+
 
         .noise-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
@@ -64,11 +181,35 @@
             position: fixed; width: 80vw; height: 80vh; border-radius: 50%;
             background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
             top: -20vh; left: -20vw; pointer-events: none; z-index: -1;
-            filter: blur(100px); opacity: 0.55;
+            filter: blur(60px); opacity: 0;
+            mix-blend-mode: screen;
+            animation: breatheMoss 9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            will-change: transform, opacity;
         }
         .ambient-light.right {
             top: 40vh; left: auto; right: -30vw;
-            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+            background: radial-gradient(circle at 60% 50%, rgba(240, 201, 74, 0.05) 0%, rgba(74, 222, 148, 0.02) 50%, transparent 80%);
+            animation: breatheGold 12s cubic-bezier(0.4, 0, 0.2, 1) infinite -7s;
+        }
+
+        /* True breathing curves: Exhale (0), Inhale (45), Hold (55), Exhale (100) */
+        @keyframes breatheMoss {
+            0%, 100% { transform: scale(0.85) translate(0, 0); opacity: 0.2; }
+            45% { transform: scale(1.2) translate(6%, 8%); opacity: 0.75; }
+            55% { transform: scale(1.24) translate(7%, 9%); opacity: 0.8; }
+        }
+
+        @keyframes breatheGold {
+            0%, 100% { transform: scale(0.9) translate(0, 0); opacity: 0.3; }
+            45% { transform: scale(1.28) translate(-8%, -4%); opacity: 0.85; }
+            55% { transform: scale(1.32) translate(-9%, -5%); opacity: 0.9; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .ambient-light, .ambient-light.right {
+                animation: none;
+                opacity: 0.55;
+            }
         }
 
         .container { max-width: 1440px; margin: 0 auto; padding: 0 6vw; }
@@ -236,28 +377,44 @@
         }
 
         /* ---------------------------------------------------------- */
-        /* Quest log ?recreated as a small RPG-style task list to     */
-        /* echo MiniQuest's own in-app aesthetic                       */
+        /* Quest log — a thin rail with two nodes, like a commit log   */
+        /* or in-game journal entry. No boxes, no color-coded rows.    */
         /* ---------------------------------------------------------- */
-        .quest-log { margin-top: 3rem; border-top: 1px solid var(--border-subtle); }
-        .quest-row {
-            display: grid; grid-template-columns: 2.25rem 1fr auto; gap: 1.25rem; align-items: start;
-            padding: 1.75rem 0; border-bottom: 1px solid var(--border-subtle);
+        .quest-log {
+            margin-top: 3.5rem; position: relative; padding-left: 2.5rem;
         }
-        .quest-row-index { font-family: var(--font-pixel); font-size: 1.4rem; color: var(--text-tertiary); line-height: 1.4; }
-        .quest-row.emergency .quest-row-index { color: var(--accent-gold); }
-        .quest-row:not(.emergency) .quest-row-index { color: var(--accent-moss); }
-        .quest-tag { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-moss); }
-        .quest-row.emergency .quest-tag { color: var(--accent-gold); }
-        .quest-name { font-size: 1.15rem; font-weight: 600; margin: 0.3rem 0 0.5rem; }
-        .quest-desc { font-size: 0.92rem; color: var(--text-secondary); line-height: 1.55; max-width: 480px; }
+        .quest-log::before {
+            content: ""; position: absolute; left: 0.3rem; top: 0.5rem; bottom: 0.5rem;
+            width: 1px; background: var(--border-subtle);
+        }
+        .quest-row { position: relative; padding-bottom: 3rem; }
+        .quest-row:last-child { padding-bottom: 0; }
+        .quest-row::before {
+            content: ""; position: absolute; left: -2.2rem; top: 0.4rem;
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--bg-void); border: 1.5px solid var(--text-tertiary);
+        }
+        .quest-head {
+            display: flex; align-items: baseline; gap: 0.75rem; flex-wrap: wrap;
+            margin-bottom: 0.6rem;
+        }
+        .quest-row-index {
+            font-family: var(--font-pixel); font-size: 0.95rem; letter-spacing: 0.05em;
+            color: var(--text-tertiary);
+        }
+        .quest-tag {
+            font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-tertiary);
+        }
+        .quest-name {
+            font-size: 1.2rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.6rem;
+        }
         .quest-row-mech {
-            font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-tertiary);
-            border: 1px solid var(--border-subtle); border-radius: 100px; padding: 0.4rem 0.9rem; white-space: nowrap;
+            font-size: 0.85rem; font-weight: 400; color: var(--text-tertiary);
         }
+        .quest-desc { font-size: 0.92rem; color: var(--text-secondary); line-height: 1.6; max-width: 480px; }
         @media (max-width: 560px) {
-            .quest-row { grid-template-columns: 2.25rem 1fr; }
-            .quest-row-mech { display: none; }
+            .quest-log { padding-left: 1.75rem; }
+            .quest-row::before { left: -1.45rem; }
         }
 
         /* Screenshot carousel — two slides visible at a time,      */
@@ -319,16 +476,24 @@
         }
         .code-note strong { color: var(--text-primary); font-weight: 600; }
 
-        /* Architecture layer diagram — a wired node stack, not a card grid */
+        /* Architecture layer diagram — vertical track with a traveling
+           glow, same treatment as the state-flow: View → ViewModel →
+           Model reads as one continuous downward flow. */
         .arch-diagram {
-            position: relative; width: 100%; padding-left: 1.5rem;
+            position: relative; width: 100%; padding-left: 1.75rem;
         }
-        .arch-diagram::before {
-            content: ''; position: absolute; left: 0; top: 0.35rem; bottom: 0.35rem;
-            width: 1px; background: var(--border-subtle);
+        .arch-track {
+            position: absolute; left: 0.3rem; top: 0.5rem; bottom: 0.5rem;
+            width: 2px; background: rgba(255,255,255,0.12); overflow: hidden; border-radius: 2px;
         }
+        .arch-track-glow {
+            position: absolute; left: 0; top: -25%; width: 100%; height: 25%;
+            background: linear-gradient(180deg, transparent, rgba(255,255,255,0.9), transparent);
+            animation: flow-y-loop 3.2s ease-in-out infinite alternate;
+        }
+        @keyframes flow-y-loop { from { top: -25%; } to { top: 100%; } }
         .arch-layer { position: relative; }
-        .arch-layer-title { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-moss); margin-bottom: 0.6rem; }
+        .arch-layer-title { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 0.6rem; }
         .arch-layer-body { font-size: 0.95rem; color: var(--text-secondary); max-width: 640px; }
         .arch-arrow {
             color: var(--text-tertiary); font-size: 0.78rem; letter-spacing: 0.03em;
@@ -355,28 +520,38 @@
         .media-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .media-frame img.contain { object-fit: contain; padding: 1.5rem; }
 
-        /* Three-state machine cards ?same card grammar as Cogni-Stream's
-           halo-grid, adapted to MiniQuest's Idle ?Thinking ?Reply flow */
-        .state-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem; margin-top: 2.5rem;
+        /* Three-state machine — a single track with a traveling glow,
+           instead of dots/arrows. The moving highlight reads as "live"
+           data flow: Idle → Thinking → Reply. */
+        .state-flow {
+            position: relative; display: flex; align-items: flex-start;
+            margin-top: 3.5rem; padding-top: 1.75rem;
         }
-        .state-item {
-            border: 1px solid var(--border-subtle); border-radius: var(--radius-md);
-            padding: 1.75rem; background: rgba(255,255,255,0.02); display: flex; flex-direction: column; gap: 0.9rem;
-            transition: border-color 0.4s ease, background 0.4s ease, transform 0.4s var(--ease-cinematic);
+        .state-track {
+            position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: rgba(255,255,255,0.12); overflow: hidden; border-radius: 2px;
         }
-        .state-item:hover { transform: translateY(-4px); background: rgba(255,255,255,0.04); }
-        .state-dot { width: 10px; height: 10px; border-radius: 50%; }
-        .state-item.idle { border-color: rgba(255,255,255,0.12); }
-        .state-item.idle .state-dot { background: var(--text-tertiary); }
-        .state-item.thinking { border-color: rgba(240, 201, 74, 0.35); }
-        .state-item.thinking .state-dot { background: var(--accent-gold); box-shadow: 0 0 10px rgba(240,201,74,0.6); animation: pulse-dot 1.4s ease-in-out infinite; }
-        .state-item.reply { border-color: rgba(74, 222, 148, 0.35); }
-        .state-item.reply .state-dot { background: var(--accent-moss); box-shadow: 0 0 10px var(--accent-glow); }
-        @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
-        .state-name { font-size: 1.05rem; font-weight: 600; }
-        .state-desc { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; }
+        .state-track-glow {
+            position: absolute; top: 0; left: -25%; width: 25%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent);
+            animation: flow-x 2.6s linear infinite;
+        }
+        @keyframes flow-x { from { left: -25%; } to { left: 100%; } }
+        .state-item { flex: 1; padding-right: 1.75rem; }
+        .state-item:last-child { padding-right: 0; }
+        .state-name { font-size: 1.05rem; font-weight: 600; margin: 0 0 0.6rem; color: var(--text-primary); }
+        .state-desc { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; max-width: 320px; }
+        @media (max-width: 720px) {
+            .state-flow { flex-direction: column; gap: 2.25rem; padding-top: 0; padding-left: 1.75rem; }
+            .state-track { top: 0; bottom: 0; left: 0; right: auto; width: 2px; height: auto; }
+            .state-track-glow {
+                left: 0; top: -25%; width: 100%; height: 25%;
+                background: linear-gradient(180deg, transparent, rgba(255,255,255,0.9), transparent);
+                animation: flow-y 2.6s linear infinite;
+            }
+            @keyframes flow-y { from { top: -25%; } to { top: 100%; } }
+            .state-item { padding-right: 0; }
+        }
 
         .limit-list, .future-list { list-style: none; margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; }
         .limit-list li, .future-list li { padding-left: 1.75rem; position: relative; color: var(--text-secondary); font-size: 1rem; line-height: 1.6; }
@@ -388,6 +563,14 @@
 <body>
 
     <div id="page-exit" style="position:fixed; inset:0; z-index:10001; background:#000000; pointer-events:none; opacity:0; transition: opacity 0.7s cubic-bezier(0.25,1,0.3,1);"></div>
+    <div aria-hidden="true" class="mesh-container">
+        <div class="mesh-blur">
+            <div class="mesh-blob mesh-blob-1"></div>
+            <div class="mesh-blob mesh-blob-2"></div>
+            <div class="mesh-blob mesh-blob-3"></div>
+            <div class="mesh-blob mesh-blob-4"></div>
+        </div>
+    </div>
     <div class="noise-overlay"></div>
     <div class="ambient-light"></div>
     <div class="ambient-light right"></div>
@@ -472,22 +655,20 @@
                     <p class="data-label reveal" style="margin-top: 3rem;">Two evidence-based interventions (Boyd, McDonough & Bodfish, 2012)</p>
                     <div class="quest-log">
                         <div class="quest-row reveal">
-                            <span class="quest-row-index">01</span>
-                            <div>
+                            <div class="quest-head">
+                                <span class="quest-row-index">01</span>
                                 <span class="quest-tag">Response Interruption / Redirection</span>
-                                <div class="quest-name">Urgent Quests</div>
-                                <p class="quest-desc">When a stereotyped pattern would otherwise continue, the app interrupts it and redirects attention toward a new action. It's effective in the short term for low-level rigidity.</p>
                             </div>
-                            <span class="quest-row-mech">In-app</span>
+                            <div class="quest-name">Urgent Quests <span class="quest-row-mech">— in-app</span></div>
+                            <p class="quest-desc">When a stereotyped pattern would otherwise continue, the app interrupts it and redirects attention toward a new action. It's effective in the short term for low-level rigidity.</p>
                         </div>
-                        <div class="quest-row emergency reveal delay-1">
-                            <span class="quest-row-index">02</span>
-                            <div>
+                        <div class="quest-row reveal delay-1">
+                            <div class="quest-head">
+                                <span class="quest-row-index">02</span>
                                 <span class="quest-tag">Environmental Enrichment</span>
-                                <div class="quest-name">Adventure Tools</div>
-                                <p class="quest-desc">A menu of activity modules offering several relaxation and exploration choices, adding the sensory and interactive variety monotonous days are missing.</p>
                             </div>
-                            <span class="quest-row-mech">In-app</span>
+                            <div class="quest-name">Adventure Tools <span class="quest-row-mech">— in-app</span></div>
+                            <p class="quest-desc">A menu of activity modules offering several relaxation and exploration choices, adding the sensory and interactive variety monotonous days are missing.</p>
                         </div>
                     </div>
                     <p class="caption reveal">MiniQuest builds directly on this pair: the Emergency Loop coroutine handles interruption, and the Adventure Tools area handles enrichment.</p>
@@ -547,6 +728,7 @@
                 </div>
                 <div>
                     <div class="arch-diagram reveal">
+                        <div class="arch-track"><div class="arch-track-glow"></div></div>
                         <div class="arch-layer">
                             <div class="arch-layer-title">View</div>
                             <div class="arch-layer-body">Jetpack Compose UI: a passive consumer that maps <code>StateFlow</code> to screen and forwards user intent upward. No business logic lives here.</div>
@@ -659,19 +841,17 @@
 }</code></pre>
                     </div>
                     <p class="code-note reveal">The <code>isThinking</code> flag is a minimal state machine that locks the UI mid-request so a user can't fire off duplicate calls out of "uncertainty anxiety" while waiting.</p>
-                    <div class="state-grid">
+                    <div class="state-flow">
+                        <div class="state-track"><div class="state-track-glow"></div></div>
                         <div class="state-item idle reveal">
-                            <div class="state-dot"></div>
                             <div class="state-name">Idle</div>
                             <div class="state-desc">Waiting on the user. The wizard's dialogue box sits empty and interactive.</div>
                         </div>
                         <div class="state-item thinking reveal delay-1">
-                            <div class="state-dot"></div>
                             <div class="state-name">Thinking</div>
                             <div class="state-desc">Request in flight on Dispatchers.IO. UI is locked; a transient "..." placeholder is shown.</div>
                         </div>
                         <div class="state-item reply reveal delay-2">
-                            <div class="state-dot"></div>
                             <div class="state-name">Reply</div>
                             <div class="state-desc">Response resolved, either from the API or the offline grimoire fallback if the call failed.</div>
                         </div>
@@ -792,6 +972,73 @@
         document.addEventListener('DOMContentLoaded', () => {
             initShotsCarousel('homeScreenCarousel', 'homeScreenDots');
         });
+    </script>
+
+    <script>
+        // Mouse-driven parallax for the cinematic mesh background —
+        // the rAF loop only runs while it's converging toward a new
+        // target or while the tab is visible, not forever at 60fps.
+        (function () {
+            const blur = document.querySelector('.mesh-blur');
+            if (!blur || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+            let targetX = 0, targetY = 0, curX = 0, curY = 0;
+            const strength = 55; // px of max drift
+            const SETTLE_EPSILON = 0.05;
+            let rafId = null;
+
+            function tick() {
+                curX += (targetX - curX) * 0.06;
+                curY += (targetY - curY) * 0.06;
+                blur.style.setProperty('--mx', curX.toFixed(2));
+                blur.style.setProperty('--my', curY.toFixed(2));
+
+                const stillMoving =
+                    Math.abs(targetX - curX) > SETTLE_EPSILON ||
+                    Math.abs(targetY - curY) > SETTLE_EPSILON;
+
+                if (stillMoving && document.visibilityState === 'visible') {
+                    rafId = requestAnimationFrame(tick);
+                } else {
+                    rafId = null;
+                }
+            }
+
+            function ensureLoopRunning() {
+                if (rafId === null && document.visibilityState === 'visible') {
+                    rafId = requestAnimationFrame(tick);
+                }
+            }
+
+            window.addEventListener('mousemove', (e) => {
+                const nx = (e.clientX / window.innerWidth) - 0.5;
+                const ny = (e.clientY / window.innerHeight) - 0.5;
+                targetX = nx * strength * 2;
+                targetY = ny * strength * 2;
+                ensureLoopRunning();
+            }, { passive: true });
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') {
+                    ensureLoopRunning();
+                } else if (rafId !== null) {
+                    cancelAnimationFrame(rafId);
+                    rafId = null;
+                }
+            });
+        })();
+
+        // Pause the always-on CSS background animations while the tab
+        // is hidden, so a backgrounded tab isn't compositing/blurring
+        // every frame for nothing.
+        (function () {
+            const bgAnimated = document.querySelectorAll('.mesh-blob, .ambient-light');
+            if (!bgAnimated.length) return;
+            document.addEventListener('visibilitychange', () => {
+                const state = document.visibilityState === 'visible' ? 'running' : 'paused';
+                bgAnimated.forEach((el) => { el.style.animationPlayState = state; });
+            });
+        })();
     </script>
 
     <script>
