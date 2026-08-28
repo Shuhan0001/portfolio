@@ -54,6 +54,124 @@
         ::-webkit-scrollbar { width: 0px; background: transparent; }
 
 
+        /* ============================================================
+           CINEMATIC MESH — Void & Vigil Red variant
+           Same motion system as MiniQuest's moss mesh, retuned to this
+           page's bloodied palette: dull blood-red as the primary blob,
+           a sickly green undertone, and a thin amber warning spark —
+           echoing the accent-red / accent-sick / accent-amber trio
+           used elsewhere on this page.
+           ============================================================ */
+        .mesh-container {
+            position: fixed;
+            inset: 0;
+            z-index: -3;
+            overflow: hidden;
+            pointer-events: none;
+            background: #000;
+            contain: paint;
+        }
+
+        .mesh-blur {
+            position: absolute;
+            inset: -10%;
+            width: 120%;
+            height: 120%;
+            filter: blur(60px) saturate(120%);
+            transform: translateZ(0) translate3d(calc(var(--mx, 0) * 1px), calc(var(--my, 0) * 1px), 0);
+            will-change: transform;
+            opacity: 0.85;
+            transition: transform 1.4s cubic-bezier(0.25, 1, 0.3, 1);
+        }
+
+        .mesh-blob {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            border-radius: 50%;
+            mix-blend-mode: screen;
+            will-change: transform;
+        }
+
+        .mesh-blob-1 {
+            margin-top: -40vh;
+            margin-left: -35vw;
+            width: 70vw;
+            height: 50vh;
+            background: radial-gradient(ellipse at center,
+                rgba(120,10,22,.75) 0%,
+                rgba(120,10,22,.24) 38%,
+                transparent 68%);
+            animation: fusedWrithe1 17s infinite ease-in-out;
+        }
+
+        .mesh-blob-2 {
+            margin-top: -30vh;
+            margin-left: -20vw;
+            width: 50vw;
+            height: 70vh;
+            background: radial-gradient(ellipse at center,
+                rgba(125,190,106,.1) 0%,
+                rgba(125,190,106,.04) 42%,
+                transparent 70%);
+            animation: fusedWrithe2 20s infinite ease-in-out reverse;
+        }
+
+        .mesh-blob-3 {
+            margin-top: -10vh;
+            margin-left: -40vw;
+            width: 80vw;
+            height: 60vh;
+            background: radial-gradient(ellipse at center,
+                rgba(120,10,22,.4) 0%,
+                transparent 65%);
+            animation: fusedWrithe3 23s infinite ease-in-out;
+        }
+
+        .mesh-blob-4 {
+            margin-top: -20vh;
+            margin-left: -20vw;
+            width: 40vw;
+            height: 40vh;
+            background: radial-gradient(circle at center,
+                rgba(217,38,38,.22) 0%,
+                transparent 72%);
+            animation: fusedBreathe 13s infinite ease-in-out alternate;
+        }
+
+        @keyframes fusedWrithe1 {
+            0% { transform: translate3d(-14vw,-12vh,0) scale(.95) rotate(0deg); }
+            33% { transform: translate3d(26vw,18vh,0) scale(1.28) rotate(130deg); }
+            66% { transform: translate3d(-22vw,22vh,0) scale(.82) rotate(250deg); }
+            100% { transform: translate3d(-14vw,-12vh,0) scale(.95) rotate(360deg); }
+        }
+
+        @keyframes fusedWrithe2 {
+            0% { transform: translate3d(18vw,16vh,0) scale(1.1) rotate(0deg); }
+            33% { transform: translate3d(-26vw,-10vh,0) scale(.8) rotate(130deg); }
+            66% { transform: translate3d(12vw,-24vh,0) scale(1.3) rotate(250deg); }
+            100% { transform: translate3d(18vw,16vh,0) scale(1.1) rotate(360deg); }
+        }
+
+        @keyframes fusedWrithe3 {
+            0% { transform: translate3d(10vw,-24vh,0) scale(.85) rotate(0deg); }
+            50% { transform: translate3d(-20vw,10vh,0) scale(1.3) rotate(180deg); }
+            100% { transform: translate3d(10vw,-24vh,0) scale(.85) rotate(360deg); }
+        }
+
+        @keyframes fusedBreathe {
+            0% { transform: translate3d(0,0,0) scale(.68) rotate(0deg); opacity:.3; }
+            50% { transform: translate3d(18vw,-18vh,0) scale(1.55) rotate(120deg); opacity:.85; }
+            100% { transform: translate3d(-12vw,18vh,0) scale(.82) rotate(220deg); opacity:.45; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .mesh-blob-1, .mesh-blob-2, .mesh-blob-3, .mesh-blob-4 {
+                animation: none;
+            }
+        }
+
+
         .noise-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             pointer-events: none; z-index: 9999; opacity: 0.05;
@@ -62,14 +180,39 @@
 
         .ambient-light {
             position: fixed; width: 80vw; height: 80vh; border-radius: 50%;
-            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(120,10,22,0.35) 0%, transparent 70%);
             top: -20vh; left: -20vw; pointer-events: none; z-index: -1;
-            filter: blur(100px); opacity: 0.5;
+            filter: blur(100px); opacity: 0;
+            mix-blend-mode: screen;
+            animation: breatheRed 10s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            will-change: transform, opacity;
         }
         .ambient-light.right {
             top: 40vh; left: auto; right: -30vw;
-            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+            background: radial-gradient(circle at 60% 50%, rgba(120,10,22,0.18) 0%, rgba(125,190,106,0.03) 50%, transparent 80%);
+            animation: breatheSick 13s cubic-bezier(0.4, 0, 0.2, 1) infinite -7s;
         }
+
+        /* True breathing curves: Exhale (0), Inhale (45), Hold (55), Exhale (100) */
+        @keyframes breatheRed {
+            0%, 100% { transform: scale(0.85) translate(0, 0); opacity: 0.2; }
+            45% { transform: scale(1.2) translate(6%, 8%); opacity: 0.7; }
+            55% { transform: scale(1.24) translate(7%, 9%); opacity: 0.75; }
+        }
+
+        @keyframes breatheSick {
+            0%, 100% { transform: scale(0.9) translate(0, 0); opacity: 0.25; }
+            45% { transform: scale(1.28) translate(-8%, -4%); opacity: 0.6; }
+            55% { transform: scale(1.32) translate(-9%, -5%); opacity: 0.65; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .ambient-light, .ambient-light.right {
+                animation: none;
+                opacity: 0.4;
+            }
+        }
+
 
         .container { max-width: 1440px; margin: 0 auto; padding: 0 6vw; }
 
@@ -193,21 +336,28 @@
             .roster-featured { grid-template-columns: 1fr; gap: 1.5rem; }
         }
 
-        /* Ethics / responsible-design flags same anatomy as a status
-           indicator (ring + label + description) but repurposed here as
-           content warnings rather than a system state. */
+        /* Ethics / responsible-design flags — matches the site's own
+           border-top divider convention (see .roster-card) instead of
+           inventing a separate colored-rail treatment. Hierarchy comes
+           from the oversized, low-contrast index numeral, not color. */
         .ethics-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2.5rem 3rem; margin-top: 3rem;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0;
+            margin-top: 3rem; border-top: 1px solid var(--border-subtle);
         }
         .ethics-item {
-            border-left: 2px solid var(--item-accent, var(--accent-red)); padding-left: 1.4rem;
+            border-left: 1px solid var(--border-subtle); padding: 2.25rem 2rem 0.5rem;
         }
+        .ethics-item:first-child { border-left: none; padding-left: 0; }
         .ethics-item .index {
-            display: block; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em;
-            color: var(--item-accent, var(--accent-red)); margin-bottom: 0.7rem;
+            display: block; font-size: 2.75rem; font-weight: 300; line-height: 1;
+            color: rgba(255,255,255,0.14); margin-bottom: 1rem; font-variant-numeric: tabular-nums;
         }
         .ethics-text .name { font-size: 0.95rem; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; margin-bottom: 0.4rem; color: var(--text-primary); }
         .ethics-text .desc { font-size: 0.92rem; color: var(--text-secondary); line-height: 1.55; }
+        @media (max-width: 720px) {
+            .ethics-item { border-left: none; border-top: 1px solid var(--border-subtle); padding: 2rem 0; }
+            .ethics-item:first-child { border-top: none; padding-top: 0; }
+        }
 
         .reveal {
             opacity: 0; transform: translateY(40px) scale(0.98); filter: blur(10px);
@@ -293,6 +443,14 @@
 <body>
 
     <div id="page-exit" style="position:fixed; inset:0; z-index:10001; background:#000000; pointer-events:none; opacity:0; transition: opacity 0.7s cubic-bezier(0.25,1,0.3,1);"></div>
+    <div aria-hidden="true" class="mesh-container">
+        <div class="mesh-blur">
+            <div class="mesh-blob mesh-blob-1"></div>
+            <div class="mesh-blob mesh-blob-2"></div>
+            <div class="mesh-blob mesh-blob-3"></div>
+            <div class="mesh-blob mesh-blob-4"></div>
+        </div>
+    </div>
     <div class="noise-overlay"></div>
     <div class="ambient-light"></div>
     <div class="ambient-light right"></div>
@@ -479,14 +637,14 @@
                         <div class="desc">Rated 18+, with a clear age warning shown before the game starts.</div>
                     </div>
                 </div>
-                <div class="ethics-item reveal delay-1" style="--item-accent: var(--accent-amber);">
+                <div class="ethics-item reveal delay-1">
                     <span class="index">02</span>
                     <div class="ethics-text">
                         <div class="name">Player Wellbeing</div>
                         <div class="desc">Upfront warnings for jump scares and photosensitive content, plus a planned "Reduced Horror Mode" that tones down noise and visuals for players who want the story without the full intensity.</div>
                     </div>
                 </div>
-                <div class="ethics-item reveal delay-2" style="--item-accent: var(--accent-sick);">
+                <div class="ethics-item reveal delay-2">
                     <span class="index">03</span>
                     <div class="ethics-text">
                         <div class="name">Cultural Sensitivity</div>
@@ -603,6 +761,73 @@
             window.addEventListener('scroll', updateScrollProgress, { passive: true });
             updateScrollProgress();
         });
+    </script>
+
+    <script>
+        // Mouse-driven parallax for the cinematic mesh background —
+        // the rAF loop only runs while it's converging toward a new
+        // target or while the tab is visible, not forever at 60fps.
+        (function () {
+            const blur = document.querySelector('.mesh-blur');
+            if (!blur || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+            let targetX = 0, targetY = 0, curX = 0, curY = 0;
+            const strength = 55; // px of max drift
+            const SETTLE_EPSILON = 0.05;
+            let rafId = null;
+
+            function tick() {
+                curX += (targetX - curX) * 0.06;
+                curY += (targetY - curY) * 0.06;
+                blur.style.setProperty('--mx', curX.toFixed(2));
+                blur.style.setProperty('--my', curY.toFixed(2));
+
+                const stillMoving =
+                    Math.abs(targetX - curX) > SETTLE_EPSILON ||
+                    Math.abs(targetY - curY) > SETTLE_EPSILON;
+
+                if (stillMoving && document.visibilityState === 'visible') {
+                    rafId = requestAnimationFrame(tick);
+                } else {
+                    rafId = null;
+                }
+            }
+
+            function ensureLoopRunning() {
+                if (rafId === null && document.visibilityState === 'visible') {
+                    rafId = requestAnimationFrame(tick);
+                }
+            }
+
+            window.addEventListener('mousemove', (e) => {
+                const nx = (e.clientX / window.innerWidth) - 0.5;
+                const ny = (e.clientY / window.innerHeight) - 0.5;
+                targetX = nx * strength * 2;
+                targetY = ny * strength * 2;
+                ensureLoopRunning();
+            }, { passive: true });
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') {
+                    ensureLoopRunning();
+                } else if (rafId !== null) {
+                    cancelAnimationFrame(rafId);
+                    rafId = null;
+                }
+            });
+        })();
+
+        // Pause the always-on CSS background animations while the tab
+        // is hidden, so a backgrounded tab isn't compositing/blurring
+        // every frame for nothing.
+        (function () {
+            const bgAnimated = document.querySelectorAll('.mesh-blob, .ambient-light');
+            if (!bgAnimated.length) return;
+            document.addEventListener('visibilitychange', () => {
+                const state = document.visibilityState === 'visible' ? 'running' : 'paused';
+                bgAnimated.forEach((el) => { el.style.animationPlayState = state; });
+            });
+        })();
     </script>
 </body>
 </html>
