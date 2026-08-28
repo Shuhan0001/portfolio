@@ -377,23 +377,24 @@
         }
 
         /* ---------------------------------------------------------- */
-        /* Quest log — a thin rail with two nodes, like a commit log   */
-        /* or in-game journal entry. No boxes, no color-coded rows.    */
+        /* Quest log — matches the state-flow track below: a thin rail */
+        /* with a traveling glow instead of static dots.               */
         /* ---------------------------------------------------------- */
         .quest-log {
             margin-top: 3.5rem; position: relative; padding-left: 2.5rem;
         }
-        .quest-log::before {
-            content: ""; position: absolute; left: 0.3rem; top: 0.5rem; bottom: 0.5rem;
-            width: 1px; background: var(--border-subtle);
+        .quest-track {
+            position: absolute; top: 0.5rem; bottom: 0.5rem; left: 0.3rem; width: 2px;
+            background: rgba(255,255,255,0.12); overflow: hidden; border-radius: 2px;
         }
+        .quest-track-glow {
+            position: absolute; left: 0; top: -25%; width: 100%; height: 25%;
+            background: linear-gradient(180deg, transparent, rgba(255,255,255,0.9), transparent);
+            animation: quest-flow-y 2.6s linear infinite;
+        }
+        @keyframes quest-flow-y { from { top: -25%; } to { top: 100%; } }
         .quest-row { position: relative; padding-bottom: 3rem; }
         .quest-row:last-child { padding-bottom: 0; }
-        .quest-row::before {
-            content: ""; position: absolute; left: -2.2rem; top: 0.4rem;
-            width: 8px; height: 8px; border-radius: 50%;
-            background: var(--bg-void); border: 1.5px solid var(--text-tertiary);
-        }
         .quest-head {
             display: flex; align-items: baseline; gap: 0.75rem; flex-wrap: wrap;
             margin-bottom: 0.6rem;
@@ -414,7 +415,7 @@
         .quest-desc { font-size: 0.92rem; color: var(--text-secondary); line-height: 1.6; max-width: 480px; }
         @media (max-width: 560px) {
             .quest-log { padding-left: 1.75rem; }
-            .quest-row::before { left: -1.45rem; }
+            .quest-track { left: 0.15rem; }
         }
 
         /* Screenshot carousel — two slides visible at a time,      */
@@ -439,13 +440,13 @@
             transition: color 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
             transform: translateY(-50%) scaleY(1.6);
         }
-        .shots-nav:hover { color: var(--accent-moss); transform: translateY(-50%) scaleY(1.6) scale(1.1); }
+        .shots-nav:hover { color: #ffffff; transform: translateY(-50%) scaleY(1.6) scale(1.1); }
         .shots-nav.prev { left: 0; }
         .shots-nav.next { right: 0; }
         .shots-nav:disabled { opacity: 0.25; cursor: default; pointer-events: none; }
         .shots-dots { display: flex; gap: 6px; margin-top: 1.25rem; }
         .shots-dot { width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.2); transition: background 0.3s ease, width 0.3s ease; }
-        .shots-dot.active { background: var(--accent-moss); width: 18px; }
+        .shots-dot.active { background: #ffffff; width: 18px; }
 
 
         /* appendix, annotated inline                                  */
@@ -539,7 +540,12 @@
         @keyframes flow-x { from { left: -25%; } to { left: 100%; } }
         .state-item { flex: 1; padding-right: 1.75rem; }
         .state-item:last-child { padding-right: 0; }
-        .state-name { font-size: 1.05rem; font-weight: 600; margin: 0 0 0.6rem; color: var(--text-primary); }
+        .state-name {
+            font-size: 1.05rem; font-weight: 600; margin: 0 0 0.6rem; color: var(--text-primary);
+            display: inline-block; transform-origin: left center;
+            transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .state-item.active .state-name { transform: scale(1.12); }
         .state-desc { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; max-width: 320px; }
         @media (max-width: 720px) {
             .state-flow { flex-direction: column; gap: 2.25rem; padding-top: 0; padding-left: 1.75rem; }
@@ -654,6 +660,7 @@
 
                     <p class="data-label reveal" style="margin-top: 3rem;">Two evidence-based interventions (Boyd, McDonough & Bodfish, 2012)</p>
                     <div class="quest-log">
+                        <div class="quest-track"><div class="quest-track-glow"></div></div>
                         <div class="quest-row reveal">
                             <div class="quest-head">
                                 <span class="quest-row-index">01</span>
@@ -746,8 +753,8 @@
                     </div>
                     <p class="caption reveal">Reconstructed from Figure A1, the report's full system architecture diagram.</p>
 
-                    <div class="media-frame on-light reveal" style="margin-top: 2rem; aspect-ratio: 21/9;">
-                        <img src="Image/MiniQuest_Architecture.webp" alt="MiniQuest system architecture diagram, as submitted in the technical report" class="contain">
+                    <div class="media-frame on-light reveal" style="margin-top: 2rem; aspect-ratio: 1256/474;">
+                        <img src="Image/MiniQuest_Architecture.webp" alt="MiniQuest system architecture diagram, as submitted in the technical report" class="contain" style="padding: 0.5rem;">
                     </div>
                     <p class="caption reveal">Fig. A1: the original diagram as submitted in the technical report appendix.</p>
 
@@ -1098,6 +1105,49 @@
             };
             window.addEventListener('scroll', updateScrollProgress, { passive: true });
             updateScrollProgress();
+
+            // Scale the Idle/Thinking/Reply title while the traveling glow
+            // passes over it. Reads currentTime from the CSS animation
+            // itself (Web Animations API) so it stays perfectly in sync
+            // without duplicating the timing in JS. The rAF loop only runs
+            // while the block is on screen, so it costs nothing when scrolled
+            // past.
+            document.querySelectorAll('.state-flow').forEach((flow) => {
+                const glow = flow.querySelector('.state-track-glow');
+                const items = Array.from(flow.querySelectorAll('.state-item'));
+                if (!glow || !items.length) return;
+
+                let rafId = null;
+
+                const tick = () => {
+                    const anim = glow.getAnimations()[0];
+                    if (anim && anim.currentTime != null) {
+                        const timing = anim.effect.getTiming();
+                        const duration = typeof timing.duration === 'number' ? timing.duration : 2600;
+                        const progress = ((anim.currentTime % duration) + duration) % duration / duration;
+                        const centerPercent = (-25 + 125 * progress) + 12.5;
+                        const segment = 100 / items.length;
+                        items.forEach((item, i) => {
+                            const isActive = centerPercent >= i * segment && centerPercent < (i + 1) * segment;
+                            item.classList.toggle('active', isActive);
+                        });
+                    }
+                    rafId = requestAnimationFrame(tick);
+                };
+
+                const io = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            if (rafId === null) rafId = requestAnimationFrame(tick);
+                        } else if (rafId !== null) {
+                            cancelAnimationFrame(rafId);
+                            rafId = null;
+                            items.forEach((item) => item.classList.remove('active'));
+                        }
+                    });
+                }, { threshold: 0.15 });
+                io.observe(flow);
+            });
         });
     </script>
 </body>
