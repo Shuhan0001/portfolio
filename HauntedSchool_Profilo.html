@@ -359,6 +359,41 @@
             .ethics-item:first-child { border-top: none; padding-top: 0; }
         }
 
+        /* Design References, no-image variant matching the same
+           numbered-index pattern already used by .ethics-grid above —
+           reusing an established layout instead of inventing a second
+           one keeps the two reference-style sections reading as the
+           same kind of thing. */
+        .ref-list {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0;
+            margin-top: 3rem; border-top: 1px solid var(--border-subtle);
+        }
+        .ref-item {
+            border-left: 1px solid var(--border-subtle); padding: 2.25rem 2rem 0.5rem;
+        }
+        .ref-item:first-child { border-left: none; padding-left: 0; }
+        .ref-item .index {
+            display: block; font-size: 2.75rem; font-weight: 300; line-height: 1;
+            color: rgba(255,255,255,0.14); margin-bottom: 1rem; font-variant-numeric: tabular-nums;
+        }
+        .ref-item h3 {
+            font-size: 1.15rem; font-weight: 600; margin-bottom: 0.6rem;
+            display: flex; align-items: center; gap: 0.55rem; flex-wrap: wrap;
+        }
+        .ref-item p { font-size: 0.92rem; color: var(--text-secondary); line-height: 1.55; }
+        .ref-link {
+            display: inline-flex; align-items: center; gap: 0.25rem;
+            font-size: 0.68rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+            color: var(--text-tertiary); text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+        .ref-link:hover { color: var(--accent-red); border-color: rgba(140, 17, 40, 0.4); }
+        @media (max-width: 720px) {
+            .ref-item { border-left: none; border-top: 1px solid var(--border-subtle); padding: 2rem 0; }
+            .ref-item:first-child { border-top: none; padding-top: 0; }
+        }
+
         .reveal {
             opacity: 0; transform: translateY(40px) scale(0.98); filter: blur(10px);
             transition: opacity 1.2s var(--ease-cinematic), transform 1.2s var(--ease-cinematic), filter 1.2s var(--ease-cinematic);
@@ -438,6 +473,201 @@
             52% { -webkit-text-stroke: 1.5px rgba(140, 17, 40, 0.6); text-shadow: 0 0 30px var(--accent-glow); }
         }
 
+        /* ============================================================
+           Print / PDF export — same approach as the MiniQuest and
+           Revive profile pages: turned into a portfolio PDF straight
+           from the browser's Print dialog (Cmd/Ctrl+P → Save as PDF),
+           without touching any live-site content, copy, or interaction
+           behaviour. Everything below only ever applies when printing.
+
+           Each section opens on its own page for a clean, deliberate
+           read — sections with a lot in them are still allowed to spill
+           onto a continuation page, that's a normal outcome. The one
+           thing actively guarded against is a short label (.data-label,
+           .roster-subhead) being stranded alone at the bottom of a page
+           while the block it introduces starts fresh on the next one —
+           and a handful of "atomic" components (a quote, a figure, a
+           roster card, an ethics item) being sliced across a break.
+           ============================================================ */
+        @media print {
+
+            @page {
+                size: 13.33in 9.2in;
+                margin: 9mm 14mm;
+            }
+
+            html {
+                font-size: 84% !important;
+            }
+
+            p, li {
+                orphans: 3;
+                widows: 3;
+            }
+
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+
+            * {
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+            }
+
+            html, body {
+                background: var(--bg-void) !important;
+                overflow: visible !important;
+                cursor: auto !important;
+            }
+
+            .noise-overlay,
+            .ambient-light,
+            .scroll-track,
+            .back-home-btn,
+            .site-header {
+                display: none !important;
+            }
+
+            .text-outline {
+                color: var(--accent-red) !important;
+                -webkit-text-stroke: 0 !important;
+                text-stroke: 0 !important;
+                text-shadow: none !important;
+                animation: none !important;
+            }
+
+            .reveal {
+                opacity: 1 !important;
+                transform: none !important;
+                filter: none !important;
+                transition: none !important;
+            }
+
+            .grid-split {
+                grid-template-columns: 0.85fr 1.3fr !important;
+                gap: 3rem !important;
+                align-items: start !important;
+            }
+            .sticky-col {
+                position: static !important;
+                top: auto !important;
+            }
+
+            .text-body { max-width: 780px !important; }
+            .text-lead { max-width: 900px !important; }
+
+            .hero {
+                min-height: auto !important;
+                display: block !important;
+                padding-top: 4vh !important;
+                padding-bottom: 2vh !important;
+            }
+
+            .section {
+                padding: 4vh 0 !important;
+                page-break-before: always;
+                break-before: page;
+            }
+
+            /* A label sitting directly above the block it introduces
+               ("How the schedule was phased", "The Three Bound Spirits")
+               must never be left alone at the bottom of a page while its
+               content starts fresh on the next one. */
+            .data-label,
+            .roster-subhead {
+                page-break-after: avoid;
+                break-after: avoid;
+            }
+            h2, h3 {
+                page-break-after: avoid;
+                break-after: avoid;
+            }
+
+            /* Atomic pieces — sliced across a page break they'd either
+               be unreadable or look like an error. Keep each as one unit. */
+            .quote-block,
+            figure,
+            .roster-card,
+            .roster-featured,
+            .ethics-item,
+            .ref-item {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            /* The reference list (like .ethics-grid) can wrap to a
+               different column count on screen depending on how the
+               print engine resolves the page's usable width; force
+               three so the layout is predictable rather than left to
+               chance. */
+            .ref-list {
+                grid-template-columns: repeat(3, 1fr) !important;
+            }
+
+            /* External links (Phasmophobia/FNAF/DDLC/Visage) are dead
+               ends on paper — show the URL as small print underneath so
+               the citation survives without the link being clickable. */
+            .ref-link {
+                display: block !important;
+                margin-top: 0.4rem;
+                border-bottom: none !important;
+            }
+            .ref-link::after {
+                content: " (" attr(href) ")";
+                font-weight: 400;
+                text-transform: none;
+                letter-spacing: 0;
+                word-break: break-all;
+            }
+
+            /* "See this project on GitHub" is a dead end on paper —
+               nothing to click. Strip the glowing pill down to the same
+               quiet label/value pattern already used by .meta-item
+               elsewhere on this page, so the link reads as part of the
+               document's own typography instead of leftover UI. */
+            .github-btn {
+                display: inline-flex !important;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 0.35em !important;
+                width: auto !important;
+                background: none !important;
+                border: none !important;
+                border-left: 1px solid var(--border-subtle) !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                padding: 0.1rem 0 0.1rem 0.85rem !important;
+                color: var(--text-tertiary) !important;
+                font-size: 0.7rem !important;
+                font-weight: 600 !important;
+                letter-spacing: 0.06em !important;
+                text-transform: uppercase !important;
+            }
+            .github-btn svg {
+                display: none !important;
+            }
+            .github-btn::after {
+                content: attr(href);
+                display: block;
+                font-size: 0.62rem;
+                font-weight: 400;
+                letter-spacing: 0;
+                text-transform: none;
+                text-decoration: none;
+                color: var(--text-secondary) !important;
+                word-break: break-all;
+            }
+
+            /* The content-note is an in-page anchor (#responsible-design),
+               not an external link — keep it as plain text rather than
+               printing a dead href underneath it. */
+            .content-note {
+                text-decoration: none !important;
+                border-bottom: none !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -663,41 +893,38 @@
 
         <section class="section container" style="border-top: 1px solid var(--border-subtle);">
             <h2 class="reveal" style="text-align: center; margin-bottom: 1rem;">Design <span class="text-outline">References</span></h2>
-            <p class="text-lead reveal" style="text-align: center; margin: 0 auto 5rem; max-width: 760px;">Four horror games and two pieces of folklore the group used to pin down tone, mechanics and setting before any of it went into Unity.</p>
+            <p class="text-lead reveal" style="text-align: center; margin: 0 auto 2rem; max-width: 760px;">Four horror games and two pieces of folklore the group used to pin down tone, mechanics and setting before any of it went into Unity.</p>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 3rem;">
-                <div class="reveal">
-                    <div class="media-frame aspect-portrait" style="margin-bottom: 1.5rem;">
-                        <img src="Image/HauntedSchool_Ref_Screenshot.webp" alt="Player's own in-game screenshot: a pale, dark-haired ghost figure standing in a dim bookshelf-lined room, lit by a handheld flashlight beam" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; display: block;">
-                        <a href="https://store.steampowered.com/app/739630/Phasmophobia/" target="_blank" rel="noopener" style="position: absolute; bottom: 0.75rem; right: 0.75rem; display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.4rem 0.7rem; background: rgba(5,5,5,0.65); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.15); border-radius: 999px; color: var(--text-tertiary); font-size: 0.72rem; letter-spacing: 0.05em; text-decoration: none; transition: color 0.3s ease, border-color 0.3s ease;" onmouseover="this.style.color='var(--text-primary)'; this.style.borderColor='rgba(255,255,255,0.35)'" onmouseout="this.style.color='var(--text-tertiary)'; this.style.borderColor='rgba(255,255,255,0.15)'">View Reference ↗</a>
-                    </div>
-                    <h3 style="font-size: 1.2rem; margin-bottom: 0.6rem;">Phasmophobia</h3>
-                    <p class="text-body" style="font-size: 0.98rem;">Kinetic Games' co-op ghost-hunting title informed how our spirits gather and reveal evidence of themselves, even though our game is single-player and story-driven rather than investigative.</p>
+            <div class="ref-list">
+                <div class="ref-item reveal">
+                    <span class="index">01</span>
+                    <h3>Phasmophobia <a href="https://store.steampowered.com/app/739630/Phasmophobia/" target="_blank" rel="noopener" class="ref-link">Visit ↗</a></h3>
+                    <p>Kinetic Games' co-op ghost-hunting title informed how our spirits gather and reveal evidence of themselves, even though our game is single-player and story-driven rather than investigative.</p>
                 </div>
-                <div class="reveal delay-1">
-                    <div class="media-frame aspect-portrait" style="margin-bottom: 1.5rem;"><span class="media-placeholder-text">[ Ref: Five Nights at Freddy's ]</span></div>
-                    <h3 style="font-size: 1.2rem; margin-bottom: 0.6rem;">Five Nights at Freddy's</h3>
-                    <p class="text-body" style="font-size: 0.98rem;">Scott Cawthon's survival horror shaped our thinking on jump scares and resource-management tension, and the idea of a monster the player can't fully understand or defeat.</p>
+                <div class="ref-item reveal delay-1">
+                    <span class="index">02</span>
+                    <h3>Five Nights at Freddy's <a href="https://store.steampowered.com/app/319510/Five_Nights_at_Freddys/" target="_blank" rel="noopener" class="ref-link">Visit ↗</a></h3>
+                    <p>Scott Cawthon's survival horror shaped our thinking on jump scares and resource-management tension, and the idea of a monster the player can't fully understand or defeat.</p>
                 </div>
-                <div class="reveal delay-2">
-                    <div class="media-frame aspect-portrait" style="margin-bottom: 1.5rem;"><span class="media-placeholder-text">[ Ref: Doki Doki Literature Club! ]</span></div>
-                    <h3 style="font-size: 1.2rem; margin-bottom: 0.6rem;">Doki Doki Literature Club!</h3>
-                    <p class="text-body" style="font-size: 0.98rem;">Team Salvato's meta-narrative psychological horror is the main reference for how our story hides its horror behind an ordinary setup before turning on the player.</p>
+                <div class="ref-item reveal delay-2">
+                    <span class="index">03</span>
+                    <h3>Doki Doki Literature Club! <a href="https://ddlc.moe/" target="_blank" rel="noopener" class="ref-link">Visit ↗</a></h3>
+                    <p>Team Salvato's meta-narrative psychological horror is the main reference for how our story hides its horror behind an ordinary setup before turning on the player.</p>
                 </div>
-                <div class="reveal delay-3">
-                    <div class="media-frame aspect-portrait" style="margin-bottom: 1.5rem;"><span class="media-placeholder-text">[ Ref: Visage ]</span></div>
-                    <h3 style="font-size: 1.2rem; margin-bottom: 0.6rem;">Visage</h3>
-                    <p class="text-body" style="font-size: 0.98rem;">A haunted-house exploration game that favours atmosphere over jump scares, a reminder that dread can carry a scene without a single scripted shock.</p>
+                <div class="ref-item reveal delay-3">
+                    <span class="index">04</span>
+                    <h3>Visage <a href="https://store.steampowered.com/app/594330/Visage/" target="_blank" rel="noopener" class="ref-link">Visit ↗</a></h3>
+                    <p>A haunted-house exploration game that favours atmosphere over jump scares, a reminder that dread can carry a scene without a single scripted shock.</p>
                 </div>
-                <div class="reveal">
-                    <div class="media-frame aspect-portrait" style="margin-bottom: 1.5rem;"><span class="media-placeholder-text">[ Ref: The Hungry Ghost Festival ]</span></div>
-                    <h3 style="font-size: 1.2rem; margin-bottom: 0.6rem;">The Hungry Ghost Festival</h3>
-                    <p class="text-body" style="font-size: 0.98rem;">Ghost Month in the Chinese lunar calendar, when ancestral spirits are said to roam freely, gave the game its calendar hook and its central curfew rule.</p>
+                <div class="ref-item reveal">
+                    <span class="index">05</span>
+                    <h3>The Hungry Ghost Festival</h3>
+                    <p>Ghost Month in the Chinese lunar calendar, when ancestral spirits are said to roam freely, gave the game its calendar hook and its central curfew rule.</p>
                 </div>
-                <div class="reveal delay-1">
-                    <div class="media-frame aspect-portrait" style="margin-bottom: 1.5rem;"><span class="media-placeholder-text">[ Ref: mirror &amp; painting legends ]</span></div>
-                    <h3 style="font-size: 1.2rem; margin-bottom: 0.6rem;">Mirror & Painting Folklore</h3>
-                    <p class="text-body" style="font-size: 0.98rem;">Urban legends about vengeful spirits summoned through mirrors, alongside stories of unsettling haunted paintings, shaped the mechanics behind our own Ghost in the Mirror and Ghost in the Painting.</p>
+                <div class="ref-item reveal delay-1">
+                    <span class="index">06</span>
+                    <h3>Mirror & Painting Folklore</h3>
+                    <p>Urban legends about vengeful spirits summoned through mirrors, alongside stories of unsettling haunted paintings, shaped the mechanics behind our own Ghost in the Mirror and Ghost in the Painting.</p>
                 </div>
             </div>
         </section>

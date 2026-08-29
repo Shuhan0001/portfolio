@@ -48,6 +48,122 @@
 
         ::-webkit-scrollbar { width: 0px; background: transparent; }
 
+        /* ============================================================
+           CINEMATIC MESH — Violet variant
+           Same motion system as Revive's amber mesh, retuned to this
+           page's violet primary (matching --accent-violet), with the
+           red/green pass-fail status colors already used elsewhere on
+           this page appearing as sparingly-used sparks.
+           ============================================================ */
+        .mesh-container {
+            position: fixed;
+            inset: 0;
+            z-index: -3;
+            overflow: hidden;
+            pointer-events: none;
+            background: #000;
+            contain: paint;
+        }
+
+        .mesh-blur {
+            position: absolute;
+            inset: -10%;
+            width: 120%;
+            height: 120%;
+            filter: blur(60px) saturate(130%);
+            transform: translateZ(0) translate3d(calc(var(--mx, 0) * 1px), calc(var(--my, 0) * 1px), 0);
+            will-change: transform;
+            opacity: 0.7;
+            transition: transform 1.4s cubic-bezier(0.25, 1, 0.3, 1);
+        }
+
+        .mesh-blob {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            border-radius: 50%;
+            mix-blend-mode: screen;
+            will-change: transform;
+        }
+
+        .mesh-blob-1 {
+            margin-top: -40vh;
+            margin-left: -35vw;
+            width: 70vw;
+            height: 50vh;
+            background: radial-gradient(ellipse at center,
+                rgba(139,92,246,.55) 0%,
+                rgba(139,92,246,.14) 38%,
+                transparent 68%);
+            animation: fusedWrithe1 15s infinite ease-in-out;
+        }
+
+        .mesh-blob-2 {
+            margin-top: -30vh;
+            margin-left: -20vw;
+            width: 50vw;
+            height: 70vh;
+            background: radial-gradient(ellipse at center,
+                rgba(251,107,107,.24) 0%,
+                rgba(251,107,107,.08) 42%,
+                transparent 70%);
+            animation: fusedWrithe2 18s infinite ease-in-out reverse;
+        }
+
+        .mesh-blob-3 {
+            margin-top: -10vh;
+            margin-left: -40vw;
+            width: 80vw;
+            height: 60vh;
+            background: radial-gradient(ellipse at center,
+                rgba(139,92,246,.28) 0%,
+                transparent 65%);
+            animation: fusedWrithe3 20s infinite ease-in-out;
+        }
+
+        .mesh-blob-4 {
+            margin-top: -20vh;
+            margin-left: -20vw;
+            width: 40vw;
+            height: 40vh;
+            background: radial-gradient(circle at center,
+                rgba(74,222,128,.20) 0%,
+                transparent 72%);
+            animation: fusedBreathe 11s infinite ease-in-out alternate;
+        }
+
+        @keyframes fusedWrithe1 {
+            0% { transform: translate3d(-14vw,-12vh,0) scale(.95) rotate(0deg); }
+            33% { transform: translate3d(26vw,18vh,0) scale(1.28) rotate(130deg); }
+            66% { transform: translate3d(-22vw,22vh,0) scale(.82) rotate(250deg); }
+            100% { transform: translate3d(-14vw,-12vh,0) scale(.95) rotate(360deg); }
+        }
+
+        @keyframes fusedWrithe2 {
+            0% { transform: translate3d(18vw,16vh,0) scale(1.1) rotate(0deg); }
+            33% { transform: translate3d(-26vw,-10vh,0) scale(.8) rotate(130deg); }
+            66% { transform: translate3d(12vw,-24vh,0) scale(1.3) rotate(250deg); }
+            100% { transform: translate3d(18vw,16vh,0) scale(1.1) rotate(360deg); }
+        }
+
+        @keyframes fusedWrithe3 {
+            0% { transform: translate3d(10vw,-24vh,0) scale(.85) rotate(0deg); }
+            50% { transform: translate3d(-20vw,10vh,0) scale(1.3) rotate(180deg); }
+            100% { transform: translate3d(10vw,-24vh,0) scale(.85) rotate(360deg); }
+        }
+
+        @keyframes fusedBreathe {
+            0% { transform: translate3d(0,0,0) scale(.68) rotate(0deg); opacity:.35; }
+            50% { transform: translate3d(18vw,-18vh,0) scale(1.55) rotate(120deg); opacity:1; }
+            100% { transform: translate3d(-12vw,18vh,0) scale(.82) rotate(220deg); opacity:.5; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .mesh-blob-1, .mesh-blob-2, .mesh-blob-3, .mesh-blob-4 {
+                animation: none;
+            }
+        }
+
 
         .noise-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
@@ -59,11 +175,35 @@
             position: fixed; width: 80vw; height: 80vh; border-radius: 50%;
             background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
             top: -20vh; left: -20vw; pointer-events: none; z-index: -1;
-            filter: blur(100px); opacity: 0.55;
+            filter: blur(60px); opacity: 0;
+            mix-blend-mode: screen;
+            animation: breatheViolet 9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            will-change: transform, opacity;
         }
         .ambient-light.right {
             top: 40vh; left: auto; right: -30vw;
-            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+            background: radial-gradient(circle at 60% 50%, rgba(251, 107, 107, 0.05) 0%, rgba(139, 92, 246, 0.02) 50%, transparent 80%);
+            animation: breatheEmber 12s cubic-bezier(0.4, 0, 0.2, 1) infinite -7s;
+        }
+
+        /* True breathing curves: Exhale (0), Inhale (45), Hold (55), Exhale (100) */
+        @keyframes breatheViolet {
+            0%, 100% { transform: scale(0.85) translate(0, 0); opacity: 0.2; }
+            45% { transform: scale(1.2) translate(6%, 8%); opacity: 0.75; }
+            55% { transform: scale(1.24) translate(7%, 9%); opacity: 0.8; }
+        }
+
+        @keyframes breatheEmber {
+            0%, 100% { transform: scale(0.9) translate(0, 0); opacity: 0.3; }
+            45% { transform: scale(1.28) translate(-8%, -4%); opacity: 0.85; }
+            55% { transform: scale(1.32) translate(-9%, -5%); opacity: 0.9; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .ambient-light, .ambient-light.right {
+                animation: none;
+                opacity: 0.55;
+            }
         }
 
         .container { max-width: 1440px; margin: 0 auto; padding: 0 6vw; }
@@ -147,6 +287,11 @@
             background: rgba(0, 0, 0, 0.55); border: 1px solid var(--border-subtle);
             backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); pointer-events: none;
         }
+
+        /* Static fallback for the live v3-bug iframe. Only ever shown in
+           print (see @media print below) — the live build stays the one
+           people actually interact with on screen. */
+        .print-screenshot { display: none; }
 
         .data-card {
             background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-subtle);
@@ -324,11 +469,456 @@
         /* Numbered findings                                           */
         /* ---------------------------------------------------------- */
         .finding-num { font-family: var(--font-mono); color: var(--accent-violet); font-size: 0.95rem; }
+
+        /* ============================================================
+           Print / PDF export — lets this page be turned into a portfolio
+           PDF straight from the browser's Print dialog (Cmd/Ctrl+P →
+           Save as PDF), without touching any live-site content, copy,
+           or interaction behaviour. Everything below only ever applies
+           when actually printing.
+
+           Mirrors the print system built for Revive_Profilo.html —
+           same page format, same scaling/pagination strategy — retuned
+           to this page's violet accent and its own components: the
+           research-question list, the v1–v6 version timeline, code
+           panels, the result table and the embedded live-build iframe.
+           ============================================================ */
+        @media print {
+
+            @page {
+                size: 13.33in 7.5in;
+                margin: 10mm 14mm;
+            }
+
+            /* Nearly every font-size, margin and gap on this page is set
+               in rem, sized for a tall scrolling column. Scaling the root
+               down shrinks all of them together, proportionally, which is
+               what actually lets the denser sections (version timeline,
+               code panels, result table) fit on one short landscape page
+               instead of spilling a lone row onto a near-empty next page. */
+            html {
+                font-size: 80% !important;
+            }
+
+            /* Force backgrounds/gradients to actually print instead of
+               being silently dropped to save ink — this design depends
+               entirely on the black background and violet accents. */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+
+            /* backdrop-filter (the frosted-glass look on media frames and
+               the back-home pill) isn't reliably supported by every print
+               pipeline — Windows' own "Microsoft Print to PDF" driver in
+               particular can render a blurred glass panel as a solid
+               opaque block instead of translucent blur. Disabling it for
+               print keeps every engine showing the same plain dark panel
+               rather than some engines showing a wrong solid fill. */
+            * {
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+            }
+
+            html, body {
+                background: var(--bg-void) !important;
+                overflow: visible !important;
+                cursor: auto !important;
+            }
+
+            /* Chrome that only makes sense on a live, moving, hover-driven
+               page — ambient glow, film grain, the scroll-progress rail
+               and the "back home" pill. None of it belongs on a printed
+               page, and fixed-position elements don't paginate reliably
+               anyway, so they're removed rather than left to render
+               however a given browser's print engine feels like. */
+            .noise-overlay,
+            .ambient-light,
+            .scroll-track,
+            .back-home-btn,
+            .site-header {
+                display: none !important;
+            }
+
+            /* .text-outline draws its hollow title look with a transparent
+               fill, a stroke-only outline and a hover/breathing glow
+               animation. Not every print/PDF engine reproduces
+               text-stroke, which can silently turn a heading into blank
+               space — so print gets solid, always-legible text instead. */
+            .text-outline {
+                color: var(--accent-violet) !important;
+                -webkit-text-stroke: 0 !important;
+                text-stroke: 0 !important;
+                text-shadow: none !important;
+                animation: none !important;
+            }
+            .hero-title .text-outline {
+                animation: none !important;
+            }
+
+            /* Scroll-triggered reveal animations never get a chance to
+               fire during print rendering — there's no real scrolling —
+               so content left at its initial opacity: 0 would otherwise
+               print as empty space. Force the "arrived" state directly. */
+            .reveal {
+                opacity: 1 !important;
+                transform: none !important;
+                filter: none !important;
+                transition: none !important;
+            }
+
+            /* Sticky positioning has no meaning on a paginated printout,
+               so it's turned off. The two-column split itself is kept —
+               and tightened up — because stacking heading/text/table into
+               a single column on a short landscape page is what would
+               push each section past one page. Side-by-side columns keep
+               every section's total height low enough to land on one page. */
+            .grid-split {
+                grid-template-columns: 0.85fr 1.3fr !important;
+                gap: 3rem !important;
+                align-items: start !important;
+            }
+            .sticky-col {
+                position: static !important;
+                top: auto !important;
+            }
+
+            /* Text columns are narrow because they're designed for a
+               vertical scroll layout; on a wide landscape page that
+               leaves a lot of unused width. Give print more breathing
+               room without stretching lines past a comfortable length. */
+            .text-body { max-width: 780px !important; }
+            .text-lead { max-width: 900px !important; }
+
+            /* min-height: 100vh plus flex-centering is meant for a tall
+               scrolling viewport; on a short landscape page it reserves
+               more vertical space than the page has. Let it size to its
+               actual content instead. */
+            .hero {
+                min-height: auto !important;
+                display: block !important;
+                padding-top: 4vh !important;
+                padding-bottom: 2vh !important;
+            }
+
+            /* 15vh of top/bottom breathing room per section is generous
+               on a scrolling screen; on a landscape page that's short on
+               vertical space it's trimmed down further still. Each
+               section still opens on its own page, and smaller
+               self-contained pieces — a figure, a code panel, a version
+               row, a research question — are kept from being sliced
+               across a page break. */
+            .section {
+                padding: 4vh 0 !important;
+                page-break-before: always;
+                break-before: page;
+            }
+
+            figure,
+            .code-panel,
+            .version-row,
+            .rq-item,
+            .quote-block {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            /* Figures and inline blocks carry large margins meant for a
+               tall scrolling column (3rem above/below, 1.5rem above a
+               caption). Tightening them reclaims enough vertical space
+               for each section to land on a single printed page. */
+            [style*="margin: 3rem 0"] {
+                margin: 1rem 0 !important;
+            }
+            [style*="margin-top: 3rem"] {
+                margin-top: 1rem !important;
+            }
+            [style*="margin-top: 1.5rem"] {
+                margin-top: 0.75rem !important;
+            }
+
+            /* The three centred section leads ("Six Builds", "Extended
+               Map Experiment", "Findings") carry large bottom margins
+               meant to separate a hero-style intro from a tall scrolling
+               column below it. On a short page that alone eats a chunk
+               of the page before any real content starts. */
+            [style*="margin: 0 auto 2rem"],
+            [style*="margin: 0 auto 3rem"],
+            [style*="margin: 0 auto 5rem"] {
+                margin: 0 auto 1rem !important;
+            }
+
+            /* The four numbered findings are spaced 8vh apart on screen
+               so each reads as its own beat while scrolling. On a
+               landscape page that's roughly a quarter of the available
+               height spent on gaps alone — enough on its own to push
+               finding 04 onto a near-empty second page. */
+            [style*="margin-top: 8vh"] {
+                margin-top: 1.5rem !important;
+            }
+
+            /* ---------------------------------------------------------- */
+            /* Research questions                                          */
+            /* ---------------------------------------------------------- */
+            .rq-list {
+                margin-top: 1rem !important;
+            }
+            .rq-item {
+                padding: 0.85rem 0 !important;
+                gap: 1rem !important;
+            }
+
+            /* ---------------------------------------------------------- */
+            /* Version timeline (v1–v6) — six rows at full screen padding
+               (2rem top/bottom plus a 1.75rem heading-to-body gap each)
+               run well past a single landscape page on their own.
+               Padding, gaps and type are tightened together so the whole
+               build history still reads as one continuous list on one
+               page instead of spilling v5 and v6 onto a second. */
+            /* ---------------------------------------------------------- */
+            .version-timeline {
+                margin-top: 1.25rem !important;
+            }
+            .version-row {
+                grid-template-columns: 78px 1fr !important;
+                gap: 1rem !important;
+                padding: 0.6rem 0 !important;
+            }
+            .version-tag {
+                font-size: 1.1rem !important;
+            }
+            .version-time {
+                margin-top: 0.2rem !important;
+            }
+            .version-body h4 {
+                font-size: 0.95rem !important;
+                margin-bottom: 0.25rem !important;
+            }
+            .version-body p {
+                font-size: 0.8rem !important;
+            }
+            .version-status {
+                margin-top: 0.35rem !important;
+                font-size: 0.78rem !important;
+            }
+
+            /* v6 used to sit as a sixth row at the bottom of the
+               version-timeline. It's the row that pushed the timeline
+               past one page, leaving v6 stranded alone on an almost
+               empty page below it. It now has its own deliberate page
+               (.v6-section, right after this one) sized and framed like
+               the rest of the deck, so the print row is hidden here to
+               avoid saying the same thing twice back to back. */
+            .print-hide-row {
+                display: none !important;
+            }
+            /* v6's row carried the timeline's closing bottom border as
+               the DOM's actual last row. With it hidden in print, give
+               that closing rule to v5 instead, so the timeline still
+               ends on a border rather than trailing off. */
+            .version-row:has(+ .print-hide-row) {
+                border-bottom: 1px solid var(--border-subtle) !important;
+            }
+
+            /* v6's dedicated page: same grid-split pattern as the
+               01–04 finding pages, so it reads as an intentional part
+               of the sequence rather than an overflow page. */
+            .v6-section .version-time {
+                font-family: var(--font-mono);
+                font-size: 0.75rem !important;
+                color: var(--text-tertiary);
+                letter-spacing: 0.02em;
+            }
+
+            /* ---------------------------------------------------------- */
+            /* Findings — four full-width blocks stacked 8vh apart is a
+               scroll-page pattern; on a short landscape page it's what
+               pushed the closing quote and finding 04 onto their own
+               near-empty second page. Laid out as a 2x2 grid instead,
+               all four sit on one page at a glance, closer to how a
+               findings summary reads in a printed report anyway. */
+            /* ---------------------------------------------------------- */
+            .findings-grid {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                column-gap: 3.5rem !important;
+                row-gap: 1.5rem !important;
+                margin-top: 1rem !important;
+            }
+            .findings-grid > .grid-split {
+                grid-template-columns: 1fr !important;
+                gap: 0.4rem !important;
+                margin-top: 0 !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            .findings-grid .sticky-col {
+                position: static !important;
+            }
+            .findings-grid h3 {
+                font-size: 1.1rem !important;
+                margin-top: 0.3rem !important;
+            }
+            .findings-grid .text-body {
+                font-size: 0.82rem !important;
+                max-width: none !important;
+                margin-bottom: 0 !important;
+            }
+            .findings-grid .quote-block {
+                margin: 0.6rem 0 0 !important;
+                padding-left: 1rem !important;
+            }
+            .findings-grid .quote-block p {
+                font-size: 0.8rem !important;
+            }
+            .findings-grid .quote-block span {
+                margin-top: 0.3rem !important;
+                font-size: 0.66rem !important;
+            }
+
+            /* ---------------------------------------------------------- */
+            /* Code / prompt panels — pre relies on horizontal scroll on
+               screen for long lines; there's no scrollbar on a printed
+               page, so lines wrap instead of clipping. Padding and type
+               are tightened so a whole prompt still fits inside its
+               section's single page alongside the surrounding copy. */
+            /* ---------------------------------------------------------- */
+            .code-panel {
+                margin-bottom: 0.75rem !important;
+            }
+            .code-panel-head {
+                padding: 0.5rem 0.85rem !important;
+            }
+            .code-panel pre {
+                padding: 0.85rem !important;
+                overflow-x: visible !important;
+                white-space: pre-wrap !important;
+                word-break: break-word !important;
+                font-size: 0.68rem !important;
+                line-height: 1.4 !important;
+            }
+            .code-note {
+                margin-bottom: 1rem !important;
+            }
+
+            /* ---------------------------------------------------------- */
+            /* Result table — roomy row padding was tuned for a screen
+               with nothing else competing for vertical space on the page. */
+            /* ---------------------------------------------------------- */
+            .result-table {
+                margin-top: 1rem !important;
+            }
+            .result-table th,
+            .result-table td {
+                padding: 0.5rem 0.65rem !important;
+            }
+
+            /* ---------------------------------------------------------- */
+            /* Quote block */
+            /* ---------------------------------------------------------- */
+            .quote-block {
+                margin: 1rem 0 !important;
+            }
+            .quote-block p {
+                font-size: 1rem !important;
+            }
+
+            /* The only media-frame on this page embeds the actual v3
+               build as a playable iframe — a live document with its own
+               script and DOM. None of that runs for a static printout,
+               so it would otherwise print as a blank rectangle. A
+               screenshot of the same bug state is baked into the markup
+               as .print-screenshot (hidden on screen) and swapped in
+               here instead, so the printed page shows the actual stuck-
+               in-a-wall moment rather than a text placeholder. */
+            .media-frame {
+                aspect-ratio: auto !important;
+                display: block !important;
+                padding: 0.75rem !important;
+                text-align: center;
+            }
+            .media-frame iframe,
+            .media-frame .live-tag {
+                display: none !important;
+            }
+            .media-frame .print-screenshot {
+                display: inline-block !important;
+                max-width: 100% !important;
+                max-height: 34vh !important;
+                width: auto !important;
+                height: auto !important;
+                border-radius: calc(var(--radius-md) - 6px);
+            }
+
+            /* Keep a heading glued to at least the start of what follows
+               it, so h2/h3 titles never get stranded alone at the very
+               bottom of a page with their content pushed to the next. */
+            h2, h3 {
+                page-break-after: avoid;
+                break-after: avoid;
+            }
+
+            /* "Open the live build" / "View on GitHub" are dead ends on
+               paper — nothing to click. The live glowing violet pill is a
+               screen affordance for a clickable target; kept as-is it
+               just reads as a stray highlighter block on a printed page.
+               Strip it down to the same quiet label/value pattern already
+               used by .meta-item elsewhere on this page (small caption
+               over a value, hung off a thin rule) so the two links read
+               as part of the document's own typography instead of
+               leftover UI. */
+            .gameplay-btn,
+            .gameplay-btn-secondary {
+                display: inline-flex !important;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 0.35em !important;
+                width: auto !important;
+                background: none !important;
+                border: none !important;
+                border-left: 1px solid var(--border-subtle) !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                padding: 0.1rem 0 0.1rem 0.85rem !important;
+                color: var(--text-tertiary) !important;
+                font-size: 0.7rem !important;
+                font-weight: 600 !important;
+                letter-spacing: 0.06em !important;
+                text-transform: uppercase !important;
+            }
+
+            .gameplay-btn svg,
+            .gameplay-btn-secondary svg {
+                display: none !important;
+            }
+
+            .gameplay-btn::after,
+            .gameplay-btn-secondary::after {
+                content: attr(href);
+                display: block;
+                font-size: 0.62rem;
+                font-weight: 400;
+                letter-spacing: 0;
+                text-transform: none;
+                text-decoration: none;
+                color: var(--text-secondary) !important;
+                word-break: break-all;
+            }
+        }
     </style>
 </head>
 <body>
 
     <div id="page-exit" style="position:fixed; inset:0; z-index:10001; background:#000000; pointer-events:none; opacity:0; transition: opacity 0.7s cubic-bezier(0.25,1,0.3,1);"></div>
+    <div aria-hidden="true" class="mesh-container">
+        <div class="mesh-blur">
+            <div class="mesh-blob mesh-blob-1"></div>
+            <div class="mesh-blob mesh-blob-2"></div>
+            <div class="mesh-blob mesh-blob-3"></div>
+            <div class="mesh-blob mesh-blob-4"></div>
+        </div>
+    </div>
     <div class="noise-overlay"></div>
     <div class="ambient-light"></div>
     <div class="ambient-light right"></div>
@@ -455,7 +1045,7 @@
                                 <div class="version-status">No repair needed</div>
                             </div>
                         </div>
-                        <div class="version-row muted reveal delay-2">
+                        <div class="version-row muted reveal delay-2 print-hide-row">
                             <div><div class="version-tag">v6</div><div class="version-time">scaffold</div></div>
                             <div class="version-body">
                                 <h4>Scene manager + music</h4>
@@ -463,6 +1053,19 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section container v6-section" style="border-top: 1px solid var(--border-subtle);">
+            <div class="grid-split">
+                <div class="sticky-col reveal">
+                    <span class="finding-num">v6</span>
+                    <h3 style="font-size: 1.8rem; margin-top: 0.6rem;">Scene manager <span class="text-outline">&amp; music</span></h3>
+                    <p class="version-time" style="margin-top: 1rem;">scaffold · outside the analysis</p>
+                </div>
+                <div>
+                    <p class="text-body reveal">An audio module and title/game scene system, added as a working demo rather than an object of study. It extends the v1–v5 mainline but sits outside the scope of the analysis — evidence of how far a non-technical collaborator could get with AI assistance, not a claim about reliability. It's playable from the live build link on the opening page.</p>
                 </div>
             </div>
         </section>
@@ -479,6 +1082,7 @@
                         <div class="media-frame aspect-video" style="cursor: default;">
                             <iframe src="player_v3_bug_spawnInWall.html" title="v3 build: player spawns inside a wall" loading="lazy" style="width:100%; height:100%; border:0; display:block; background:#202020;"></iframe>
                             <span class="live-tag">Live build, try to move</span>
+                            <img class="print-screenshot" src="data:image/png;base64,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" alt="Screenshot of the v3 build: the player spawns overlapping a wall tile and cannot move." />
                         </div>
                         <figcaption class="caption">Fig. The actual v3 build, embedded and playable. WASD or arrow keys to move: the player starts already inside a wall tile. Fixed by hand in v3_fix before the v4 branch continued.</figcaption>
                     </figure>
@@ -552,47 +1156,49 @@ and allow movement.</span></code></pre>
             <h2 class="reveal" style="text-align: center; margin-bottom: 1rem;">Findings</h2>
             <p class="text-lead reveal" style="text-align: center; margin: 0 auto 5rem; max-width: 760px;">The project treats AI-generated game code as a form of procedural content generation, and reads its failures through the existing literature on code hallucination. Agarwal (2024) describes "code hallucination" as the model generating non-existent functions or silently altering input structures, a risk that grows in iterative, multi-module development. Huang et al. (2023) find the model turns to this kind of plausible-looking output specifically when it faces missing information or an unsolvable task, rather than reporting that no solution exists. Farquhar et al. (2024) trace this to weak uncertainty estimation: the model keeps producing confident answers even when it can't tell whether the task is actually solvable.</p>
 
-            <div class="grid-split">
-                <div class="sticky-col reveal">
-                    <span class="finding-num">01</span>
-                    <h3 style="font-size: 1.6rem; margin-top: 0.6rem;">Iteration speeds up implementation</h3>
-                </div>
-                <div>
-                    <p class="text-body reveal">When the requirements were clearly defined, AI code accelerated feature implementation noticeably, especially for system expansion and code organisation. Against the v1 baseline, the AI-generated versions showed clearer function division, better naming, and more complete comments, all of which lowered maintenance cost as complexity increased across v2 to v5.</p>
-                </div>
-            </div>
-
-            <div class="grid-split" style="margin-top: 8vh;">
-                <div class="sticky-col reveal">
-                    <span class="finding-num">02</span>
-                    <h3 style="font-size: 1.6rem; margin-top: 0.6rem;">Spatial recognition was never the problem</h3>
-                </div>
-                <div>
-                    <p class="text-body reveal">The extended experiment confirms the AI can reliably tell walls from walkable floor on simple maps. That means the v3 spawn bug wasn't a failure to understand the map. It was more likely the reuse of earlier spawn logic during iteration, without re-checking it against the feasibility of the new one.</p>
-                </div>
-            </div>
-
-            <div class="grid-split" style="margin-top: 8vh;">
-                <div class="sticky-col reveal">
-                    <span class="finding-num">03</span>
-                    <h3 style="font-size: 1.6rem; margin-top: 0.6rem;">Executability wins over constraint</h3>
-                </div>
-                <div>
-                    <p class="text-body reveal">Given a genuinely unsolvable input, the model's default was to alter the original data until it had something runnable to return, not to say no solution existed.</p>
-                    <div class="quote-block reveal delay-1">
-                        <p>This behaviour can be characterised as executability-oriented generation, where the model prioritises producing runnable outputs even at the cost of violating input constraints.</p>
-                        <span>Analysis, section 5.3</span>
+            <div class="findings-grid">
+                <div class="grid-split">
+                    <div class="sticky-col reveal">
+                        <span class="finding-num">01</span>
+                        <h3 style="font-size: 1.6rem; margin-top: 0.6rem;">Iteration speeds up implementation</h3>
+                    </div>
+                    <div>
+                        <p class="text-body reveal">When the requirements were clearly defined, AI code accelerated feature implementation noticeably, especially for system expansion and code organisation. Against the v1 baseline, the AI-generated versions showed clearer function division, better naming, and more complete comments, all of which lowered maintenance cost as complexity increased across v2 to v5.</p>
                     </div>
                 </div>
-            </div>
 
-            <div class="grid-split" style="margin-top: 8vh;">
-                <div class="sticky-col reveal">
-                    <span class="finding-num">04</span>
-                    <h3 style="font-size: 1.6rem; margin-top: 0.6rem;">Constraint awareness has to be stated</h3>
+                <div class="grid-split" style="margin-top: 8vh;">
+                    <div class="sticky-col reveal">
+                        <span class="finding-num">02</span>
+                        <h3 style="font-size: 1.6rem; margin-top: 0.6rem;">Spatial recognition was never the problem</h3>
+                    </div>
+                    <div>
+                        <p class="text-body reveal">The extended experiment confirms the AI can reliably tell walls from walkable floor on simple maps. That means the v3 spawn bug wasn't a failure to understand the map. It was more likely the reuse of earlier spawn logic during iteration, without re-checking it against the feasibility of the new one.</p>
+                    </div>
                 </div>
-                <div>
-                    <p class="text-body reveal">The model showed no strong built-in awareness of an "input cannot be modified" restriction unless the prompt said so explicitly. In practice, that means AI-generated code in high-reliability logic still needs human review and a verification step. The constraint has to be written down, not assumed.</p>
+
+                <div class="grid-split" style="margin-top: 8vh;">
+                    <div class="sticky-col reveal">
+                        <span class="finding-num">03</span>
+                        <h3 style="font-size: 1.6rem; margin-top: 0.6rem;">Executability wins over constraint</h3>
+                    </div>
+                    <div>
+                        <p class="text-body reveal">Given a genuinely unsolvable input, the model's default was to alter the original data until it had something runnable to return, not to say no solution existed.</p>
+                        <div class="quote-block reveal delay-1">
+                            <p>This behaviour can be characterised as executability-oriented generation, where the model prioritises producing runnable outputs even at the cost of violating input constraints.</p>
+                            <span>Analysis, section 5.3</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-split" style="margin-top: 8vh;">
+                    <div class="sticky-col reveal">
+                        <span class="finding-num">04</span>
+                        <h3 style="font-size: 1.6rem; margin-top: 0.6rem;">Constraint awareness has to be stated</h3>
+                    </div>
+                    <div>
+                        <p class="text-body reveal">The model showed no strong built-in awareness of an "input cannot be modified" restriction unless the prompt said so explicitly. In practice, that means AI-generated code in high-reliability logic still needs human review and a verification step. The constraint has to be written down, not assumed.</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -629,6 +1235,73 @@ and allow movement.</span></code></pre>
         <span class="caption">University of York, AI and its Application in Creative Practice (TFT00112M-A)</span>
         <span class="caption" style="margin-top: 0.75rem; opacity: 0.7;">AI disclosure: Gemini 3 Pro Thinking (thinking mode enabled) generated versions v2–v6 and the extended-experiment responses from author-written prompts, tested in Microsoft Edge. All outputs were screen-recorded, logged and reviewed by the author; full prompt and bug logs are in Appendices A–C of the written report.</span>
     </footer>
+
+    <script>
+        // Mouse-driven parallax for the cinematic mesh background —
+        // the rAF loop only runs while it's converging toward a new
+        // target or while the tab is visible, not forever at 60fps.
+        (function () {
+            const blur = document.querySelector('.mesh-blur');
+            if (!blur || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+            let targetX = 0, targetY = 0, curX = 0, curY = 0;
+            const strength = 55; // px of max drift
+            const SETTLE_EPSILON = 0.05;
+            let rafId = null;
+
+            function tick() {
+                curX += (targetX - curX) * 0.06;
+                curY += (targetY - curY) * 0.06;
+                blur.style.setProperty('--mx', curX.toFixed(2));
+                blur.style.setProperty('--my', curY.toFixed(2));
+
+                const stillMoving =
+                    Math.abs(targetX - curX) > SETTLE_EPSILON ||
+                    Math.abs(targetY - curY) > SETTLE_EPSILON;
+
+                if (stillMoving && document.visibilityState === 'visible') {
+                    rafId = requestAnimationFrame(tick);
+                } else {
+                    rafId = null;
+                }
+            }
+
+            function ensureLoopRunning() {
+                if (rafId === null && document.visibilityState === 'visible') {
+                    rafId = requestAnimationFrame(tick);
+                }
+            }
+
+            window.addEventListener('mousemove', (e) => {
+                const nx = (e.clientX / window.innerWidth) - 0.5;
+                const ny = (e.clientY / window.innerHeight) - 0.5;
+                targetX = nx * strength * 2;
+                targetY = ny * strength * 2;
+                ensureLoopRunning();
+            }, { passive: true });
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') {
+                    ensureLoopRunning();
+                } else if (rafId !== null) {
+                    cancelAnimationFrame(rafId);
+                    rafId = null;
+                }
+            });
+        })();
+
+        // Pause the always-on CSS background animations while the tab
+        // is hidden, so a backgrounded tab isn't compositing/blurring
+        // every frame for nothing.
+        (function () {
+            const bgAnimated = document.querySelectorAll('.mesh-blob, .ambient-light');
+            if (!bgAnimated.length) return;
+            document.addEventListener('visibilitychange', () => {
+                const state = document.visibilityState === 'visible' ? 'running' : 'paused';
+                bgAnimated.forEach((el) => { el.style.animationPlayState = state; });
+            });
+        })();
+    </script>
 
     <script>
         (function() {

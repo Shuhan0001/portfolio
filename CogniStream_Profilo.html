@@ -687,6 +687,77 @@
             .text-body { max-width: 780px !important; }
             .text-lead { max-width: 900px !important; }
 
+            /* Unlike Revive_Profilo, this file's screen layout leans on
+               vh units for nearly all vertical rhythm (section padding,
+               hero height, footer spacing), sized for a tall scrolling
+               viewport. On a fixed 7.5in-tall print page those same vh
+               values eat a huge, constant share of every page purely as
+               whitespace ?15vh top+bottom padding per section alone is
+               30% of the page height, repeated for every section on the
+               page. None of it was overridden for print, so it's tamed
+               here the same way Revive's was. */
+            .section {
+                padding: 4vh 0 !important;
+            }
+            .hero {
+                /* Unlike Revive, .site-header (the logo) stays visible
+                   and absolutely positioned in print here rather than
+                   being hidden ?so the hero can't be compressed all the
+                   way up, or its title collides with the logo sitting at
+                   top: 2rem. A fixed rem-based clearance keeps them apart
+                   regardless of page height, instead of the vh value
+                   this rule used to inherit from the screen layout. */
+                min-height: auto !important;
+                display: block !important;
+                padding-top: 7rem !important;
+                padding-bottom: 2vh !important;
+            }
+            .hero-meta {
+                margin-top: 3vh !important;
+            }
+            .site-footer {
+                padding: 3vh 0 !important;
+                margin-top: 3vh !important;
+            }
+            /* The three "From the Source" code-panel subsections each
+               add an extra 8vh gap above themselves on top of their
+               parent section's own padding ?tightened for the same
+               reason as above. */
+            [style*="margin-top: 8vh"] {
+                margin-top: 1.5vh !important;
+            }
+
+            /* Section intro lead paragraphs ("Problem Space", "Design
+               Background", "From the Source") each carry a 5rem bottom
+               margin sized for scroll breathing room. Also untouched by
+               print, and enough on its own to push the first code panel
+               below it onto a near-empty next page. */
+            [style*="margin: 0 auto 5rem"] {
+                margin: 0 auto 2rem !important;
+            }
+
+            /* Each numbered "From the Source" subsection (heading + note
+               + code screenshot) was consistently taller than whatever
+               page space was left under it, so its .code-panel (kept
+               whole by the page-break-inside: avoid two rules below)
+               kept spilling onto the next page and leaving the back half
+               of the current one blank ?five times over, across the
+               whole section. Trimming the note's own bottom margin and
+               the panel's internal padding/line-height/font-size brings
+               each subsection's total height down enough that most now
+               fit with their heading on the same page. */
+            .code-note {
+                margin: 0 0 1.25rem !important;
+            }
+            .code-panel-head {
+                padding: 0.6rem 1rem !important;
+            }
+            .code-panel pre {
+                padding: 1rem !important;
+                font-size: 0.72rem !important;
+                line-height: 1.45 !important;
+            }
+
             .code-panel pre {
                 white-space: pre-wrap !important;
                 word-break: break-word !important;
@@ -701,6 +772,48 @@
             h2, h3, h4, .data-label {
                 page-break-after: avoid !important;
                 break-after: avoid !important;
+            }
+
+            /* The two hero buttons (glowing cyan pill + outlined pill)
+               are screen affordances for a click target that doesn't
+               exist on paper ?on a printed page they just read as
+               stray colour blocks. Same fix as Revive_Profilo: strip
+               them down to a small label with the actual URL printed
+               underneath, so they read as part of the document's own
+               typography instead of leftover UI. */
+            .prototype-btn {
+                display: inline-flex !important;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 0.35em !important;
+                width: auto !important;
+                background: none !important;
+                border: none !important;
+                border-left: 1px solid var(--border-subtle) !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                padding: 0.1rem 0 0.1rem 0.85rem !important;
+                color: var(--text-tertiary) !important;
+                font-size: 0.7rem !important;
+                font-weight: 600 !important;
+                letter-spacing: 0.06em !important;
+                text-transform: uppercase !important;
+            }
+
+            .prototype-btn svg {
+                display: none !important;
+            }
+
+            .prototype-btn::after {
+                content: attr(href);
+                display: block;
+                font-size: 0.62rem;
+                font-weight: 400;
+                letter-spacing: 0;
+                text-transform: none;
+                text-decoration: none;
+                color: var(--text-secondary) !important;
+                word-break: break-all;
             }
         }
     </style>

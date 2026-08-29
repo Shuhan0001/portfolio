@@ -564,6 +564,353 @@
         .limit-list li::before { content: "•"; position: absolute; left: 0; color: var(--accent-red); }
         .future-list li::before { content: "•"; position: absolute; left: 0; color: var(--accent-moss); }
         .limit-list strong, .future-list strong { color: var(--text-primary); }
+
+        /* ============================================================
+           Print / PDF export — lets this page be turned into a portfolio
+           PDF straight from the browser's Print dialog (Cmd/Ctrl+P →
+           Save as PDF), without touching any live-site content, copy,
+           or interaction behaviour. Everything below only ever applies
+           when actually printing.
+
+           Same page format and pagination strategy as the other two
+           project profiles (AICodeGen, Revive), and the same underlying
+           rule this page's own components need most: an atomic block
+           (a code panel, the quest log, the arch diagram, a screenshot
+           row) is protected with page-break-inside: avoid, but so is
+           the caption or note that follows it — sibling elements aren't
+           covered by that rule automatically, and a caption stranded
+           alone on the next page is what used to print as a near-blank
+           page holding one stray line of grey text. Every .caption and
+           .code-note on this page is a sibling, not a child, of the
+           block it describes (there's no <figure> wrapper here), so
+           that glue rule matters more on this page than on the others.
+           ============================================================ */
+        @media print {
+
+            @page {
+                size: 13.33in 9.2in;
+                margin: 9mm 14mm;
+            }
+
+            /* Nearly every font-size, margin and gap on this page is set
+               in rem, sized for a tall scrolling column. Scaling the root
+               down shrinks all of them together, proportionally, which is
+               what lets denser sections (code panels, the quest log, the
+               permissions table) read comfortably on a landscape page
+               instead of needing to be crammed to fit. */
+            html {
+                font-size: 84% !important;
+            }
+
+            /* Stops a paragraph or list item from leaving just its first
+               or last line stranded alone on one side of a page break. */
+            p, li {
+                orphans: 3;
+                widows: 3;
+            }
+
+            /* Force backgrounds/gradients to actually print instead of
+               being silently dropped to save ink — this design depends
+               entirely on the black background and moss/gold accents. */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+
+            /* backdrop-filter (the frosted-glass look on media frames and
+               the back-home pill) isn't reliably supported by every print
+               pipeline — Windows' own "Microsoft Print to PDF" driver in
+               particular can render a blurred glass panel as a solid
+               opaque block instead of translucent blur. Disabling it for
+               print keeps every engine showing the same plain dark panel
+               rather than some engines showing a wrong solid fill. */
+            * {
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+            }
+
+            html, body {
+                background: var(--bg-void) !important;
+                overflow: visible !important;
+                cursor: auto !important;
+            }
+
+            /* Chrome that only makes sense on a live, moving, hover-driven
+               page — ambient glow, film grain, the scroll-progress rail
+               and the "back home" pill. None of it belongs on a printed
+               page, and fixed-position elements don't paginate reliably
+               anyway, so they're removed rather than left to render
+               however a given browser's print engine feels like. */
+            .noise-overlay,
+            .ambient-light,
+            .scroll-track,
+            .back-home-btn,
+            .site-header {
+                display: none !important;
+            }
+
+            /* .text-outline draws its hollow title look with a transparent
+               fill, a stroke-only outline and a hover/breathing glow
+               animation. Not every print/PDF engine reproduces
+               text-stroke, which can silently turn a heading into blank
+               space — so print gets solid, always-legible text instead. */
+            .text-outline {
+                color: var(--accent-moss) !important;
+                -webkit-text-stroke: 0 !important;
+                text-stroke: 0 !important;
+                text-shadow: none !important;
+                animation: none !important;
+            }
+
+            /* Scroll-triggered reveal animations never get a chance to
+               fire during print rendering — there's no real scrolling —
+               so content left at its initial opacity: 0 would otherwise
+               print as empty space. Force the "arrived" state directly. */
+            .reveal {
+                opacity: 1 !important;
+                transform: none !important;
+                filter: none !important;
+                transition: none !important;
+            }
+
+            /* The quest log, architecture diagram and Idle/Thinking/Reply
+               track each carry a moving light streak (*-track-glow) meant
+               to read as "live" on a scrolling, hover-driven page. Frozen
+               at print time it's just a bright dash sitting at whatever
+               random position it happened to be at, so it's dropped
+               entirely — the static rail underneath it is left in place.
+               The Idle/Thinking/Reply labels are also scaled up or down
+               by JS depending on where that glow currently sits; printing
+               one label larger than its neighbours for no visible reason
+               reads as a mistake, so that scaling is reset too. */
+            .quest-track-glow,
+            .arch-track-glow,
+            .state-track-glow {
+                display: none !important;
+            }
+            .state-name {
+                transform: none !important;
+            }
+
+            /* Sticky positioning has no meaning on a paginated printout,
+               so it's turned off. The two-column split itself is kept —
+               and tightened up — because stacking heading/text into a
+               single column on a wide landscape page wastes the width. */
+            .grid-split {
+                grid-template-columns: 0.85fr 1.3fr !important;
+                gap: 3rem !important;
+                align-items: start !important;
+            }
+            .sticky-col {
+                position: static !important;
+                top: auto !important;
+            }
+
+            /* Text columns are narrow because they're designed for a
+               vertical scroll layout; on a wide landscape page that
+               leaves a lot of unused width. Give print more breathing
+               room without stretching lines past a comfortable length. */
+            .text-body { max-width: 780px !important; }
+            .text-lead { max-width: 900px !important; }
+
+            /* min-height: 100vh plus flex-centering is meant for a tall
+               scrolling viewport; on a landscape page it reserves more
+               vertical space than it needs. Let it size to its content. */
+            .hero {
+                min-height: auto !important;
+                display: block !important;
+                padding-top: 4vh !important;
+                padding-bottom: 2vh !important;
+            }
+
+            /* Each section opens on its own page for a clean, deliberate
+               read — this is the actual design intent (see the comment
+               at the top of this print block) and is kept as-is. Long
+               sections are still allowed to spill onto a continuation
+               page; that's normal.
+
+               The real, narrower bug: a short label like "Two
+               evidence-based interventions" or "Why Room + Flow" sits as
+               a plain <p class="data-label"> sibling directly above the
+               block it introduces, with no wrapper tying them together.
+               page-break-after: avoid on the label stops it from ever
+               being left alone at the bottom of a page while the thing
+               it labels starts fresh on the next one. */
+            .section {
+                padding: 4vh 0 !important;
+                page-break-before: always;
+                break-before: page;
+            }
+            .data-label {
+                page-break-after: avoid;
+                break-after: avoid;
+            }
+
+            /* Atomic pieces — sliced across a page break they'd either
+               be unreadable (a code panel cut mid-line) or look like an
+               error (half a reference card). Keep each as one unit. */
+            .quest-row,
+            .code-panel,
+            .arch-diagram,
+            .quote-block,
+            .ref-card,
+            .perm-table {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            /* The actual fix for the near-blank stray-caption page: every
+               .caption and .code-note on this page is a sibling of the
+               block it describes, not a child, so protecting that block
+               with break-inside: avoid (above) does nothing for the
+               caption sitting right after it — it can still be the one
+               piece that gets pushed alone onto a fresh page while the
+               block itself stays behind on the fuller one. Telling the
+               caption/note itself to avoid a break immediately before it
+               keeps the pair together: either both fit on the current
+               page, or — worst case — both move to the next one together,
+               which just reads as a normal page break, not a bug. */
+            .shots-dots + .caption,
+            .quest-log + .caption,
+            .arch-diagram + .caption,
+            .media-frame + .caption,
+            .perm-table + p {
+                page-break-before: avoid;
+                break-before: avoid;
+            }
+            .code-note {
+                page-break-before: avoid;
+                page-break-after: avoid;
+                break-before: avoid;
+                break-after: avoid;
+            }
+
+            /* Keep a heading glued to at least the start of what follows
+               it, so h2/h3 titles never get stranded alone at the very
+               bottom of a page with their content pushed to the next. */
+            h2, h3 {
+                page-break-after: avoid;
+                break-after: avoid;
+            }
+
+            /* ---------------------------------------------------------- */
+            /* Screenshot carousel — on screen this shows two slides at a
+               time and slides the rest off-canvas behind overflow:hidden,
+               navigated with prev/next. None of that is available on a
+               static printout, so left as-is only the first two slides
+               would ever appear and the other four would silently vanish
+               with no indication anything was cut. Unlocking the track
+               and letting every slide wrap onto the page instead shows
+               the full set actually shipped. Slides still marked as
+               unfinished placeholders are dropped rather than printed as
+               broken image icons. */
+            /* ---------------------------------------------------------- */
+            .shots-carousel {
+                padding: 0 !important;
+                margin: 1.5rem 0 !important;
+            }
+            .shots-viewport {
+                overflow: visible !important;
+            }
+            .shots-track {
+                transform: none !important;
+                flex-wrap: wrap !important;
+                gap: 1rem !important;
+            }
+            .shots-slide {
+                width: 260px !important;
+                flex: 0 0 auto !important;
+            }
+            .shots-slide:has(img[alt^="Placeholder"]) {
+                display: none !important;
+            }
+            .shots-nav,
+            .shots-dots {
+                display: none !important;
+            }
+
+            /* ---------------------------------------------------------- */
+            /* Reference cards — auto-fit with a 300px minimum can wrap to
+               one, two or three columns depending on how the print
+               engine resolves the page's usable width. Forcing three
+               columns keeps the layout predictable and compact instead
+               of leaving it to chance. */
+            /* ---------------------------------------------------------- */
+            .refs-grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 2rem !important;
+            }
+
+            /* ---------------------------------------------------------- */
+            /* Code / prompt panels — pre relies on horizontal scroll on
+               screen for long lines; there's no scrollbar on a printed
+               page, so lines wrap instead of clipping. */
+            /* ---------------------------------------------------------- */
+            .code-panel-head {
+                padding: 0.6rem 0.9rem !important;
+            }
+            .code-panel pre {
+                padding: 0.9rem !important;
+                overflow-x: visible !important;
+                white-space: pre-wrap !important;
+                word-break: break-word !important;
+                font-size: 0.72rem !important;
+                line-height: 1.45 !important;
+            }
+
+            /* ---------------------------------------------------------- */
+            /* Permissions table — roomy row padding was tuned for a
+               screen with nothing else competing for vertical space. */
+            /* ---------------------------------------------------------- */
+            .perm-table th,
+            .perm-table td {
+                padding: 0.6rem 0.75rem !important;
+            }
+
+            /* "Watch the test video" / "View the project on GitHub" are
+               dead ends on paper — nothing to click. The live glowing
+               moss pill is a screen affordance for a clickable target;
+               kept as-is it just reads as a stray highlighter block on a
+               printed page. Strip it down to the same quiet label/value
+               pattern already used by .meta-item elsewhere on this page
+               (small caption over a value, hung off a thin rule) so the
+               two links read as part of the document's own typography
+               instead of leftover UI. */
+            .prototype-btn,
+            .prototype-btn.secondary {
+                display: inline-flex !important;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 0.35em !important;
+                width: auto !important;
+                background: none !important;
+                border: none !important;
+                border-left: 1px solid var(--border-subtle) !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                padding: 0.1rem 0 0.1rem 0.85rem !important;
+                color: var(--text-tertiary) !important;
+                font-size: 0.7rem !important;
+                font-weight: 600 !important;
+                letter-spacing: 0.06em !important;
+                text-transform: uppercase !important;
+            }
+            .prototype-btn svg {
+                display: none !important;
+            }
+            .prototype-btn::after {
+                content: attr(href);
+                display: block;
+                font-size: 0.62rem;
+                font-weight: 400;
+                letter-spacing: 0;
+                text-transform: none;
+                text-decoration: none;
+                color: var(--text-secondary) !important;
+                word-break: break-all;
+            }
+        }
     </style>
 </head>
 <body>
@@ -701,22 +1048,22 @@
             <h2 class="reveal" style="text-align: center; margin-bottom: 1rem;">Design <span class="text-outline">References</span></h2>
             <p class="text-lead reveal" style="text-align: center; margin: 0 auto 5rem; max-width: 720px;">Three reference points shaped how MiniQuest looks, rewards, and interrupts.</p>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem;">
-                <div class="reveal">
+            <div class="refs-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem;">
+                <div class="reveal ref-card">
                     <div class="media-frame aspect-portrait" style="margin-bottom: 1.5rem;">
                         <img src="Image/MiniQuest_Habitica.webp" alt="Habitica RPG habit-tracker UI" style="object-position: center 30%;">
                     </div>
                     <h3 style="font-size: 1.3rem; margin-bottom: 0.8rem;">Habitica: the RPG Reward Loop</h3>
                     <p class="text-body" style="font-size: 1rem;">Habitica proved a game shell could make routine self-management genuinely motivating. MiniQuest keeps that XP-and-gold loop but opens two new reward channels, Passive Sensing and Induced Novelty, so progress isn't gated entirely behind tasks the user already wrote down.</p>
                 </div>
-                <div class="reveal delay-1">
+                <div class="reveal delay-1 ref-card">
                     <div class="media-frame aspect-portrait" style="margin-bottom: 1.5rem;">
                         <img src="Image/MiniQuest_16bitRef.webp" alt="16-bit pixel art sprite sheet reference: hero, slime, sword and potion icons with hard-edged rendering" style="image-rendering: pixelated;">
                     </div>
                     <h3 style="font-size: 1.3rem; margin-bottom: 0.8rem;">16-bit Pixel Aesthetic</h3>
                     <p class="text-body" style="font-size: 1rem;">Classic sprite-based RPGs read as playful, low-stakes and unmistakably game-like, the opposite tone of a clinical intervention app. The custom HardShadowBox component and vector pixel fonts exist purely to protect that crisp, hand-drawn edge against modern anti-aliasing.</p>
                 </div>
-                <div class="reveal delay-2">
+                <div class="reveal delay-2 ref-card">
                     <div class="media-frame aspect-portrait" style="margin-bottom: 1.5rem;">
                         <img src="Image/MiniQuest_WoodenFish.webp" alt="Electronic wooden fish app icon, a mindfulness tapping object" style="object-fit: contain;">
                     </div>

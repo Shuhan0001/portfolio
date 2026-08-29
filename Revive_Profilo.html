@@ -1316,10 +1316,60 @@
                 max-height: 44vh !important;
             }
             .media-frame.aspect-cinema {
-                max-height: 31vh !important;
+                max-height: 27vh !important;
             }
             .media-frame.aspect-portrait {
-                max-height: 32vh !important;
+                max-height: 28vh !important;
+            }
+
+            /* Two blocks were still overflowing onto a near-empty trailing
+               page even after the tightening above: the four-card
+               "Technical Implementation" row (its 6rem heading margin and
+               4rem inter-card gap alone ate roughly a fifth of the page
+               before any card content even started) and the "Research
+               Method" three-item list (whose 2rem gap and full-size body
+               copy left its last item's closing sentence just past the
+               bottom edge). Both are reclaimed by the same kind of
+               targeted inline-style override used elsewhere in this block. */
+            [style*="margin-bottom: 6rem"] {
+                margin-bottom: 2rem !important;
+            }
+            [style*="gap: 4rem"] {
+                gap: 2rem !important;
+            }
+            [style*="minmax(220px, 1fr)"] {
+                gap: 1.1rem !important;
+            }
+            [style*="minmax(220px, 1fr)"] p.text-body {
+                font-size: 0.85rem !important;
+                line-height: 1.4 !important;
+            }
+            [style*="minmax(220px, 1fr)"] h3 {
+                margin-bottom: 0.3rem !important;
+            }
+
+            /* The five-card "quote-grid" under Participant Voice has no
+               print override at all, so it keeps its screen layout of
+               auto-fit columns at min 240px ?which fits only two per row
+               at print width. The fifth quote card then has nowhere to
+               go but a mostly-empty page of its own. Forcing three columns
+               (plus trimming padding/margins) lets all five sit together. */
+            .quote-grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 0.75rem !important;
+            }
+            .quote-card {
+                padding: 1rem !important;
+            }
+            .quote-card p {
+                font-size: 0.85rem !important;
+                line-height: 1.4 !important;
+            }
+            .preference-grid {
+                margin-top: 1rem !important;
+            }
+            .participant-voice {
+                margin-top: 1.25rem !important;
             }
 
             /* Figures were spaced for a tall scrolling column (4rem before
