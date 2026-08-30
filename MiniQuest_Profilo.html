@@ -428,7 +428,8 @@
         }
         .shots-slide { width: 320px; flex-shrink: 0; }
         .shots-slide img {
-            display: block; width: 100%; height: auto; border-radius: 14px;
+            display: block; width: 100%; aspect-ratio: 3 / 5; object-fit: cover;
+            object-position: center top; border-radius: 14px;
             border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 40px 80px -24px rgba(0,0,0,0.65);
         }
         .shots-nav {
@@ -992,11 +993,12 @@
                         <div class="shots-viewport">
                             <div class="shots-track" id="homeScreenTrack">
                                 <div class="shots-slide"><img src="Image/MiniQuest_HomeScreen.webp" alt="MiniQuest home screen: Quest Log, Player Stats & the pixel-art HUD"></div>
-                                <div class="shots-slide"><img src="Image/MiniQuest_HomeScreen_2.webp" alt="MiniQuest Adventure Tools screen: Adventure Log, Ask Wizard, Wooden Fish and Relax Music modules"></div>
-                                <div class="shots-slide"><img src="Image/MiniQuest_Placeholder_03.webp" alt="Placeholder — replace with next screenshot"></div>
-                                <div class="shots-slide"><img src="Image/MiniQuest_Placeholder_04.webp" alt="Placeholder — replace with next screenshot"></div>
-                                <div class="shots-slide"><img src="Image/MiniQuest_Placeholder_05.webp" alt="Placeholder — replace with next screenshot"></div>
-                                <div class="shots-slide"><img src="Image/MiniQuest_Placeholder_06.webp" alt="Placeholder — replace with next screenshot"></div>
+                                <div class="shots-slide"><img src="Image/MiniQuest_LevelUp.webp" alt="MiniQuest home screen showing a Level Up celebration, with the pixel-art character, XP/gold bars and confetti animation"></div>
+                                <div class="shots-slide"><img src="Image/MiniQuest_EmergencyQuest.webp" alt="MiniQuest Emergency Quest modal interrupting the home screen with an urgent task prompt"></div>
+                                <div class="shots-slide"><img src="Image/MiniQuest_WizardHall.webp" alt="The Wizard's Hall chat screen, where the player can ask the Grand Wizard for guidance"></div>
+                                <div class="shots-slide"><img src="Image/MiniQuest_MiniGame.webp" alt="MiniQuest's tap-to-hit mini-game, part of the stress-relief module"></div>
+                                <div class="shots-slide"><img src="Image/MiniQuest_NewQuest.webp" alt="New Quest creation dialog with a title field and difficulty picker"></div>
+                                <div class="shots-slide"><img src="Image/MiniQuest_RewardsShop.webp" alt="Rewards Shop screen listing redeemable rewards like Slack Pass and Happy Juice against the player's gold balance"></div>
                             </div>
                         </div>
                         <button class="shots-nav prev" aria-label="Previous screenshots">‹</button>
