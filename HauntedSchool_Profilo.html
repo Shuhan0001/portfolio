@@ -359,28 +359,50 @@
             .ethics-item:first-child { border-top: none; padding-top: 0; }
         }
 
-        /* Design References, no-image variant matching the same
-           numbered-index pattern already used by .ethics-grid above —
-           reusing an established layout instead of inventing a second
-           one keeps the two reference-style sections reading as the
-           same kind of thing. */
-        .ref-list {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0;
-            margin-top: 3rem; border-top: 1px solid var(--border-subtle);
+        /* Design References — deliberately NOT the ethics-grid's boxed
+           column pattern (that would read as the same component twice
+           in a row). This is a two-track case-file ledger instead:
+           Games and Folklore sit in their own labelled tracks, each
+           entry a single alternating row with an oversized outlined
+           numeral standing in for the "evidence tag". Alternation +
+           flexbox means every row governs its own height, so nothing
+           depends on auto-fit column math to stay aligned. */
+        .ref-showcase { margin-top: 3.5rem; }
+        .ref-group + .ref-group { margin-top: 4rem; }
+        .ref-group-label {
+            display: flex; align-items: center; gap: 1rem;
+            font-size: 0.72rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
+            color: var(--text-tertiary); margin-bottom: 0.25rem;
         }
-        .ref-item {
-            border-left: 1px solid var(--border-subtle); padding: 2.25rem 2rem 0.5rem;
+        .ref-group-label::after { content: ''; flex: 1; height: 1px; background: var(--border-subtle); }
+        .ref-group-count {
+            font-variant-numeric: tabular-nums; color: var(--text-tertiary); font-weight: 400;
         }
-        .ref-item:first-child { border-left: none; padding-left: 0; }
-        .ref-item .index {
-            display: block; font-size: 2.75rem; font-weight: 300; line-height: 1;
-            color: rgba(255,255,255,0.14); margin-bottom: 1rem; font-variant-numeric: tabular-nums;
+
+        .ref-row {
+            display: flex; align-items: flex-start; gap: 2.5rem;
+            padding: 2.5rem 0; border-top: 1px solid var(--border-subtle);
         }
-        .ref-item h3 {
+        .ref-row:first-of-type { border-top: none; padding-top: 1.75rem; }
+        .ref-group .ref-row:nth-of-type(even) { flex-direction: row-reverse; text-align: right; }
+        .ref-group .ref-row:nth-of-type(even) h3 { justify-content: flex-end; }
+        .ref-group .ref-row:nth-of-type(even) p { margin-left: auto; }
+
+        .ref-num {
+            flex: 0 0 auto; width: 5.5rem; text-align: center;
+            font-size: 3.4rem; font-weight: 300; line-height: 1;
+            color: rgba(255, 255, 255, 0.14);
+            font-variant-numeric: tabular-nums;
+            transition: color 0.4s var(--ease-cinematic), text-shadow 0.4s var(--ease-cinematic);
+        }
+        .ref-row:hover .ref-num { color: #ffffff; text-shadow: 0 0 30px rgba(255, 255, 255, 0.25); }
+
+        .ref-content { flex: 1; min-width: 0; padding-top: 0.35rem; }
+        .ref-content h3 {
             font-size: 1.15rem; font-weight: 600; margin-bottom: 0.6rem;
             display: flex; align-items: center; gap: 0.55rem; flex-wrap: wrap;
         }
-        .ref-item p { font-size: 0.92rem; color: var(--text-secondary); line-height: 1.55; }
+        .ref-content p { font-size: 0.92rem; color: var(--text-secondary); line-height: 1.6; max-width: 600px; }
         .ref-link {
             display: inline-flex; align-items: center; gap: 0.25rem;
             font-size: 0.68rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
@@ -390,8 +412,13 @@
         }
         .ref-link:hover { color: var(--accent-red); border-color: rgba(140, 17, 40, 0.4); }
         @media (max-width: 720px) {
-            .ref-item { border-left: none; border-top: 1px solid var(--border-subtle); padding: 2rem 0; }
-            .ref-item:first-child { border-top: none; padding-top: 0; }
+            .ref-row,
+            .ref-group .ref-row:nth-of-type(even) {
+                flex-direction: column; text-align: left; gap: 1rem; padding: 2rem 0;
+            }
+            .ref-group .ref-row:nth-of-type(even) h3 { justify-content: flex-start; }
+            .ref-group .ref-row:nth-of-type(even) p { margin-left: 0; }
+            .ref-num { width: auto; text-align: left; font-size: 2.5rem; }
         }
 
         .reveal {
@@ -592,19 +619,20 @@
             .roster-card,
             .roster-featured,
             .ethics-item,
-            .ref-item {
+            .ref-row {
                 page-break-inside: avoid;
                 break-inside: avoid;
             }
 
-            /* The reference list (like .ethics-grid) can wrap to a
-               different column count on screen depending on how the
-               print engine resolves the page's usable width; force
-               three so the layout is predictable rather than left to
-               chance. */
-            .ref-list {
-                grid-template-columns: repeat(3, 1fr) !important;
+            /* The ledger rows alternate visual direction on screen for
+               editorial rhythm; on paper that reversal just wastes
+               margin, so force every row to read left-to-right. */
+            .ref-group .ref-row:nth-of-type(even) {
+                flex-direction: row !important;
+                text-align: left !important;
             }
+            .ref-group .ref-row:nth-of-type(even) h3 { justify-content: flex-start !important; }
+            .ref-group .ref-row:nth-of-type(even) p { margin-left: 0 !important; }
 
             /* External links (Phasmophobia/FNAF/DDLC/Visage) are dead
                ends on paper — show the URL as small print underneath so
@@ -895,36 +923,55 @@
             <h2 class="reveal" style="text-align: center; margin-bottom: 1rem;">Design <span class="text-outline">References</span></h2>
             <p class="text-lead reveal" style="text-align: center; margin: 0 auto 2rem; max-width: 760px;">Four horror games and two pieces of folklore the group used to pin down tone, mechanics and setting before any of it went into Unity.</p>
 
-            <div class="ref-list">
-                <div class="ref-item reveal">
-                    <span class="index">01</span>
-                    <h3>Phasmophobia <a href="https://store.steampowered.com/app/739630/Phasmophobia/" target="_blank" rel="noopener" class="ref-link">Visit ↗</a></h3>
-                    <p>Kinetic Games' co-op ghost-hunting title informed how our spirits gather and reveal evidence of themselves, even though our game is single-player and story-driven rather than investigative.</p>
+            <div class="ref-showcase">
+                <div class="ref-group" data-track="games">
+                    <div class="ref-group-label reveal">Games <span class="ref-group-count">— 04</span></div>
+                    <div class="ref-row reveal">
+                        <span class="ref-num">01</span>
+                        <div class="ref-content">
+                            <h3>Phasmophobia <a href="https://store.steampowered.com/app/739630/Phasmophobia/" target="_blank" rel="noopener" class="ref-link">Visit ↗</a></h3>
+                            <p>Kinetic Games' co-op ghost-hunting title informed how our spirits gather and reveal evidence of themselves, even though our game is single-player and story-driven rather than investigative.</p>
+                        </div>
+                    </div>
+                    <div class="ref-row reveal delay-1">
+                        <span class="ref-num">02</span>
+                        <div class="ref-content">
+                            <h3>Five Nights at Freddy's <a href="https://store.steampowered.com/app/319510/Five_Nights_at_Freddys/" target="_blank" rel="noopener" class="ref-link">Visit ↗</a></h3>
+                            <p>Scott Cawthon's survival horror shaped our thinking on jump scares and resource-management tension, and the idea of a monster the player can't fully understand or defeat.</p>
+                        </div>
+                    </div>
+                    <div class="ref-row reveal delay-2">
+                        <span class="ref-num">03</span>
+                        <div class="ref-content">
+                            <h3>Doki Doki Literature Club! <a href="https://ddlc.moe/" target="_blank" rel="noopener" class="ref-link">Visit ↗</a></h3>
+                            <p>Team Salvato's meta-narrative psychological horror is the main reference for how our story hides its horror behind an ordinary setup before turning on the player.</p>
+                        </div>
+                    </div>
+                    <div class="ref-row reveal delay-3">
+                        <span class="ref-num">04</span>
+                        <div class="ref-content">
+                            <h3>Visage <a href="https://store.steampowered.com/app/594330/Visage/" target="_blank" rel="noopener" class="ref-link">Visit ↗</a></h3>
+                            <p>A haunted-house exploration game that favours atmosphere over jump scares, a reminder that dread can carry a scene without a single scripted shock.</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="ref-item reveal delay-1">
-                    <span class="index">02</span>
-                    <h3>Five Nights at Freddy's <a href="https://store.steampowered.com/app/319510/Five_Nights_at_Freddys/" target="_blank" rel="noopener" class="ref-link">Visit ↗</a></h3>
-                    <p>Scott Cawthon's survival horror shaped our thinking on jump scares and resource-management tension, and the idea of a monster the player can't fully understand or defeat.</p>
-                </div>
-                <div class="ref-item reveal delay-2">
-                    <span class="index">03</span>
-                    <h3>Doki Doki Literature Club! <a href="https://ddlc.moe/" target="_blank" rel="noopener" class="ref-link">Visit ↗</a></h3>
-                    <p>Team Salvato's meta-narrative psychological horror is the main reference for how our story hides its horror behind an ordinary setup before turning on the player.</p>
-                </div>
-                <div class="ref-item reveal delay-3">
-                    <span class="index">04</span>
-                    <h3>Visage <a href="https://store.steampowered.com/app/594330/Visage/" target="_blank" rel="noopener" class="ref-link">Visit ↗</a></h3>
-                    <p>A haunted-house exploration game that favours atmosphere over jump scares, a reminder that dread can carry a scene without a single scripted shock.</p>
-                </div>
-                <div class="ref-item reveal">
-                    <span class="index">05</span>
-                    <h3>The Hungry Ghost Festival</h3>
-                    <p>Ghost Month in the Chinese lunar calendar, when ancestral spirits are said to roam freely, gave the game its calendar hook and its central curfew rule.</p>
-                </div>
-                <div class="ref-item reveal delay-1">
-                    <span class="index">06</span>
-                    <h3>Mirror & Painting Folklore</h3>
-                    <p>Urban legends about vengeful spirits summoned through mirrors, alongside stories of unsettling haunted paintings, shaped the mechanics behind our own Ghost in the Mirror and Ghost in the Painting.</p>
+
+                <div class="ref-group" data-track="folklore">
+                    <div class="ref-group-label reveal">Folklore <span class="ref-group-count">— 02</span></div>
+                    <div class="ref-row reveal">
+                        <span class="ref-num">05</span>
+                        <div class="ref-content">
+                            <h3>The Hungry Ghost Festival</h3>
+                            <p>Ghost Month in the Chinese lunar calendar, when ancestral spirits are said to roam freely, gave the game its calendar hook and its central curfew rule.</p>
+                        </div>
+                    </div>
+                    <div class="ref-row reveal delay-1">
+                        <span class="ref-num">06</span>
+                        <div class="ref-content">
+                            <h3>Mirror & Painting Folklore</h3>
+                            <p>Urban legends about vengeful spirits summoned through mirrors, alongside stories of unsettling haunted paintings, shaped the mechanics behind our own Ghost in the Mirror and Ghost in the Painting.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
