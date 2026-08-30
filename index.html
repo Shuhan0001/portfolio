@@ -310,6 +310,20 @@
         .group\/accordion {
             overflow-anchor: none;
         }
+
+        /* "In Progress" indicator — same thin-rail-with-traveling-glow
+           treatment as MiniQuest's quest-track / state-track, reused
+           here as a small inline progress bar next to the label. */
+        .in-progress-rail {
+            position: relative; flex: 1 1 auto; min-width: 0; height: 2px; border-radius: 2px;
+            background: rgba(255,255,255,0.12); overflow: hidden;
+        }
+        .in-progress-rail-glow {
+            position: absolute; top: 0; left: -25%; width: 25%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent);
+            animation: in-progress-flow-x 2.6s linear infinite;
+        }
+        @keyframes in-progress-flow-x { from { left: -25%; } to { left: 100%; } }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;300;400;700&display=swap" rel="stylesheet">
 </head>
@@ -495,7 +509,7 @@
                 <div id="hero-content-wrapper" class="w-full h-full flex flex-col justify-between p-8 md:p-12 relative z-10">
                     <header class="flex justify-between items-center w-full pointer-events-auto">
                         <div class="font-bold tracking-widest text-sm uppercase">Game Designer &amp; Technologist</div>
-                        <div class="flex items-center gap-6">
+                        <div class="flex items-center gap-6 relative z-[9998]">
                             <!-- Invisible placeholder: keeps Resume/Contact in the same spot.
                                  The real, always-visible search box lives outside the hero
                                  section (see #site-search-fixed below <body>) so it no longer
@@ -504,8 +518,8 @@
                                 <i data-lucide="search" style="flex-shrink:0; width:14px; height:14px;"></i>
                                 <span class="text-xs md:text-sm tracking-wide w-20 md:w-32 inline-block">Search</span>
                             </div>
-                            <a href="Shuhan_Zhang_CV.pdf" download class="hover-trigger magnetic text-sm uppercase tracking-widest border-b border-white/30 pb-1 hover:border-white transition-colors block p-2">Resume</a>
-                            <a href="#contact-section" class="hover-trigger magnetic text-sm uppercase tracking-widest border-b border-white/30 pb-1 hover:border-white transition-colors block p-2">Contact</a>
+                            <a href="Shuhan_Zhang_CV.pdf" download class="hover-trigger magnetic text-sm font-sans uppercase tracking-widest border-b border-transparent hover:border-white/50 transition-colors pb-1 p-2">Resume</a>
+                            <a href="#contact-section" class="hover-trigger magnetic text-sm font-sans uppercase tracking-widest border-b border-transparent hover:border-white/50 transition-colors pb-1 p-2">Contact</a>
                         </div>
                     </header>
 
@@ -594,9 +608,9 @@
                             
                             <!-- Massive Interactive Row -->
                             <div class="py-8 md:py-12 flex flex-col md:flex-row md:items-center justify-between hover-trigger px-4">
-                                <div class="flex items-start md:items-center gap-6 md:gap-12">
-                                    <span class="text-white/20 font-mono text-sm tracking-widest mt-2 md:mt-0 group-hover/row:text-white transition-colors duration-500">01</span>
-                                    <h4 class="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tighter text-white/80 group-hover/row:text-white transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] uppercase group-hover/row:translate-x-6">
+                                <div class="flex items-end gap-2 md:gap-3">
+                                    <span class="relative z-0 -mr-4 sm:-mr-6 md:-mr-10 text-white/15 font-sans text-7xl sm:text-8xl md:text-9xl font-black tracking-tight leading-none [font-variant-numeric:tabular-nums] group-hover/row:text-white/30 transition-colors duration-500">01</span>
+                                    <h4 class="relative z-10 text-4xl sm:text-5xl md:text-7xl font-bold tracking-tighter text-white/80 group-hover/row:text-white transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] uppercase group-hover/row:translate-x-6">
                                         Core Engines
                                     </h4>
                                 </div>
@@ -651,9 +665,9 @@
                             <div class="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent opacity-0 group-hover/row:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
                             
                             <div class="py-8 md:py-12 flex flex-col md:flex-row md:items-center justify-between hover-trigger px-4">
-                                <div class="flex items-start md:items-center gap-6 md:gap-12">
-                                    <span class="text-white/20 font-mono text-sm tracking-widest mt-2 md:mt-0 group-hover/row:text-white transition-colors duration-500">02</span>
-                                    <h4 class="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tighter text-white/80 group-hover/row:text-white transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] uppercase group-hover/row:translate-x-6">
+                                <div class="flex items-end gap-2 md:gap-3">
+                                    <span class="relative z-0 -mr-4 sm:-mr-6 md:-mr-10 text-white/15 font-sans text-7xl sm:text-8xl md:text-9xl font-black tracking-tight leading-none [font-variant-numeric:tabular-nums] group-hover/row:text-white/30 transition-colors duration-500">02</span>
+                                    <h4 class="relative z-10 text-4xl sm:text-5xl md:text-7xl font-bold tracking-tighter text-white/80 group-hover/row:text-white transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] uppercase group-hover/row:translate-x-6">
                                         Interactive
                                     </h4>
                                 </div>
@@ -707,9 +721,9 @@
                             <div class="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent opacity-0 group-hover/row:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
                             
                             <div class="py-8 md:py-12 flex flex-col md:flex-row md:items-center justify-between hover-trigger px-4">
-                                <div class="flex items-start md:items-center gap-6 md:gap-12">
-                                    <span class="text-white/20 font-mono text-sm tracking-widest mt-2 md:mt-0 group-hover/row:text-white transition-colors duration-500">03</span>
-                                    <h4 class="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tighter text-white/80 group-hover/row:text-white transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] uppercase group-hover/row:translate-x-6">
+                                <div class="flex items-end gap-2 md:gap-3">
+                                    <span class="relative z-0 -mr-4 sm:-mr-6 md:-mr-10 text-white/15 font-sans text-7xl sm:text-8xl md:text-9xl font-black tracking-tight leading-none [font-variant-numeric:tabular-nums] group-hover/row:text-white/30 transition-colors duration-500">03</span>
+                                    <h4 class="relative z-10 text-4xl sm:text-5xl md:text-7xl font-bold tracking-tighter text-white/80 group-hover/row:text-white transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] uppercase group-hover/row:translate-x-6">
                                         Praxis
                                     </h4>
                                 </div>
@@ -813,7 +827,10 @@
 
                 <div class="w-full bg-[#050505]/25 backdrop-blur-md py-16 px-8 md:px-24">
                     <div class="max-w-6xl mx-auto w-full">
-                        <p class="text-xs font-mono tracking-widest text-gray-500 uppercase mb-6">In Progress</p>
+                        <div class="flex items-center gap-4 mb-6">
+                            <p class="text-xs font-mono tracking-widest text-gray-500 uppercase">In Progress</p>
+                            <div class="in-progress-rail"><div class="in-progress-rail-glow"></div></div>
+                        </div>
                         <div class="flex flex-col gap-4">
                             <a href="Supermarket_Simulator_Profilo.html" class="card-elevate hover-trigger cursor-pointer rounded-2xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/20 p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                                 <div>

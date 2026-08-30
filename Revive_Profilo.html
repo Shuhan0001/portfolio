@@ -821,7 +821,7 @@
             border-radius: 999px;
 
             /* Same restrained glass treatment as the rest of the site
-               (.stack-slide, .preference-card) ?flat surface color,
+               (.stack-slide, .back-home-btn) ?flat surface color,
                one border, one soft shadow. The refraction is carried
                entirely by the distortion filter, not extra layers. */
             background: var(--surface-dark);
@@ -1028,31 +1028,108 @@
             text-align: right;
         }
 
-        .preference-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
+        /* Participant preference ?an isotype-style ledger rather than a
+           grid of cards. Nine participants is a small enough n to show
+           honestly as nine discrete units (a pictogram) instead of an
+           abstracted percentage inside a box ?it also echoes the pixel
+           units elsewhere on this pixel-art project rather than
+           borrowing the site-wide glass-panel language used for
+           navigation chrome. */
+        .pref-ledger {
             margin-top: 3rem;
+            border-top: 1px solid var(--border-subtle);
         }
 
-        .preference-card {
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-md);
-            padding: 2rem;
-            background: rgba(255,255,255,0.02);
+        .pref-row {
+            display: grid;
+            grid-template-columns: 108px 100px 1fr;
+            align-items: center;
+            column-gap: 2.25rem;
+            padding: 1.6rem 0;
+            border-bottom: 1px solid var(--border-subtle);
+            transition: background 0.5s var(--ease-cinematic);
         }
 
-        .preference-card .pct {
-            font-size: 2.5rem;
-            color: var(--accent-amber);
+        .pref-row:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .pref-stat {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .pref-pct {
+            font-size: 2rem;
             font-weight: 700;
+            color: var(--accent-amber);
             letter-spacing: -0.03em;
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
         }
 
-        .preference-card .desc {
+        .pref-frac {
+            font-size: 0.7rem;
+            color: var(--text-tertiary);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .pref-matrix {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            width: fit-content;
+        }
+
+        .pref-dot {
+            width: 9px;
+            height: 9px;
+            background: rgba(255, 255, 255, 0.08);
+            transform: scale(0);
+            transition: transform 0.5s var(--ease-cinematic), background 0.5s var(--ease-cinematic);
+        }
+
+        .reveal.in-view .pref-dot {
+            transform: scale(1);
+        }
+
+        .pref-dot.on {
+            background: var(--accent-amber);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .pref-dot:nth-child(1) { transition-delay: 0.02s; }
+        .pref-dot:nth-child(2) { transition-delay: 0.06s; }
+        .pref-dot:nth-child(3) { transition-delay: 0.10s; }
+        .pref-dot:nth-child(4) { transition-delay: 0.14s; }
+        .pref-dot:nth-child(5) { transition-delay: 0.18s; }
+        .pref-dot:nth-child(6) { transition-delay: 0.22s; }
+        .pref-dot:nth-child(7) { transition-delay: 0.26s; }
+        .pref-dot:nth-child(8) { transition-delay: 0.30s; }
+        .pref-dot:nth-child(9) { transition-delay: 0.34s; }
+
+        .pref-desc {
             font-size: 0.9rem;
             color: var(--text-secondary);
-            margin-top: 0.5rem;
+            max-width: 42ch;
+        }
+
+        .pref-desc .cond-tag {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        @media (max-width: 600px) {
+            .pref-row {
+                grid-template-columns: 1fr;
+                row-gap: 0.85rem;
+                padding: 1.4rem 0;
+            }
+            .pref-matrix {
+                order: -1;
+            }
         }
 
         .participant-voice {
@@ -1067,33 +1144,87 @@
             margin-bottom: 1.25rem;
         }
 
-        .quote-grid {
+        /* Participant voice ?trimmed to the two fullest, most reflective
+           answers and set as a two-up "exhibit" spread rather than a
+           list. A thin spine divides them; each is numbered like a
+           field-note exhibit rather than boxed like a card. Type stays
+           on the site's own font stack ?the contrast comes from scale
+           and weight, not from switching typefaces. */
+        .voice-diptych {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 1rem;
+            grid-template-columns: 1fr 1px 1fr;
+            gap: 3rem;
+            margin-top: 1.5rem;
+            align-items: start;
         }
 
-        .quote-card {
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-md);
-            padding: 1.5rem;
-            background: rgba(255,255,255,0.02);
+        .voice-divider {
+            align-self: stretch;
+            width: 1px;
+            background: linear-gradient(to bottom,
+                transparent,
+                var(--border-subtle) 12%,
+                var(--border-subtle) 88%,
+                transparent);
         }
 
-        .quote-card p {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            line-height: 1.6;
+        .voice-panel {
+            position: relative;
         }
 
-        .quote-card strong {
+        .voice-index {
             display: block;
-            margin-top: 0.85rem;
-            color: var(--text-tertiary);
-            font-size: 0.75rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            color: var(--accent-amber);
+            opacity: 0.75;
+            margin-bottom: 1.25rem;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .voice-quote {
             font-weight: 500;
-            letter-spacing: 0.04em;
+            font-size: clamp(1.25rem, 1.02rem + 1vw, 1.6rem);
+            line-height: 1.45;
+            letter-spacing: -0.015em;
+            color: var(--text-primary);
+        }
+
+        .voice-quote::before {
+            content: "\201C";
+            color: var(--accent-amber);
+        }
+
+        .voice-quote::after {
+            content: "\201D";
+            color: var(--accent-amber);
+        }
+
+        .voice-tag {
+            display: block;
+            margin-top: 1.5rem;
+            font-family: var(--font-main);
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.07em;
             text-transform: uppercase;
+            color: var(--text-tertiary);
+        }
+
+        @media (max-width: 768px) {
+            .voice-diptych {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+            .voice-divider {
+                width: auto;
+                height: 1px;
+                margin: 2.25rem 0;
+                background: linear-gradient(to right,
+                    transparent, var(--border-subtle) 15%,
+                    var(--border-subtle) 85%, transparent);
+            }
         }
 
         /* Hollow / outline type ?referenced from the main portfolio homepage,
@@ -1286,7 +1417,8 @@
 
             figure,
             .data-card,
-            .preference-card,
+            .pref-row,
+            .voice-panel,
             .subscale-item,
             .stack-gallery {
                 page-break-inside: avoid;
@@ -1348,24 +1480,24 @@
                 margin-bottom: 0.3rem !important;
             }
 
-            /* The five-card "quote-grid" under Participant Voice has no
-               print override at all, so it keeps its screen layout of
-               auto-fit columns at min 240px ?which fits only two per row
-               at print width. The fifth quote card then has nowhere to
-               go but a mostly-empty page of its own. Forcing three columns
-               (plus trimming padding/margins) lets all five sit together. */
-            .quote-grid {
-                grid-template-columns: repeat(3, 1fr) !important;
-                gap: 0.75rem !important;
+            /* "Participant voice" is now a two-up exhibit spread instead
+               of a five-card grid ?just two panels, so print only needs
+               its type scale trimmed to keep the section on one page. */
+            .voice-diptych {
+                gap: 1.5rem !important;
+                margin-top: 0.75rem !important;
             }
-            .quote-card {
-                padding: 1rem !important;
-            }
-            .quote-card p {
-                font-size: 0.85rem !important;
+            .voice-quote {
+                font-size: 1rem !important;
                 line-height: 1.4 !important;
             }
-            .preference-grid {
+            .voice-index {
+                margin-bottom: 0.5rem !important;
+            }
+            .voice-tag {
+                margin-top: 0.6rem !important;
+            }
+            .pref-ledger {
                 margin-top: 1rem !important;
             }
             .participant-voice {
@@ -1425,12 +1557,17 @@
                 gap: 1.25rem !important;
                 margin-top: 1rem !important;
             }
-            .preference-grid {
-                grid-template-columns: repeat(3, 1fr) !important;
-                margin-top: 1rem !important;
+            .pref-row {
+                grid-template-columns: 80px 76px 1fr !important;
+                padding: 0.75rem 0 !important;
             }
-            .preference-card {
-                padding: 1rem !important;
+            .pref-dot {
+                width: 6px !important;
+                height: 6px !important;
+                transform: scale(1) !important;
+            }
+            .pref-pct {
+                font-size: 1.5rem !important;
             }
 
             /* The two data-cards in "The Paradox of Darkness" stack full
@@ -1838,51 +1975,47 @@
 <p class="caption reveal" style="margin-top: 1.5rem;">Means are calculated from the nine participants' five point ratings. Negatively worded search items were reverse coded so higher scores indicate more efficient searching.</p>
 
 <p class="data-label reveal" style="margin-top: 3rem;">Participant preferences from nine participants</p>
-<div class="preference-grid">
-<div class="preference-card reveal delay-1">
-<div class="pct">66.7%</div>
-<p class="desc">selected Day as the easiest condition for identifying objects at a glance</p>
+<div class="pref-ledger">
+<div class="pref-row reveal delay-1">
+<div class="pref-stat"><span class="pref-pct">66.7%</span><span class="pref-frac">6 of 9</span></div>
+<div class="pref-matrix" aria-hidden="true"><span class="pref-dot on"></span><span class="pref-dot on"></span><span class="pref-dot on"></span><span class="pref-dot on"></span><span class="pref-dot on"></span><span class="pref-dot on"></span><span class="pref-dot"></span><span class="pref-dot"></span><span class="pref-dot"></span></div>
+<p class="pref-desc">selected <span class="cond-tag">Day</span> as the easiest condition for identifying objects at a glance</p>
 </div>
-<div class="preference-card reveal delay-2">
-<div class="pct">88.9%</div>
-<p class="desc">selected Day as the easiest condition for finding objects</p>
+<div class="pref-row reveal delay-2">
+<div class="pref-stat"><span class="pref-pct">88.9%</span><span class="pref-frac">8 of 9</span></div>
+<div class="pref-matrix" aria-hidden="true"><span class="pref-dot on"></span><span class="pref-dot on"></span><span class="pref-dot on"></span><span class="pref-dot on"></span><span class="pref-dot on"></span><span class="pref-dot on"></span><span class="pref-dot on"></span><span class="pref-dot on"></span><span class="pref-dot"></span></div>
+<p class="pref-desc">selected <span class="cond-tag">Day</span> as the easiest condition for finding objects</p>
 </div>
-<div class="preference-card reveal delay-3">
-<div class="pct">77.8%</div>
-<p class="desc">selected Sunset as the strongest atmosphere</p>
+<div class="pref-row reveal delay-3">
+<div class="pref-stat"><span class="pref-pct">77.8%</span><span class="pref-frac">7 of 9</span></div>
+<div class="pref-matrix" aria-hidden="true"><span class="pref-dot on"></span><span class="pref-dot on"></span><span class="pref-dot on"></span><span class="pref-dot on"></span><span class="pref-dot on"></span><span class="pref-dot on"></span><span class="pref-dot on"></span><span class="pref-dot"></span><span class="pref-dot"></span></div>
+<p class="pref-desc">selected <span class="cond-tag">Sunset</span> as the strongest atmosphere</p>
 </div>
-<div class="preference-card reveal delay-1">
-<div class="pct">55.6%</div>
-<p class="desc">selected Night as the most immersive condition</p>
+<div class="pref-row reveal delay-1">
+<div class="pref-stat"><span class="pref-pct">55.6%</span><span class="pref-frac">5 of 9</span></div>
+<div class="pref-matrix" aria-hidden="true"><span class="pref-dot on"></span><span class="pref-dot on"></span><span class="pref-dot on"></span><span class="pref-dot on"></span><span class="pref-dot on"></span><span class="pref-dot"></span><span class="pref-dot"></span><span class="pref-dot"></span><span class="pref-dot"></span></div>
+<p class="pref-desc">selected <span class="cond-tag">Night</span> as the most immersive condition</p>
 </div>
-<div class="preference-card reveal delay-2">
-<div class="pct">100%</div>
-<p class="desc">selected Night as the most difficult condition</p>
+<div class="pref-row reveal delay-2">
+<div class="pref-stat"><span class="pref-pct">100%</span><span class="pref-frac">9 of 9</span></div>
+<div class="pref-matrix" aria-hidden="true"><span class="pref-dot on"></span><span class="pref-dot on"></span><span class="pref-dot on"></span><span class="pref-dot on"></span><span class="pref-dot on"></span><span class="pref-dot on"></span><span class="pref-dot on"></span><span class="pref-dot on"></span><span class="pref-dot on"></span></div>
+<p class="pref-desc">selected <span class="cond-tag">Night</span> as the most difficult condition</p>
 </div>
 </div>
 
 <div class="participant-voice reveal delay-3">
 <span class="participant-voice-label">Participant voice</span>
-<div class="quote-grid">
-<div class="quote-card">
-<p>“Very dark!”</p>
-<strong>Night</strong>
+<div class="voice-diptych">
+<div class="voice-panel reveal delay-1">
+<span class="voice-index">01</span>
+<p class="voice-quote">The atmosphere at night feels the best as it feels like actually exploring a forest and guiding yourself through.</p>
+<span class="voice-tag">Night / immersion feedback</span>
 </div>
-<div class="quote-card">
-<p>“Hard to see clearly.”</p>
-<strong>Night</strong>
-</div>
-<div class="quote-card">
-<p>“Nice atmosphere.”</p>
-<strong>Sunset / atmosphere feedback</strong>
-</div>
-<div class="quote-card">
-<p>“The atmosphere at night feels the best as it feels like actually exploring a forest and guiding yourself through.”</p>
-<strong>Night / immersion feedback</strong>
-</div>
-<div class="quote-card">
-<p>“Location memory of objects made it easier to find all required objects in day and sunset settings.”</p>
-<strong>Search behaviour</strong>
+<div class="voice-divider" aria-hidden="true"></div>
+<div class="voice-panel reveal delay-2">
+<span class="voice-index">02</span>
+<p class="voice-quote">Location memory of objects made it easier to find all required objects in day and sunset settings.</p>
+<span class="voice-tag">Search behaviour</span>
 </div>
 </div>
 </div>
