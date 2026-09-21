@@ -696,6 +696,162 @@
                 border-bottom: none !important;
             }
         }
+
+        /* A separate, deliberately paced case-study export. The live page
+           and its existing Ctrl+P layout remain unchanged. */
+        .haunted-full-only { display: none; }
+        @media print {
+            @page haunted-full { size: 13.333in 7.5in; margin: 0; }
+            body.haunted-full-portfolio {
+                width: 1280px !important;
+                margin: 0 !important;
+                background: #070809 !important;
+                counter-reset: hs-page;
+            }
+            body.haunted-full-portfolio main {
+                display: block !important;
+                width: 1280px !important;
+                max-width: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            body.haunted-full-portfolio main > section:not(.haunted-page),
+            body.haunted-full-portfolio > :not(main),
+            body.haunted-full-portfolio .site-footer { display: none !important; }
+            body.haunted-full-portfolio .haunted-full-only { display: block !important; }
+            body.haunted-full-portfolio .haunted-page {
+                page: haunted-full;
+                position: relative !important;
+                width: 1280px !important;
+                height: 720px !important;
+                min-height: 720px !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: hidden !important;
+                break-after: page;
+                page-break-after: always;
+                break-inside: avoid;
+                page-break-inside: avoid;
+                counter-increment: hs-page;
+                background: radial-gradient(ellipse 56% 55% at 95% 4%, rgba(105, 12, 28, .14), transparent 74%), #08090a !important;
+                color: #f5f2ed !important;
+                font-family: Arial, sans-serif !important;
+            }
+            body.haunted-full-portfolio .haunted-page:last-of-type { break-after: auto; page-break-after: auto; }
+            body.haunted-full-portfolio .haunted-page::after {
+                content: "SILENT NIGHT AT THE HAUNTED SCHOOL   /   " counter(hs-page, decimal-leading-zero) " - 08";
+                position: absolute;
+                right: 76px;
+                bottom: 28px;
+                font: 700 10px/1 Arial, sans-serif;
+                letter-spacing: .14em;
+                color: #737477;
+            }
+            body.haunted-full-portfolio .hs-inner { position: relative; height: 100%; padding: 60px 76px 62px; }
+            body.haunted-full-portfolio .hs-topline {
+                display: flex; justify-content: space-between; align-items: center;
+                padding-bottom: 13px; border-bottom: 1px solid rgba(255,255,255,.18);
+                color: #b9b7b3; font: 700 11px/1 Arial, sans-serif; letter-spacing: .18em; text-transform: uppercase;
+            }
+            body.haunted-full-portfolio .hs-topline span:last-child { color: #c65967; }
+            body.haunted-full-portfolio .hs-heading { margin: 29px 0 0; font: 700 50px/1.05 Arial, sans-serif; letter-spacing: -.045em; color: #f6f3ee; }
+            body.haunted-full-portfolio .hs-heading em { color: #c94b5d; font-style: normal; }
+            body.haunted-full-portfolio .hs-deck { max-width: 860px; margin: 16px 0 0; font: 400 18px/1.5 Arial, sans-serif; color: #b9b7b3; }
+            body.haunted-full-portfolio .hs-label { display: block; color: #c94b5d; font: 700 11px/1.25 Arial, sans-serif; letter-spacing: .16em; text-transform: uppercase; }
+            body.haunted-full-portfolio .hs-copy { color: #c7c5c1; font: 400 17px/1.55 Arial, sans-serif; }
+            body.haunted-full-portfolio .hs-copy strong { color: #f6f3ee; }
+            body.haunted-full-portfolio .hs-rule { border-top: 1px solid rgba(255,255,255,.18); }
+            body.haunted-full-portfolio .hs-figcaption { margin-top: 9px; color: #8e8d8b; font: 400 11px/1.4 Arial, sans-serif; }
+
+            body.haunted-full-portfolio .hs-cover { background: #050708 !important; }
+            body.haunted-full-portfolio .hs-cover .hs-inner { display: grid; grid-template-columns: 47% 53%; gap: 0; padding-right: 0; }
+            body.haunted-full-portfolio .hs-cover-copy { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: flex-start; padding-right: 20px; }
+            body.haunted-full-portfolio .hs-cover .hs-topline { width: 100%; }
+            body.haunted-full-portfolio .hs-cover h1 { margin-top: 105px; color: #f6f3ee; font: 700 61px/.99 Arial, sans-serif; letter-spacing: -.055em; }
+            body.haunted-full-portfolio .hs-cover h1 span { color: #c94b5d; }
+            body.haunted-full-portfolio .hs-cover p { max-width: 495px; margin-top: 22px; color: #cbc9c5; font: 400 18px/1.5 Arial, sans-serif; }
+            body.haunted-full-portfolio .hs-cover-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 26px; width: 490px; margin-top: auto; padding-bottom: 54px; }
+            body.haunted-full-portfolio .hs-cover-meta div { border-top: 1px solid rgba(255,255,255,.2); padding-top: 9px; }
+            body.haunted-full-portfolio .hs-cover-meta small { display: block; color: #b64c5b; font: 700 10px Arial, sans-serif; letter-spacing: .15em; text-transform: uppercase; }
+            body.haunted-full-portfolio .hs-cover-meta strong { display: block; margin-top: 5px; color: #eeeae5; font: 600 15px Arial, sans-serif; }
+            body.haunted-full-portfolio .hs-cover-visual { position: relative; height: 100%; display: flex; align-items: center; padding: 60px 0 62px 12px; }
+            body.haunted-full-portfolio .hs-cover-visual::before { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse at 60% 44%, rgba(9,56,64,.25), transparent 64%); }
+            body.haunted-full-portfolio .hs-cover-visual img { position: relative; display: block; width: 100%; height: 430px; object-fit: contain; object-position: center; }
+            body.haunted-full-portfolio .hs-cover-visual figcaption { position: absolute; left: 14px; bottom: 69px; }
+
+            body.haunted-full-portfolio .hs-premise-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 78px; margin-top: 44px; }
+            body.haunted-full-portfolio .hs-pullquote { padding: 26px 0 25px; border-top: 2px solid #a62b3d; border-bottom: 1px solid rgba(255,255,255,.18); color: #f6f3ee; font: 500 32px/1.28 Arial, sans-serif; letter-spacing: -.025em; }
+            body.haunted-full-portfolio .hs-pullquote small { display: block; margin-top: 18px; color: #88898b; font: 400 12px Arial, sans-serif; letter-spacing: 0; }
+            body.haunted-full-portfolio .hs-premise-grid .hs-copy { margin-bottom: 21px; }
+            body.haunted-full-portfolio .hs-mechanic { margin-top: 45px; border-top: 1px solid rgba(255,255,255,.2); }
+            body.haunted-full-portfolio .hs-mechanic-row { display: grid; grid-template-columns: 40px 158px 1fr; gap: 12px; align-items: baseline; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,.12); }
+            body.haunted-full-portfolio .hs-mechanic-row b { color: #b64c5b; font: 700 12px Arial, sans-serif; }
+            body.haunted-full-portfolio .hs-mechanic-row strong { color: #f1eee9; font: 700 15px Arial, sans-serif; }
+            body.haunted-full-portfolio .hs-mechanic-row span { color: #aaa9a6; font: 400 14px/1.4 Arial, sans-serif; }
+
+            body.haunted-full-portfolio .hs-map-grid { display: grid; grid-template-columns: 490px 1fr; gap: 66px; align-items: start; margin-top: 34px; }
+            body.haunted-full-portfolio .hs-map-figure { margin: 0; }
+            body.haunted-full-portfolio .hs-map-figure img { display: block; width: 490px; height: 425px; object-fit: contain; object-position: center; background: #f7f7f4; }
+            body.haunted-full-portfolio .hs-map-copy { padding-top: 2px; }
+            body.haunted-full-portfolio .hs-map-copy .hs-copy { margin-top: 15px; }
+            body.haunted-full-portfolio .hs-map-notes { margin-top: 29px; }
+            body.haunted-full-portfolio .hs-map-notes article { display: grid; grid-template-columns: 92px 1fr; gap: 14px; padding: 13px 0; border-top: 1px solid rgba(255,255,255,.17); }
+            body.haunted-full-portfolio .hs-map-notes strong { color: #d76c7b; font: 700 13px Arial, sans-serif; }
+            body.haunted-full-portfolio .hs-map-notes p { color: #b9b7b3; font: 400 14px/1.4 Arial, sans-serif; }
+
+            body.haunted-full-portfolio .hs-threat-grid { display: grid; grid-template-columns: 550px 1fr; gap: 56px; margin-top: 37px; }
+            body.haunted-full-portfolio .hs-ghost-figure { margin: 0; }
+            body.haunted-full-portfolio .hs-ghost-figure img { display: block; width: 550px; height: 338px; object-fit: contain; object-position: center; background: #050505; }
+            body.haunted-full-portfolio .hs-ghost-figure figcaption { max-width: 520px; }
+            body.haunted-full-portfolio .hs-ghost-lead { margin-top: 26px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,.2); color: #cbc9c5; font: 400 15px/1.45 Arial, sans-serif; }
+            body.haunted-full-portfolio .hs-threat-table { border-top: 2px solid #a62b3d; }
+            body.haunted-full-portfolio .hs-threat-table article { padding: 13px 0 14px; border-bottom: 1px solid rgba(255,255,255,.17); }
+            body.haunted-full-portfolio .hs-threat-table strong { display: block; color: #f2eee9; font: 700 17px Arial, sans-serif; }
+            body.haunted-full-portfolio .hs-threat-table span { display: block; margin-top: 4px; color: #aaa9a6; font: 400 13px/1.4 Arial, sans-serif; }
+
+            body.haunted-full-portfolio .hs-reference-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 45px; }
+            body.haunted-full-portfolio .hs-reference-col { border-top: 2px solid #a62b3d; padding-top: 17px; }
+            body.haunted-full-portfolio .hs-reference-col h3 { margin: 0 0 26px; color: #f3f0eb; font: 700 21px Arial, sans-serif; }
+            body.haunted-full-portfolio .hs-reference-col article { min-height: 123px; border-top: 1px solid rgba(255,255,255,.18); padding-top: 13px; }
+            body.haunted-full-portfolio .hs-reference-col article + article { margin-top: 12px; }
+            body.haunted-full-portfolio .hs-reference-col a,
+            body.haunted-full-portfolio .hs-reference-col strong { display: block; color: #d66b7a; font: 700 16px Arial, sans-serif; text-decoration: none; }
+            body.haunted-full-portfolio .hs-reference-col p { margin-top: 8px; color: #b9b7b3; font: 400 14px/1.42 Arial, sans-serif; }
+            body.haunted-full-portfolio .hs-reference-note { position: absolute; left: 76px; bottom: 55px; color: #858584; font: 400 11px Arial, sans-serif; }
+
+            body.haunted-full-portfolio .hs-process-grid { display: grid; grid-template-columns: 385px 1fr; gap: 74px; margin-top: 39px; }
+            body.haunted-full-portfolio .hs-process-grid .hs-copy { margin-top: 17px; }
+            body.haunted-full-portfolio .hs-process-facts { margin-top: 35px; border-top: 1px solid rgba(255,255,255,.18); }
+            body.haunted-full-portfolio .hs-process-facts div { display: grid; grid-template-columns: 105px 1fr; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,.12); }
+            body.haunted-full-portfolio .hs-process-facts b { color: #d66b7a; font: 700 12px Arial, sans-serif; }
+            body.haunted-full-portfolio .hs-process-facts span { color: #b9b7b3; font: 400 13px/1.35 Arial, sans-serif; }
+            body.haunted-full-portfolio .hs-timeline { border-top: 2px solid #a62b3d; }
+            body.haunted-full-portfolio .hs-timeline article { display: grid; grid-template-columns: 120px 1fr; gap: 19px; padding: 19px 0; border-bottom: 1px solid rgba(255,255,255,.18); }
+            body.haunted-full-portfolio .hs-timeline time { color: #d66b7a; font: 700 13px Arial, sans-serif; }
+            body.haunted-full-portfolio .hs-timeline h3 { margin: 0; color: #f2eee9; font: 700 19px Arial, sans-serif; }
+            body.haunted-full-portfolio .hs-timeline p { margin-top: 6px; color: #b9b7b3; font: 400 15px/1.42 Arial, sans-serif; }
+
+            body.haunted-full-portfolio .hs-ethics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px 55px; margin-top: 44px; }
+            body.haunted-full-portfolio .hs-ethics-grid article { display: grid; grid-template-columns: 44px 1fr; gap: 17px; min-height: 170px; padding: 20px 0 10px; border-top: 2px solid #a62b3d; }
+            body.haunted-full-portfolio .hs-ethics-grid b { color: #d66b7a; font: 700 13px Arial, sans-serif; }
+            body.haunted-full-portfolio .hs-ethics-grid h3 { margin: 0; color: #f2eee9; font: 700 21px Arial, sans-serif; }
+            body.haunted-full-portfolio .hs-ethics-grid p { max-width: 410px; margin-top: 10px; color: #b9b7b3; font: 400 15px/1.46 Arial, sans-serif; }
+            body.haunted-full-portfolio .hs-ethics-note { position: absolute; left: 76px; bottom: 55px; color: #858584; font: 400 11px Arial, sans-serif; }
+
+            body.haunted-full-portfolio .hs-close-grid { display: grid; grid-template-columns: 1.22fr .78fr; gap: 76px; margin-top: 43px; }
+            body.haunted-full-portfolio .hs-contribution-lead { color: #f3f0eb; font: 500 25px/1.35 Arial, sans-serif; letter-spacing: -.02em; }
+            body.haunted-full-portfolio .hs-contribution-list { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 30px; margin-top: 26px; }
+            body.haunted-full-portfolio .hs-contribution-list article { border-top: 1px solid rgba(255,255,255,.18); padding-top: 10px; }
+            body.haunted-full-portfolio .hs-contribution-list strong { display: block; color: #d66b7a; font: 700 14px Arial, sans-serif; }
+            body.haunted-full-portfolio .hs-contribution-list span { display: block; margin-top: 6px; color: #b9b7b3; font: 400 13px/1.38 Arial, sans-serif; }
+            body.haunted-full-portfolio .hs-close-side { border-top: 2px solid #a62b3d; padding-top: 20px; }
+            body.haunted-full-portfolio .hs-close-side > p { color: #b9b7b3; font: 400 16px/1.5 Arial, sans-serif; }
+            body.haunted-full-portfolio .hs-repo-link { display: grid; grid-template-columns: 104px 1fr; gap: 18px; align-items: center; margin-top: 37px; color: #f2eee9; text-decoration: none; }
+            body.haunted-full-portfolio .hs-repo-link img { display: block; width: 104px; height: 104px; padding: 7px; background: #fff; }
+            body.haunted-full-portfolio .hs-repo-link strong { display: block; font: 700 16px Arial, sans-serif; }
+            body.haunted-full-portfolio .hs-repo-link small { display: block; margin-top: 6px; color: #999997; font: 400 11px/1.35 Arial, sans-serif; word-break: break-word; }
+            body.haunted-full-portfolio .hs-status { margin-top: 36px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,.18); color: #858584; font: 400 12px/1.4 Arial, sans-serif; }
+        }
     </style>
 </head>
 <body>
@@ -985,6 +1141,185 @@
                     <p class="text-lead reveal">My work spanned the project end to end, from building the game's narrative and world, to modelling and designing its visual identity, to implementing it in-engine later on. I wrote the cast's backstories, giving the bullies and the three bound ghosts believable grievances, then carried that world-building into the school's layout, its rules for the Ghost Festival curfew, and the character movement routes that tie the two together.</p>
                     <p class="text-body reveal">That world needed a face, so I modelled and art-directed its key figures in Maya, including the Main Ghost's four-headed design, translating the narrative's tone into something the player could actually see and fear. On the research side, I looked at why horror and games pair so naturally, drawing on genre familiarity, sound design's pull on emotion, and how games like Omori fold real struggles like bullying into a horror frame without losing the player's sympathy for the characters. That reading shaped how we wrote the bullies, as people with a backstory rather than just obstacles.</p>
                     <p class="text-body reveal delay-1">Alongside the creative work, I kept production moving day to day, holding the Monday/Friday meeting rhythm and coordinating the handover as design members rotated onto the technical team. From week 9, my own role shifted the same way, moving from narrative, world and character design into Unity implementation for the rest of the build.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="haunted-page hs-cover haunted-full-only">
+            <div class="hs-inner">
+                <div class="hs-cover-copy">
+                    <div class="hs-topline"><span>Shuhan Zhang / Portfolio case study</span><span>Unity + C#</span></div>
+                    <h1>Silent Night<br>at the <span>Haunted<br>School</span></h1>
+                    <p>A first-person horror RPG in which a bullied student is locked inside his school on the night the dead return.</p>
+                    <div class="hs-cover-meta">
+                        <div><small>My role</small><strong>Design team · Team manager</strong></div>
+                        <div><small>Team</small><strong>Four collaborators</strong></div>
+                        <div><small>Focus</small><strong>Narrative · world · character</strong></div>
+                        <div><small>Build</small><strong>Unity · Maya · C#</strong></div>
+                    </div>
+                </div>
+                <figure class="hs-cover-visual">
+                    <img src="Image/Index_SilentNight.webp" alt="Dark nighttime environment with a lit path and trees">
+                    <figcaption class="hs-figcaption">Nighttime atmosphere study used on the project page.</figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <section class="haunted-page haunted-full-only">
+            <div class="hs-inner">
+                <div class="hs-topline"><span>01 / Premise</span><span>Horror built around restraint</span></div>
+                <h2 class="hs-heading">The player’s voice<br>becomes the <em>risk.</em></h2>
+                <div class="hs-premise-grid">
+                    <div>
+                        <p class="hs-copy">Paul is forced to spend the night at school with the three classmates who bully him. After curfew, the ghosts wake. He must solve the building’s puzzles and reach an exit while discovering why he may have been brought there.</p>
+                        <p class="hs-pullquote">“The silent survive. The screaming perish.”<small>From the game’s opening narration</small></p>
+                    </div>
+                    <div>
+                        <span class="hs-label">The core interaction</span>
+                        <p class="hs-copy" style="margin-top: 14px;">A live microphone makes fear consequential. Several spirits respond to sound rather than sight, so a scream can change the encounter instead of merely expressing it.</p>
+                        <div class="hs-mechanic">
+                            <div class="hs-mechanic-row"><b>01</b><strong>Explore</strong><span>Read the school and its locked routes.</span></div>
+                            <div class="hs-mechanic-row"><b>02</b><strong>Listen</strong><span>Use sound as a warning of nearby danger.</span></div>
+                            <div class="hs-mechanic-row"><b>03</b><strong>Stay quiet</strong><span>Avoid drawing the spirits closer.</span></div>
+                            <div class="hs-mechanic-row"><b>04</b><strong>Escape</strong><span>Resolve the puzzles and leave the building.</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="haunted-page haunted-full-only">
+            <div class="hs-inner">
+                <div class="hs-topline"><span>02 / World design</span><span>Route sketch</span></div>
+                <h2 class="hs-heading">A school that <em>gates</em> escape.</h2>
+                <div class="hs-map-grid">
+                    <figure class="hs-map-figure">
+                        <img src="Image/SilentNight_Map.webp" alt="Uncropped level map showing the locker corridor, courtyard, obstacles and colour-coded doors">
+                        <figcaption class="hs-figcaption">Early level map. Red marks locked doors; green marks opened doors.</figcaption>
+                    </figure>
+                    <div class="hs-map-copy">
+                        <span class="hs-label">From story rule to spatial rule</span>
+                        <p class="hs-copy">The curfew traps the cast in a familiar building made hostile. The map connects the locker corridor to the courtyard through obstacles and doors that change state, turning movement through school into a sequence of decisions.</p>
+                        <div class="hs-map-notes">
+                            <article><strong>Thresholds</strong><p>Locked doors hold back progress until the route is understood.</p></article>
+                            <article><strong>Exposure</strong><p>Open space and tight corridors create different kinds of vulnerability.</p></article>
+                            <article><strong>Memory</strong><p>Repeated paths let players learn the building while conditions change.</p></article>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="haunted-page haunted-full-only">
+            <div class="hs-inner">
+                <div class="hs-topline"><span>03 / Character & threat</span><span>Visual design + encounter logic</span></div>
+                <h2 class="hs-heading">The haunting has <em>rules.</em></h2>
+                <div class="hs-threat-grid">
+                    <div>
+                        <figure class="hs-ghost-figure">
+                            <img src="Image/SilentNight_Mainghost.webp" alt="Four-headed Main Ghost model against a black background">
+                            <figcaption class="hs-figcaption">Main Ghost character model. The four heads make the figure identifiable before the player can read its intent.</figcaption>
+                        </figure>
+                        <p class="hs-ghost-lead">A former student, bullied by the same group, guides Paul toward the truth - but attacks when he screams instead of listening.</p>
+                    </div>
+                    <div class="hs-threat-table">
+                        <article><strong>Main Ghost</strong><span>Roams freely; guidance and danger come from the same figure.</span></article>
+                        <article><strong>Ghost in the Painting</strong><span>Moves between frames; strikes if the player stops watching.</span></article>
+                        <article><strong>Ghost in the Mirror</strong><span>Appears in reflections; closes in under a prolonged stare.</span></article>
+                        <article><strong>Ghost in the Hole</strong><span>Waits in dark corners; a scream makes him faster.</span></article>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="haunted-page haunted-full-only">
+            <div class="hs-inner">
+                <div class="hs-topline"><span>04 / Design references</span><span>Research to decision</span></div>
+                <h2 class="hs-heading">Borrow the <em>principle,</em><br>not the scene.</h2>
+                <p class="hs-deck">The team drew from horror games and folklore to define tension, pacing and the school’s supernatural rules.</p>
+                <div class="hs-reference-grid">
+                    <div class="hs-reference-col">
+                        <h3>Threat & evidence</h3>
+                        <article><a href="https://store.steampowered.com/app/739630/Phasmophobia/">Phasmophobia ↗</a><p>Spirits that reveal themselves through traces and behaviour, reworked for a single-player story.</p></article>
+                        <article><a href="https://store.steampowered.com/app/319510/Five_Nights_at_Freddys/">Five Nights at Freddy’s ↗</a><p>Survival tension when a threat cannot simply be defeated.</p></article>
+                    </div>
+                    <div class="hs-reference-col">
+                        <h3>Pacing & tone</h3>
+                        <article><a href="https://ddlc.moe/">Doki Doki Literature Club! ↗</a><p>An ordinary setup that slowly reveals a darker story underneath.</p></article>
+                        <article><a href="https://store.steampowered.com/app/594330/Visage/">Visage ↗</a><p>Atmosphere and anticipation carrying a scene before any scripted shock.</p></article>
+                    </div>
+                    <div class="hs-reference-col">
+                        <h3>Setting & folklore</h3>
+                        <article><strong>Hungry Ghost Festival</strong><p>The Ghost Month setting supplied the calendar hook and curfew rule.</p></article>
+                        <article><strong>Mirror & painting stories</strong><p>Folklore about haunted images informed two spirits’ encounter rules.</p></article>
+                    </div>
+                </div>
+                <p class="hs-reference-note">Linked titles open source pages in the PDF. The folklore entries describe the team’s research themes, not a single source.</p>
+            </div>
+        </section>
+
+        <section class="haunted-page haunted-full-only">
+            <div class="hs-inner">
+                <div class="hs-topline"><span>05 / Production</span><span>Four-person team</span></div>
+                <h2 class="hs-heading">Design first.<br><em>Then build.</em></h2>
+                <div class="hs-process-grid">
+                    <div>
+                        <span class="hs-label">A moving team structure</span>
+                        <p class="hs-copy">The team divided into design and technical work, with people transitioning as the project progressed. My role moved from narrative, world and character design into Unity implementation from week 9.</p>
+                        <div class="hs-process-facts">
+                            <div><b>Tools</b><span>Maya, Unity and C#</span></div>
+                            <div><b>Assets</b><span>Shared through Google Drive</span></div>
+                            <div><b>Code</b><span>GitHub with agreed commit conventions</span></div>
+                            <div><b>Cadence</b><span>Weekly beta builds and regular team meetings</span></div>
+                        </div>
+                    </div>
+                    <div class="hs-timeline">
+                        <article><time>WEEKS 4-6</time><div><h3>Design first</h3><p>Three members focused on characters, world and story while the technical foundation began.</p></div></article>
+                        <article><time>WEEKS 6-9</time><div><h3>Transition</h3><p>Design members moved to the technical team in stages, keeping implementation staffed.</p></div></article>
+                        <article><time>WEEKS 9-13</time><div><h3>Full build</h3><p>All four members worked on implementation and weekly testing toward the final build.</p></div></article>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="haunted-page haunted-full-only">
+            <div class="hs-inner">
+                <div class="hs-topline"><span>06 / Responsible design</span><span>Care is a game mechanic, too</span></div>
+                <h2 class="hs-heading">Make the fear <em>consensual.</em></h2>
+                <p class="hs-deck">A bullying story with microphone input needs safeguards alongside its dramatic ideas.</p>
+                <div class="hs-ethics-grid">
+                    <article><b>01</b><div><h3>Age gate</h3><p>18+ rating and a warning before play, so the subject matter is clear in advance.</p></div></article>
+                    <article><b>02</b><div><h3>Player wellbeing</h3><p>Warnings for jump scares and photosensitive content, plus a planned reduced-horror option.</p></div></article>
+                    <article><b>03</b><div><h3>Cultural context</h3><p>The Hungry Ghost Festival is presented as a real tradition, with in-game context rather than caricature.</p></div></article>
+                    <article><b>04</b><div><h3>Microphone consent</h3><p>Explicit permission before listening; a button-based alternative for players who decline.</p></div></article>
+                </div>
+                <p class="hs-ethics-note">Safeguards described here reflect the group’s design plan; this page does not claim that every option was shipped.</p>
+            </div>
+        </section>
+
+        <section class="haunted-page haunted-full-only">
+            <div class="hs-inner">
+                <div class="hs-topline"><span>07 / My contribution</span><span>What I carried through</span></div>
+                <h2 class="hs-heading">From the story’s logic<br>to the <em>player’s route.</em></h2>
+                <div class="hs-close-grid">
+                    <div>
+                        <p class="hs-contribution-lead">My contribution connected the game’s narrative, visual identity and spatial rules before I moved into implementation.</p>
+                        <div class="hs-contribution-list">
+                            <article><strong>Narrative</strong><span>Backstories for Paul, the bullies and the bound spirits.</span></article>
+                            <article><strong>World</strong><span>School layout, Ghost Festival curfew and movement routes.</span></article>
+                            <article><strong>Character</strong><span>Main Ghost modelling and art direction in Maya.</span></article>
+                            <article><strong>Production</strong><span>Meeting rhythm, handovers and later Unity work.</span></article>
+                        </div>
+                    </div>
+                    <div class="hs-close-side">
+                        <span class="hs-label">Case-study note</span>
+                        <p style="margin-top: 13px;">The most important design move was making the story’s silence rule playable: the microphone turns the player’s own reaction into part of the risk.</p>
+                        <a class="hs-repo-link" href="https://github.com/em05niper/Group-Project-Repository">
+                            <img src="Image/HauntedSchool_QR_GitHub.svg" alt="QR code to the project GitHub repository">
+                            <span><strong>Explore the project</strong><small>github.com/em05niper/Group-Project-Repository</small></span>
+                        </a>
+                        <p class="hs-status">Project stage: in-engine build in progress. Images shown here are the available project-page studies and model, not a claim of a finished release.</p>
+                    </div>
                 </div>
             </div>
         </section>

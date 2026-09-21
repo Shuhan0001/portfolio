@@ -252,6 +252,9 @@
             justify-content: center;
             color: #ffffff;
         }
+        @media (max-width: 767px) {
+            .start-prompt { display: none; }
+        }
 
         .start-prompt .start-arrow {
             width: 32px;
@@ -300,6 +303,45 @@
             width: 100%;
             height: 2px;
             background-color: #fff;
+        }
+
+        .project-row:focus-visible {
+            outline: 2px solid #fff;
+            outline-offset: 4px;
+        }
+
+        .ai-disclosure {
+            max-width: 80rem;
+            width: calc(100% - 4rem);
+            margin: 0 auto 1.5rem;
+            padding: 1.5rem 0 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.16);
+            color: rgba(255, 255, 255, 0.66);
+        }
+        .ai-disclosure-head {
+            display: grid;
+            grid-template-columns: minmax(180px, 0.55fr) minmax(0, 1.45fr);
+            gap: 2rem;
+            align-items: baseline;
+            margin-bottom: 1.1rem;
+        }
+        .ai-disclosure h3 { margin: 0; color: #fff; font-size: 1rem; font-weight: 650; }
+        .ai-disclosure-head p { margin: 0; font-size: 0.8rem; line-height: 1.55; }
+        .ai-disclosure-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 2rem; }
+        .ai-disclosure-list div {
+            display: grid;
+            grid-template-columns: minmax(115px, 0.45fr) minmax(0, 1.55fr);
+            gap: 1rem;
+            padding: 0.8rem 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .ai-disclosure-list dt { color: #fff; font-size: 0.78rem; font-weight: 600; }
+        .ai-disclosure-list dd { margin: 0; font-size: 0.76rem; line-height: 1.5; }
+        @media (max-width: 760px) {
+            .ai-disclosure { width: calc(100% - 4rem); }
+            .ai-disclosure-head, .ai-disclosure-list { display: block; }
+            .ai-disclosure-head p { margin-top: 0.6rem; }
+            .ai-disclosure-list div { grid-template-columns: 1fr; gap: 0.35rem; }
         }
 
         /* Row list entrance */
@@ -571,12 +613,124 @@
             </div>
         </div>
 
+        <section class="ai-disclosure relative z-20" aria-labelledby="ai-disclosure-title">
+            <div class="ai-disclosure-head">
+                <h3 id="ai-disclosure-title">AI use &amp; authorship</h3>
+                <p>Assistance is credited by project below. The concepts, design decisions and evaluation remain my responsibility; each case study gives more context.</p>
+            </div>
+            <dl class="ai-disclosure-list">
+                <div><dt>Cogni-Stream</dt><dd>Gemini assisted JavaScript debugging; Midjourney produced product imagery; Runway produced elements of the promotional video. I directed, selected and reviewed the outputs.</dd></div>
+                <div><dt>Revive</dt><dd>Generative AI assisted Blueprint refinement and a small number of 2D textures. It was not used for participant data, recruitment, writing or analysis.</dd></div>
+                <div><dt>MiniQuest</dt><dd>AI provided refactoring and debugging suggestions during development, and idea-development support for the report. I made and validated the design and implementation decisions.</dd></div>
+                <div><dt>AI Codegen</dt><dd>Generative code is the subject of this study: Gemini produced versions v2–v6 from my prompts. I tested, logged and analysed the outputs.</dd></div>
+            </dl>
+        </section>
+
         <footer class="w-full text-center text-xs font-mono text-white/30 uppercase tracking-[0.2em] py-8 z-20 mt-auto">
             © 2026 ASHTON (SHUHAN) ZHANG
         </footer>
 
     </div>
 </main>
+
+<script>
+    // Original layered Web Audio cues, inspired by a console's spacious UI feel.
+    // Sound is enabled by default; browsers may defer it until the first user gesture.
+    (() => {
+        const list = document.getElementById('project-list');
+        const rows = [...list.querySelectorAll('.project-row')];
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        let audioContext;
+        let selectedRow = null;
+        let lastHoverAt = -Infinity;
+        let lastPressAt = -Infinity;
+
+        if (!AudioContextClass) return;
+
+        async function ready() {
+            if (document.hidden) return false;
+            try {
+                audioContext ||= new AudioContextClass();
+                if (audioContext.state !== 'running') await audioContext.resume();
+                return audioContext.state === 'running';
+            } catch (_) {
+                return false;
+            }
+        }
+
+        // Unlock on any deliberate interaction, not just a project click.
+        window.addEventListener('pointerdown', () => { void ready(); }, { capture: true });
+        window.addEventListener('keydown', () => { void ready(); }, { capture: true });
+
+        function voice(type, startHz, endHz, peak, attack, duration, startTime, shimmer = false) {
+            const oscillator = audioContext.createOscillator();
+            const envelope = audioContext.createGain();
+            oscillator.type = type;
+            oscillator.frequency.setValueAtTime(startHz, startTime);
+            oscillator.frequency.exponentialRampToValueAtTime(endHz, startTime + duration);
+            if (shimmer) {
+                const modulator = audioContext.createOscillator();
+                const depth = audioContext.createGain();
+                modulator.frequency.setValueAtTime(46, startTime);
+                modulator.frequency.exponentialRampToValueAtTime(18, startTime + duration);
+                depth.gain.setValueAtTime(65, startTime);
+                depth.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+                modulator.connect(depth).connect(oscillator.frequency);
+                modulator.start(startTime);
+                modulator.stop(startTime + duration + 0.015);
+            }
+            envelope.gain.setValueAtTime(0.0001, startTime);
+            envelope.gain.exponentialRampToValueAtTime(peak, startTime + attack);
+            envelope.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+            oscillator.connect(envelope).connect(audioContext.destination);
+            oscillator.start(startTime);
+            oscillator.stop(startTime + duration + 0.015);
+        }
+
+        async function playHover(index, row) {
+            const now = performance.now();
+            if (now - lastHoverAt < 90 || now - lastPressAt < 160) return;
+            lastHoverAt = now;
+            if (!await ready() || selectedRow !== row || performance.now() - now > 180 || performance.now() - lastPressAt < 160) return;
+            const t = audioContext.currentTime;
+            const pitch = 570 + index * 19;
+            voice('sine', pitch, pitch * 1.37, 0.027, 0.006, 0.16, t, true);
+            voice('triangle', pitch * 1.82, pitch * 2.25, 0.008, 0.012, 0.12, t + 0.012);
+            voice('sine', pitch * 2.72, pitch * 2.95, 0.004, 0.02, 0.22, t + 0.045);
+            voice('sine', pitch * 1.48, pitch * 1.3, 0.006, 0.015, 0.2, t + 0.09);
+        }
+
+        async function playPress(index) {
+            const now = performance.now();
+            if (now - lastPressAt < 420) return;
+            lastPressAt = now;
+            if (!await ready()) return;
+            const t = audioContext.currentTime;
+            const pitch = 235 + index * 5;
+            voice('triangle', pitch, pitch * 0.7, 0.047, 0.008, 0.35, t);
+            voice('sine', pitch * 2.4, pitch * 2.08, 0.029, 0.012, 0.31, t, true);
+            voice('sine', pitch * 3.6, pitch * 4.2, 0.015, 0.012, 0.31, t + 0.036);
+            voice('triangle', pitch * 6.4, pitch * 7.1, 0.007, 0.018, 0.22, t + 0.075);
+            voice('sine', pitch * 4.2, pitch * 3.8, 0.008, 0.014, 0.28, t + 0.14);
+        }
+
+        rows.forEach((row, index) => {
+            const select = () => {
+                if (selectedRow === row) return;
+                selectedRow = row;
+                void playHover(index, row);
+            };
+            row.addEventListener('mouseenter', select);
+            row.addEventListener('focus', select);
+            row.addEventListener('pointerdown', () => { void playPress(index); });
+            row.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' || event.key === ' ') void playPress(index);
+            });
+            row.addEventListener('click', () => { void playPress(index); });
+        });
+        list.addEventListener('mouseleave', () => { selectedRow = null; });
+    })();
+</script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
@@ -585,17 +739,19 @@
     // --------------------------------------------------------
     // --------------------------------------------------------
 
-    document.querySelectorAll('.magnetic').forEach(elem => {
-        elem.addEventListener('mousemove', (e) => {
-            const rect = elem.getBoundingClientRect();
-            const x = (e.clientX - rect.left - rect.width / 2) * 0.4;
-            const y = (e.clientY - rect.top - rect.height / 2) * 0.4;
-            gsap.to(elem, { x: x, y: y, duration: 0.3, ease: "power2.out" });
+    if (window.gsap) {
+        document.querySelectorAll('.magnetic').forEach(elem => {
+            elem.addEventListener('mousemove', (e) => {
+                const rect = elem.getBoundingClientRect();
+                const x = (e.clientX - rect.left - rect.width / 2) * 0.4;
+                const y = (e.clientY - rect.top - rect.height / 2) * 0.4;
+                gsap.to(elem, { x: x, y: y, duration: 0.3, ease: "power2.out" });
+            });
+            elem.addEventListener('mouseleave', () => {
+                gsap.to(elem, { x: 0, y: 0, duration: 0.8, ease: "elastic.out(1, 0.3)" });
+            });
         });
-        elem.addEventListener('mouseleave', () => {
-            gsap.to(elem, { x: 0, y: 0, duration: 0.8, ease: "elastic.out(1, 0.3)" });
-        });
-    });
+    }
 
     // --------------------------------------------------------
     // 2. Smooth Scrolling (Lenis)
@@ -604,16 +760,18 @@
         history.scrollRestoration = 'manual';
     }
 
-    const lenis = new Lenis({
-        duration: 1.2,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        smooth: true,
-    });
+    if (window.Lenis && window.gsap) {
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            smooth: true,
+        });
 
-    gsap.ticker.add((time) => {
-        lenis.raf(time * 1000);
-    });
-    gsap.ticker.lagSmoothing(0);
+        gsap.ticker.add((time) => {
+            lenis.raf(time * 1000);
+        });
+        gsap.ticker.lagSmoothing(0);
+    }
 
     // --------------------------------------------------------
     // 3. Page Transitions

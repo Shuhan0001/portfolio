@@ -382,6 +382,31 @@
         }
 
         .prototype-btn-group { margin-top: 3rem; display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
+        .prototype-btn-group.centered {
+            margin-top: 0; margin-bottom: 2rem; justify-content: space-between;
+            max-width: 620px; margin-left: auto; margin-right: auto;
+        }
+        .prototype-btn-group.centered .prototype-btn { flex: 1 1 0; justify-content: center; }
+        /* Quieter sibling of the hero's glowing primary pill: same shape and motion,
+           but outlined with a faint cyan tint so it doesn't compete with the section title */
+        .prototype-btn.tonal {
+            position: relative; overflow: hidden; isolation: isolate;
+            background: rgba(69, 230, 255, 0.06); color: var(--text-primary); box-shadow: none;
+            border: 1px solid rgba(69, 230, 255, 0.35);
+            transition: color 0.35s var(--ease-cinematic), border-color 0.35s var(--ease-cinematic), transform 0.4s var(--ease-cinematic);
+        }
+        /* Solid cyan fill wipes in from the left on hover instead of a soft glow */
+        .prototype-btn.tonal::before {
+            content: ''; position: absolute; inset: 0; z-index: -1;
+            background: var(--accent-cyan);
+            transform: translateX(-100%);
+            transition: transform 0.45s var(--ease-cinematic);
+        }
+        .prototype-btn.tonal:hover {
+            background: rgba(69, 230, 255, 0.06); color: #001014; border-color: var(--accent-cyan);
+            box-shadow: none;
+        }
+        .prototype-btn.tonal:hover::before { transform: translateX(0); }
         .prototype-btn {
             margin-top: 0; display: inline-flex; align-items: center; gap: 0.6rem; width: fit-content;
             padding: 0.9rem 1.6rem; border-radius: 999px; background: var(--accent-cyan); color: #001014;
@@ -405,6 +430,11 @@
             background: rgba(255, 255, 255, 0.06); color: var(--text-primary); border-color: rgba(255, 255, 255, 0.4);
             box-shadow: none;
         }
+
+        /* Content used only by the authored portfolio-PDF layout. */
+        .print-link-card,
+        .print-only,
+        .application-only { display: none !important; }
 
         .tier-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -815,6 +845,1295 @@
                 color: var(--text-secondary) !important;
                 word-break: break-all;
             }
+
+            /* Authored 16:9 portfolio pages -------------------------------------- */
+            @page {
+                size: 13.33in 7.5in;
+                margin: 0;
+            }
+
+            html {
+                width: 13.33in !important;
+                font-size: 80% !important;
+                background: #020507 !important;
+            }
+
+            body {
+                width: 13.33in !important;
+                margin: 0 !important;
+                background: #020507 !important;
+                counter-reset: cogni-page;
+            }
+
+            main {
+                display: block !important;
+                width: 13.33in !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            main > section {
+                --print-glow-x: 82%;
+                --print-glow-y: 16%;
+                --print-signal-x: 12%;
+                --print-signal-y: 86%;
+                position: relative !important;
+                isolation: isolate;
+                width: 13.33in !important;
+                max-width: none !important;
+                height: 7.5in !important;
+                min-height: 7.5in !important;
+                margin: 0 !important;
+                padding: 12mm 14mm !important;
+                overflow: hidden !important;
+                page-break-before: auto !important;
+                break-before: auto !important;
+                page-break-after: always;
+                break-after: page;
+                page-break-inside: avoid;
+                break-inside: avoid-page;
+                counter-increment: cogni-page;
+                background-color: #020507 !important;
+                background-image:
+                    radial-gradient(ellipse 60% 90% at var(--print-glow-x) var(--print-glow-y), rgba(69, 230, 255, 0.18) 0%, rgba(69, 230, 255, 0.065) 30%, rgba(69, 230, 255, 0.015) 52%, transparent 72%),
+                    radial-gradient(ellipse 52% 74% at var(--print-signal-x) var(--print-signal-y), rgba(251, 91, 91, 0.105) 0%, rgba(251, 91, 91, 0.022) 44%, transparent 72%),
+                    linear-gradient(135deg, #03080b 0%, #010304 50%, #050208 100%) !important;
+                box-shadow:
+                    inset 0 0 0 1px rgba(255, 255, 255, 0.035),
+                    inset 0 -100px 140px rgba(0, 0, 0, 0.32) !important;
+            }
+
+            main > section:nth-of-type(2n) { --print-glow-x: 8%; --print-glow-y: 18%; --print-signal-x: 90%; --print-signal-y: 84%; }
+            main > section:nth-of-type(3n) { --print-glow-x: 88%; --print-glow-y: 78%; --print-signal-x: 14%; --print-signal-y: 8%; }
+            main > section:nth-of-type(5n) { --print-glow-x: 52%; --print-glow-y: 94%; --print-signal-x: 92%; --print-signal-y: 6%; }
+
+            main > section::after {
+                content: "COGNI-STREAM  /  " counter(cogni-page, decimal-leading-zero);
+                position: absolute;
+                z-index: 3;
+                right: 14mm;
+                bottom: 7mm;
+                font-size: 0.56rem;
+                font-weight: 600;
+                letter-spacing: 0.17em;
+                color: rgba(255, 255, 255, 0.31);
+            }
+
+            main > section > * {
+                position: relative;
+                z-index: 1;
+            }
+
+            .mesh-container,
+            .noise-overlay,
+            .ambient-light {
+                display: none !important;
+            }
+
+            .container {
+                width: 100% !important;
+                max-width: none !important;
+            }
+
+            .hero,
+            .section {
+                padding: 12mm 14mm !important;
+            }
+
+            .print-only {
+                display: block !important;
+            }
+
+            .source-section {
+                display: none !important;
+            }
+
+            .site-header {
+                display: flex !important;
+                position: absolute !important;
+                top: 8mm !important;
+                left: 14mm !important;
+                z-index: 10 !important;
+                animation: none !important;
+            }
+
+            .logo-barcode {
+                font-family: var(--font-main) !important;
+                font-size: 1.2rem !important;
+                font-weight: 700;
+                letter-spacing: 0.18em !important;
+            }
+
+            .logo-caption {
+                display: none !important;
+            }
+
+            .text-outline {
+                color: var(--accent-cyan) !important;
+                text-shadow: 0 0 26px rgba(69, 230, 255, 0.24) !important;
+            }
+
+            .media-frame,
+            .tier-card,
+            .tweet-card,
+            .code-panel,
+            .source-case,
+            .quote-block {
+                border-color: rgba(69, 230, 255, 0.14) !important;
+                box-shadow: 0 20px 48px -32px rgba(69, 230, 255, 0.52), inset 0 1px 0 rgba(255, 255, 255, 0.045) !important;
+            }
+
+            /* Cover QR cards */
+            .hero {
+                padding-top: 21mm !important;
+                display: block !important;
+            }
+
+            .hero-title {
+                font-size: 5.4rem !important;
+                line-height: 0.98 !important;
+                margin-bottom: 1.1rem !important;
+            }
+
+            .hero .text-lead {
+                max-width: 820px !important;
+                font-size: 1.05rem !important;
+            }
+
+            .hero-meta {
+                grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+                gap: 1rem !important;
+                max-width: 100% !important;
+                margin-top: 2rem !important;
+                padding-top: 1.4rem !important;
+            }
+
+            .hero .prototype-btn-group {
+                display: grid !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 1rem !important;
+                width: min(650px, 62%) !important;
+                margin-top: 1.7rem !important;
+            }
+
+            .prototype-btn,
+            .prototype-btn.secondary,
+            .prototype-btn.tonal {
+                display: block !important;
+                width: 100% !important;
+                padding: 0 !important;
+                border: 0 !important;
+                background: transparent !important;
+                box-shadow: none !important;
+            }
+
+            .prototype-btn::before,
+            .prototype-btn::after,
+            .prototype-btn .action-label,
+            .prototype-btn > svg {
+                display: none !important;
+                content: none !important;
+            }
+
+            .print-link-card {
+                display: grid !important;
+                grid-template-columns: 21mm minmax(0, 1fr);
+                align-items: center;
+                gap: 0.9rem;
+                min-height: 27mm;
+                padding: 3mm !important;
+                overflow: hidden;
+                border: 1px solid rgba(69, 230, 255, 0.23);
+                border-radius: 14px;
+                color: var(--text-primary);
+                background: linear-gradient(145deg, rgba(69, 230, 255, 0.085), rgba(255, 255, 255, 0.02));
+                box-shadow: 0 22px 52px -36px rgba(69, 230, 255, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.055);
+            }
+
+            .print-link-card img,
+            .print-file-badge {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 21mm;
+                height: 21mm;
+                padding: 1.2mm;
+                border-radius: 7px;
+                background: #fff;
+            }
+
+            .print-file-badge {
+                font-size: 0.72rem;
+                font-weight: 800;
+                letter-spacing: 0.08em;
+                color: #041014;
+            }
+
+            .print-link-copy,
+            .print-link-kicker,
+            .print-link-title,
+            .print-link-url {
+                display: block;
+            }
+
+            .print-link-copy {
+                min-width: 0;
+                text-align: left;
+                text-transform: none;
+            }
+
+            .print-link-kicker {
+                margin-bottom: 0.15rem;
+                font-size: 0.58rem;
+                font-weight: 700;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+                color: var(--accent-cyan);
+            }
+
+            .print-link-title {
+                font-size: 0.92rem;
+                font-weight: 700;
+                line-height: 1.15;
+                color: var(--text-primary);
+            }
+
+            .print-link-url {
+                margin-top: 0.32rem;
+                overflow: hidden;
+                font-size: 0.5rem;
+                font-weight: 400;
+                line-height: 1.2;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                color: var(--text-tertiary);
+            }
+
+            /* One-page chapter layouts */
+            .premise-section .grid-split {
+                grid-template-columns: 0.62fr 2.38fr !important;
+                gap: 2.3rem !important;
+            }
+
+            .premise-section h2 {
+                font-size: 3.2rem !important;
+            }
+
+            .premise-section .text-body {
+                font-size: 0.76rem !important;
+                line-height: 1.42 !important;
+            }
+
+            .premise-section [style*="margin-top: 3rem"] {
+                margin-top: 0.65rem !important;
+            }
+
+            .premise-section .media-frame.aspect-video {
+                width: 100% !important;
+                height: 28vh !important;
+                aspect-ratio: auto !important;
+            }
+
+            .premise-section .media-frame.aspect-video img {
+                object-position: center 42% !important;
+            }
+
+            .premise-section .caption {
+                margin-top: 0.35rem !important;
+                font-size: 0.58rem !important;
+            }
+
+            .premise-section .data-label {
+                margin-top: 0.65rem !important;
+                font-size: 0.68rem !important;
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+            }
+
+            .premise-section .tier-grid {
+                grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+                gap: 0.65rem !important;
+                margin-top: 0.65rem !important;
+            }
+
+            .premise-section .tier-card {
+                gap: 0.5rem !important;
+                padding: 0.7rem !important;
+                border-radius: 10px;
+            }
+
+            .premise-section .tier-name { font-size: 0.72rem !important; }
+            .premise-section .tier-price { font-size: 0.98rem !important; }
+            .premise-section .tier-block span.label { margin-bottom: 0.2rem !important; font-size: 0.48rem !important; }
+            .premise-section .tier-block p { font-size: 0.58rem !important; line-height: 1.25 !important; }
+
+            .problem-space-section h2,
+            .design-background-section h2,
+            .rationale-section h2 {
+                margin-bottom: 0.75rem !important;
+            }
+
+            .problem-space-section > .text-lead,
+            .design-background-section > .text-lead {
+                margin-bottom: 2rem !important;
+            }
+
+            .problem-space-section .grid-split,
+            .technocapital-section .grid-split,
+            .halo-section .grid-split,
+            .feed-section .grid-split,
+            .closing-section .grid-split {
+                grid-template-columns: 0.72fr 2.28fr !important;
+                gap: 3rem !important;
+            }
+
+            .problem-space-section h3,
+            .technocapital-section h3,
+            .halo-section h3 {
+                font-size: 1.65rem !important;
+            }
+
+            .quote-block {
+                margin: 1.5rem 0 !important;
+                padding: 1rem 0 1rem 1.4rem !important;
+                background: linear-gradient(90deg, rgba(69, 230, 255, 0.055), transparent);
+            }
+
+            .halo-section [style*="margin-top: 3rem"] {
+                margin-top: 1rem !important;
+            }
+
+            .halo-section .halo-grid {
+                grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+                gap: 0.8rem !important;
+                margin-top: 0.9rem !important;
+            }
+
+            .halo-section .halo-ring {
+                width: 27px !important;
+                height: 27px !important;
+            }
+
+            .halo-section .halo-text .name { font-size: 0.72rem !important; }
+            .halo-section .halo-text .desc { font-size: 0.62rem !important; line-height: 1.3 !important; }
+
+            .design-background-section > div[style*="display: grid"] {
+                grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+                gap: 1.4rem !important;
+            }
+
+            .design-background-section .media-frame.aspect-portrait {
+                height: 30vh !important;
+                aspect-ratio: auto !important;
+                margin-bottom: 0.8rem !important;
+            }
+
+            .design-background-section h3 {
+                font-size: 1rem !important;
+                margin-bottom: 0.45rem !important;
+            }
+
+            .design-background-section .text-body {
+                font-size: 0.7rem !important;
+                line-height: 1.42 !important;
+            }
+
+            .feed-section .tweet-stack {
+                gap: 0.65rem !important;
+                margin-top: 1rem !important;
+                max-width: none !important;
+            }
+
+            .feed-section .tweet-card {
+                padding: 0.85rem 1rem !important;
+                border-radius: 11px;
+            }
+
+            .feed-section .tweet-head { margin-bottom: 0.4rem !important; }
+            .feed-section .tweet-avatar { width: 22px !important; height: 22px !important; }
+            .feed-section .tweet-body { font-size: 0.7rem !important; line-height: 1.4 !important; }
+            .feed-section .tweet-quote { margin-top: 0.55rem !important; padding: 0.55rem 0.7rem !important; }
+
+            /* Three curated source pages */
+            .source-print-page {
+                display: block !important;
+            }
+
+            .source-print-header {
+                display: grid;
+                grid-template-columns: 0.9fr 1.35fr;
+                gap: 3rem;
+                align-items: end;
+                margin-bottom: 1.3rem;
+                padding-bottom: 1.1rem;
+                border-bottom: 1px solid rgba(69, 230, 255, 0.14);
+            }
+
+            .source-print-header h2 {
+                margin: 0.3rem 0 0 !important;
+                font-size: 3rem !important;
+            }
+
+            .source-print-header .text-lead {
+                margin: 0 !important;
+                font-size: 0.9rem !important;
+                line-height: 1.5 !important;
+            }
+
+            .source-print-index,
+            .source-case-number {
+                display: block;
+                font-size: 0.6rem;
+                font-weight: 700;
+                letter-spacing: 0.16em;
+                color: var(--accent-cyan);
+            }
+
+            .source-print-actions {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 0.8rem;
+                width: 540px;
+                margin: 0 0 1.25rem auto;
+            }
+
+            .source-print-actions .print-link-card {
+                grid-template-columns: 17mm minmax(0, 1fr);
+                min-height: 22mm;
+                padding: 2.3mm !important;
+            }
+
+            .source-print-actions .print-link-card img,
+            .source-print-actions .print-file-badge {
+                width: 17mm;
+                height: 17mm;
+            }
+
+            .source-feature {
+                display: grid;
+                grid-template-columns: 0.7fr 1.7fr;
+                gap: 2rem;
+                align-items: start;
+            }
+
+            .source-feature h3,
+            .source-case h3 {
+                margin: 0.3rem 0 0.65rem;
+                font-size: 1.25rem;
+            }
+
+            .source-feature .code-note,
+            .source-case .code-note {
+                margin: 0 !important;
+                font-size: 0.76rem !important;
+                line-height: 1.48 !important;
+            }
+
+            .source-pair-grid {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 1.2rem;
+            }
+
+            .source-case {
+                padding: 1rem;
+                border: 1px solid rgba(69, 230, 255, 0.12);
+                border-radius: 14px;
+                background: linear-gradient(145deg, rgba(69, 230, 255, 0.035), rgba(255, 255, 255, 0.01));
+            }
+
+            .source-case .code-panel {
+                margin-top: 0.8rem;
+            }
+
+            .source-print-page .code-panel {
+                margin-bottom: 0 !important;
+                border-radius: 12px;
+            }
+
+            .source-print-page .code-panel-head {
+                padding: 0.5rem 0.75rem !important;
+            }
+
+            .source-print-page .code-panel pre {
+                padding: 0.75rem !important;
+                font-size: 0.61rem !important;
+                line-height: 1.38 !important;
+                white-space: pre-wrap !important;
+                word-break: normal !important;
+            }
+
+            .rationale-section .grid-split {
+                grid-template-columns: 0.62fr 2.38fr !important;
+                gap: 2.5rem !important;
+            }
+
+            .rationale-section [style*="margin-top: 8vh"] {
+                margin-top: 1.8rem !important;
+            }
+
+            .rationale-section h3 {
+                font-size: 1.35rem !important;
+            }
+
+            .rationale-section .text-body {
+                font-size: 0.88rem !important;
+                line-height: 1.48 !important;
+            }
+
+            /* Closing and footer share the final canvas. */
+            main > section:last-of-type {
+                height: 6.22in !important;
+                min-height: 6.22in !important;
+                page-break-after: auto;
+                break-after: auto;
+            }
+
+            .site-footer {
+                width: 13.33in !important;
+                height: 1.28in !important;
+                margin: 0 !important;
+                padding: 7mm 14mm 8mm !important;
+                border-top: 1px solid rgba(69, 230, 255, 0.12) !important;
+                background:
+                    radial-gradient(ellipse 42% 160% at 76% 115%, rgba(69, 230, 255, 0.105), transparent 70%),
+                    linear-gradient(135deg, #020507, #030208) !important;
+            }
+
+            /* Second-pass portfolio layout: fewer ideas per page, one alignment grid,
+               and uncropped imagery throughout. */
+            html { font-size: 92% !important; }
+
+            main > section {
+                padding: 12mm 15mm !important;
+            }
+
+            main > section::after {
+                right: 15mm;
+                bottom: 6mm;
+            }
+
+            .site-header { left: 15mm !important; }
+
+            .premise-section { display: none !important; }
+
+            .print-page-index,
+            .source-print-index {
+                display: block;
+                margin-bottom: 0.5rem;
+                font-size: 0.62rem;
+                font-weight: 700;
+                line-height: 1.2;
+                letter-spacing: 0.18em;
+                color: var(--accent-cyan);
+            }
+
+            .hero-title .print-page-index { margin-bottom: 1rem; }
+
+            .print-page-heading {
+                margin-bottom: 1.4rem;
+            }
+
+            .print-page-heading h2 {
+                margin: 0 !important;
+                font-size: 3.65rem !important;
+                line-height: 1 !important;
+            }
+
+            .print-page-heading-split {
+                display: grid;
+                grid-template-columns: 0.9fr 1.25fr;
+                gap: 4rem;
+                align-items: end;
+                padding-bottom: 1.25rem;
+                border-bottom: 1px solid rgba(69, 230, 255, 0.14);
+            }
+
+            .print-page-heading-split .text-lead {
+                margin: 0 !important;
+                font-size: 1rem !important;
+                line-height: 1.5 !important;
+            }
+
+            .premise-print-page,
+            .tiers-print-page {
+                display: flex !important;
+                flex-direction: column;
+            }
+
+            .premise-print-grid {
+                display: grid;
+                grid-template-columns: 0.76fr 1.38fr;
+                gap: 3.5rem;
+                align-items: center;
+                flex: 1;
+            }
+
+            .premise-print-copy {
+                font-size: 1rem;
+                line-height: 1.58;
+                color: var(--text-secondary);
+            }
+
+            .premise-print-copy p { margin: 0 0 1rem; }
+
+            .print-insight {
+                margin-top: 1.8rem;
+                padding: 1.2rem 1.25rem;
+                border-left: 2px solid var(--accent-cyan);
+                background: linear-gradient(90deg, rgba(69, 230, 255, 0.085), transparent);
+            }
+
+            .print-insight span {
+                display: block;
+                margin-bottom: 0.45rem;
+                font-size: 0.58rem;
+                font-weight: 700;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+                color: var(--accent-cyan);
+            }
+
+            .print-insight strong {
+                display: block;
+                font-size: 1rem;
+                line-height: 1.42;
+                color: var(--text-primary);
+            }
+
+            .premise-print-figure { margin: 0; }
+
+            .premise-print-figure .media-frame {
+                width: 100%;
+                height: 49vh !important;
+                background: #000;
+            }
+
+            .premise-print-figure img {
+                width: 100%;
+                height: 100%;
+                display: block;
+                object-fit: contain !important;
+                object-position: center !important;
+            }
+
+            .premise-print-figure figcaption {
+                margin-top: 0.65rem;
+                font-size: 0.66rem;
+                line-height: 1.35;
+                color: var(--text-tertiary);
+            }
+
+            .tiers-print-page .tier-grid {
+                display: grid !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 1rem !important;
+                margin-top: 0.2rem !important;
+                flex: 1;
+            }
+
+            .tiers-print-page .tier-card {
+                display: grid !important;
+                grid-template-columns: 0.82fr 1fr 1fr;
+                gap: 1rem !important;
+                align-items: center;
+                min-height: 0 !important;
+                padding: 1.15rem 1.25rem !important;
+                border-radius: 14px;
+            }
+
+            .tiers-print-page .tier-name { font-size: 0.9rem !important; }
+            .tiers-print-page .tier-price { margin-top: 0.35rem; font-size: 1.2rem !important; }
+            .tiers-print-page .tier-block span.label { font-size: 0.56rem !important; }
+            .tiers-print-page .tier-block p { font-size: 0.72rem !important; line-height: 1.38 !important; }
+
+            .problem-space-section {
+                display: grid !important;
+                grid-template-columns: 0.78fr 1.32fr;
+                grid-template-rows: auto 1fr;
+                column-gap: 4.5rem;
+                align-content: center;
+            }
+
+            .problem-space-section > h2 {
+                grid-column: 1;
+                grid-row: 1;
+                align-self: end;
+                margin: 0 0 1.2rem !important;
+                text-align: left !important;
+                font-size: 3.7rem !important;
+                line-height: 1 !important;
+            }
+
+            .problem-space-section > .text-lead {
+                grid-column: 1;
+                grid-row: 2;
+                margin: 0 !important;
+                text-align: left !important;
+                font-size: 1.05rem !important;
+                line-height: 1.55 !important;
+            }
+
+            .problem-space-section > .grid-split {
+                display: block !important;
+                grid-column: 2;
+                grid-row: 1 / span 2;
+                align-self: center;
+            }
+
+            .problem-space-section .sticky-col { margin-bottom: 1.5rem; }
+            .problem-space-section h3 { font-size: 2.05rem !important; line-height: 1.08 !important; }
+            .problem-space-section .text-body { font-size: 1rem !important; line-height: 1.58 !important; }
+
+            .technocapital-section,
+            .halo-section {
+                display: flex !important;
+                align-items: center;
+            }
+
+            .technocapital-section .grid-split,
+            .halo-section .grid-split {
+                grid-template-columns: 0.78fr 1.32fr !important;
+                gap: 4.5rem !important;
+                width: 100%;
+                align-items: center !important;
+            }
+
+            .technocapital-section h3,
+            .halo-section h3 {
+                font-size: 2.2rem !important;
+                line-height: 1.08 !important;
+            }
+
+            .technocapital-section .text-body,
+            .halo-section .text-body {
+                font-size: 1rem !important;
+                line-height: 1.58 !important;
+            }
+
+            .technocapital-section .quote-block {
+                margin: 1.7rem 0 !important;
+                padding: 1.25rem 1.4rem !important;
+                font-size: 1rem;
+                line-height: 1.5;
+            }
+
+            .halo-section .halo-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 1.1rem 1.6rem !important;
+                margin: 1.2rem 0 1.4rem !important;
+            }
+
+            .halo-section .halo-ring {
+                width: 34px !important;
+                height: 34px !important;
+            }
+
+            .halo-section .halo-text .name { font-size: 0.82rem !important; }
+            .halo-section .halo-text .desc { font-size: 0.72rem !important; line-height: 1.4 !important; }
+
+            .design-background-section {
+                display: grid !important;
+                grid-template-columns: 0.78fr 1.32fr;
+                grid-template-rows: auto 1fr;
+                column-gap: 4.5rem;
+                align-content: start;
+            }
+
+            .design-background-section > h2 {
+                grid-column: 1;
+                grid-row: 1;
+                margin: 0 !important;
+                text-align: left !important;
+                font-size: 3.5rem !important;
+                line-height: 1 !important;
+            }
+
+            .design-background-section > .text-lead {
+                grid-column: 2;
+                grid-row: 1;
+                align-self: end;
+                margin: 0 !important;
+                text-align: left !important;
+                font-size: 1rem !important;
+                line-height: 1.5 !important;
+            }
+
+            .design-background-section > div[style*="display: grid"] {
+                grid-column: 1 / -1;
+                grid-row: 2;
+                align-self: start;
+                grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+                gap: 1.35rem !important;
+                margin-top: 2.2rem !important;
+            }
+
+            .design-background-section .media-frame.aspect-portrait {
+                height: 29vh !important;
+                margin-bottom: 1rem !important;
+                background: rgba(0, 0, 0, 0.72);
+            }
+
+            .design-background-section .media-frame img {
+                object-fit: contain !important;
+                object-position: center !important;
+            }
+
+            .design-background-section h3 { font-size: 1.05rem !important; line-height: 1.25 !important; }
+            .design-background-section .text-body { font-size: 0.76rem !important; line-height: 1.48 !important; }
+
+            .feed-section .grid-split {
+                grid-template-columns: 0.72fr 1.48fr !important;
+                gap: 4.5rem !important;
+            }
+
+            .feed-section h2 { font-size: 3.6rem !important; line-height: 1 !important; }
+            .feed-section .text-body { font-size: 0.95rem !important; line-height: 1.5 !important; }
+
+            .feed-section .tweet-stack {
+                display: grid !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 0.9rem !important;
+                margin-top: 1.4rem !important;
+            }
+
+            .feed-section .tweet-card {
+                padding: 1rem 1.1rem !important;
+            }
+
+            .feed-section .tweet-card:first-child { grid-column: 1 / -1; }
+            .feed-section .tweet-card:nth-child(2) { grid-column: 1; }
+            .feed-section .tweet-card:last-child { grid-column: 2; }
+            .feed-section .tweet-body { font-size: 0.72rem !important; line-height: 1.45 !important; }
+
+            .source-print-one .source-feature { display: none !important; }
+
+            .source-intro-statement {
+                margin-top: 2.2rem;
+                padding-top: 1.9rem;
+                border-top: 1px solid rgba(69, 230, 255, 0.14);
+            }
+
+            .source-intro-statement > p {
+                max-width: 870px;
+                margin: 0;
+                font-size: 1.55rem;
+                font-weight: 600;
+                line-height: 1.34;
+                color: var(--text-primary);
+            }
+
+            .source-intro-points {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 1rem;
+                margin-top: 2rem;
+            }
+
+            .source-intro-points > div {
+                padding: 1rem 1.1rem;
+                border-left: 1px solid rgba(69, 230, 255, 0.28);
+            }
+
+            .source-intro-points span,
+            .source-intro-points strong,
+            .source-intro-points small { display: block; }
+            .source-intro-points span { font-size: 0.58rem; color: var(--accent-cyan); }
+            .source-intro-points strong { margin: 0.35rem 0; font-size: 1rem; }
+            .source-intro-points small { font-size: 0.72rem; line-height: 1.4; color: var(--text-secondary); }
+
+            .source-single-heading {
+                display: grid;
+                grid-template-columns: 0.88fr 1.22fr;
+                gap: 4rem;
+                align-items: end;
+                padding-bottom: 1.25rem;
+                border-bottom: 1px solid rgba(69, 230, 255, 0.14);
+            }
+
+            .source-single-heading h2 {
+                margin: 0.35rem 0 0 !important;
+                font-size: 3.25rem !important;
+                line-height: 1 !important;
+            }
+
+            .source-single-heading .text-lead {
+                margin: 0 !important;
+                font-size: 1rem !important;
+                line-height: 1.5 !important;
+            }
+
+            .source-single-grid {
+                display: grid;
+                grid-template-columns: 0.72fr 1.48fr;
+                gap: 3.5rem;
+                align-items: center;
+                margin-top: 2rem;
+            }
+
+            .source-single-copy h3 {
+                margin: 0.45rem 0 0.8rem;
+                font-size: 1.55rem;
+                line-height: 1.2;
+            }
+
+            .source-single-copy .code-note {
+                margin: 0 !important;
+                font-size: 0.9rem !important;
+                line-height: 1.55 !important;
+            }
+
+            .source-single-page .code-panel pre {
+                padding: 1.25rem !important;
+                font-size: 0.76rem !important;
+                line-height: 1.48 !important;
+            }
+
+            .source-pair-grid {
+                display: block !important;
+            }
+
+            .source-pair-grid .source-case:nth-child(2) { display: none !important; }
+
+            .source-pair-grid .source-case:first-child {
+                display: grid !important;
+                grid-template-columns: 0.68fr 1.5fr;
+                grid-template-rows: auto auto 1fr;
+                column-gap: 3.5rem;
+                align-items: start;
+                padding: 1.35rem !important;
+            }
+
+            .source-pair-grid .source-case:first-child > .source-case-number { grid-column: 1; grid-row: 1; }
+            .source-pair-grid .source-case:first-child > h3 { grid-column: 1; grid-row: 2; font-size: 1.55rem !important; line-height: 1.2; }
+            .source-pair-grid .source-case:first-child > .code-note { grid-column: 1; grid-row: 3; font-size: 0.88rem !important; line-height: 1.52 !important; }
+            .source-pair-grid .source-case:first-child > .code-panel { grid-column: 2; grid-row: 1 / span 3; margin: 0 !important; }
+            .source-pair-grid .source-case:first-child .code-panel pre { font-size: 0.76rem !important; line-height: 1.48 !important; padding: 1.2rem !important; }
+
+            .rationale-section > h2 {
+                margin: 0 0 2rem !important;
+                text-align: left !important;
+                font-size: 3.5rem !important;
+            }
+
+            .rationale-section .grid-split {
+                grid-template-columns: 0.7fr 1.5fr !important;
+                gap: 3.5rem !important;
+                padding: 0 0 1.45rem;
+                border-bottom: 1px solid rgba(69, 230, 255, 0.1);
+            }
+
+            .rationale-section .grid-split + .grid-split {
+                margin-top: 1.45rem !important;
+            }
+
+            .rationale-section h3 { font-size: 1.25rem !important; line-height: 1.2 !important; }
+            .rationale-section .text-body { font-size: 0.88rem !important; line-height: 1.5 !important; }
+
+            .closing-section {
+                display: flex !important;
+                align-items: center;
+            }
+
+            .closing-section .grid-split {
+                grid-template-columns: 0.72fr 1.48fr !important;
+                gap: 4.5rem !important;
+                align-items: center !important;
+            }
+
+            .closing-section h2 { font-size: 3.7rem !important; line-height: 1 !important; }
+            .closing-section .text-lead { font-size: 1.35rem !important; line-height: 1.42 !important; }
+            .closing-section .text-body { font-size: 0.95rem !important; line-height: 1.56 !important; }
+
+            /* Eight-page postgraduate application edit. The normal print path
+               continues to export the full sixteen-page case study. */
+            body.application-portfolio main > section {
+                display: none !important;
+            }
+
+            body.application-portfolio main > .hero {
+                display: block !important;
+            }
+
+            body.application-portfolio main > .premise-print-page {
+                display: flex !important;
+            }
+
+            body.application-portfolio main > .application-page {
+                display: block !important;
+            }
+
+            body.application-portfolio main > .design-background-section {
+                display: grid !important;
+            }
+
+            body.application-portfolio main > .feed-section {
+                display: block !important;
+            }
+
+            body.application-portfolio .site-footer {
+                display: none !important;
+            }
+
+            body.application-portfolio .application-page-header {
+                display: grid;
+                grid-template-columns: 0.9fr 1.25fr;
+                gap: 4rem;
+                align-items: end;
+                padding-bottom: 1.3rem;
+                border-bottom: 1px solid rgba(69, 230, 255, 0.14);
+            }
+
+            body.application-portfolio .application-page-header h2 {
+                margin: 0.35rem 0 0 !important;
+                font-size: 3.35rem !important;
+                line-height: 1 !important;
+            }
+
+            body.application-portfolio .application-page-header .text-lead {
+                margin: 0 !important;
+                font-size: 1rem !important;
+                line-height: 1.5 !important;
+            }
+
+            body.application-portfolio .application-card-index {
+                display: block;
+                margin-bottom: 0.55rem;
+                font-size: 0.58rem;
+                font-weight: 700;
+                letter-spacing: 0.15em;
+                color: var(--accent-cyan);
+            }
+
+            body.application-portfolio .application-research-grid {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 1rem;
+                margin-top: 2rem;
+            }
+
+            body.application-portfolio .application-research-grid article {
+                min-height: 27vh;
+                padding: 1.45rem;
+                border: 1px solid rgba(69, 230, 255, 0.16);
+                border-radius: 15px;
+                background: linear-gradient(145deg, rgba(69, 230, 255, 0.055), rgba(255, 255, 255, 0.012));
+                box-shadow: 0 24px 58px -42px rgba(69, 230, 255, 0.7);
+            }
+
+            body.application-portfolio .application-research-grid h3 {
+                margin: 0 0 0.8rem;
+                font-size: 1.3rem;
+            }
+
+            body.application-portfolio .application-research-grid p {
+                margin: 0;
+                min-height: 4.5rem;
+                font-size: 0.86rem;
+                line-height: 1.52;
+                color: var(--text-secondary);
+            }
+
+            body.application-portfolio .application-research-grid strong {
+                display: block;
+                margin-top: 1.15rem;
+                padding-top: 1rem;
+                border-top: 1px solid rgba(69, 230, 255, 0.12);
+                font-size: 0.82rem;
+                line-height: 1.42;
+                color: var(--text-primary);
+            }
+
+            body.application-portfolio .application-research-question {
+                max-width: 880px;
+                margin: 1.6rem 0 0;
+                font-size: 1.1rem;
+                font-weight: 600;
+                line-height: 1.42;
+                color: var(--text-primary);
+            }
+
+            body.application-portfolio .application-system-grid {
+                display: grid;
+                grid-template-columns: 1.05fr 0.95fr;
+                gap: 1.2rem;
+                margin-top: 1.8rem;
+            }
+
+            body.application-portfolio .application-tier-list {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 0.8rem;
+            }
+
+            body.application-portfolio .application-tier-list > div {
+                display: grid;
+                grid-template-columns: 1fr auto;
+                grid-template-rows: auto 1fr;
+                gap: 0.45rem 1rem;
+                min-height: 17vh;
+                padding: 1.1rem;
+                border: 1px solid rgba(69, 230, 255, 0.15);
+                border-radius: 13px;
+                background: rgba(0, 0, 0, 0.18);
+            }
+
+            body.application-portfolio .application-tier-list span,
+            body.application-portfolio .application-tier-list strong,
+            body.application-portfolio .application-tier-list small { display: block; }
+            body.application-portfolio .application-tier-list span { font-size: 0.82rem; font-weight: 700; }
+            body.application-portfolio .application-tier-list strong { font-size: 0.9rem; color: var(--accent-cyan); }
+            body.application-portfolio .application-tier-list small { grid-column: 1 / -1; font-size: 0.69rem; line-height: 1.4; color: var(--text-secondary); }
+            body.application-portfolio .application-tier-list .elite strong { color: var(--accent-gold); }
+
+            body.application-portfolio .application-halo-system {
+                padding: 1.4rem;
+                border: 1px solid rgba(69, 230, 255, 0.16);
+                border-radius: 15px;
+                background: linear-gradient(145deg, rgba(69, 230, 255, 0.055), rgba(255, 255, 255, 0.012));
+            }
+
+            body.application-portfolio .application-halo-system h3 {
+                margin: 0 0 0.75rem;
+                font-size: 1.45rem;
+            }
+
+            body.application-portfolio .application-halo-system > p {
+                margin: 0;
+                font-size: 0.83rem;
+                line-height: 1.5;
+                color: var(--text-secondary);
+            }
+
+            body.application-portfolio .application-halo-grid {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 1rem;
+                margin-top: 1.4rem;
+            }
+
+            body.application-portfolio .application-halo-grid > div {
+                display: grid;
+                grid-template-columns: 34px 1fr;
+                gap: 0.75rem;
+                align-items: center;
+            }
+
+            body.application-portfolio .application-halo-grid i {
+                width: 31px;
+                height: 31px;
+                border: 3px solid currentColor;
+                border-radius: 50%;
+                box-shadow: 0 0 12px currentColor;
+            }
+
+            body.application-portfolio .application-halo-grid i.active { color: #fff; }
+            body.application-portfolio .application-halo-grid i.syncing { color: var(--accent-cyan); }
+            body.application-portfolio .application-halo-grid i.limited { color: #ffd92f; }
+            body.application-portfolio .application-halo-grid i.critical { color: #ff5964; }
+            body.application-portfolio .application-halo-grid strong,
+            body.application-portfolio .application-halo-grid small { display: block; }
+            body.application-portfolio .application-halo-grid strong { font-size: 0.73rem; text-transform: uppercase; letter-spacing: 0.05em; }
+            body.application-portfolio .application-halo-grid small { margin-top: 0.2rem; font-size: 0.6rem; line-height: 1.3; color: var(--text-tertiary); }
+
+            body.application-portfolio .application-process-grid {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 1.2rem;
+                margin-top: 1.8rem;
+            }
+
+            body.application-portfolio .application-process-grid article {
+                padding: 1.25rem;
+                border: 1px solid rgba(69, 230, 255, 0.15);
+                border-radius: 15px;
+                background: linear-gradient(145deg, rgba(69, 230, 255, 0.04), rgba(255, 255, 255, 0.01));
+            }
+
+            body.application-portfolio .application-process-grid h3 {
+                margin: 0 0 0.6rem;
+                font-size: 1.25rem;
+            }
+
+            body.application-portfolio .application-process-grid article > p {
+                min-height: 3.1rem;
+                margin: 0 0 0.8rem;
+                font-size: 0.8rem;
+                line-height: 1.45;
+                color: var(--text-secondary);
+            }
+
+            body.application-portfolio .application-process-grid .code-panel {
+                margin: 0 !important;
+            }
+
+            body.application-portfolio .application-process-grid .code-panel pre {
+                padding: 1rem !important;
+                font-size: 0.67rem !important;
+                line-height: 1.48 !important;
+                white-space: pre-wrap !important;
+            }
+
+            body.application-portfolio .application-capability-grid {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 1rem;
+                margin-top: 1.9rem;
+            }
+
+            body.application-portfolio .application-capability-grid article {
+                min-height: 20vh;
+                padding: 1.25rem;
+                border-left: 1px solid rgba(69, 230, 255, 0.28);
+                background: linear-gradient(90deg, rgba(69, 230, 255, 0.04), transparent);
+            }
+
+            body.application-portfolio .application-capability-grid span {
+                font-size: 0.58rem;
+                font-weight: 700;
+                color: var(--accent-cyan);
+            }
+
+            body.application-portfolio .application-capability-grid h3 {
+                margin: 0.55rem 0 0.7rem;
+                font-size: 1.15rem;
+            }
+
+            body.application-portfolio .application-capability-grid p {
+                margin: 0;
+                font-size: 0.8rem;
+                line-height: 1.5;
+                color: var(--text-secondary);
+            }
+
+            body.application-portfolio .application-reflection-footer {
+                display: grid;
+                grid-template-columns: 1.25fr 0.85fr;
+                gap: 2rem;
+                align-items: center;
+                margin-top: 1.7rem;
+                padding-top: 1.4rem;
+                border-top: 1px solid rgba(69, 230, 255, 0.14);
+            }
+
+            body.application-portfolio .application-reflection-footer > div > p {
+                max-width: 720px;
+                margin: 0;
+                font-size: 0.84rem;
+                line-height: 1.5;
+                color: var(--text-secondary);
+            }
+
+            body.application-portfolio .application-reflection-footer .print-link-card {
+                grid-template-columns: 17mm minmax(0, 1fr);
+                min-height: 22mm;
+                padding: 2.3mm !important;
+            }
+
+            body.application-portfolio .application-reflection-footer .print-link-card img {
+                width: 17mm;
+                height: 17mm;
+            }
         }
     </style>
 </head>
@@ -862,7 +2181,7 @@
 
     <main>
         <section class="container hero">
-            <h1 class="hero-title reveal">Cognitive-as-<br>a-<span class="text-outline">Service</span></h1>
+            <h1 class="hero-title reveal"><span class="print-page-index print-only">CASE STUDY / 00</span>Cognitive-as-<br>a-<span class="text-outline">Service</span></h1>
             <p class="text-lead reveal delay-1">A speculative critical-design report imagining EnGram+, an invasive brain-computer interface that turns knowledge into a subscription tier and turns class into a light on your temple.</p>
 
             <div class="hero-meta reveal delay-2">
@@ -874,17 +2193,25 @@
 
             <div class="prototype-btn-group">
                 <a href="https://youtu.be/ltnBEEefctw" target="_blank" rel="noopener" class="prototype-btn reveal delay-3">
-                    Watch the test video
+                    <span class="action-label">Watch the test video</span>
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+                    <span class="print-link-card">
+                        <img src="Image/CogniStream_QR_Video.svg" alt="QR code for the Cogni-Stream test video">
+                        <span class="print-link-copy"><span class="print-link-kicker">Watch</span><span class="print-link-title">Test video</span><span class="print-link-url">youtu.be/ltnBEEefctw</span></span>
+                    </span>
                 </a>
                 <a href="https://github.com/Shuhan0001/Cogni-Stream_Website" target="_blank" rel="noopener" class="prototype-btn secondary reveal delay-3">
-                    View on GitHub
+                    <span class="action-label">View the project on GitHub</span>
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                    <span class="print-link-card">
+                        <img src="Image/CogniStream_QR_GitHub.svg" alt="QR code for the Cogni-Stream GitHub repository">
+                        <span class="print-link-copy"><span class="print-link-kicker">Explore</span><span class="print-link-title">Project GitHub</span><span class="print-link-url">github.com/Shuhan0001/Cogni-Stream_Website</span></span>
+                    </span>
                 </a>
             </div>
         </section>
 
-        <section class="section container">
+        <section class="section container premise-section">
             <div class="grid-split">
                 <div class="sticky-col reveal">
                     <h2>The<br><span class="text-outline">Premise</span></h2>
@@ -927,8 +2254,123 @@
             </div>
         </section>
 
-        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
-            <h2 class="reveal" style="text-align: center; margin-bottom: 1rem;">Problem <span class="text-outline">Space</span></h2>
+        <section aria-hidden="true" class="section container premise-print-page print-only">
+            <div class="print-page-heading">
+                <span class="print-page-index">CONCEPT / 01</span>
+                <h2>The <span class="text-outline">Premise</span></h2>
+            </div>
+            <div class="premise-print-grid">
+                <div class="premise-print-copy">
+                    <p>Founded in 2040, Cogni-Stream is a fictional techno-medical enterprise built around EnGram+, an invasive BCI device that downloads knowledge directly into the brain.</p>
+                    <p>Access is not earned through study. It is purchased through a subscription tier, and the price paid determines how much of a person's own mind they get to keep.</p>
+                    <div class="print-insight">
+                        <span>Critical proposition</span>
+                        <strong>What happens when cognition becomes a renewable service rather than a human right?</strong>
+                    </div>
+                </div>
+                <figure class="premise-print-figure">
+                    <div class="media-frame">
+                        <img src="Image/CogniStream_Img1.webp" alt="Complete Cogni-Stream homepage hero showing Evolution Through Connection">
+                    </div>
+                    <figcaption>Homepage hero - premium consumer-tech language used to make cognitive extraction feel desirable.</figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <section aria-hidden="true" class="section container application-page application-research-page application-only">
+            <div class="application-page-header">
+                <div>
+                    <span class="print-page-index">RESEARCH / SYNTHESIS</span>
+                    <h2>Three pressures shape the <span class="text-outline">fiction</span></h2>
+                </div>
+                <p class="text-lead">The project connects unequal access, corporate infrastructure and subscription lock-in into one speculative product system.</p>
+            </div>
+            <div class="application-research-grid">
+                <article>
+                    <span class="application-card-index">01</span>
+                    <h3>Digital divide</h3>
+                    <p>When knowledge is downloaded rather than taught, purchasing power directly determines cognitive speed.</p>
+                    <strong>Access moves from the classroom into the body.</strong>
+                </article>
+                <article>
+                    <span class="application-card-index">02</span>
+                    <h3>Technocapitalism</h3>
+                    <p>Learning migrates from public institution to privately controlled neural infrastructure.</p>
+                    <strong>Cognition becomes a corporate dependency.</strong>
+                </article>
+                <article>
+                    <span class="application-card-index">03</span>
+                    <h3>Subscription lock-in</h3>
+                    <p>Downgrades remove knowledge and make non-payment visible through the Status Halo.</p>
+                    <strong>Economic exclusion becomes public stigma.</strong>
+                </article>
+            </div>
+            <p class="application-research-question">Design question: how can a polished interface make this system feel desirable before its violence becomes visible?</p>
+        </section>
+
+        <section aria-hidden="true" class="section container application-page application-system-page application-only">
+            <div class="application-page-header">
+                <div>
+                    <span class="print-page-index">SYSTEM / 01</span>
+                    <h2>Subscription becomes <span class="text-outline">status</span></h2>
+                </div>
+                <p class="text-lead">Pricing controls what users can know; the implant makes their position readable to everyone around them.</p>
+            </div>
+            <div class="application-system-grid">
+                <div class="application-tier-list">
+                    <div><span>Public</span><strong>$0</strong><small>Ad-supported literacy<br>2KB/s bandwidth</small></div>
+                    <div><span>Essential</span><strong>$999 / yr</strong><small>Clean general knowledge<br>50KB/s bandwidth</small></div>
+                    <div><span>Professional</span><strong>$9,999 / yr</strong><small>Advanced streams<br>1MB/s bandwidth</small></div>
+                    <div class="elite"><span>Elite Legacy</span><strong>Invite only</strong><small>Inherited access<br>Uncapped bandwidth</small></div>
+                </div>
+                <div class="application-halo-system">
+                    <span class="application-card-index">VISIBLE CONSEQUENCE</span>
+                    <h3>The Status Halo</h3>
+                    <p>A ring mounted at the temple exposes subscription state in public, converting a private payment failure into a social label.</p>
+                    <div class="application-halo-grid">
+                        <div><i class="active"></i><span><strong>Active</strong><small>Fully operational</small></span></div>
+                        <div><i class="syncing"></i><span><strong>Syncing</strong><small>Downloading streams</small></span></div>
+                        <div><i class="limited"></i><span><strong>Limited</strong><small>Basic cognition only</small></span></div>
+                        <div><i class="critical"></i><span><strong>Critical</strong><small>Damage or illegal operation</small></span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section aria-hidden="true" class="section container tiers-print-page print-only">
+            <div class="print-page-heading print-page-heading-split">
+                <div>
+                    <span class="print-page-index">CONCEPT / 02</span>
+                    <h2>Access becomes <span class="text-outline">hierarchy</span></h2>
+                </div>
+                <p class="text-lead">The pricing system translates economic class into cognitive bandwidth. Each card is both a product tier and a social position.</p>
+            </div>
+            <div class="tier-grid">
+                <div class="tier-card">
+                    <div><div class="tier-name">Public</div><div class="tier-price">$0 / lifetime</div></div>
+                    <div class="tier-block"><span class="label">Included streams</span><p>Global Literacy</p><p>Fundamental Arithmetic</p></div>
+                    <div class="tier-block"><span class="label">Protocol</span><p>Ad-supported</p><p>2KB/s bandwidth</p></div>
+                </div>
+                <div class="tier-card">
+                    <div><div class="tier-name">Essential</div><div class="tier-price">$999 / yr</div></div>
+                    <div class="tier-block"><span class="label">Included streams</span><p>General History</p><p>Basic Sciences</p></div>
+                    <div class="tier-block"><span class="label">Protocol</span><p>Clean Stream</p><p>50KB/s bandwidth</p></div>
+                </div>
+                <div class="tier-card">
+                    <div><div class="tier-name">Professional</div><div class="tier-price">$9,999 / yr</div></div>
+                    <div class="tier-block"><span class="label">Included streams</span><p>Advanced Mathematics</p><p>Full Programming Logic</p></div>
+                    <div class="tier-block"><span class="label">Protocol</span><p>Deep Retention</p><p>1MB/s bandwidth</p></div>
+                </div>
+                <div class="tier-card elite">
+                    <div><div class="tier-name">Elite Legacy</div><div class="tier-price">Invite only</div></div>
+                    <div class="tier-block"><span class="label">Included streams</span><p>Executive Strategy</p><p>Fine Arts Intuition</p></div>
+                    <div class="tier-block"><span class="label">Protocol</span><p>Genetic Inheritance</p><p>Uncapped bandwidth</p></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section container problem-space-section" style="border-top: 1px solid var(--border-subtle);">
+            <h2 class="reveal" style="text-align: center; margin-bottom: 1rem;"><span class="print-page-index print-only">RESEARCH / 01</span>Problem <span class="text-outline">Space</span></h2>
             <p class="text-lead reveal" style="text-align: center; margin: 0 auto 5rem; max-width: 700px;">If knowledge becomes a neural subscription, the digital divide won't close. It will simply move inside your skull.</p>
 
             <div class="grid-split">
@@ -942,10 +2384,10 @@
             </div>
         </section>
 
-        <section class="section container">
+        <section class="section container technocapital-section">
             <div class="grid-split">
                 <div class="sticky-col reveal">
-                    <h3 style="font-size: 1.8rem;">02. Technocapitalism and the Commodified Mind</h3>
+                    <h3 style="font-size: 1.8rem;"><span class="print-page-index print-only">RESEARCH / 02</span>02. Technocapitalism and the Commodified Mind</h3>
                 </div>
                 <div>
                     <p class="text-body reveal">Under technocapitalism (Suarez-Villa, 2000; 2012), knowledge and innovation are steadily absorbed into corporate-controlled infrastructure, displacing public institutions as the gatekeepers of learning. Napoleoni (2024) argues this concentration of infrastructural control lets a handful of firms accumulate wealth and influence at an unprecedented scale.</p>
@@ -958,10 +2400,10 @@
             </div>
         </section>
 
-        <section class="section container">
+        <section class="section container halo-section">
             <div class="grid-split">
                 <div class="sticky-col reveal">
-                    <h3 style="font-size: 1.8rem;">03. KaaS and the Status Halo</h3>
+                    <h3 style="font-size: 1.8rem;"><span class="print-page-index print-only">RESEARCH / 03</span>03. KaaS and the Status Halo</h3>
                 </div>
                 <div>
                     <p class="text-body reveal">Tzuo (2018) describes a broader shift from owning products to using services; EnGram+ applies this logic to cognition itself through an annual subscription. Sheil et al. (2024) document "Roach Motel" dark patterns: easy sign-up, punishing cancellation. EnGram+ pushes the tactic further by making non-payment <span class="accent">visible</span>.</p>
@@ -992,8 +2434,8 @@
             </div>
         </section>
 
-        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
-            <h2 class="reveal" style="text-align: center; margin-bottom: 1rem;">Design <span class="text-outline">Background</span></h2>
+        <section class="section container design-background-section" style="border-top: 1px solid var(--border-subtle);">
+            <h2 class="reveal" style="text-align: center; margin-bottom: 1rem;"><span class="print-page-index print-only">DESIGN / 01</span>Design <span class="text-outline">Background</span></h2>
             <p class="text-lead reveal" style="text-align: center; margin: 0 auto 5rem; max-width: 720px;">Three reference points shaped how Cogni-Stream looks, sounds, and lies to its users.</p>
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem;">
@@ -1021,10 +2463,10 @@
             </div>
         </section>
 
-        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
+        <section class="section container feed-section" style="border-top: 1px solid var(--border-subtle);">
             <div class="grid-split">
                 <div class="sticky-col reveal">
-                    <h2>Inside the<br><span class="text-outline">Feed</span></h2>
+                    <h2><span class="print-page-index print-only">DESIGN / 02</span>Inside the<br><span class="text-outline">Feed</span></h2>
                 </div>
                 <div>
                     <p class="text-body reveal">The simulated X community sits inside the website, modelled on the real platform's visual language. Official Cogni-Stream posts stay upbeat and evasive; a breaking-news account raises concerns about memory disruption after downgrades; and ordinary users describe what the Status Halo actually costs them in public.</p>
@@ -1053,9 +2495,346 @@
             </div>
         </section>
 
-        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
+        <section aria-hidden="true" class="section container application-page application-process-page application-only">
+            <div class="application-page-header">
+                <div>
+                    <span class="print-page-index">PROCESS / 01</span>
+                    <h2>Interface as <span class="text-outline">argument</span></h2>
+                </div>
+                <p class="text-lead">Two implementation choices show how the critique was embedded into the interaction model rather than added as explanatory text.</p>
+            </div>
+            <div class="application-process-grid">
+                <article>
+                    <span class="application-card-index">01 / FUNNEL</span>
+                    <h3>One path, framed as progress</h3>
+                    <p>A product-launch hierarchy moves directly from corporate promise to a single glowing gate.</p>
+                    <div class="code-panel">
+                        <div class="code-panel-head"><span class="code-panel-file">corp-hero + product-gate</span></div>
+                        <pre><code>&lt;<span class="tg">section</span> <span class="st">class="corp-hero"</span>&gt;
+  &lt;<span class="tg">h1</span>&gt;Evolution Through Connection&lt;/<span class="tg">h1</span>&gt;
+&lt;/<span class="tg">section</span>&gt;
+
+&lt;<span class="tg">div</span> <span class="st">class="gate-card"</span>&gt;
+  &lt;<span class="tg">div</span> <span class="st">class="btn-primary"</span>&gt;See Details&lt;/<span class="tg">div</span>&gt;
+&lt;/<span class="tg">div</span>&gt;</code></pre>
+                    </div>
+                </article>
+                <article>
+                    <span class="application-card-index">02 / TRUST</span>
+                    <h3>One class decides who you trust</h3>
+                    <p>A modifier visually separates official reassurance from ordinary testimony before either is read.</p>
+                    <div class="code-panel">
+                        <div class="code-panel-head"><span class="code-panel-file">tweet states</span></div>
+                        <pre><code>&lt;<span class="tg">div</span> <span class="st">class="tweet tweet-official"</span>&gt;
+  Verified Organization
+&lt;/<span class="tg">div</span>&gt;
+
+&lt;<span class="tg">div</span> <span class="st">class="tweet"</span>&gt;
+  My subscription auto-downgraded me...
+&lt;/<span class="tg">div</span>&gt;</code></pre>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section aria-hidden="true" class="section container application-page application-reflection-page application-only">
+            <div class="application-page-header">
+                <div>
+                    <span class="print-page-index">REFLECTION / 01</span>
+                    <h2>What the work <span class="text-outline">demonstrates</span></h2>
+                </div>
+                <p class="text-lead">Cogni-Stream is not a prediction about brain implants. It is a mirror held up to how technocapitalism already distributes access and power.</p>
+            </div>
+            <div class="application-capability-grid">
+                <article><span>01</span><h3>Critical research</h3><p>Connected digital-divide theory, technocapitalism and dark-pattern research into a coherent speculative proposition.</p></article>
+                <article><span>02</span><h3>System design</h3><p>Translated an abstract argument into pricing, status, content hierarchy and public-facing product language.</p></article>
+                <article><span>03</span><h3>Multimodal making</h3><p>Built the website, promotional video, simulated social feed and supporting visual identity as one believable ecosystem.</p></article>
+            </div>
+            <div class="application-reflection-footer">
+                <div>
+                    <span class="application-card-index">INDIVIDUAL CONTRIBUTION</span>
+                    <p>Concept development, research synthesis, interaction design, visual direction, HTML/CSS/JavaScript prototyping and final curation.</p>
+                </div>
+                <a href="https://shuhan0001.github.io/Cogni-Stream/" target="_blank" rel="noopener" class="prototype-btn tonal">
+                    <span class="print-link-card">
+                        <img src="Image/CogniStream_QR_Live.svg" alt="QR code for the live Cogni-Stream prototype">
+                        <span class="print-link-copy"><span class="print-link-kicker">Launch</span><span class="print-link-title">Live prototype</span><span class="print-link-url">shuhan0001.github.io/Cogni-Stream</span></span>
+                    </span>
+                </a>
+            </div>
+        </section>
+
+        <section aria-hidden="true" class="section container source-print-page source-print-one print-only">
+            <div class="source-print-header">
+                <div>
+                    <span class="source-print-index">SOURCE / OVERVIEW</span>
+                    <h2>From the <span class="text-outline">Source</span></h2>
+                </div>
+                <p class="text-lead">The prototype is hand-built HTML, CSS and JavaScript. These selected excerpts show how the interface turns a critical argument into a believable product system.</p>
+            </div>
+            <div class="source-print-actions">
+                <a href="EnGram%2B_Web_Draft.html" target="_blank" rel="noopener" class="prototype-btn secondary">
+                    <span class="action-label">View the draft wireframe</span>
+                    <span class="print-link-card">
+                        <span class="print-file-badge">HTML</span>
+                        <span class="print-link-copy"><span class="print-link-kicker">Included file</span><span class="print-link-title">Draft wireframe</span><span class="print-link-url">EnGram+_Web_Draft.html</span></span>
+                    </span>
+                </a>
+                <a href="https://shuhan0001.github.io/Cogni-Stream/" target="_blank" rel="noopener" class="prototype-btn tonal">
+                    <span class="action-label">Open the live prototype</span>
+                    <span class="print-link-card">
+                        <img src="Image/CogniStream_QR_Live.svg" alt="QR code for the live Cogni-Stream prototype">
+                        <span class="print-link-copy"><span class="print-link-kicker">Launch</span><span class="print-link-title">Live prototype</span><span class="print-link-url">shuhan0001.github.io/Cogni-Stream</span></span>
+                    </span>
+                </a>
+            </div>
+            <div class="source-intro-statement">
+                <p>Code is not presented here as implementation detail. It is evidence of how hierarchy, trust and coercion were deliberately embedded into the interface.</p>
+                <div class="source-intro-points">
+                    <div><span>01</span><strong>Funnel</strong><small>One path makes consent feel inevitable.</small></div>
+                    <div><span>02</span><strong>Status</strong><small>Colour and badges establish social rank.</small></div>
+                    <div><span>03</span><strong>Infrastructure</strong><small>The product's threat remains quietly present.</small></div>
+                </div>
+            </div>
+            <div class="source-feature">
+                <div class="source-feature-copy">
+                    <span class="source-case-number">01</span>
+                    <h3>The Funnel</h3>
+                    <p class="code-note">The homepage gives visitors exactly one path forward: a single glowing <code>.gate-card</code>, not a menu of options. The Apple-keynote structure makes a predatory subscription funnel feel inevitable rather than chosen.</p>
+                </div>
+                <div class="code-panel">
+                    <div class="code-panel-head"><div class="code-panel-dots"><span></span><span></span><span></span></div><span class="code-panel-file">EnGram__Web.html: corp-hero &amp; product-gate</span></div>
+                    <pre><code>&lt;<span class="tg">section</span> <span class="st">class="corp-hero"</span>&gt;
+  &lt;<span class="tg">h1</span>&gt;Evolution Through Connection&lt;/<span class="tg">h1</span>&gt;
+  &lt;<span class="tg">p</span>&gt;We are architecting the world's first
+     direct-stream neural interface...&lt;/<span class="tg">p</span>&gt;
+&lt;/<span class="tg">section</span>&gt;
+
+&lt;<span class="tg">section</span> <span class="st">class="product-gate"</span>&gt;
+  &lt;<span class="tg">h2</span>&gt;Meet EnGram+&lt;/<span class="tg">h2</span>&gt;
+  &lt;<span class="tg">div</span> <span class="st">class="gate-card"</span>&gt;
+    &lt;<span class="tg">h3</span>&gt;Neural Port Visualization&lt;/<span class="tg">h3</span>&gt;
+    &lt;<span class="tg">div</span> <span class="st">class="btn-primary"</span>&gt;See Details&lt;/<span class="tg">div</span>&gt;
+  &lt;/<span class="tg">div</span>&gt;
+&lt;/<span class="tg">section</span>&gt;</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <section aria-hidden="true" class="section container source-print-page source-single-page print-only">
+            <div class="source-single-heading">
+                <div>
+                    <span class="source-print-index">SOURCE / 01</span>
+                    <h2>The <span class="text-outline">Funnel</span></h2>
+                </div>
+                <p class="text-lead">The homepage offers one glowing route forward. A product-launch structure makes a predatory subscription funnel feel inevitable rather than chosen.</p>
+            </div>
+            <div class="source-single-grid">
+                <div class="source-single-copy">
+                    <span class="source-case-number">01</span>
+                    <h3>One path, framed as progress</h3>
+                    <p class="code-note">The hierarchy moves from corporate promise to product gate without presenting a competing action. The interface is already making the ethical decision before the user reaches the pricing page.</p>
+                </div>
+                <div class="code-panel">
+                    <div class="code-panel-head"><div class="code-panel-dots"><span></span><span></span><span></span></div><span class="code-panel-file">EnGram__Web.html: corp-hero &amp; product-gate</span></div>
+                    <pre><code>&lt;<span class="tg">section</span> <span class="st">class="corp-hero"</span>&gt;
+  &lt;<span class="tg">h1</span>&gt;Evolution Through Connection&lt;/<span class="tg">h1</span>&gt;
+  &lt;<span class="tg">p</span>&gt;We are architecting the world's first
+     direct-stream neural interface...&lt;/<span class="tg">p</span>&gt;
+&lt;/<span class="tg">section</span>&gt;
+
+&lt;<span class="tg">section</span> <span class="st">class="product-gate"</span>&gt;
+  &lt;<span class="tg">h2</span>&gt;Meet EnGram+&lt;/<span class="tg">h2</span>&gt;
+  &lt;<span class="tg">div</span> <span class="st">class="gate-card"</span>&gt;
+    &lt;<span class="tg">h3</span>&gt;Neural Port Visualization&lt;/<span class="tg">h3</span>&gt;
+    &lt;<span class="tg">div</span> <span class="st">class="btn-primary"</span>&gt;See Details&lt;/<span class="tg">div</span>&gt;
+  &lt;/<span class="tg">div</span>&gt;
+&lt;/<span class="tg">section</span>&gt;</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <section aria-hidden="true" class="section container source-print-page print-only">
+            <div class="source-print-header">
+                <div>
+                    <span class="source-print-index">SOURCE / 02</span>
+                    <h2>Interface as <span class="text-outline">Persuasion</span></h2>
+                </div>
+                <p class="text-lead">Gold distinguishes the elite product tier before its price is understood. The colour token makes social hierarchy instantly legible.</p>
+            </div>
+            <div class="source-pair-grid">
+                <article class="source-case">
+                    <span class="source-case-number">02</span>
+                    <h3>Gold Is a Colour Token</h3>
+                    <p class="code-note">The elite tier's name is gold before its price is understood. Social hierarchy is already legible in the CSS token.</p>
+                    <div class="code-panel">
+                        <div class="code-panel-head"><span class="code-panel-file">EnGram__Web.html: #pricing</span></div>
+                        <pre><code><span class="cm">:root {</span>
+  <span class="cm">--elite-gradient:</span>
+    linear-gradient(90deg, #d4af37, #f3e5ab);
+<span class="cm">}</span>
+
+<span class="cm">.tier-elite .plan-name {</span>
+  background: var(--elite-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+<span class="cm">}</span></code></pre>
+                    </div>
+                </article>
+                <article class="source-case">
+                    <span class="source-case-number">03</span>
+                    <h3>One Class Decides Who You Trust</h3>
+                    <p class="code-note">A single <code>.tweet-official</code> class separates corporate reassurance from ordinary testimony. The interface supplies authority before the copy is read.</p>
+                    <div class="code-panel">
+                        <div class="code-panel-head"><span class="code-panel-file">EnGram__Web.html: page-screenshots</span></div>
+                        <pre><code>&lt;<span class="tg">div</span> <span class="st">class="tweet tweet-official"</span>&gt;
+  &lt;<span class="tg">div</span> <span class="st">class="verified-badge"</span>&gt;
+    Verified Organization
+  &lt;/<span class="tg">div</span>&gt;
+  &lt;<span class="tg">p</span>&gt;A stable, reliable cognitive
+     experience...&lt;/<span class="tg">p</span>&gt;
+&lt;/<span class="tg">div</span>&gt;
+
+&lt;<span class="tg">div</span> <span class="st">class="tweet"</span>&gt;
+  My subscription ran out and it
+  auto-downgraded me...
+&lt;/<span class="tg">div</span>&gt;</code></pre>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section aria-hidden="true" class="section container source-print-page source-single-page print-only">
+            <div class="source-single-heading">
+                <div>
+                    <span class="source-print-index">SOURCE / 03</span>
+                    <h2>Trust by <span class="text-outline">class name</span></h2>
+                </div>
+                <p class="text-lead">A single modifier class separates corporate reassurance from ordinary testimony. Visual authority is supplied before the copy is read.</p>
+            </div>
+            <div class="source-single-grid">
+                <div class="source-single-copy">
+                    <span class="source-case-number">03</span>
+                    <h3>One class decides who you trust</h3>
+                    <p class="code-note">The verified state is structural, not editorial. The same feed component can make one voice institutional and another disposable.</p>
+                </div>
+                <div class="code-panel">
+                    <div class="code-panel-head"><span class="code-panel-file">EnGram__Web.html: page-screenshots</span></div>
+                    <pre><code>&lt;<span class="tg">div</span> <span class="st">class="tweet tweet-official"</span>&gt;
+  &lt;<span class="tg">div</span> <span class="st">class="verified-badge"</span>&gt;
+    Verified Organization
+  &lt;/<span class="tg">div</span>&gt;
+  &lt;<span class="tg">p</span>&gt;A stable, reliable cognitive
+     experience...&lt;/<span class="tg">p</span>&gt;
+&lt;/<span class="tg">div</span>&gt;
+
+&lt;<span class="tg">div</span> <span class="st">class="tweet"</span>&gt;
+  My subscription ran out and it
+  auto-downgraded me...
+&lt;/<span class="tg">div</span>&gt;</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <section aria-hidden="true" class="section container source-print-page print-only">
+            <div class="source-print-header">
+                <div>
+                    <span class="source-print-index">SOURCE / 04</span>
+                    <h2>Infrastructure &amp; <span class="text-outline">Ethics</span></h2>
+                </div>
+                <p class="text-lead">A rotating point-cloud brain remains behind the homepage, turning decorative infrastructure into a constant reminder that cognition is the product.</p>
+            </div>
+            <div class="source-pair-grid">
+                <article class="source-case">
+                    <span class="source-case-number">04</span>
+                    <h3>A Brain Behind Everything</h3>
+                    <p class="code-note">A rotating point-cloud brain loads behind the homepage. Decorative infrastructure becomes a constant reminder that cognition is the product.</p>
+                    <div class="code-panel">
+                        <div class="code-panel-head"><span class="code-panel-file">initThreeJSBackground()</span></div>
+                        <pre><code><span class="tg">const</span> scene = <span class="tg">new</span> THREE.Scene();
+<span class="tg">const</span> loader = <span class="tg">new</span> THREE.GLTFLoader();
+
+loader.load(<span class="st">'Model/brain_point_cloud.glb'</span>,
+  <span class="tg">function</span>(gltf) {
+    model = gltf.scene;
+    scene.add(group);
+  });
+
+<span class="tg">function</span> animate() {
+  requestAnimationFrame(animate);
+  model.rotation.y += <span class="st">0.002</span>;
+  renderer.render(scene, camera);
+}</code></pre>
+                    </div>
+                </article>
+                <article class="source-case">
+                    <span class="source-case-number">05</span>
+                    <h3>Ethics Contradicts Pricing</h3>
+                    <p class="code-note">The Ethics page promises cognitive sovereignty and equitable access, while pricing and downgrade clauses quietly negate both claims.</p>
+                    <div class="code-panel">
+                        <div class="code-panel-head"><span class="code-panel-file">EnGram__Web.html: page-ethics</span></div>
+                        <pre><code>&lt;<span class="tg">h4</span>&gt;Cognitive Sovereignty&lt;/<span class="tg">h4</span>&gt;
+&lt;<span class="tg">p</span>&gt;Your mind is your ultimate sanctuary.
+   We guarantee absolute user autonomy.&lt;/<span class="tg">p</span>&gt;
+
+&lt;<span class="tg">h4</span>&gt;Equitable Access&lt;/<span class="tg">h4</span>&gt;
+&lt;<span class="tg">p</span>&gt;Evolution should not be a privilege.
+   Our Public tier ensures essential
+   knowledge streams remain free.&lt;/<span class="tg">p</span>&gt;</code></pre>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section aria-hidden="true" class="section container source-print-page source-single-page print-only">
+            <div class="source-single-heading">
+                <div>
+                    <span class="source-print-index">SOURCE / 05</span>
+                    <h2>Ethics versus <span class="text-outline">pricing</span></h2>
+                </div>
+                <p class="text-lead">The Ethics page promises cognitive sovereignty and equitable access, while the pricing and downgrade clauses quietly negate both claims.</p>
+            </div>
+            <div class="source-single-grid">
+                <div class="source-single-copy">
+                    <span class="source-case-number">05</span>
+                    <h3>The contradiction is part of the system</h3>
+                    <p class="code-note">The language of autonomy is rendered with the same confidence as the commercial mechanism that removes it. The tension is designed into the product, not added as commentary afterward.</p>
+                </div>
+                <div class="code-panel">
+                    <div class="code-panel-head"><span class="code-panel-file">EnGram__Web.html: page-ethics</span></div>
+                    <pre><code>&lt;<span class="tg">h4</span>&gt;Cognitive Sovereignty&lt;/<span class="tg">h4</span>&gt;
+&lt;<span class="tg">p</span>&gt;Your mind is your ultimate sanctuary.
+   We guarantee absolute user autonomy.&lt;/<span class="tg">p</span>&gt;
+
+&lt;<span class="tg">h4</span>&gt;Equitable Access&lt;/<span class="tg">h4</span>&gt;
+&lt;<span class="tg">p</span>&gt;Evolution should not be a privilege.
+   Our Public tier ensures essential
+   knowledge streams remain free.&lt;/<span class="tg">p</span>&gt;</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <section class="section container source-section" style="border-top: 1px solid var(--border-subtle);">
             <h2 class="reveal" style="text-align: center; margin-bottom: 1rem;">From the <span class="text-outline">Source</span></h2>
-            <p class="text-lead reveal" style="text-align: center; margin: 0 auto 5rem; max-width: 700px;">The <a href="https://shuhan0001.github.io/Cogni-Stream/" target="_blank" rel="noopener" style="color: var(--accent-cyan); text-decoration: underline; text-decoration-color: rgba(69,230,255,0.35);">live prototype</a> is hand-built HTML/CSS/JS, GenAI-assisted only for code cleanup (Level 3, per the in-file AI declaration). A few excerpts, annotated.</p>
+            <p class="text-lead reveal" style="text-align: center; margin: 0 auto 2.5rem; max-width: 700px;">The live prototype is hand-built HTML/CSS/JS, GenAI-assisted only for code cleanup (Level 3, per the in-file AI declaration). A few excerpts, annotated.</p>
+            <div class="prototype-btn-group centered" style="margin-bottom: 5rem;">
+                <a href="EnGram%2B_Web_Draft.html" target="_blank" rel="noopener" class="prototype-btn secondary reveal delay-1">
+                    <span class="action-label">View the draft wireframe</span>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+                    <span class="print-link-card">
+                        <span class="print-file-badge">HTML</span>
+                        <span class="print-link-copy"><span class="print-link-kicker">Included file</span><span class="print-link-title">Draft wireframe</span><span class="print-link-url">EnGram+_Web_Draft.html</span></span>
+                    </span>
+                </a>
+                <a href="https://shuhan0001.github.io/Cogni-Stream/" target="_blank" rel="noopener" class="prototype-btn tonal reveal delay-2">
+                    <span class="action-label">Open the live prototype</span>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+                    <span class="print-link-card">
+                        <img src="Image/CogniStream_QR_Live.svg" alt="QR code for the live Cogni-Stream prototype">
+                        <span class="print-link-copy"><span class="print-link-kicker">Launch</span><span class="print-link-title">Live prototype</span><span class="print-link-url">shuhan0001.github.io/Cogni-Stream</span></span>
+                    </span>
+                </a>
+            </div>
 
             <div class="grid-split">
                 <div class="sticky-col reveal">
@@ -1206,8 +2985,8 @@
             </div>
         </section>
 
-        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
-            <h2 class="reveal" style="text-align: center; margin-bottom: 5rem;">Design <span class="text-outline">Rationale</span></h2>
+        <section class="section container rationale-section" style="border-top: 1px solid var(--border-subtle);">
+            <h2 class="reveal" style="text-align: center; margin-bottom: 5rem;"><span class="print-page-index print-only">RATIONALE / 01</span>Design <span class="text-outline">Rationale</span></h2>
 
             <div class="grid-split">
                 <div class="sticky-col reveal">
@@ -1237,10 +3016,10 @@
             </div>
         </section>
 
-        <section class="section container" style="border-top: 1px solid var(--border-subtle);">
+        <section class="section container closing-section" style="border-top: 1px solid var(--border-subtle);">
             <div class="grid-split">
                 <div class="sticky-col reveal">
-                    <h2>Closing<br><span class="text-outline">Reflection</span></h2>
+                    <h2><span class="print-page-index print-only">REFLECTION / 01</span>Closing<br><span class="text-outline">Reflection</span></h2>
                 </div>
                 <div>
                     <p class="text-lead reveal">Cogni-Stream isn't a warning about brain implants. It's a mirror held up to how technocapitalism already works.</p>

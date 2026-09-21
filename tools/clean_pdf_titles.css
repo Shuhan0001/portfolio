@@ -1,0 +1,20 @@
+/* Export-only cleanup: remove the small themed eyebrow line above page titles.
+   The live websites and their substantive captions/labels are unchanged. */
+@media print {
+  .print-page-index,
+  .source-print-index,
+  body.miniquest-full-portfolio .full-kicker,
+  body.aicodegen-full-portfolio .aic-topline,
+  body.aicodegen-full-portfolio .aic-cover .aic-kicker,
+  body.haunted-full-portfolio .hs-topline,
+  body.case-print .case-topline {
+    display: none !important;
+  }
+
+  body.aicodegen-full-portfolio .aic-heading { margin-top: .1in !important; }
+  body.aicodegen-full-portfolio .aic-cover h1 { margin-top: .16in !important; }
+  body.haunted-full-portfolio .hs-heading { margin-top: 42px !important; }
+  body.haunted-full-portfolio .hs-cover h1 { margin-top: 130px !important; }
+  body.case-print .case-title { margin-top: 47px !important; }
+  body.case-print .case-cover-title { margin-top: 124px !important; }
+}

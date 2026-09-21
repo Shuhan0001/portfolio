@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cogni-Stream — Basic Wireframe</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 30px;
+        }
+        
+        nav div {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 6px 12px;
+            cursor: pointer;
+            background-color: #eee;
+            border: 1px solid #ccc;
+        }
+
+        button:hover {
+            background-color: #ddd;
+        }
+
+        section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+        }
+
+        article {
+            padding: 15px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            background-color: #fafafa;
+        }
+
+        .page { display: none; }
+        .page.active { display: block; }
+        
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <strong>Cogni-Stream™</strong>
+    <div>
+        <button onclick="showPage('corp')">Overview</button>
+        <button onclick="showPage('why')">Why</button>
+        <button onclick="showPage('engram')">EnGram+</button>
+        <button onclick="showPage('ethics')">Ethics</button>
+        <button onclick="showPage('security')">Security</button>
+        <button onclick="showPage('team')">Leadership</button>
+    </div>
+</nav>
+
+<main id="page-corp" class="page active">
+    <section>
+        <h2>[Hero Headline]</h2>
+        <p>[Company Tagline & Description]</p>
+    </section>
+
+    <section>
+        <h3>[Awards Strip]</h3>
+        <article>[Award 1: Name & Year]</article>
+        <article>[Award 2: Name & Year]</article>
+        <article>[Award 3: Name & Year]</article>
+    </section>
+
+    <section>
+        <h3>[Problem Teaser]</h3>
+        <p>[Short description of the problem]</p>
+        <button onclick="showPage('why')">Learn more →</button>
+    </section>
+
+    <section>
+        <h3>[Product Gate — EnGram+]</h3>
+        <p>[Product teaser image placeholder]</p>
+        <button onclick="showPage('engram')">See EnGram+ →</button>
+    </section>
+</main>
+
+<main id="page-why" class="page">
+    <section>
+        <h2>[Why Headline]</h2>
+        <p>[Subheading]</p>
+    </section>
+
+    <section>
+        <h3>[Pain Points]</h3>
+        <article><strong>[Problem 1]</strong> - Short description</article>
+        <article><strong>[Problem 2]</strong> - Short description</article>
+        <article><strong>[Problem 3]</strong> - Short description</article>
+    </section>
+
+    <section>
+        <h3>[Solution Features]</h3>
+        <article><strong>[Feature 1]</strong> - Description</article>
+        <article><strong>[Feature 2]</strong> - Description</article>
+    </section>
+</main>
+
+<main id="page-engram" class="page">
+    <section>
+        <h2>EnGram+</h2>
+        <p>[Tagline & Hero Image Placeholder]</p>
+    </section>
+
+    <section>
+        <h3>[Promo Video]</h3>
+        <article style="text-align: center; padding: 40px;">[Video Player Placeholder]</article>
+    </section>
+
+    <section>
+        <h3>[Hardware Options]</h3>
+        <article><strong>EnGram Core</strong> - $2,499</article>
+        <article><strong>EnGram Pro</strong> - $4,999</article>
+        <article><strong>EnGram Ultra</strong> - $12,999</article>
+    </section>
+
+    <section>
+        <h3>[Subscription Plans]</h3>
+        <article><strong>Public</strong> - $0 / Lifetime</article>
+        <article><strong>Essential</strong> - $999 / yr</article>
+        <article><strong>Professional</strong> - $9,999 / yr</article>
+        <article><strong>Elite Legacy</strong> - Invite Only</article>
+    </section>
+</main>
+
+<main id="page-screenshots" class="page">
+    <section>
+        <h3>[Official Updates]</h3>
+        <article><strong>@Cogni_Stream:</strong> Official announcement text here...</article>
+    </section>
+    
+    <section>
+        <h3>[Community Reactions]</h3>
+        <article><strong>@User1:</strong> Positive review and experience...</article>
+        <article><strong>@User2:</strong> Critical discussion about equity...</article>
+    </section>
+
+    <button onclick="showPage('why')">← Back</button>
+</main>
+
+<main id="page-team" class="page">
+    <section>
+        <h2>Leadership</h2>
+        <article><strong>Dr. Elias Vance</strong> - CEO</article>
+        <article><strong>Sarah J. Kore</strong> - Chief Ethics Officer</article>
+        <article><strong>Marcus Thorne</strong> - CTO</article>
+    </section>
+</main>
+
+<main id="page-ethics" class="page">
+    <section>
+        <h2>The Ethical Imperative</h2>
+        <article><strong>Cognitive Sovereignty</strong> - Description</article>
+        <article><strong>Radical Transparency</strong> - Description</article>
+        <article><strong>Equitable Access</strong> - Description</article>
+    </section>
+</main>
+
+<main id="page-security" class="page">
+    <section>
+        <h2>Ironclad Protection</h2>
+        <article><strong>Post-Quantum Encryption</strong></article>
+        <article><strong>Biometric Kill-Switch</strong></article>
+        <article><strong>Zero-Knowledge Cloud</strong></article>
+        <article><strong>Air-Gapped Core</strong></article>
+    </section>
+</main>
+
+<footer>© 2040–2050 Cogni-Stream™</footer>
+
+<script>
+    function showPage(id) {
+        document.querySelectorAll('.page').forEach(function(page) {
+            page.classList.remove('active');
+        });
+        document.getElementById('page-' + id).classList.add('active');
+        window.scrollTo(0, 0);
+    }
+</script>
+
+</body>
+</html>

@@ -100,6 +100,7 @@
         .github-btn:hover svg { transform: translate(2px, -2px); }
         .github-btn:active { transform: translateY(-1px) scale(0.98); }
     </style>
+    <link rel="stylesheet" href="tools/case_study_print.css">
 </head>
 <body class="selection:bg-primary selection:text-white">
 
@@ -267,6 +268,121 @@
         <span>© 2026 ASHTON (SHUHAN) ZHANG</span>
         <a href="index.html" class="hover-trigger text-gray-400 hover:text-white transition-colors">Back to Portfolio</a>
     </footer>
+
+    <section class="case-page case-only" data-project="Let's Supermarket" data-total="06">
+        <div class="case-cover-grid">
+            <div class="case-cover-left">
+                <div class="case-topline"><span>Shuhan Zhang / Game design case study</span><span>In development</span></div>
+                <h1 class="case-cover-title">LET’S<br><em>SUPERMARKET</em></h1>
+                <p class="case-cover-subtitle">A low-poly management sim about turning everyday stock, pricing and checkout decisions into the growth of one small store.</p>
+                <div class="case-cover-meta">
+                    <div><small>My role</small><strong>Game + interaction design</strong></div>
+                    <div><small>Team</small><strong>Four collaborators</strong></div>
+                    <div><small>Engine</small><strong>Unreal Engine 5</strong></div>
+                    <div><small>Focus</small><strong>Management simulation</strong></div>
+                </div>
+            </div>
+            <div class="case-cover-right">
+                <figure>
+                    <img class="m-cover-image" src="Image/Index_Supermarket.webp" alt="Checkout scene from Let's Supermarket showing customers, a register and payment values">
+                    <figcaption>Checkout scene from the project page. The full frame is shown without cropping.</figcaption>
+                </figure>
+            </div>
+        </div>
+    </section>
+
+    <section class="case-page case-only" data-project="Let's Supermarket" data-total="06">
+        <div class="case-topline"><span>01 / Core loop</span><span>Stock to sale</span></div>
+        <h2 class="case-title">Five small actions make<br>one <em>business cycle.</em></h2>
+        <p class="case-deck">The first playable loop is being built around the decisions and labour of running the store, not just decorating it.</p>
+        <div class="m-loop-grid">
+            <article><b>01</b><h3>Order stock</h3><p>Buy goods while wholesale costs are favourable.</p></article>
+            <article><b>02</b><h3>Restock</h3><p>Move boxes from the loading dock to the shop floor.</p></article>
+            <article><b>03</b><h3>Set prices</h3><p>Choose a price customers are willing to pay.</p></article>
+            <article><b>04</b><h3>Open store</h3><p>Customers browse the floor and select products.</p></article>
+            <article><b>05</b><h3>Checkout</h3><p>Scan items, take payment and make change.</p></article>
+        </div>
+        <p class="m-loop-result">Sales return as capital for more goods, staff and eventually a larger store.</p>
+    </section>
+
+    <section class="case-page case-only" data-project="Let's Supermarket" data-total="06">
+        <div class="case-topline"><span>02 / Economy + space</span><span>Connected decisions</span></div>
+        <h2 class="case-title">The shelf and the price tag<br>both change the <em>outcome.</em></h2>
+        <div class="m-systems-grid">
+            <div class="m-system">
+                <span class="case-label">System A</span>
+                <h3>Dynamic pricing</h3>
+                <p>Wholesale costs fluctuate, creating moments to buy low. Each customer has an acceptable price range; demand drops when the store prices beyond it.</p>
+                <div class="m-equation"><strong>Buy cost</strong><i>→</i><strong>Shelf price</strong><i>→</i><strong>Demand</strong></div>
+                <p class="case-small" style="margin-top:14px;">Design intent: profit depends on reading both supply and customer tolerance.</p>
+            </div>
+            <div class="m-system">
+                <span class="case-label">System B</span>
+                <h3>Store building</h3>
+                <p>Modular zones can reinforce each other or create friction. The project page gives bakery and produce as a productive pairing, and a restroom beside the deli as a bad one.</p>
+                <div class="m-zones"><span><small>Reinforces</small>Bakery + Produce</span><span><small>Hurts sales</small>Restroom + Deli</span></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="case-page case-only" data-project="Let's Supermarket" data-total="06">
+        <div class="case-topline"><span>03 / People + progression</span><span>Two supporting systems</span></div>
+        <h2 class="case-title">A store is more than<br>its <em>inventory.</em></h2>
+        <p class="case-deck">Staff behaviour and small narrative hooks give the management loop a social layer.</p>
+        <div class="m-behaviour-grid">
+            <article>
+                <span class="case-label">Staff AI</span>
+                <h3>Role, efficiency, morale</h3>
+                <p>Recruited NPCs take a single assigned role. Their efficiency varies, and poor treatment lowers morale and productivity.</p>
+                <ol><li><b>01</b>Recruit an NPC</li><li><b>02</b>Assign a role</li><li><b>03</b>Manage morale as well as output</li></ol>
+            </article>
+            <article>
+                <span class="case-label">Story hooks</span>
+                <h3>Milestones open quests</h3>
+                <p>Revenue milestones are intended to trigger conversations with NPCs and a quest with a meaningful reward.</p>
+                <ol><li><b>01</b>Reach a revenue threshold</li><li><b>02</b>Meet a selected NPC</li><li><b>03</b>Complete the quest for a payoff</li></ol>
+            </article>
+        </div>
+    </section>
+
+    <section class="case-page case-only" data-project="Let's Supermarket" data-total="06">
+        <div class="case-topline"><span>04 / Contribution + scope</span><span>What is building now</span></div>
+        <h2 class="case-title">Designing a <em>playable slice.</em></h2>
+        <div class="m-role-grid">
+            <div>
+                <span class="case-label">My contribution</span>
+                <h3>Game and interaction design</h3>
+                <p>I handle the game’s interaction and management design on a four-person team, alongside collaborators covering narrative and character / environment art.</p>
+                <dl><dt>Design</dt><dd>Core actions, store systems and player decisions</dd><dt>Narrative</dt><dd>Teammate role</dd><dt>Art</dt><dd>Teammate role</dd></dl>
+            </div>
+            <div>
+                <span class="case-label">Development state</span>
+                <h3>First loop in progress</h3>
+                <p>The team is using two starter goods to test pricing, shelving and basic building tools before expanding the demo.</p>
+                <div class="m-status-list"><article><b>Building</b><span>Ordering, restocking, pricing, opening and checkout</span></article><article><b>Planned</b><span>More goods and buildable structures</span></article><article><b>Planned</b><span>Short story hook for the demo</span></article></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="case-page case-only" data-project="Let's Supermarket" data-total="06">
+        <div class="case-topline"><span>05 / Current evidence</span><span>Open project</span></div>
+        <h2 class="case-title">A store day to<br><em>prove the loop.</em></h2>
+        <div class="m-close-grid">
+            <div>
+                <p class="m-close-lead">The first build tests the five-step loop with two starter goods.</p>
+                <p class="case-copy">The larger demo aims to add a handful of buildable structures, a couple of controllable characters, more sellable goods and a short story hook.</p>
+            </div>
+            <div class="m-close-side">
+                <span class="case-label">Repository</span>
+                <p style="margin-top:15px;">The project link remains clickable in the PDF, with a QR code for printed copies.</p>
+                <a class="m-repo" href="https://github.com/TaoMingxuan/Lets_Supermarket">
+                    <img src="Image/Supermarket_QR_GitHub.svg" alt="QR code to the Let's Supermarket GitHub repository">
+                    <span><strong>Explore the project</strong><small>github.com/TaoMingxuan/Lets_Supermarket</small></span>
+                </a>
+                <p class="case-small" style="margin-top:30px; padding-top:12px; border-top:1px solid var(--case-rule);">Current: first playable loop in progress. More goods, buildables and story content are planned.</p>
+            </div>
+        </div>
+    </section>
 
 </main>
 

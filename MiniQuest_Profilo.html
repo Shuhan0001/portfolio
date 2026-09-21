@@ -566,6 +566,11 @@
         .future-list li::before { content: "•"; position: absolute; left: 0; color: var(--accent-moss); }
         .limit-list strong, .future-list strong { color: var(--text-primary); }
 
+        /* Content reserved for the authored postgraduate-application PDF. */
+        .application-only,
+        .full-portfolio-only,
+        .application-link-card { display: none !important; }
+
         /* ============================================================
            Print / PDF export — lets this page be turned into a portfolio
            PDF straight from the browser's Print dialog (Cmd/Ctrl+P →
@@ -911,6 +916,777 @@
                 color: var(--text-secondary) !important;
                 word-break: break-all;
             }
+        }
+
+        @media print {
+            @page { size: 13.33in 7.5in; margin: 0; }
+
+            body.miniquest-application-portfolio {
+                width: 13.33in !important;
+                margin: 0 !important;
+                background: #050704 !important;
+                counter-reset: miniquest-page;
+            }
+
+            body.miniquest-application-portfolio main {
+                display: block !important;
+                width: 13.33in !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            body.miniquest-application-portfolio main > section:not(.application-page) {
+                display: none !important;
+            }
+
+            body.miniquest-application-portfolio .site-footer,
+            body.miniquest-application-portfolio .mesh-container,
+            body.miniquest-application-portfolio .noise-overlay,
+            body.miniquest-application-portfolio .ambient-light,
+            body.miniquest-application-portfolio .scroll-track,
+            body.miniquest-application-portfolio .back-home-btn {
+                display: none !important;
+            }
+
+            body.miniquest-application-portfolio .application-page {
+                --glow-x: 84%;
+                --glow-y: 18%;
+                --signal-x: 10%;
+                --signal-y: 88%;
+                position: relative !important;
+                isolation: isolate;
+                display: block !important;
+                width: 13.33in !important;
+                height: 7.5in !important;
+                min-height: 7.5in !important;
+                margin: 0 !important;
+                padding: 12mm 15mm !important;
+                overflow: hidden !important;
+                break-after: page;
+                page-break-after: always;
+                break-inside: avoid-page;
+                page-break-inside: avoid;
+                counter-increment: miniquest-page;
+                background-color: #050704 !important;
+                background-image:
+                    radial-gradient(ellipse 58% 90% at var(--glow-x) var(--glow-y), rgba(159, 209, 91, 0.16), rgba(159, 209, 91, 0.05) 34%, transparent 72%),
+                    radial-gradient(ellipse 48% 72% at var(--signal-x) var(--signal-y), rgba(239, 189, 65, 0.10), rgba(239, 189, 65, 0.018) 48%, transparent 74%),
+                    linear-gradient(135deg, #070a06 0%, #030503 52%, #080705 100%) !important;
+                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.035), inset 0 -90px 140px rgba(0, 0, 0, 0.32) !important;
+            }
+
+            body.miniquest-application-portfolio .application-page:nth-of-type(2n) { --glow-x: 10%; --glow-y: 18%; --signal-x: 92%; --signal-y: 84%; }
+            body.miniquest-application-portfolio .application-page:nth-of-type(3n) { --glow-x: 88%; --glow-y: 82%; --signal-x: 12%; --signal-y: 10%; }
+
+            body.miniquest-application-portfolio .application-page::after {
+                content: "MINIQUEST  /  " counter(miniquest-page, decimal-leading-zero);
+                position: absolute;
+                right: 15mm;
+                bottom: 6mm;
+                z-index: 4;
+                font-family: Arial, sans-serif;
+                font-size: 0.55rem;
+                font-weight: 700;
+                letter-spacing: 0.16em;
+                color: rgba(255, 255, 255, 0.28);
+            }
+
+            body.miniquest-application-portfolio .application-page > * {
+                position: relative;
+                z-index: 1;
+            }
+
+            body.miniquest-application-portfolio .application-index {
+                display: block;
+                margin-bottom: 0.55rem;
+                font-family: Arial, sans-serif;
+                font-size: 0.61rem;
+                font-weight: 800;
+                line-height: 1.2;
+                letter-spacing: 0.18em;
+                color: var(--accent-moss);
+            }
+
+            body.miniquest-application-portfolio .application-page-header {
+                display: grid;
+                grid-template-columns: 0.92fr 1.23fr;
+                gap: 4rem;
+                align-items: end;
+                padding-bottom: 1.25rem;
+                border-bottom: 1px solid rgba(159, 209, 91, 0.16);
+            }
+
+            body.miniquest-application-portfolio .application-page-header h2 {
+                margin: 0 !important;
+                font-size: 3.55rem !important;
+                line-height: 0.96 !important;
+                color: var(--text-primary) !important;
+            }
+
+            body.miniquest-application-portfolio .application-page-header h2 span,
+            body.miniquest-application-portfolio .application-cover h1 span {
+                color: var(--accent-moss) !important;
+                text-shadow: 0 0 24px rgba(159, 209, 91, 0.22);
+            }
+
+            body.miniquest-application-portfolio .application-page-header > p {
+                margin: 0 !important;
+                font-family: Arial, sans-serif;
+                font-size: 1rem;
+                line-height: 1.5;
+                color: var(--text-secondary);
+            }
+
+            body.miniquest-application-portfolio .application-link-grid {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 0.75rem;
+            }
+
+            body.miniquest-application-portfolio .application-link-grid > a {
+                display: block !important;
+                width: 100%;
+                padding: 0 !important;
+                border: 0 !important;
+                color: inherit;
+                text-decoration: none;
+                background: transparent !important;
+            }
+
+            body.miniquest-application-portfolio .application-link-card {
+                display: grid !important;
+                grid-template-columns: 17mm minmax(0, 1fr);
+                gap: 0.8rem;
+                align-items: center;
+                min-height: 22mm;
+                padding: 2.3mm;
+                overflow: hidden;
+                border: 1px solid rgba(159, 209, 91, 0.22);
+                border-radius: 12px;
+                background: linear-gradient(145deg, rgba(159, 209, 91, 0.075), rgba(255, 255, 255, 0.014));
+                box-shadow: 0 22px 52px -38px rgba(159, 209, 91, 0.8);
+            }
+
+            body.miniquest-application-portfolio .application-link-card img {
+                width: 17mm;
+                height: 17mm;
+                padding: 1mm;
+                border-radius: 6px;
+                background: #fff;
+            }
+
+            body.miniquest-application-portfolio .application-link-card span,
+            body.miniquest-application-portfolio .application-link-card small,
+            body.miniquest-application-portfolio .application-link-card strong,
+            body.miniquest-application-portfolio .application-link-card em { display: block; }
+            body.miniquest-application-portfolio .application-link-card small { font-family: Arial, sans-serif; font-size: 0.55rem; font-weight: 800; letter-spacing: 0.14em; color: var(--accent-moss); }
+            body.miniquest-application-portfolio .application-link-card strong { margin-top: 0.2rem; font-size: 0.9rem; color: var(--text-primary); }
+            body.miniquest-application-portfolio .application-link-card em { margin-top: 0.25rem; overflow: hidden; font-family: Arial, sans-serif; font-size: 0.48rem; font-style: normal; white-space: nowrap; text-overflow: ellipsis; color: var(--text-tertiary); }
+
+            body.miniquest-application-portfolio .application-cover {
+                display: grid !important;
+                grid-template-columns: 1.08fr 0.92fr;
+                gap: 3.5rem;
+                align-items: center;
+            }
+
+            body.miniquest-application-portfolio .application-cover-copy h1 {
+                margin: 0 0 1.1rem;
+                font-size: 4.9rem;
+                line-height: 0.92;
+                color: var(--text-primary);
+            }
+
+            body.miniquest-application-portfolio .application-cover-copy > p {
+                max-width: 690px;
+                margin: 0;
+                font-family: Arial, sans-serif;
+                font-size: 1rem;
+                line-height: 1.55;
+                color: var(--text-secondary);
+            }
+
+            body.miniquest-application-portfolio .application-meta-grid {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 0.85rem 1.3rem;
+                margin: 1.5rem 0;
+                padding-top: 1.15rem;
+                border-top: 1px solid rgba(159, 209, 91, 0.14);
+            }
+
+            body.miniquest-application-portfolio .application-meta-grid small,
+            body.miniquest-application-portfolio .application-meta-grid strong { display: block; font-family: Arial, sans-serif; }
+            body.miniquest-application-portfolio .application-meta-grid small { font-size: 0.58rem; color: var(--text-tertiary); }
+            body.miniquest-application-portfolio .application-meta-grid strong { margin-top: 0.25rem; font-size: 0.8rem; color: var(--text-primary); }
+
+            body.miniquest-application-portfolio .application-cover-visuals {
+                position: relative;
+                height: 86%;
+            }
+
+            body.miniquest-application-portfolio .application-phone {
+                position: absolute;
+                margin: 0;
+                overflow: hidden;
+                border: 1px solid rgba(159, 209, 91, 0.23);
+                border-radius: 16px;
+                background: #0a0d09;
+                box-shadow: 0 34px 68px -42px rgba(159, 209, 91, 0.82);
+            }
+
+            body.miniquest-application-portfolio .application-phone img {
+                width: 100%;
+                height: 100%;
+                display: block;
+                object-fit: cover;
+                object-position: top center;
+            }
+
+            body.miniquest-application-portfolio .application-phone-primary { inset: 0 24% 5% 0; z-index: 2; }
+            body.miniquest-application-portfolio .application-phone-secondary { inset: 12% 0 0 49%; z-index: 1; opacity: 0.84; }
+
+            body.miniquest-application-portfolio .application-research-grid {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 1rem;
+                margin-top: 2rem;
+            }
+
+            body.miniquest-application-portfolio .application-research-grid article {
+                min-height: 26vh;
+                padding: 1.4rem;
+                border: 1px solid rgba(159, 209, 91, 0.16);
+                border-radius: 14px;
+                background: linear-gradient(145deg, rgba(159, 209, 91, 0.055), rgba(255, 255, 255, 0.012));
+            }
+
+            body.miniquest-application-portfolio .application-research-grid article > span,
+            body.miniquest-application-portfolio .application-reference-grid article > span,
+            body.miniquest-application-portfolio .application-implementation-grid article > span,
+            body.miniquest-application-portfolio .application-capability-grid article > span {
+                font-family: Arial, sans-serif;
+                font-size: 0.58rem;
+                font-weight: 800;
+                letter-spacing: 0.12em;
+                color: var(--accent-moss);
+            }
+
+            body.miniquest-application-portfolio .application-research-grid h3 { margin: 0.55rem 0 0.8rem; font-size: 1.25rem; }
+            body.miniquest-application-portfolio .application-research-grid p { min-height: 4.5rem; margin: 0; font-family: Arial, sans-serif; font-size: 0.82rem; line-height: 1.5; color: var(--text-secondary); }
+            body.miniquest-application-portfolio .application-research-grid strong { display: block; margin-top: 1rem; padding-top: 0.9rem; border-top: 1px solid rgba(159, 209, 91, 0.12); font-family: Arial, sans-serif; font-size: 0.74rem; line-height: 1.42; color: var(--text-primary); }
+            body.miniquest-application-portfolio .application-research blockquote { max-width: 900px; margin: 1.45rem 0 0; padding-left: 1.2rem; border-left: 2px solid var(--accent-moss); font-size: 1.25rem; line-height: 1.35; color: var(--text-primary); }
+
+            body.miniquest-application-portfolio .application-model-grid {
+                display: grid;
+                grid-template-columns: 0.9fr 1.1fr;
+                gap: 2rem;
+                margin-top: 1.75rem;
+            }
+
+            body.miniquest-application-portfolio .application-model-copy {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 0.9rem;
+            }
+
+            body.miniquest-application-portfolio .application-model-copy article {
+                padding: 1.15rem;
+                border: 1px solid rgba(159, 209, 91, 0.16);
+                border-radius: 13px;
+                background: rgba(0, 0, 0, 0.18);
+            }
+
+            body.miniquest-application-portfolio .application-model-copy article span { font-family: Arial, sans-serif; font-size: 0.56rem; font-weight: 800; letter-spacing: 0.12em; color: var(--accent-moss); }
+            body.miniquest-application-portfolio .application-model-copy h3 { margin: 0.5rem 0 0.65rem; font-size: 1.15rem; }
+            body.miniquest-application-portfolio .application-model-copy p { margin: 0; font-family: Arial, sans-serif; font-size: 0.75rem; line-height: 1.5; color: var(--text-secondary); }
+            body.miniquest-application-portfolio .application-contrast { grid-column: 1 / -1; padding: 1rem 1.15rem; border-left: 2px solid var(--accent-gold); background: linear-gradient(90deg, rgba(239, 189, 65, 0.065), transparent); }
+            body.miniquest-application-portfolio .application-contrast small { font-family: Arial, sans-serif; font-size: 0.55rem; font-weight: 800; letter-spacing: 0.13em; color: var(--accent-gold); }
+            body.miniquest-application-portfolio .application-contrast p { margin-top: 0.45rem; font-size: 0.76rem; }
+
+            body.miniquest-application-portfolio .application-model-visuals {
+                display: grid;
+                grid-template-columns: 1.1fr 0.9fr;
+                gap: 0.9rem;
+            }
+
+            body.miniquest-application-portfolio .application-model-visuals figure,
+            body.miniquest-application-portfolio .application-screen-grid figure {
+                margin: 0;
+            }
+
+            body.miniquest-application-portfolio .application-model-visuals figure {
+                display: grid;
+                grid-template-rows: 1fr auto;
+                min-height: 42vh;
+                overflow: hidden;
+                border: 1px solid rgba(159, 209, 91, 0.16);
+                border-radius: 13px;
+                background: rgba(0, 0, 0, 0.3);
+            }
+
+            body.miniquest-application-portfolio .application-model-visuals img { width: 100%; height: 100%; display: block; object-fit: contain; object-position: top center; }
+            body.miniquest-application-portfolio .application-model-visuals figcaption { padding: 0.65rem 0.8rem; font-family: Arial, sans-serif; font-size: 0.65rem; color: var(--text-secondary); }
+
+            body.miniquest-application-portfolio .application-screen-grid {
+                display: grid;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 1rem;
+                margin-top: 1.6rem;
+            }
+
+            body.miniquest-application-portfolio .application-screen-grid figure > div {
+                height: 39vh;
+                overflow: hidden;
+                border: 1px solid rgba(159, 209, 91, 0.16);
+                border-radius: 13px;
+                background: rgba(0, 0, 0, 0.34);
+                box-shadow: 0 24px 54px -42px rgba(159, 209, 91, 0.75);
+            }
+
+            body.miniquest-application-portfolio .application-screen-grid img { width: 100%; height: 100%; display: block; object-fit: contain; object-position: top center; }
+            body.miniquest-application-portfolio .application-screen-grid figcaption { display: grid; grid-template-columns: auto 1fr; gap: 0.2rem 0.65rem; margin-top: 0.7rem; font-family: Arial, sans-serif; }
+            body.miniquest-application-portfolio .application-screen-grid figcaption span { grid-row: 1 / span 2; font-size: 0.56rem; font-weight: 800; color: var(--accent-moss); }
+            body.miniquest-application-portfolio .application-screen-grid figcaption strong { font-size: 0.78rem; color: var(--text-primary); }
+            body.miniquest-application-portfolio .application-screen-grid figcaption small { font-size: 0.62rem; line-height: 1.35; color: var(--text-tertiary); }
+
+            body.miniquest-application-portfolio .application-reference-grid {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 1rem;
+                margin-top: 1.7rem;
+            }
+
+            body.miniquest-application-portfolio .application-reference-grid article { padding: 1rem; border: 1px solid rgba(159, 209, 91, 0.14); border-radius: 14px; background: rgba(0, 0, 0, 0.18); }
+            body.miniquest-application-portfolio .application-reference-grid figure { height: 25vh; margin: 0 0 0.9rem; overflow: hidden; border-radius: 9px; background: rgba(255, 255, 255, 0.025); }
+            body.miniquest-application-portfolio .application-reference-grid img { width: 100%; height: 100%; display: block; object-fit: contain; object-position: center; }
+            body.miniquest-application-portfolio .application-reference-grid h3 { margin: 0.45rem 0 0.55rem; font-size: 1rem; }
+            body.miniquest-application-portfolio .application-reference-grid p { margin: 0; font-family: Arial, sans-serif; font-size: 0.7rem; line-height: 1.45; color: var(--text-secondary); }
+
+            body.miniquest-application-portfolio .application-architecture-grid {
+                display: grid;
+                grid-template-columns: 0.78fr 1.42fr;
+                gap: 2rem;
+                align-items: center;
+                margin-top: 1.65rem;
+            }
+
+            body.miniquest-application-portfolio .application-architecture-copy { display: grid; gap: 0.65rem; }
+            body.miniquest-application-portfolio .application-architecture-copy article { padding: 0.85rem 1rem; border-left: 2px solid var(--accent-moss); background: linear-gradient(90deg, rgba(159, 209, 91, 0.055), transparent); }
+            body.miniquest-application-portfolio .application-architecture-copy article span { font-family: Arial, sans-serif; font-size: 0.55rem; font-weight: 800; letter-spacing: 0.12em; color: var(--accent-moss); }
+            body.miniquest-application-portfolio .application-architecture-copy p { margin: 0.35rem 0 0; font-family: Arial, sans-serif; font-size: 0.72rem; line-height: 1.42; color: var(--text-secondary); }
+            body.miniquest-application-portfolio .application-architecture-copy > div { padding: 0.9rem 1rem; border: 1px solid rgba(239, 189, 65, 0.16); border-radius: 10px; }
+            body.miniquest-application-portfolio .application-architecture-copy > div small { font-family: Arial, sans-serif; font-size: 0.54rem; font-weight: 800; letter-spacing: 0.12em; color: var(--accent-gold); }
+            body.miniquest-application-portfolio .application-architecture-figure { margin: 0; }
+            body.miniquest-application-portfolio .application-architecture-figure img { width: 100%; height: 39vh; display: block; object-fit: contain; object-position: center; padding: 0.8rem; border: 1px solid rgba(159, 209, 91, 0.16); border-radius: 13px; background: rgba(255, 255, 255, 0.94); }
+            body.miniquest-application-portfolio .application-architecture-figure figcaption { margin-top: 0.55rem; font-family: Arial, sans-serif; font-size: 0.62rem; color: var(--text-tertiary); }
+
+            body.miniquest-application-portfolio .application-implementation-grid {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 1.1rem;
+                margin-top: 1.65rem;
+            }
+
+            body.miniquest-application-portfolio .application-implementation-grid article { padding: 1.15rem; border: 1px solid rgba(159, 209, 91, 0.15); border-radius: 14px; background: linear-gradient(145deg, rgba(159, 209, 91, 0.045), rgba(255, 255, 255, 0.01)); }
+            body.miniquest-application-portfolio .application-implementation-grid h3 { margin: 0.45rem 0 0.55rem; font-size: 1.15rem; }
+            body.miniquest-application-portfolio .application-implementation-grid article > p { min-height: 2.6rem; margin: 0 0 0.75rem; font-family: Arial, sans-serif; font-size: 0.72rem; line-height: 1.45; color: var(--text-secondary); }
+            body.miniquest-application-portfolio .application-implementation-grid .code-panel { margin: 0 !important; }
+            body.miniquest-application-portfolio .application-implementation-grid .code-panel pre { padding: 0.9rem !important; font-size: 0.66rem !important; line-height: 1.45 !important; white-space: pre-wrap !important; }
+            body.miniquest-application-portfolio .application-implementation-note { display: grid; grid-template-columns: 0.36fr 1.64fr; gap: 1rem; margin-top: 1rem; padding: 0.85rem 1rem; border-left: 2px solid var(--accent-gold); background: linear-gradient(90deg, rgba(239, 189, 65, 0.055), transparent); font-family: Arial, sans-serif; }
+            body.miniquest-application-portfolio .application-implementation-note strong { font-size: 0.72rem; color: var(--accent-gold); }
+            body.miniquest-application-portfolio .application-implementation-note span { font-size: 0.72rem; color: var(--text-secondary); }
+
+            body.miniquest-application-portfolio .application-capability-grid {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 1rem;
+                margin-top: 1.8rem;
+            }
+
+            body.miniquest-application-portfolio .application-capability-grid article { min-height: 18vh; padding: 1.2rem; border-left: 1px solid rgba(159, 209, 91, 0.32); background: linear-gradient(90deg, rgba(159, 209, 91, 0.04), transparent); }
+            body.miniquest-application-portfolio .application-capability-grid h3 { margin: 0.5rem 0 0.65rem; font-size: 1.05rem; }
+            body.miniquest-application-portfolio .application-capability-grid p { margin: 0; font-family: Arial, sans-serif; font-size: 0.74rem; line-height: 1.48; color: var(--text-secondary); }
+
+            body.miniquest-application-portfolio .application-reflection-footer {
+                display: grid;
+                grid-template-columns: 0.9fr 1.1fr;
+                gap: 2rem;
+                align-items: center;
+                margin-top: 1.55rem;
+                padding-top: 1.25rem;
+                border-top: 1px solid rgba(159, 209, 91, 0.15);
+            }
+
+            body.miniquest-application-portfolio .application-reflection-footer > div:first-child small { font-family: Arial, sans-serif; font-size: 0.55rem; font-weight: 800; letter-spacing: 0.12em; color: var(--accent-moss); }
+            body.miniquest-application-portfolio .application-reflection-footer > div:first-child p { margin: 0.45rem 0 0; font-family: Arial, sans-serif; font-size: 0.75rem; line-height: 1.48; color: var(--text-secondary); }
+        }
+
+        /* ============================================================
+           Full portfolio PDF — a complete, deliberately paginated case
+           study. The live page remains untouched; the renderer opts into
+           this layout by adding .miniquest-full-portfolio to <body>.
+           ============================================================ */
+        @media print {
+            body.miniquest-full-portfolio {
+                width: 13.33in !important;
+                margin: 0 !important;
+                background: #050704 !important;
+                counter-reset: miniquest-full-page;
+            }
+
+            body.miniquest-full-portfolio main {
+                display: block !important;
+                width: 13.33in !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            body.miniquest-full-portfolio main > section:not(.full-page),
+            body.miniquest-full-portfolio .site-footer,
+            body.miniquest-full-portfolio .mesh-container,
+            body.miniquest-full-portfolio .noise-overlay,
+            body.miniquest-full-portfolio .ambient-light,
+            body.miniquest-full-portfolio .scroll-track,
+            body.miniquest-full-portfolio .back-home-btn {
+                display: none !important;
+            }
+
+            body.miniquest-full-portfolio .full-page {
+                --glow-x: 84%;
+                --glow-y: 14%;
+                --signal-x: 10%;
+                --signal-y: 90%;
+                position: relative !important;
+                isolation: isolate;
+                display: block !important;
+                width: 13.33in !important;
+                height: 7.5in !important;
+                min-height: 7.5in !important;
+                margin: 0 !important;
+                padding: 12mm 15mm !important;
+                overflow: hidden !important;
+                break-after: page;
+                page-break-after: always;
+                break-inside: avoid-page;
+                page-break-inside: avoid;
+                counter-increment: miniquest-full-page;
+                background-color: #050704 !important;
+                background-image:
+                    radial-gradient(ellipse 58% 88% at var(--glow-x) var(--glow-y), rgba(159, 209, 91, 0.15), rgba(159, 209, 91, 0.035) 36%, transparent 72%),
+                    radial-gradient(ellipse 44% 68% at var(--signal-x) var(--signal-y), rgba(239, 189, 65, 0.085), rgba(239, 189, 65, 0.012) 50%, transparent 74%),
+                    linear-gradient(135deg, #070a06 0%, #030503 52%, #080705 100%) !important;
+                box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.035), inset 0 -90px 140px rgba(0, 0, 0, 0.32) !important;
+            }
+
+            body.miniquest-full-portfolio .full-page:nth-of-type(2n) { --glow-x: 10%; --glow-y: 18%; --signal-x: 92%; --signal-y: 84%; }
+            body.miniquest-full-portfolio .full-page:nth-of-type(3n) { --glow-x: 88%; --glow-y: 82%; --signal-x: 12%; --signal-y: 10%; }
+            body.miniquest-full-portfolio .full-page:last-of-type { break-after: auto; page-break-after: auto; }
+
+            body.miniquest-full-portfolio .full-page::after {
+                content: "MINIQUEST  /  " counter(miniquest-full-page, decimal-leading-zero);
+                position: absolute;
+                right: 15mm;
+                bottom: 6mm;
+                z-index: 4;
+                font-family: Arial, sans-serif;
+                font-size: 0.55rem;
+                font-weight: 700;
+                letter-spacing: 0.16em;
+                color: rgba(255, 255, 255, 0.28);
+            }
+
+            body.miniquest-full-portfolio .full-page > * { position: relative; z-index: 1; }
+            body.miniquest-full-portfolio .full-kicker {
+                display: block;
+                margin-bottom: 0.55rem;
+                font-family: Arial, sans-serif;
+                font-size: 0.61rem;
+                font-weight: 800;
+                line-height: 1.2;
+                letter-spacing: 0.18em;
+                color: var(--accent-moss);
+            }
+
+            body.miniquest-full-portfolio .full-page-header {
+                display: grid;
+                grid-template-columns: 0.92fr 1.23fr;
+                gap: 4rem;
+                align-items: end;
+                padding-bottom: 1.1rem;
+                border-bottom: 1px solid rgba(159, 209, 91, 0.16);
+            }
+
+            body.miniquest-full-portfolio .full-page-header h2 {
+                margin: 0 !important;
+                font-size: 3.25rem !important;
+                line-height: 0.96 !important;
+                color: var(--text-primary) !important;
+            }
+
+            body.miniquest-full-portfolio .full-page-header h2 span,
+            body.miniquest-full-portfolio .full-cover h1 span {
+                color: var(--accent-moss) !important;
+                text-shadow: none !important;
+            }
+
+            body.miniquest-full-portfolio .full-page-header > p {
+                margin: 0 !important;
+                font-family: Arial, sans-serif;
+                font-size: 0.9rem;
+                line-height: 1.5;
+                color: var(--text-secondary);
+            }
+
+            body.miniquest-full-portfolio .full-cover {
+                display: grid !important;
+                grid-template-columns: 1.08fr 0.92fr;
+                gap: 3.5rem;
+                align-items: center;
+            }
+
+            body.miniquest-full-portfolio .full-cover h1 {
+                margin: 0 0 1rem;
+                font-size: 4.65rem;
+                line-height: 0.92;
+                color: var(--text-primary);
+            }
+
+            body.miniquest-full-portfolio .full-cover-copy > p {
+                max-width: 700px;
+                margin: 0;
+                font-family: Arial, sans-serif;
+                font-size: 0.94rem;
+                line-height: 1.55;
+                color: var(--text-secondary);
+            }
+
+            body.miniquest-full-portfolio .full-meta-grid {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 0.75rem 1.3rem;
+                margin: 1.25rem 0;
+                padding-top: 1rem;
+                border-top: 1px solid rgba(159, 209, 91, 0.14);
+            }
+
+            body.miniquest-full-portfolio .full-meta-grid small,
+            body.miniquest-full-portfolio .full-meta-grid strong { display: block; font-family: Arial, sans-serif; }
+            body.miniquest-full-portfolio .full-meta-grid small { font-size: 0.54rem; color: var(--text-tertiary); }
+            body.miniquest-full-portfolio .full-meta-grid strong { margin-top: 0.22rem; font-size: 0.75rem; color: var(--text-primary); }
+
+            body.miniquest-full-portfolio .full-cover-visuals {
+                display: grid;
+                place-items: center;
+                height: 88%;
+            }
+            body.miniquest-full-portfolio .full-cover-phone {
+                position: relative;
+                margin: 0;
+                overflow: hidden;
+                border: 1px solid rgba(159, 209, 91, 0.23);
+                border-radius: 16px;
+                background: rgba(159, 209, 91, 0.035);
+                box-shadow: 0 34px 68px -42px rgba(159, 209, 91, 0.82);
+            }
+            body.miniquest-full-portfolio .full-cover-phone img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: top center; }
+            body.miniquest-full-portfolio .full-cover-phone.primary { width: 64%; aspect-ratio: 886 / 1390; z-index: 2; }
+            body.miniquest-full-portfolio .full-cover-phone.secondary { aspect-ratio: 3 / 5; z-index: 1; opacity: 1; transform: translateY(4%); }
+            body.miniquest-full-portfolio .full-cover-note { margin-top: 1.25rem; padding: 0.75rem 0.9rem; border-left: 2px solid var(--accent-moss); background: linear-gradient(90deg, rgba(159, 209, 91, 0.055), transparent); font-family: Arial, sans-serif; font-size: 0.66rem; line-height: 1.42; color: var(--text-secondary); }
+            body.miniquest-full-portfolio .full-cover-note strong { color: var(--text-primary); }
+
+            body.miniquest-full-portfolio .full-link-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.7rem; }
+            body.miniquest-full-portfolio .full-link-grid > a { display: block !important; color: inherit; text-decoration: none; }
+            body.miniquest-full-portfolio .full-link-card {
+                display: grid !important;
+                grid-template-columns: 15mm minmax(0, 1fr);
+                gap: 0.72rem;
+                align-items: center;
+                min-height: 20mm;
+                padding: 2.2mm;
+                overflow: hidden;
+                border: 1px solid rgba(159, 209, 91, 0.22);
+                border-radius: 11px;
+                background: linear-gradient(145deg, rgba(159, 209, 91, 0.075), rgba(255, 255, 255, 0.014));
+            }
+            body.miniquest-full-portfolio .full-link-card img { width: 15mm; height: 15mm; padding: 1mm; border-radius: 5px; background: #fff; }
+            body.miniquest-full-portfolio .full-link-card span,
+            body.miniquest-full-portfolio .full-link-card small,
+            body.miniquest-full-portfolio .full-link-card strong,
+            body.miniquest-full-portfolio .full-link-card em { display: block; }
+            body.miniquest-full-portfolio .full-link-card small { font-family: Arial, sans-serif; font-size: 0.51rem; font-weight: 800; letter-spacing: 0.13em; color: var(--accent-moss); }
+            body.miniquest-full-portfolio .full-link-card strong { margin-top: 0.16rem; font-size: 0.82rem; color: var(--text-primary); }
+            body.miniquest-full-portfolio .full-link-card em { margin-top: 0.2rem; overflow: hidden; font-family: Arial, sans-serif; font-size: 0.44rem; font-style: normal; white-space: nowrap; text-overflow: ellipsis; color: var(--text-tertiary); }
+
+            body.miniquest-full-portfolio .full-research-grid {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 1rem;
+                margin-top: 1.6rem;
+            }
+            body.miniquest-full-portfolio .full-research-grid article {
+                min-height: 23vh;
+                padding: 1.25rem;
+                border: 1px solid rgba(159, 209, 91, 0.16);
+                border-radius: 13px;
+                background: linear-gradient(145deg, rgba(159, 209, 91, 0.055), rgba(255, 255, 255, 0.012));
+            }
+            body.miniquest-full-portfolio .full-card-index { font-family: Arial, sans-serif; font-size: 0.56rem; font-weight: 800; letter-spacing: 0.12em; color: var(--accent-moss); }
+            body.miniquest-full-portfolio .full-research-grid h3 { margin: 0.48rem 0 0.68rem; font-size: 1.15rem; }
+            body.miniquest-full-portfolio .full-research-grid p { margin: 0; font-family: Arial, sans-serif; font-size: 0.72rem; line-height: 1.48; color: var(--text-secondary); }
+            body.miniquest-full-portfolio .full-research-grid cite { display: block; margin-top: 0.8rem; padding-top: 0.7rem; border-top: 1px solid rgba(159, 209, 91, 0.12); font-family: Arial, sans-serif; font-size: 0.62rem; font-style: normal; line-height: 1.4; color: var(--text-tertiary); }
+            body.miniquest-full-portfolio .full-quote { max-width: 900px; margin: 1.25rem 0 0; padding-left: 1.1rem; border-left: 2px solid var(--accent-moss); font-size: 1.08rem; line-height: 1.34; color: var(--text-primary); }
+
+            body.miniquest-full-portfolio .full-strategy-grid,
+            body.miniquest-full-portfolio .full-compare-grid,
+            body.miniquest-full-portfolio .full-architecture-grid,
+            body.miniquest-full-portfolio .full-implementation-grid,
+            body.miniquest-full-portfolio .full-reflection-grid {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 1.35rem;
+                margin-top: 1.45rem;
+            }
+
+            body.miniquest-full-portfolio .full-strategy-card,
+            body.miniquest-full-portfolio .full-panel {
+                padding: 1.15rem;
+                border: 1px solid rgba(159, 209, 91, 0.15);
+                border-radius: 13px;
+                background: rgba(0, 0, 0, 0.2);
+            }
+            body.miniquest-full-portfolio .full-strategy-card { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 1rem; align-items: center; }
+            body.miniquest-full-portfolio .full-strategy-card h3,
+            body.miniquest-full-portfolio .full-panel h3 { margin: 0.45rem 0 0.6rem; font-size: 1.15rem; }
+            body.miniquest-full-portfolio .full-strategy-card p,
+            body.miniquest-full-portfolio .full-panel p { margin: 0; font-family: Arial, sans-serif; font-size: 0.7rem; line-height: 1.46; color: var(--text-secondary); }
+            body.miniquest-full-portfolio .full-strategy-card figure { width: auto; height: 31vh; aspect-ratio: 3 / 5; justify-self: center; margin: 0; overflow: hidden; border: 1px solid rgba(159, 209, 91, 0.13); border-radius: 9px; background: rgba(159, 209, 91, 0.025); }
+            body.miniquest-full-portfolio .full-strategy-card img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: top center; }
+            body.miniquest-full-portfolio .full-strategy-visual { display: grid; place-items: center; min-height: 31vh; padding: 1rem; border: 1px solid rgba(159, 209, 91, 0.13); border-radius: 10px; background: radial-gradient(circle at 50% 50%, rgba(159, 209, 91, 0.08), transparent 66%); }
+            body.miniquest-full-portfolio .full-interrupt-flow { display: grid; gap: 0.5rem; width: 100%; }
+            body.miniquest-full-portfolio .full-interrupt-flow article { display: grid; grid-template-columns: 1.5rem minmax(0, 1fr); gap: 0.65rem; align-items: center; padding: 0.62rem 0.7rem; border-left: 2px solid var(--accent-moss); background: rgba(159, 209, 91, 0.045); }
+            body.miniquest-full-portfolio .full-interrupt-flow article:nth-child(2) { border-left-color: var(--accent-gold); background: rgba(239, 189, 65, 0.045); }
+            body.miniquest-full-portfolio .full-interrupt-flow article:nth-child(3) { border-left-color: var(--accent-red); background: rgba(246, 84, 74, 0.045); }
+            body.miniquest-full-portfolio .full-interrupt-flow article > span { font-family: Arial, sans-serif; font-size: 0.55rem; font-weight: 800; color: var(--text-tertiary); }
+            body.miniquest-full-portfolio .full-interrupt-flow strong { display: block; font-size: 0.78rem; color: var(--text-primary); }
+            body.miniquest-full-portfolio .full-interrupt-flow small { display: block; margin-top: 0.14rem; font-family: Arial, sans-serif; font-size: 0.56rem; line-height: 1.3; color: var(--text-tertiary); }
+            body.miniquest-full-portfolio .full-tool-map { position: relative; width: 100%; height: 27vh; }
+            body.miniquest-full-portfolio .full-tool-map strong { position: absolute; inset: 50% auto auto 50%; width: 7.4rem; padding: 0.78rem; transform: translate(-50%, -50%); border: 1px solid rgba(159, 209, 91, 0.3); border-radius: 50%; text-align: center; font-size: 0.8rem; line-height: 1.2; color: var(--text-primary); background: rgba(159, 209, 91, 0.08); box-shadow: 0 0 28px rgba(159, 209, 91, 0.08); }
+            body.miniquest-full-portfolio .full-tool-map span { position: absolute; min-width: 4.5rem; padding: 0.48rem 0.62rem; border: 1px solid rgba(255, 255, 255, 0.09); border-radius: 999px; text-align: center; font-family: Arial, sans-serif; font-size: 0.58rem; font-weight: 700; color: var(--text-secondary); background: rgba(0, 0, 0, 0.28); }
+            body.miniquest-full-portfolio .full-tool-map span:nth-of-type(1) { top: 4%; left: 8%; }
+            body.miniquest-full-portfolio .full-tool-map span:nth-of-type(2) { top: 4%; right: 8%; }
+            body.miniquest-full-portfolio .full-tool-map span:nth-of-type(3) { bottom: 4%; left: 8%; }
+            body.miniquest-full-portfolio .full-tool-map span:nth-of-type(4) { right: 8%; bottom: 4%; }
+            body.miniquest-full-portfolio .full-strategy-note { margin-top: 1rem; padding: 0.85rem 1rem; border-left: 2px solid var(--accent-gold); background: linear-gradient(90deg, rgba(239, 189, 65, 0.055), transparent); font-family: Arial, sans-serif; font-size: 0.7rem; line-height: 1.45; color: var(--text-secondary); }
+
+            body.miniquest-full-portfolio .full-compare-grid { grid-template-columns: 0.85fr 1.15fr; align-items: stretch; }
+            body.miniquest-full-portfolio .full-compare-figure { margin: 0; padding: 1rem; border: 1px solid rgba(159, 209, 91, 0.15); border-radius: 13px; background: rgba(0,0,0,0.22); }
+            body.miniquest-full-portfolio .full-compare-figure img { width: 100%; height: auto; aspect-ratio: 1020 / 536; display: block; object-fit: cover; object-position: center; }
+            body.miniquest-full-portfolio .full-compare-figure figcaption { margin-top: 0.65rem; font-family: Arial, sans-serif; font-size: 0.61rem; color: var(--text-tertiary); }
+            body.miniquest-full-portfolio .full-compare-copy { display: grid; gap: 0.7rem; align-content: start; }
+            body.miniquest-full-portfolio .full-compare-copy > p { margin: 0; font-family: Arial, sans-serif; font-size: 0.76rem; line-height: 1.48; color: var(--text-secondary); }
+            body.miniquest-full-portfolio .full-difference-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 0.75rem; }
+            body.miniquest-full-portfolio .full-difference-grid article { padding: 0.95rem; border-left: 2px solid var(--accent-moss); background: linear-gradient(90deg, rgba(159, 209, 91, 0.05), transparent); }
+            body.miniquest-full-portfolio .full-difference-grid h3 { margin: 0.42rem 0 0.5rem; font-size: 1rem; }
+            body.miniquest-full-portfolio .full-difference-grid p { margin: 0; font-family: Arial, sans-serif; font-size: 0.67rem; line-height: 1.42; color: var(--text-secondary); }
+
+            body.miniquest-full-portfolio .full-screen-grid { display: grid; gap: 1rem; margin-top: 1.4rem; }
+            body.miniquest-full-portfolio .full-screen-grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            body.miniquest-full-portfolio .full-screen-grid.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+            body.miniquest-full-portfolio .full-screen-grid figure { margin: 0; }
+            body.miniquest-full-portfolio .full-screen-grid figure > div { width: auto; height: 39vh; aspect-ratio: 3 / 5; margin: 0 auto; overflow: hidden; border: 1px solid rgba(159, 209, 91, 0.16); border-radius: 13px; background: rgba(159, 209, 91, 0.025); box-shadow: 0 24px 54px -42px rgba(159, 209, 91, 0.72); }
+            body.miniquest-full-portfolio .full-screen-grid.three figure > div { height: 41vh; }
+            body.miniquest-full-portfolio .full-screen-grid figure > div:has(img[src$="MiniQuest_HomeScreen.webp"]) { aspect-ratio: 886 / 1390; }
+            body.miniquest-full-portfolio .full-screen-grid img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: top center; }
+            body.miniquest-full-portfolio .full-screen-grid figcaption { display: grid; grid-template-columns: auto 1fr; gap: 0.18rem 0.6rem; margin-top: 0.62rem; font-family: Arial, sans-serif; }
+            body.miniquest-full-portfolio .full-screen-grid figcaption span { grid-row: 1 / span 2; font-size: 0.54rem; font-weight: 800; color: var(--accent-moss); }
+            body.miniquest-full-portfolio .full-screen-grid figcaption strong { font-size: 0.74rem; color: var(--text-primary); }
+            body.miniquest-full-portfolio .full-screen-grid figcaption small { font-size: 0.58rem; line-height: 1.3; color: var(--text-tertiary); }
+
+            body.miniquest-full-portfolio .full-reference-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin-top: 1.4rem; }
+            body.miniquest-full-portfolio .full-reference-grid article { padding: 0.95rem; border: 1px solid rgba(159, 209, 91, 0.14); border-radius: 13px; background: rgba(0, 0, 0, 0.18); }
+            body.miniquest-full-portfolio .full-reference-grid figure { width: auto; height: 24vh; margin: 0 auto 0.75rem; overflow: hidden; border: 1px solid rgba(159, 209, 91, 0.1); border-radius: 9px; background: rgba(159, 209, 91, 0.025); }
+            body.miniquest-full-portfolio .full-reference-grid figure:has(img[src$="MiniQuest_Habitica.webp"]) { aspect-ratio: 1020 / 536; }
+            body.miniquest-full-portfolio .full-reference-grid figure:has(img[src$="MiniQuest_16bitRef.webp"]) { aspect-ratio: 574 / 714; }
+            body.miniquest-full-portfolio .full-reference-grid figure:has(img[src$="MiniQuest_WoodenFish.webp"]) { aspect-ratio: 620 / 775; }
+            body.miniquest-full-portfolio .full-reference-grid img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: center; }
+            body.miniquest-full-portfolio .full-reference-system { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; align-content: center; height: 24vh; margin-bottom: 0.75rem; padding: 1rem; border: 1px solid rgba(159, 209, 91, 0.1); border-radius: 9px; background: radial-gradient(circle at 50% 100%, rgba(159, 209, 91, 0.09), transparent 70%); }
+            body.miniquest-full-portfolio .full-reference-system article { display: block; padding: 0.65rem 0.45rem; border: 1px solid rgba(159, 209, 91, 0.14); border-radius: 8px; text-align: center; background: rgba(159, 209, 91, 0.035); }
+            body.miniquest-full-portfolio .full-reference-system article span { display: block; font-family: Arial, sans-serif; font-size: 0.5rem; font-weight: 800; letter-spacing: 0.09em; color: var(--text-tertiary); }
+            body.miniquest-full-portfolio .full-reference-system article strong { display: block; margin-top: 0.28rem; font-size: 0.78rem; color: var(--accent-moss); }
+            body.miniquest-full-portfolio .full-reference-system > p { grid-column: 1 / -1; margin: 0 !important; text-align: center; font-family: Arial, sans-serif; font-size: 0.58rem !important; font-weight: 700; letter-spacing: 0.08em; color: var(--accent-gold) !important; }
+            body.miniquest-full-portfolio .full-reference-grid h3 { margin: 0.42rem 0 0.5rem; font-size: 0.95rem; }
+            body.miniquest-full-portfolio .full-reference-grid p { margin: 0; font-family: Arial, sans-serif; font-size: 0.7rem; line-height: 1.42; color: var(--text-secondary); }
+
+            body.miniquest-full-portfolio .full-architecture-grid { grid-template-columns: 0.76fr 1.24fr; align-items: center; }
+            body.miniquest-full-portfolio .full-architecture-copy { display: grid; gap: 0.55rem; align-content: center; }
+            body.miniquest-full-portfolio .full-architecture-copy article { padding: 0.72rem 0.9rem; border-left: 2px solid var(--accent-moss); background: linear-gradient(90deg, rgba(159, 209, 91, 0.055), transparent); }
+            body.miniquest-full-portfolio .full-architecture-copy h3 { margin: 0.25rem 0 0.36rem; font-size: 0.92rem; }
+            body.miniquest-full-portfolio .full-architecture-copy p { margin: 0; font-family: Arial, sans-serif; font-size: 0.68rem; line-height: 1.4; color: var(--text-secondary); }
+            body.miniquest-full-portfolio .full-architecture-figure { margin: 0; }
+            body.miniquest-full-portfolio .full-architecture-figure img { width: 100%; height: auto; aspect-ratio: 1256 / 474; display: block; object-fit: cover; object-position: center; padding: 0.75rem; border: 1px solid rgba(159, 209, 91, 0.16); border-radius: 12px; background: rgba(255, 255, 255, 0.95); }
+            body.miniquest-full-portfolio .full-architecture-figure figcaption { margin-top: 0.55rem; font-family: Arial, sans-serif; font-size: 0.59rem; color: var(--text-tertiary); }
+            body.miniquest-full-portfolio .full-architecture-note { margin-top: 0.7rem; padding: 0.72rem 0.9rem; border: 1px solid rgba(239, 189, 65, 0.15); border-radius: 9px; font-family: Arial, sans-serif; font-size: 0.67rem; line-height: 1.42; color: var(--text-secondary); }
+            body.miniquest-full-portfolio .full-architecture-note strong { color: var(--accent-gold); }
+
+            body.miniquest-full-portfolio .full-implementation-grid { grid-template-columns: 0.72fr 1.28fr; }
+            body.miniquest-full-portfolio .full-implementation-copy { display: grid; gap: 0.8rem; align-content: start; }
+            body.miniquest-full-portfolio .full-implementation-copy > p { margin: 0; font-family: Arial, sans-serif; font-size: 0.73rem; line-height: 1.48; color: var(--text-secondary); }
+            body.miniquest-full-portfolio .full-callout { padding: 0.9rem 1rem; border-left: 2px solid var(--accent-gold); background: linear-gradient(90deg, rgba(239, 189, 65, 0.055), transparent); font-family: Arial, sans-serif; font-size: 0.68rem; line-height: 1.42; color: var(--text-secondary); }
+            body.miniquest-full-portfolio .full-callout strong { color: var(--accent-gold); }
+            body.miniquest-full-portfolio .full-code-stack { display: grid; gap: 0.72rem; align-content: start; }
+            body.miniquest-full-portfolio .full-code-stack .code-panel { margin: 0 !important; }
+            body.miniquest-full-portfolio .full-code-stack .code-panel pre { padding: 0.82rem !important; font-size: 0.75rem !important; line-height: 1.36 !important; white-space: pre-wrap !important; word-break: break-word !important; }
+            body.miniquest-full-portfolio .full-code-stack .code-panel-head { padding: 0.52rem 0.72rem !important; }
+
+            body.miniquest-full-portfolio .full-sensory-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.15rem; margin-top: 1.35rem; }
+            body.miniquest-full-portfolio .full-sensory-card { display: grid; grid-template-columns: 0.82fr 1.18fr; gap: 0.9rem; align-items: center; padding: 1rem; border: 1px solid rgba(159, 209, 91, 0.15); border-radius: 13px; background: rgba(0,0,0,0.2); }
+            body.miniquest-full-portfolio .full-sensory-card figure { width: auto; height: 34vh; aspect-ratio: 3 / 5; justify-self: center; margin: 0; overflow: hidden; border: 1px solid rgba(159, 209, 91, 0.1); border-radius: 9px; background: rgba(159, 209, 91, 0.025); }
+            body.miniquest-full-portfolio .full-sensory-card figure:has(img[src$="MiniQuest_16bitRef.webp"]) { aspect-ratio: 574 / 714; }
+            body.miniquest-full-portfolio .full-sensory-card img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: center; }
+            body.miniquest-full-portfolio .full-sensory-visual { display: grid; place-items: center; width: 100%; min-height: 34vh; padding: 1rem; border: 1px solid rgba(159, 209, 91, 0.1); border-radius: 9px; background: radial-gradient(circle, rgba(159, 209, 91, 0.07), transparent 70%); }
+            body.miniquest-full-portfolio .full-haptic-flow { display: grid; gap: 0.6rem; width: 100%; }
+            body.miniquest-full-portfolio .full-haptic-flow span { display: block; padding: 0.62rem 0.7rem; border: 1px solid rgba(159, 209, 91, 0.14); border-radius: 8px; text-align: center; font-family: Arial, sans-serif; font-size: 0.58rem; font-weight: 800; letter-spacing: 0.08em; color: var(--text-secondary); background: rgba(159, 209, 91, 0.035); }
+            body.miniquest-full-portfolio .full-haptic-flow b { text-align: center; font-family: Arial, sans-serif; font-size: 0.72rem; color: var(--accent-gold); }
+            body.miniquest-full-portfolio .full-pixel-system { display: grid; gap: 0.52rem; width: 100%; }
+            body.miniquest-full-portfolio .full-pixel-system article { display: grid; grid-template-columns: 2.6rem minmax(0, 1fr); gap: 0.55rem; align-items: center; padding: 0.55rem 0.65rem; border-left: 2px solid var(--accent-moss); background: rgba(159, 209, 91, 0.04); }
+            body.miniquest-full-portfolio .full-pixel-system article span { font-family: Arial, sans-serif; font-size: 0.5rem; font-weight: 800; letter-spacing: 0.08em; color: var(--accent-moss); }
+            body.miniquest-full-portfolio .full-pixel-system article strong { font-size: 0.7rem; color: var(--text-primary); }
+            body.miniquest-full-portfolio .full-pixel-result { padding: 0.7rem; border: 1px solid rgba(239, 189, 65, 0.18); border-radius: 8px; text-align: center; font-family: Arial, sans-serif; font-size: 0.64rem; font-weight: 800; letter-spacing: 0.08em; color: var(--accent-gold); }
+            body.miniquest-full-portfolio .full-sensory-card h3 { margin: 0.42rem 0 0.58rem; font-size: 1.05rem; }
+            body.miniquest-full-portfolio .full-sensory-card p { margin: 0; font-family: Arial, sans-serif; font-size: 0.67rem; line-height: 1.44; color: var(--text-secondary); }
+
+            body.miniquest-full-portfolio .full-ai-grid { display: grid; grid-template-columns: 0.82fr 1.18fr; gap: 1.2rem; margin-top: 1.2rem; }
+            body.miniquest-full-portfolio .full-ai-copy { display: grid; gap: 0.7rem; align-content: start; }
+            body.miniquest-full-portfolio .full-ai-copy > p { margin: 0; font-family: Arial, sans-serif; font-size: 0.73rem; line-height: 1.46; color: var(--text-secondary); }
+            body.miniquest-full-portfolio .full-ai-grid .code-panel { margin: 0 !important; }
+            body.miniquest-full-portfolio .full-ai-grid .code-panel pre { padding: 0.75rem !important; font-size: 0.62rem !important; line-height: 1.28 !important; white-space: pre-wrap !important; word-break: break-word !important; }
+            body.miniquest-full-portfolio .full-state-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 0.65rem; }
+            body.miniquest-full-portfolio .full-state-grid article { padding: 0.7rem; border-top: 1px solid rgba(159, 209, 91, 0.32); background: linear-gradient(180deg, rgba(159,209,91,0.045), transparent); }
+            body.miniquest-full-portfolio .full-state-grid h3 { margin: 0 0 0.28rem; font-size: 0.82rem; }
+            body.miniquest-full-portfolio .full-state-grid p { margin: 0; font-family: Arial, sans-serif; font-size: 0.61rem; line-height: 1.36; color: var(--text-tertiary); }
+
+            body.miniquest-full-portfolio .full-stack-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 1.2rem; margin-top: 1.2rem; }
+            body.miniquest-full-portfolio .full-permission-table { width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 0.69rem; }
+            body.miniquest-full-portfolio .full-permission-table th { padding: 0.58rem 0.65rem; text-align: left; color: var(--accent-moss); border-bottom: 1px solid rgba(159,209,91,0.26); }
+            body.miniquest-full-portfolio .full-permission-table td { padding: 0.55rem 0.65rem; line-height: 1.35; color: var(--text-secondary); border-bottom: 1px solid rgba(255,255,255,0.07); }
+            body.miniquest-full-portfolio .full-permission-table td:first-child { width: 31%; color: var(--text-primary); }
+            body.miniquest-full-portfolio .full-stack-side { display: grid; gap: 0.7rem; }
+            body.miniquest-full-portfolio .full-stack-side article { padding: 0.8rem 0.9rem; border-left: 2px solid var(--accent-moss); background: linear-gradient(90deg, rgba(159,209,91,0.05), transparent); }
+            body.miniquest-full-portfolio .full-stack-side article.limit { border-left-color: var(--accent-red); background: linear-gradient(90deg, rgba(246,84,74,0.045), transparent); }
+            body.miniquest-full-portfolio .full-stack-side h3 { margin: 0.38rem 0 0.45rem; font-size: 0.92rem; }
+            body.miniquest-full-portfolio .full-stack-side ul { margin: 0; padding-left: 1rem; }
+            body.miniquest-full-portfolio .full-stack-side li,
+            body.miniquest-full-portfolio .full-stack-side p { margin: 0.25rem 0 0; font-family: Arial, sans-serif; font-size: 0.65rem; line-height: 1.38; color: var(--text-secondary); }
+
+            body.miniquest-full-portfolio .full-reflection-grid { grid-template-columns: 1.04fr 0.96fr; align-items: center; }
+            body.miniquest-full-portfolio .full-reflection-copy > p { margin: 0 0 0.85rem; font-family: Arial, sans-serif; font-size: 0.82rem; line-height: 1.5; color: var(--text-secondary); }
+            body.miniquest-full-portfolio .full-reflection-copy .lead { font-family: var(--font-serif); font-size: 1.28rem; line-height: 1.35; color: var(--text-primary); }
+            body.miniquest-full-portfolio .full-contribution { margin-top: 1rem; padding: 0.9rem 1rem; border-left: 2px solid var(--accent-moss); background: linear-gradient(90deg, rgba(159,209,91,0.05), transparent); }
+            body.miniquest-full-portfolio .full-contribution p { margin: 0.35rem 0 0; font-family: Arial, sans-serif; font-size: 0.68rem; line-height: 1.4; color: var(--text-secondary); }
+            body.miniquest-full-portfolio .full-reflection-links { display: grid; gap: 0.8rem; }
+            body.miniquest-full-portfolio .full-reflection-links .full-link-card { grid-template-columns: 24mm minmax(0,1fr); min-height: 30mm; padding: 3mm; }
+            body.miniquest-full-portfolio .full-reflection-links .full-link-card img { width: 24mm; height: 24mm; }
         }
     </style>
 </head>
@@ -1269,6 +2045,403 @@
                     <p class="text-body reveal">By pairing a self-built perception layer, raw-acceleration step counting that's immune to hardware gaps, with an offline-first MVVM data foundation and lifecycle-safe coroutine concurrency for its AI character, the project tries to hold two things at once: sound mobile engineering, and a genuinely immersive, pixel-perfect feel. The balance between those two is the actual deliverable.</p>
                 </div>
             </div>
+        </section>
+
+        <!-- Complete portfolio PDF: an opt-in print composition. -->
+        <section aria-hidden="true" class="full-page full-cover full-portfolio-only">
+            <div class="full-cover-copy">
+                <span class="full-kicker">CASE STUDY / 00</span>
+                <h1>Gamifying the<br>break from <span>routine</span></h1>
+                <p>MiniQuest is a native Android application that translates response interruption and environmental enrichment into a pocket-sized RPG, using pervasive accelerometer sensing to reward the body for stepping outside its own habits.</p>
+                <div class="full-meta-grid">
+                    <div><small>AUTHOR</small><strong>Shuhan Zhang</strong></div>
+                    <div><small>ROLE</small><strong>Research · UX/UI · Android development</strong></div>
+                    <div><small>PLATFORM</small><strong>Android · Kotlin · Jetpack Compose</strong></div>
+                    <div><small>CONTEXT</small><strong>University of York · Mobile Interaction</strong></div>
+                </div>
+                <div class="full-cover-note"><strong>Complete case study.</strong> Research, interaction logic, product walkthrough and implementation are presented as one continuous system. Demo video and repository links appear on the closing page.</div>
+            </div>
+            <div class="full-cover-visuals">
+                <figure class="full-cover-phone primary"><img src="Image/MiniQuest_HomeScreen.webp" alt="MiniQuest home screen"></figure>
+            </div>
+        </section>
+
+        <section aria-hidden="true" class="full-page full-portfolio-only">
+            <header class="full-page-header">
+                <div><span class="full-kicker">RESEARCH / 01</span><h2>The <span>rigidity</span> problem</h2></div>
+                <p>The opportunity was not another productivity tracker. It was a playful intervention for moments when repetition becomes a closed environment.</p>
+            </header>
+            <div class="full-research-grid">
+                <article><span class="full-card-index">01 / PATTERN</span><h3>Repetition is not confined to ASD</h3><p>Stereotyped behavior describes repetitive action or sound with no apparent external purpose. Although strongly associated with autism, adults without ASD also fall into repetitive routines, at lower frequency and intensity.</p><cite>Rapp &amp; Vollmer, 2005 · Nwaordu &amp; Charlton, 2024</cite></article>
+                <article><span class="full-card-index">02 / TRIGGER</span><h3>Monotony reinforces the loop</h3><p>Animal-behavior research links cage-induced stereotypies to monotonous, under-stimulating environments. Enriched and variable environments measurably reduce those patterns.</p><cite>Gross et al., 2012 · Turner, Yang &amp; Lewis, 2002</cite></article>
+                <article><span class="full-card-index">03 / DIRECTION</span><h3>Interruption plus enrichment</h3><p>Two behavioral strategies offered distinct product mechanics: redirect an active repetitive pattern, then broaden the environment with several low-friction activity choices.</p><cite>Boyd, McDonough &amp; Bodfish, 2012</cite></article>
+            </div>
+            <blockquote class="full-quote">A single-purpose habit tracker rewards you for staying inside the loop. MiniQuest is designed to reward you for stepping outside it.</blockquote>
+        </section>
+
+        <section aria-hidden="true" class="full-page full-portfolio-only">
+            <header class="full-page-header">
+                <div><span class="full-kicker">STRATEGY / 01</span><h2>Two routes beyond <span>routine</span></h2></div>
+                <p>The research became two complementary experience loops: one intervenes at the right moment; the other gives the user several inviting ways to change state.</p>
+            </header>
+            <div class="full-strategy-grid">
+                <article class="full-strategy-card">
+                    <div><span class="full-card-index">01 / INTERRUPT</span><h3>Urgent quests</h3><p>When a stereotyped pattern would otherwise continue, the app interrupts it and redirects attention toward a new action. The Emergency Loop coroutine turns that moment into a short playable challenge.</p></div>
+                    <div class="full-strategy-visual"><div class="full-interrupt-flow"><article><span>01</span><div><strong>Detect a closed loop</strong><small>Routine continues without an external prompt.</small></div></article><article><span>02</span><div><strong>Introduce novelty</strong><small>An urgent quest arrives outside the planned list.</small></div></article><article><span>03</span><div><strong>Reward redirection</strong><small>A new action feeds back into XP and gold.</small></div></article></div></div>
+                </article>
+                <article class="full-strategy-card">
+                    <div><span class="full-card-index">02 / ENRICH</span><h3>Adventure tools</h3><p>A menu of activity modules offers relaxation and exploration choices, adding the sensory and interactive variety monotonous days are missing.</p></div>
+                    <div class="full-strategy-visual"><div class="full-tool-map"><strong>ADVENTURE<br>TOOLS</strong><span>MOVE</span><span>EXPLORE</span><span>REGULATE</span><span>ASK</span></div></div>
+                </article>
+            </div>
+            <div class="full-strategy-note"><strong>Behavioral model → product system.</strong> Emergency quests handle response interruption; the Adventure Tools area handles environmental enrichment. Both earn XP or gold, so breaking routine remains legible inside one coherent RPG economy.</div>
+        </section>
+
+        <section aria-hidden="true" class="full-page full-portfolio-only">
+            <header class="full-page-header">
+                <div><span class="full-kicker">POSITIONING / 01</span><h2>Beyond a gamified <span>to-do list</span></h2></div>
+                <p>Habitica proved that an RPG reward shell could motivate routine self-management. MiniQuest keeps the motivation, but changes what progress can mean.</p>
+            </header>
+            <div class="full-compare-grid">
+                <figure class="full-compare-figure"><img src="Image/MiniQuest_Habitica.webp" alt="Habitica RPG habit-tracker interface"><figcaption>Habitica: progress is primarily gated behind tasks the user has already written.</figcaption></figure>
+                <div class="full-compare-copy">
+                    <p>Habitica's reward loop stays locked to finishing pre-written tasks. Over time, that narrow focus can reproduce the same monotony the behavioral literature warns against: the user must already have planned their own escape from routine.</p>
+                    <p>MiniQuest opens two additional channels. They allow progress to arrive through movement and system-induced novelty, without discarding the clarity of XP, gold and levels.</p>
+                    <div class="full-difference-grid">
+                        <article><span class="full-card-index">PASSIVE SENSING</span><h3>Movement earns energy</h3><p>Walking accrues progress in the background through raw accelerometer sensing, so the body can advance the game without another checklist.</p></article>
+                        <article><span class="full-card-index">INDUCED NOVELTY</span><h3>The system can surprise</h3><p>MiniQuest, not the user's to-do list, decides when to surface an emergency task and redirect attention toward a new action.</p></article>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section aria-hidden="true" class="full-page full-portfolio-only">
+            <header class="full-page-header">
+                <div><span class="full-kicker">PRODUCT / 01</span><h2>The core <span>reward loop</span></h2></div>
+                <p>Quest completion, progression feedback and low-friction task creation make the behavioral model understandable as an everyday game.</p>
+            </header>
+            <div class="full-screen-grid three">
+                <figure><div><img src="Image/MiniQuest_NewQuest.webp" alt="MiniQuest new quest dialog"></div><figcaption><span>01</span><strong>Define an action</strong><small>A compact title-and-difficulty flow preserves the clarity of a useful task tool.</small></figcaption></figure>
+                <figure><div><img src="Image/MiniQuest_LevelUp.webp" alt="MiniQuest level-up celebration"></div><figcaption><span>02</span><strong>Earn progression</strong><small>Confetti, XP and gold make completion feel like an event rather than a checkbox.</small></figcaption></figure>
+                <figure><div><img src="Image/MiniQuest_RewardsShop.webp" alt="MiniQuest rewards shop"></div><figcaption><span>03</span><strong>Spend the reward</strong><small>The shop closes the loop by turning accumulated gold into visible outcomes.</small></figcaption></figure>
+            </div>
+        </section>
+
+        <section aria-hidden="true" class="full-page full-portfolio-only">
+            <header class="full-page-header">
+                <div><span class="full-kicker">PRODUCT / 02</span><h2>An expanded <span>adventure system</span></h2></div>
+                <p>Beyond the core reward loop, three tools intervene, guide and regulate without asking the user to prepare another task in advance.</p>
+            </header>
+            <div class="full-screen-grid three">
+                <figure><div><img src="Image/MiniQuest_EmergencyQuest.webp" alt="Emergency quest prompt"></div><figcaption><span>01</span><strong>Emergency quest</strong><small>Induced novelty interrupts the expected loop.</small></figcaption></figure>
+                <figure><div><img src="Image/MiniQuest_WizardHall.webp" alt="Wizard's Hall chat interface"></div><figcaption><span>02</span><strong>Wizard's Hall</strong><small>A role-play wrapper for asynchronous guidance.</small></figcaption></figure>
+                <figure><div><img src="Image/MiniQuest_MiniGame.webp" alt="Stress relief mini-game"></div><figcaption><span>03</span><strong>Stress relief</strong><small>A one-tap, haptic route to sensory regulation.</small></figcaption></figure>
+            </div>
+        </section>
+
+        <section aria-hidden="true" class="full-page full-portfolio-only">
+            <header class="full-page-header">
+                <div><span class="full-kicker">DESIGN LANGUAGE / 01</span><h2>Friendly enough to <span>interrupt</span></h2></div>
+                <p>Three reference points shaped how MiniQuest looks, rewards and redirects attention without adopting a clinical tone.</p>
+            </header>
+            <div class="full-reference-grid">
+                <article><div class="full-reference-system"><article><span>ACTION</span><strong>QUEST</strong></article><article><span>FEEDBACK</span><strong>XP + GOLD</strong></article><article><span>PROGRESS</span><strong>LEVEL</strong></article><p>TASK → REWARD → PROGRESSION</p></div><span class="full-card-index">01 / MOTIVATION</span><h3>Habitica's RPG reward loop</h3><p>Habitica demonstrated that XP and gold can make routine self-management motivating. MiniQuest retains that clarity while allowing movement and system-generated novelty to produce progress.</p></article>
+                <article><figure><img src="Image/MiniQuest_16bitRef.webp" alt="16-bit pixel art reference"></figure><span class="full-card-index">02 / CHARACTER</span><h3>Hard-edged pixel aesthetic</h3><p>Classic sprite-based RPGs feel playful and low-stakes. Vector pixel fonts and a custom HardShadowBox resist high-DPI smoothing, keeping the game's edge crisp rather than approximate.</p></article>
+                <article><figure><img src="Image/MiniQuest_WoodenFish.webp" alt="Electronic wooden fish mindfulness app"></figure><span class="full-card-index">03 / REGULATION</span><h3>One-tap ritual</h3><p>The wooden fish is a repetitive meditative object. Its low-demand interaction informed a stress-relief module that pairs a single tap with haptic confirmation instead of asking for more visual attention.</p></article>
+            </div>
+        </section>
+
+        <section aria-hidden="true" class="full-page full-portfolio-only">
+            <header class="full-page-header">
+                <div><span class="full-kicker">SYSTEM / 01</span><h2>Offline-first, <span>reactive</span> architecture</h2></div>
+                <p>MVVM and unidirectional data flow keep persistence, sensors, network intelligence and Compose UI synchronized around one source of truth.</p>
+            </header>
+            <div class="full-architecture-grid">
+                <div class="full-architecture-copy">
+                    <article><span class="full-card-index">VIEW</span><h3>Jetpack Compose UI</h3><p>A passive consumer maps StateFlow to the screen and forwards user intent upward. No business logic lives in the view.</p></article>
+                    <article><span class="full-card-index">VIEWMODEL</span><h3>AppViewModel</h3><p>Holds immutable StateFlow, orchestrates repository calls, sensor input and AI requests, and scopes coroutines to viewModelScope.</p></article>
+                    <article><span class="full-card-index">MODEL</span><h3>Focused data services</h3><p>QuestRepository, StepSensorManager and OkClient each hold one responsibility and remain unaware of the UI.</p></article>
+                    <div class="full-architecture-note"><strong>Why Room + Flow.</strong> Data is written locally first for instant offline play. Repository changes stream into Compose automatically, so an inserted emergency quest redraws the interface without a manual refresh.</div>
+                </div>
+                <figure class="full-architecture-figure"><img src="Image/MiniQuest_Architecture.webp" alt="MiniQuest system architecture diagram"><figcaption>Fig. A1 · Original architecture diagram submitted with the technical report.</figcaption></figure>
+            </div>
+        </section>
+
+        <section aria-hidden="true" class="full-page full-portfolio-only">
+            <header class="full-page-header">
+                <div><span class="full-kicker">IMPLEMENTATION / 01</span><h2>Pervasive sensing from <span>raw acceleration</span></h2></div>
+                <p>A compatibility-led sensing layer avoids dependence on the dedicated step-counter hardware missing from many lower-end and older Android devices.</p>
+            </header>
+            <div class="full-implementation-grid">
+                <div class="full-implementation-copy">
+                    <p>MiniQuest reads the raw tri-axis accelerometer, present on nearly every Android phone, and computes motion magnitude itself. Step detection is therefore not limited by device tier.</p>
+                    <div class="full-callout"><strong>Orientation-independent signal.</strong> The vector magnitude √(x² + y² + z²) turns motion into one scalar value, however the phone is carried.</div>
+                    <div class="full-callout"><strong>Noise filtering.</strong> A 300ms window stops a single shake from being counted as several steps in a row.</div>
+                </div>
+                <div class="full-code-stack">
+                    <div class="code-panel"><div class="code-panel-head"><div class="code-panel-dots"><span></span><span></span><span></span></div><span class="code-panel-file">StepSensorManager.kt · magnitude</span></div><pre><code><span class="kw">override fun</span> onSensorChanged(event: SensorEvent?) {
+    event?.<span class="kw">let</span> {
+        <span class="kw">val</span> x = it.values[0]
+        <span class="kw">val</span> y = it.values[1]
+        <span class="kw">val</span> z = it.values[2]
+        <span class="kw">val</span> magnitude = <span class="tg">sqrt</span>(x * x + y * y + z * z)
+    }
+}</code></pre></div>
+                    <div class="code-panel"><div class="code-panel-head"><div class="code-panel-dots"><span></span><span></span><span></span></div><span class="code-panel-file">StepSensorManager.kt · debounce</span></div><pre><code><span class="kw">val</span> currentTime = System.currentTimeMillis()
+<span class="kw">if</span> (currentTime - lastShakeTime &gt; <span class="st">300</span>) {
+    internalSteps++
+    saveStepsToStorage()
+    lastShakeTime = currentTime
+}</code></pre></div>
+                </div>
+            </div>
+        </section>
+
+        <section aria-hidden="true" class="full-page full-portfolio-only">
+            <header class="full-page-header">
+                <div><span class="full-kicker">IMPLEMENTATION / 02</span><h2>Multimodal and <span>sensory</span> regulation</h2></div>
+                <p>MiniQuest treats tactility and visual character as functional channels: one reduces visual demand; the other makes interruption feel playful rather than punitive.</p>
+            </header>
+            <div class="full-sensory-grid">
+                <article class="full-sensory-card">
+                    <div class="full-sensory-visual"><div class="full-haptic-flow"><span>SINGLE TAP</span><b>↓</b><span>HAPTIC PULSE</span><b>↓</b><span>LOW-VISUAL CONFIRMATION</span></div></div>
+                    <div><span class="full-card-index">TACTILE CHANNEL</span><h3>A one-tap confirmation</h3><p>Brewster and Brown (2004) describe tactile feedback as a non-visual information channel, useful when visual load is already high. A tap in the stress-relief module fires a haptic pulse: a small confirmation designed to take the edge off anxiety without demanding more visual attention.</p></div>
+                </article>
+                <article class="full-sensory-card">
+                    <div class="full-sensory-visual"><div class="full-pixel-system"><article><span>01</span><strong>Vector pixel glyphs</strong></article><article><span>02</span><strong>HardShadowBox edges</strong></article><article><span>03</span><strong>Anti-aliasing resisted</strong></article><div class="full-pixel-result">CRISP 16-BIT CHARACTER</div></div></div>
+                    <div><span class="full-card-index">VISUAL CHANNEL</span><h3>Sharp pixels on modern screens</h3><p>Standard anti-aliasing blurs pixel-art edges on high-density displays. Vector-based pixel fonts and the custom HardShadowBox force hard edges past automatic smoothing, preserving an intentional 16-bit character rather than a softened approximation.</p></div>
+                </article>
+            </div>
+        </section>
+
+        <section aria-hidden="true" class="full-page full-portfolio-only">
+            <header class="full-page-header">
+                <div><span class="full-kicker">IMPLEMENTATION / 03</span><h2>Async intelligence that <span>fails gracefully</span></h2></div>
+                <p>The Grand Wizard wraps a live HuggingFace request in a character-driven interaction while lifecycle-safe coroutines and an offline grimoire protect continuity.</p>
+            </header>
+            <div class="full-ai-grid">
+                <div class="full-ai-copy">
+                    <p>Because network latency is unpredictable, the request runs in Kotlin Coroutines rather than AsyncTask or a heavier RxJava dependency. viewModelScope automatically cancels a suspended request when the user leaves the screen, avoiding leaks and wasted battery.</p>
+                    <div class="full-state-grid">
+                        <article><h3>Idle</h3><p>The dialogue is available and waiting on the user.</p></article>
+                        <article><h3>Thinking</h3><p>The request runs on Dispatchers.IO; the UI locks and shows “...”.</p></article>
+                        <article><h3>Reply</h3><p>The API result resolves, or the offline grimoire supplies a fallback.</p></article>
+                    </div>
+                    <div class="full-callout"><strong>Uncertainty control.</strong> The thinking flag prevents duplicate requests while the user is waiting for an answer.</div>
+                </div>
+                <div class="code-panel"><div class="code-panel-head"><div class="code-panel-dots"><span></span><span></span><span></span></div><span class="code-panel-file">AppViewModel.kt · askGrandWizard()</span></div><pre><code><span class="kw">fun</span> askGrandWizard(userQuestion: String) {
+    viewModelScope.launch {
+        <span class="cm">// enter “thinking” and lock the UI</span>
+        _isWizardThinking.value = <span class="kw">true</span>
+        _wizardReply.value = <span class="st">"..."</span>
+
+        <span class="kw">var</span> finalResult: String? = <span class="kw">null</span>
+        <span class="kw">for</span> (modelId <span class="kw">in</span> routerModels) {
+            <span class="kw">val</span> (success, result) =
+                tryRouterModel(modelId, userQuestion)
+            <span class="kw">if</span> (success &amp;&amp; !result.isNullOrBlank()) {
+                finalResult = result
+                <span class="kw">break</span>
+            }
+        }
+
+        <span class="cm">// resolve with an offline fallback</span>
+        _wizardReply.value =
+            finalResult ?: offlineGrimoire.random()
+        _isWizardThinking.value = <span class="kw">false</span>
+    }
+}</code></pre></div>
+            </div>
+        </section>
+
+        <section aria-hidden="true" class="full-page full-portfolio-only">
+            <header class="full-page-header">
+                <div><span class="full-kicker">DELIVERY / 01</span><h2>Stack, constraints and <span>next steps</span></h2></div>
+                <p>The submitted prototype is a working Android system with explicit permissions, local persistence and clear boundaries for future validation.</p>
+            </header>
+            <div class="full-stack-grid">
+                <table class="full-permission-table">
+                    <thead><tr><th>Permission</th><th>Usage</th></tr></thead>
+                    <tbody>
+                        <tr><td>Internet</td><td>OkHttp calls to the HuggingFace API powering Wizard Q&amp;A.</td></tr>
+                        <tr><td>Network State</td><td>Checks Wi-Fi or mobile connectivity before an AI request.</td></tr>
+                        <tr><td>Vibrate</td><td>Haptic feedback for the stress-relief module.</td></tr>
+                        <tr><td>Post Notifications</td><td>System pop-ups for emergency quest alerts.</td></tr>
+                        <tr><td>Body Sensor</td><td>Reserved for biometric data in preparation for future expansion.</td></tr>
+                    </tbody>
+                </table>
+                <div class="full-stack-side">
+                    <article><span class="full-card-index">LIBRARIES</span><h3>Small, focused dependencies</h3><p><strong>OkHttp</strong> handles data transmission; <strong>Konfetti</strong> turns quest completion into a visible reward event.</p></article>
+                    <article class="limit"><span class="full-card-index">CURRENT LIMITATIONS</span><h3>Local data and sensing ceiling</h3><ul><li>Uninstalling the app deletes Room-stored progress.</li><li>Phone-only acceleration cannot use wearables and offers weak resistance to mechanical step-cheating.</li></ul></article>
+                    <article><span class="full-card-index">PLANNED NEXT</span><h3>Continuity and stronger signals</h3><ul><li>Firebase account login and multi-device synchronization.</li><li>Health Connect wearable data plus ML Kit waveform analysis to filter mechanical cheating.</li></ul></article>
+                </div>
+            </div>
+        </section>
+
+        <section aria-hidden="true" class="full-page full-portfolio-only">
+            <header class="full-page-header">
+                <div><span class="full-kicker">REFLECTION / 01</span><h2>Engineering and experience, <span>held together</span></h2></div>
+                <p>The final value is not one feature in isolation, but the balance between a credible mobile system and a deliberately playful intervention.</p>
+            </header>
+            <div class="full-reflection-grid">
+                <div class="full-reflection-copy">
+                    <p class="lead">MiniQuest is not simply a task manager wearing an RPG skin. It is a working test of whether phone sensors can be pointed at a behavioral-health problem instead of another to-do list.</p>
+                    <p>By pairing a self-built perception layer with an offline-first MVVM foundation and lifecycle-safe coroutine concurrency, the project makes its immersive pixel-art feel rest on a coherent technical system.</p>
+                    <div class="full-contribution"><span class="full-kicker">INDIVIDUAL CONTRIBUTION</span><p>Behavioral research, concept development, interaction design, visual direction, Kotlin implementation, testing and final case-study curation.</p></div>
+                </div>
+                <div class="full-reflection-links">
+                    <a href="https://youtube.com/shorts/CBCdqMNu3ZE" target="_blank" rel="noopener"><span class="full-link-card"><img src="Image/MiniQuest_QR_Video.svg" alt="QR code for the MiniQuest test video"><span><small>WATCH</small><strong>Test video</strong><em>youtube.com/shorts/CBCdqMNu3ZE</em></span></span></a>
+                    <a href="https://github.com/Shuhan0001/MiniQuest" target="_blank" rel="noopener"><span class="full-link-card"><img src="Image/MiniQuest_QR_GitHub.svg" alt="QR code for the MiniQuest GitHub repository"><span><small>EXPLORE</small><strong>Project GitHub</strong><em>github.com/Shuhan0001/MiniQuest</em></span></span></a>
+                </div>
+            </div>
+        </section>
+
+        <section aria-hidden="true" class="application-page application-cover application-only">
+            <div class="application-cover-copy">
+                <span class="application-index">CASE STUDY / 00</span>
+                <h1>Gamifying the<br>break from <span>routine</span></h1>
+                <p>MiniQuest is a native Android RPG that turns response interruption and environmental enrichment into a playable system, using phone sensors to reward movement beyond habitual routines.</p>
+                <div class="application-meta-grid">
+                    <div><small>Designer &amp; developer</small><strong>Shuhan Zhang</strong></div>
+                    <div><small>Platform</small><strong>Android · Kotlin</strong></div>
+                    <div><small>Module</small><strong>Mobile Interaction</strong></div>
+                    <div><small>Role</small><strong>Individual project</strong></div>
+                </div>
+                <div class="application-link-grid">
+                    <a href="https://youtube.com/shorts/CBCdqMNu3ZE" target="_blank" rel="noopener">
+                        <span class="application-link-card">
+                            <img src="Image/MiniQuest_QR_Video.svg" alt="QR code for the MiniQuest test video">
+                            <span><small>WATCH</small><strong>Test video</strong><em>youtube.com/shorts/CBCdqMNu3ZE</em></span>
+                        </span>
+                    </a>
+                    <a href="https://github.com/Shuhan0001/MiniQuest" target="_blank" rel="noopener">
+                        <span class="application-link-card">
+                            <img src="Image/MiniQuest_QR_GitHub.svg" alt="QR code for the MiniQuest GitHub repository">
+                            <span><small>EXPLORE</small><strong>Project GitHub</strong><em>github.com/Shuhan0001/MiniQuest</em></span>
+                        </span>
+                    </a>
+                </div>
+            </div>
+            <div class="application-cover-visuals">
+                <figure class="application-phone application-phone-primary"><img src="Image/MiniQuest_HomeScreen.webp" alt="MiniQuest home screen"></figure>
+                <figure class="application-phone application-phone-secondary"><img src="Image/MiniQuest_EmergencyQuest.webp" alt="MiniQuest emergency quest screen"></figure>
+            </div>
+        </section>
+
+        <section aria-hidden="true" class="application-page application-research application-only">
+            <div class="application-page-header">
+                <div><span class="application-index">RESEARCH / 01</span><h2>Breaking the <span>rigidity loop</span></h2></div>
+                <p>Behavioral research reframed repetitive routine as an interaction problem: the app must interrupt the loop, then offer enough novelty to prevent an immediate return.</p>
+            </div>
+            <div class="application-research-grid">
+                <article><span>01</span><h3>Monotony reinforces repetition</h3><p>Under-stimulating environments are associated with more stereotyped behavior; routine can become its own closed environment.</p><strong>Design implication: reward variation, not only completion.</strong></article>
+                <article><span>02</span><h3>Response interruption</h3><p>A well-timed alternative action can redirect attention before a repetitive pattern continues unchecked.</p><strong>Design response: emergency quests surface without being pre-planned.</strong></article>
+                <article><span>03</span><h3>Environmental enrichment</h3><p>Greater sensory and activity variety gives users more routes away from a narrow behavioral loop.</p><strong>Design response: multiple adventure and regulation tools.</strong></article>
+            </div>
+            <blockquote>A conventional habit tracker rewards staying inside the loop. MiniQuest rewards stepping outside it.</blockquote>
+            <div class="application-research-evidence"><strong>Research context</strong><p>Stereotyped behaviour is associated with ASD but also appears, at lower frequency and intensity, in adults without ASD. The design translates response interruption and environmental enrichment into distinct interaction mechanics.</p><small>Rapp &amp; Vollmer, 2005; Nwaordu &amp; Charlton, 2024; Gross et al., 2012; Turner, Yang &amp; Lewis, 2002; Boyd, McDonough &amp; Bodfish, 2012.</small></div>
+        </section>
+
+        <section aria-hidden="true" class="application-page application-model application-only">
+            <div class="application-page-header">
+                <div><span class="application-index">EXPERIENCE / 01</span><h2>Two routes beyond <span>routine</span></h2></div>
+                <p>The RPG reward loop is retained, but progress no longer depends entirely on tasks the user already planned.</p>
+            </div>
+            <div class="application-model-grid">
+                <div class="application-model-copy">
+                    <article><span>01 / INTERRUPT</span><h3>Urgent quests</h3><p>The system introduces an unexpected action at the moment routine needs to be broken, turning redirection into a short playable challenge.</p></article>
+                    <article><span>02 / ENRICH</span><h3>Adventure tools</h3><p>Stress relief, exploration and passive movement rewards create several low-friction ways to re-enter the world beyond the to-do list.</p></article>
+                    <div class="application-contrast"><small>BEYOND HABITICA</small><p><strong>Passive sensing</strong> rewards walking in the background. <strong>Induced novelty</strong> lets the system, not the user, decide when a new quest appears.</p></div>
+                </div>
+                <div class="application-model-visuals">
+                    <figure><img src="Image/MiniQuest_EmergencyQuest.webp" alt="Emergency quest prompt"><figcaption>Induced novelty</figcaption></figure>
+                    <figure><img src="Image/MiniQuest_MiniGame.webp" alt="MiniQuest stress-relief mini-game"><figcaption>Sensory regulation</figcaption></figure>
+                </div>
+            </div>
+        </section>
+
+        <section aria-hidden="true" class="application-page application-product application-only">
+            <div class="application-page-header">
+                <div><span class="application-index">PRODUCT / 01</span><h2>A pocket-sized <span>adventure loop</span></h2></div>
+                <p>One visual system carries the user from everyday quests to celebration, guidance and reward redemption.</p>
+            </div>
+            <div class="application-screen-grid">
+                <figure><div><img src="Image/MiniQuest_HomeScreen.webp" alt="MiniQuest quest log and player stats"></div><figcaption><span>01</span><strong>Quest log</strong><small>Daily progress, stats and passive rewards.</small></figcaption></figure>
+                <figure><div><img src="Image/MiniQuest_LevelUp.webp" alt="MiniQuest level-up celebration"></div><figcaption><span>02</span><strong>Level up</strong><small>Confetti turns completion into an event.</small></figcaption></figure>
+                <figure><div><img src="Image/MiniQuest_WizardHall.webp" alt="MiniQuest Grand Wizard screen"></div><figcaption><span>03</span><strong>Wizard's Hall</strong><small>Guidance with online and offline fallback.</small></figcaption></figure>
+                <figure><div><img src="Image/MiniQuest_RewardsShop.webp" alt="MiniQuest rewards shop"></div><figcaption><span>04</span><strong>Rewards shop</strong><small>Gold converts progress into chosen rewards.</small></figcaption></figure>
+            </div>
+        </section>
+
+        <section aria-hidden="true" class="application-page application-language application-only">
+            <div class="application-page-header">
+                <div><span class="application-index">DESIGN / 01</span><h2>Friendly enough to <span>interrupt</span></h2></div>
+                <p>The visual language reduces the clinical feeling of intervention while keeping feedback crisp, immediate and legible.</p>
+            </div>
+            <div class="application-reference-grid">
+                <article><figure><img src="Image/MiniQuest_Habitica.webp" alt="Habitica RPG habit-tracker interface"></figure><span>01</span><h3>RPG reward loop</h3><p>Habitica demonstrated that XP and gold can make self-management motivating; MiniQuest expands the loop beyond pre-written tasks.</p></article>
+                <article><figure><img src="Image/MiniQuest_16bitRef.webp" alt="16-bit pixel art reference"></figure><span>02</span><h3>Hard-edged pixel system</h3><p>Vector pixel fonts and the custom HardShadowBox protect the playful 16-bit character on high-density displays.</p></article>
+                <article><figure><img src="Image/MiniQuest_WoodenFish.webp" alt="Electronic wooden fish mindfulness app"></figure><span>03</span><h3>One-tap regulation</h3><p>The wooden-fish ritual informed a tactile stress-relief interaction that asks for less visual attention, not more.</p></article>
+            </div>
+        </section>
+
+        <section aria-hidden="true" class="application-page application-architecture application-only">
+            <div class="application-page-header">
+                <div><span class="application-index">SYSTEM / 01</span><h2>Offline-first, <span>reactive</span> architecture</h2></div>
+                <p>MVVM and unidirectional data flow keep sensor input, persistence, network calls and Compose UI separated but continuously synchronized.</p>
+            </div>
+            <div class="application-architecture-grid">
+                <div class="application-architecture-copy">
+                    <article><span>VIEW</span><p>Jetpack Compose consumes immutable <code>StateFlow</code> and forwards user intent upward.</p></article>
+                    <article><span>VIEWMODEL</span><p><code>AppViewModel</code> orchestrates repositories, sensors and AI calls inside lifecycle-safe coroutines.</p></article>
+                    <article><span>MODEL</span><p>Room, <code>StepSensorManager</code> and OkHttp each retain one responsibility and remain UI-agnostic.</p></article>
+                    <div><small>WHY IT MATTERS</small><p>Quests remain instant and usable offline; repository updates redraw the interface without manual refresh.</p></div>
+                </div>
+                <figure class="application-architecture-figure"><img src="Image/MiniQuest_Architecture.webp" alt="MiniQuest technical architecture diagram"><figcaption>Submitted system architecture diagram</figcaption></figure>
+            </div>
+        </section>
+
+        <section aria-hidden="true" class="application-page application-implementation application-only">
+            <div class="application-page-header">
+                <div><span class="application-index">IMPLEMENTATION / 01</span><h2>Engineering the <span>experience</span></h2></div>
+                <p>Two implementation decisions carry the concept: pervasive motion sensing and lifecycle-safe intelligence.</p>
+            </div>
+            <div class="application-implementation-grid">
+                <article><span>01 / SENSING</span><h3>Raw acceleration, broader access</h3><p>Using the tri-axis accelerometer avoids dependence on a dedicated step sensor that many lower-end devices lack.</p><div class="code-panel"><div class="code-panel-head"><span class="code-panel-file">StepSensorManager.kt</span></div><pre><code><span class="kw">val</span> magnitude = <span class="tg">sqrt</span>(x*x + y*y + z*z)
+
+<span class="kw">if</span> (currentTime - lastShakeTime &gt; <span class="st">300</span>) {
+    internalSteps++
+    saveStepsToStorage()
+}</code></pre></div></article>
+                <article><span>02 / ASYNC AI</span><h3>A wizard that fails gracefully</h3><p><code>viewModelScope</code> cancels suspended requests with the screen; an offline grimoire keeps the interaction usable without a network.</p><div class="code-panel"><div class="code-panel-head"><span class="code-panel-file">AppViewModel.kt</span></div><pre><code>viewModelScope.launch {
+    _isWizardThinking.value = <span class="kw">true</span>
+    <span class="kw">val</span> result = tryRouterModels(question)
+    _wizardReply.value = result
+        ?: offlineGrimoire.random()
+    _isWizardThinking.value = <span class="kw">false</span>
+}</code></pre></div></article>
+            </div>
+            <div class="application-implementation-note"><strong>Multimodal detail</strong><span>Haptic confirmation reduces visual load, while vector pixel fonts and hard shadows preserve a crisp game identity.</span></div>
+        </section>
+
+        <section aria-hidden="true" class="application-page application-reflection application-only">
+            <div class="application-page-header">
+                <div><span class="application-index">REFLECTION / 01</span><h2>What the work <span>demonstrates</span></h2></div>
+                <p>MiniQuest tests whether mobile engineering and behavioral design can reinforce each other rather than compete for attention.</p>
+            </div>
+            <div class="application-capability-grid">
+                <article><span>01</span><h3>Research translation</h3><p>Converted two behavioral interventions into distinct product mechanics instead of adding theory after the interface was complete.</p></article>
+                <article><span>02</span><h3>Mobile systems thinking</h3><p>Connected sensing, persistence, reactive UI and network intelligence through a coherent offline-first architecture.</p></article>
+                <article><span>03</span><h3>Experience craft</h3><p>Used tactile feedback, celebration, pixel typography and role-play to make interruption feel inviting rather than punitive.</p></article>
+            </div>
+            <div class="application-reflection-footer">
+                <div><small>INDIVIDUAL CONTRIBUTION</small><p>Behavioral research, concept development, interaction design, visual direction, Kotlin implementation, testing and final curation.</p></div>
+                <div class="application-link-grid">
+                    <a href="https://youtube.com/shorts/CBCdqMNu3ZE" target="_blank" rel="noopener"><span class="application-link-card"><img src="Image/MiniQuest_QR_Video.svg" alt="QR code for the MiniQuest test video"><span><small>WATCH</small><strong>Test video</strong><em>youtube.com/shorts/CBCdqMNu3ZE</em></span></span></a>
+                    <a href="https://github.com/Shuhan0001/MiniQuest" target="_blank" rel="noopener"><span class="application-link-card"><img src="Image/MiniQuest_QR_GitHub.svg" alt="QR code for the MiniQuest GitHub repository"><span><small>EXPLORE</small><strong>Project GitHub</strong><em>github.com/Shuhan0001/MiniQuest</em></span></span></a>
+                </div>
+            </div>
+            <div class="application-reflection-detail"><div><strong>What remains unproven</strong><p>This is a working Android prototype, not a claim of behavioural efficacy. Local Room data is lost on uninstall; phone-only acceleration cannot use wearables and is vulnerable to mechanical step-cheating.</p></div><div><strong>Next validation</strong><p>Firebase sync, Health Connect signals and ML-based waveform checks could improve continuity and sensing reliability. The central outcome is a tested technical system that makes interruption playful rather than punitive.</p></div></div>
         </section>
     </main>
 

@@ -32,6 +32,12 @@
             --ease-cinematic: cubic-bezier(0.25, 1, 0.3, 1);
         }
 
+        @font-face {
+            font-family: "Fragment Mono";
+            src: url("Fonts/FragmentMono-Regular.ttf") format("truetype");
+            font-display: swap;
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: inherit; }
         html { font-family: var(--font-main); }
 
@@ -906,6 +912,1072 @@
                 word-break: break-all;
             }
         }
+
+        /* ============================================================
+           Curated 16:9 portfolio edition
+           ------------------------------------------------------------
+           The scrolling case study above remains unchanged on screen.
+           This parallel set of print-only pages is deliberately composed
+           as a presentation document: one idea per page, fixed framing,
+           no split cards, and no recycled hero imagery.
+           ============================================================ */
+        .aicodegen-full-only { display: none !important; }
+
+        @media print {
+            @page { size: 13.33in 7.5in; margin: 0; }
+
+            html { font-size: 100% !important; }
+            body.aicodegen-full-portfolio {
+                width: 13.33in !important;
+                min-width: 13.33in !important;
+                margin: 0 !important;
+                counter-reset: aic-page;
+                background: #05050a !important;
+            }
+            body.aicodegen-full-portfolio > :not(main),
+            body.aicodegen-full-portfolio main > :not(.aicodegen-full-page) {
+                display: none !important;
+            }
+            body.aicodegen-full-portfolio main {
+                display: block !important;
+                width: 13.33in !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            body.aicodegen-full-portfolio .aicodegen-full-only {
+                display: block !important;
+            }
+            body.aicodegen-full-portfolio .aicodegen-full-page {
+                display: flex !important;
+            }
+
+            .aicodegen-full-page {
+                --aic-violet: #9b7cff;
+                --aic-violet-soft: rgba(155,124,255,.16);
+                --aic-red: #ff7178;
+                --aic-green: #55dfa0;
+                --aic-ink: #f8f7ff;
+                --aic-muted: #aaa7bc;
+                --aic-line: rgba(255,255,255,.13);
+                position: relative;
+                display: flex !important;
+                flex-direction: column;
+                width: 13.33in;
+                height: 7.5in;
+                min-height: 7.5in;
+                max-height: 7.5in;
+                padding: .46in .58in .42in;
+                overflow: hidden;
+                color: var(--aic-ink);
+                background:
+                    radial-gradient(circle at 10% 5%, rgba(139,92,246,.24), transparent 27%),
+                    radial-gradient(circle at 96% 90%, rgba(74,222,128,.08), transparent 30%),
+                    linear-gradient(135deg, #08080f 0%, #05050a 54%, #0b0711 100%);
+                break-after: page;
+                page-break-after: always;
+                counter-increment: aic-page;
+                isolation: isolate;
+            }
+            .aicodegen-full-page::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                z-index: -1;
+                opacity: .22;
+                background-image:
+                    linear-gradient(rgba(255,255,255,.028) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px);
+                background-size: 42px 42px;
+                mask-image: linear-gradient(to bottom, transparent, black 22%, black 80%, transparent);
+            }
+            .aicodegen-full-page:last-of-type {
+                break-after: auto;
+                page-break-after: auto;
+            }
+            .aic-folio {
+                position: absolute;
+                right: .58in;
+                bottom: .2in;
+                display: flex;
+                align-items: center;
+                gap: .11in;
+                color: #706d80;
+                font: 600 7.4pt/1 var(--font-mono);
+                letter-spacing: .12em;
+                text-transform: uppercase;
+            }
+            .aic-folio::before {
+                content: "AI CodeGen";
+            }
+            .aic-folio::after {
+                content: counter(aic-page, decimal-leading-zero);
+                color: var(--aic-violet);
+            }
+            .aic-topline {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                min-height: .22in;
+                margin-bottom: .18in;
+            }
+            .aic-kicker {
+                display: inline-flex;
+                align-items: center;
+                gap: .1in;
+                color: var(--aic-violet);
+                font: 700 7.8pt/1 var(--font-mono);
+                letter-spacing: .16em;
+                text-transform: uppercase;
+            }
+            .aic-kicker::before {
+                content: "";
+                width: .24in;
+                height: 1px;
+                background: currentColor;
+            }
+            .aic-chapter {
+                color: #6f6b7e;
+                font: 600 7.4pt/1 var(--font-mono);
+                letter-spacing: .12em;
+                text-transform: uppercase;
+            }
+            .aic-heading {
+                margin: 0;
+                max-width: 9.6in;
+                color: var(--aic-ink);
+                font-size: 31pt;
+                line-height: 1.02;
+                font-weight: 650;
+                letter-spacing: -.038em;
+            }
+            .aic-heading em {
+                color: var(--aic-violet);
+                font-style: normal;
+            }
+            .aic-deck {
+                max-width: 8.5in;
+                margin-top: .12in;
+                color: var(--aic-muted);
+                font-size: 11pt;
+                line-height: 1.48;
+                letter-spacing: -.006em;
+            }
+            body.aicodegen-full-portfolio .aic-content {
+                flex: 1;
+                min-height: 0;
+                height: auto;
+                margin-top: .26in;
+            }
+            .aic-card {
+                position: relative;
+                min-width: 0;
+                border: 1px solid var(--aic-line);
+                border-radius: .18in;
+                background: linear-gradient(145deg, rgba(255,255,255,.07), rgba(255,255,255,.025));
+                box-shadow: inset 0 1px rgba(255,255,255,.05);
+            }
+            .aic-card h3,
+            .aic-card h4 {
+                color: var(--aic-ink);
+                font-weight: 620;
+                letter-spacing: -.018em;
+            }
+            .aic-card p { color: var(--aic-muted); }
+            .aic-label {
+                color: var(--aic-violet);
+                font: 700 7.4pt/1 var(--font-mono);
+                letter-spacing: .12em;
+                text-transform: uppercase;
+            }
+            .aic-pill {
+                display: inline-flex;
+                align-items: center;
+                width: fit-content;
+                padding: .055in .09in;
+                border: 1px solid var(--aic-line);
+                border-radius: 99px;
+                color: #cbc8d9;
+                background: rgba(255,255,255,.04);
+                font: 600 7.2pt/1 var(--font-mono);
+                letter-spacing: .04em;
+            }
+            .aic-dot {
+                width: .07in;
+                height: .07in;
+                border-radius: 50%;
+                flex: 0 0 auto;
+                background: var(--aic-violet);
+                box-shadow: 0 0 10px rgba(155,124,255,.55);
+            }
+
+            /* Cover */
+            .aic-cover {
+                padding-top: .5in;
+                background:
+                    radial-gradient(circle at 18% 16%, rgba(139,92,246,.32), transparent 34%),
+                    radial-gradient(circle at 82% 84%, rgba(251,107,107,.08), transparent 28%),
+                    linear-gradient(135deg, #090811, #030305 64%, #0c0711);
+            }
+            .aic-cover-grid {
+                display: grid;
+                grid-template-columns: .9fr 1.1fr;
+                gap: .5in;
+                align-items: center;
+                flex: 1;
+                min-height: 0;
+            }
+            .aic-cover h1 {
+                max-width: 5.2in;
+                margin: .13in 0 .16in;
+                color: #fff;
+                font-size: 38pt;
+                line-height: .96;
+                font-weight: 660;
+                letter-spacing: -.055em;
+            }
+            .aic-cover h1 em { color: var(--aic-violet); font-style: normal; }
+            .aic-cover .aic-summary {
+                max-width: 4.85in;
+                color: #bbb7cb;
+                font-size: 10.5pt;
+                line-height: 1.5;
+            }
+            .aic-cover-meta {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: .12in .24in;
+                margin-top: .26in;
+                padding-top: .19in;
+                border-top: 1px solid var(--aic-line);
+            }
+            .aic-cover-meta span {
+                display: block;
+                color: #747080;
+                font: 700 6.8pt/1 var(--font-mono);
+                letter-spacing: .1em;
+                text-transform: uppercase;
+            }
+            .aic-cover-meta strong {
+                display: block;
+                margin-top: .055in;
+                color: #e8e5f2;
+                font-size: 8.7pt;
+                line-height: 1.3;
+                font-weight: 560;
+            }
+            .aic-cover-frame {
+                position: relative;
+                width: 100%;
+                aspect-ratio: 4 / 3;
+                overflow: hidden;
+                border: 1px solid rgba(155,124,255,.34);
+                border-radius: .24in;
+                background: #151520;
+                box-shadow: 0 26px 80px rgba(0,0,0,.55), 0 0 55px rgba(139,92,246,.11);
+            }
+            .aic-cover-frame img {
+                display: block;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                image-rendering: pixelated;
+            }
+            .aic-cover-frame::after {
+                content: "CAPTURED DIRECTLY FROM THE LIVE HTML";
+                position: absolute;
+                left: .18in;
+                bottom: .17in;
+                padding: .075in .11in;
+                border: 1px solid rgba(255,255,255,.2);
+                border-radius: 99px;
+                color: #fff;
+                background: rgba(8,8,14,.78);
+                font: 700 6.7pt/1 var(--font-mono);
+                letter-spacing: .1em;
+            }
+
+            /* Research question / method */
+            .aic-rq-layout {
+                display: grid;
+                grid-template-columns: 1.48fr .72fr;
+                gap: .2in;
+                height: 100%;
+            }
+            .aic-rq-stack { display: grid; grid-template-rows: repeat(3, 1fr); gap: .12in; }
+            .aic-rq-card {
+                display: grid;
+                grid-template-columns: .72in 1fr;
+                align-items: center;
+                gap: .16in;
+                padding: .15in .19in;
+            }
+            .aic-rq-no {
+                color: var(--aic-violet);
+                font: 700 17pt/1 var(--font-mono);
+                letter-spacing: -.05em;
+            }
+            .aic-rq-card p {
+                color: #e2dfee;
+                font-size: 10.2pt;
+                line-height: 1.37;
+            }
+            .aic-method-card {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                padding: .21in;
+                border-color: rgba(155,124,255,.28);
+                background: linear-gradient(160deg, rgba(155,124,255,.16), rgba(255,255,255,.025));
+            }
+            .aic-method-list { display: grid; gap: .12in; margin-top: .16in; }
+            .aic-method-item { display: grid; grid-template-columns: .24in 1fr; gap: .1in; }
+            .aic-method-item strong { color: #f2f0fa; font-size: 9pt; }
+            .aic-method-item p { margin-top: .02in; font-size: 8.2pt; line-height: 1.35; }
+
+            /* Version timeline */
+            .aic-version-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                grid-template-rows: repeat(2, 1fr);
+                gap: .13in;
+                height: 100%;
+            }
+            .aic-version-card { padding: .16in .17in; overflow: hidden; }
+            .aic-version-head { display: flex; justify-content: space-between; align-items: center; }
+            .aic-version-no {
+                color: var(--aic-violet);
+                font: 750 18pt/1 var(--font-mono);
+                letter-spacing: -.06em;
+            }
+            .aic-version-time { color: #777384; font: 700 6.8pt/1 var(--font-mono); text-transform: uppercase; }
+            .aic-version-card h3 { margin-top: .1in; font-size: 11pt; }
+            .aic-version-card p { margin-top: .045in; font-size: 8.2pt; line-height: 1.36; }
+            .aic-status {
+                display: inline-flex;
+                align-items: center;
+                gap: .06in;
+                margin-top: .09in;
+                color: var(--aic-green);
+                font: 700 6.7pt/1 var(--font-mono);
+                letter-spacing: .035em;
+                text-transform: uppercase;
+            }
+            .aic-status::before { content: ""; width: .055in; height: .055in; border-radius: 50%; background: currentColor; }
+            .aic-status.fail { color: var(--aic-red); }
+            .aic-version-card.muted { opacity: .78; border-style: dashed; }
+
+            /* Architecture */
+            .aic-architecture {
+                display: grid;
+                grid-template-columns: .88fr 1.12fr;
+                gap: .22in;
+                height: 100%;
+            }
+            .aic-scope-card { padding: .22in; display: flex; flex-direction: column; justify-content: space-between; }
+            .aic-scope-card h3 { margin-top: .12in; font-size: 17pt; line-height: 1.12; }
+            .aic-scope-card p { margin-top: .12in; font-size: 9.2pt; line-height: 1.45; }
+            .aic-scope-line { height: 1px; background: linear-gradient(90deg, var(--aic-violet), transparent); margin: .16in 0; }
+            .aic-system-map {
+                display: grid;
+                grid-template-columns: 1fr .36in 1fr;
+                grid-template-rows: 1fr .28in 1fr;
+                align-items: center;
+                gap: .08in;
+                padding: .2in;
+            }
+            .aic-node {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                min-height: 1.23in;
+                padding: .14in .16in;
+                border: 1px solid var(--aic-line);
+                border-radius: .15in;
+                background: rgba(255,255,255,.045);
+            }
+            .aic-node strong { color: #f5f2ff; font-size: 10.5pt; }
+            .aic-node span { margin-top: .04in; color: #898698; font-size: 7.7pt; line-height: 1.35; }
+            .aic-arrow { color: var(--aic-violet); text-align: center; font: 700 14pt/1 var(--font-mono); }
+            .aic-arrow.down { transform: rotate(90deg); }
+
+            /* Failure case */
+            .aic-failure-layout {
+                display: grid;
+                grid-template-columns: 1.1fr .9fr;
+                gap: .24in;
+                height: 100%;
+            }
+            .aic-bug-frame {
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+                padding: .16in;
+                border-color: rgba(255,113,120,.3);
+                background: linear-gradient(145deg, rgba(255,113,120,.11), rgba(255,255,255,.02));
+            }
+            .aic-bug-frame img {
+                display: block;
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                image-rendering: pixelated;
+                border-radius: .12in;
+            }
+            .aic-bug-callout {
+                position: absolute;
+                left: .24in;
+                top: .23in;
+                display: flex;
+                align-items: center;
+                gap: .08in;
+                padding: .08in .11in;
+                border: 1px solid rgba(255,113,120,.38);
+                border-radius: 99px;
+                color: #ffd7d9;
+                background: rgba(22,7,11,.84);
+                font: 700 7pt/1 var(--font-mono);
+                letter-spacing: .08em;
+                text-transform: uppercase;
+            }
+            .aic-failure-copy { display: grid; grid-template-rows: auto 1fr auto; gap: .12in; }
+            .aic-diagnosis { padding: .17in .18in; }
+            .aic-diagnosis h3 { font-size: 13pt; }
+            .aic-diagnosis p { margin-top: .06in; font-size: 8.7pt; line-height: 1.4; }
+            .aic-diagnosis.good { border-color: rgba(85,223,160,.26); }
+            .aic-diagnosis.bad { border-color: rgba(255,113,120,.27); }
+            .aic-prompt {
+                padding: .15in .17in;
+                border-left: 2px solid var(--aic-violet);
+                color: #b9b6c8;
+                background: rgba(255,255,255,.03);
+                font: 7.5pt/1.43 var(--font-mono);
+            }
+
+            /* Experiment table */
+            .aic-experiment-layout {
+                display: grid;
+                grid-template-columns: 1.42fr .58fr;
+                gap: .2in;
+                height: 100%;
+            }
+            .aic-table-card { overflow: hidden; }
+            .aic-table { width: 100%; height: 100%; border-collapse: collapse; table-layout: fixed; }
+            .aic-table th {
+                padding: .09in .11in;
+                color: #858192;
+                background: rgba(255,255,255,.045);
+                border-bottom: 1px solid var(--aic-line);
+                font: 700 6.8pt/1.15 var(--font-mono);
+                letter-spacing: .07em;
+                text-align: left;
+                text-transform: uppercase;
+            }
+            .aic-table td {
+                padding: .075in .11in;
+                color: #d6d3df;
+                border-bottom: 1px solid rgba(255,255,255,.07);
+                font-size: 7.8pt;
+                line-height: 1.2;
+            }
+            .aic-table tr:last-child td { border-bottom: 0; }
+            .aic-table tr.alert td { background: rgba(255,113,120,.055); }
+            .aic-table tr.repair td { background: rgba(85,223,160,.055); }
+            .aic-yes { color: var(--aic-green); font-weight: 700; }
+            .aic-no { color: #827e8f; }
+            .aic-unexpected { color: var(--aic-red); font-weight: 700; }
+            .aic-evidence-stack { display: grid; grid-template-rows: .83fr 1.17fr; gap: .13in; }
+            .aic-stat-card { display: flex; flex-direction: column; justify-content: center; padding: .2in; }
+            .aic-stat-card strong { color: #fff; font: 700 26pt/1 var(--font-mono); letter-spacing: -.06em; }
+            .aic-stat-card span { margin-top: .08in; color: var(--aic-muted); font-size: 8.4pt; line-height: 1.35; }
+            .aic-insight-card { padding: .2in; background: linear-gradient(160deg, rgba(155,124,255,.15), rgba(255,255,255,.025)); }
+            .aic-insight-card h3 { margin-top: .1in; font-size: 14pt; line-height: 1.15; }
+            .aic-insight-card p { margin-top: .1in; font-size: 8.6pt; line-height: 1.45; }
+
+            /* Constraint repair */
+            .aic-repair-flow {
+                display: grid;
+                grid-template-columns: 1fr .32in 1fr;
+                align-items: stretch;
+                gap: .13in;
+                height: 100%;
+            }
+            .aic-repair-card { padding: .2in; display: flex; flex-direction: column; }
+            .aic-repair-card.before { border-color: rgba(255,113,120,.28); }
+            .aic-repair-card.after { border-color: rgba(85,223,160,.28); }
+            .aic-repair-card h3 { margin-top: .1in; font-size: 15pt; }
+            .aic-repair-card .aic-code {
+                flex: 1;
+                display: flex;
+                align-items: center;
+                margin-top: .13in;
+                padding: .26in;
+                border-radius: .12in;
+                color: #c4c0d0;
+                background: rgba(0,0,0,.3);
+                font: 9pt/1.5 var(--font-mono);
+            }
+            .aic-repair-card .aic-outcome {
+                margin-top: .12in;
+                padding-top: .11in;
+                border-top: 1px solid var(--aic-line);
+                color: #eae7f2;
+                font-size: 8.6pt;
+                line-height: 1.4;
+            }
+            .aic-repair-arrow { display: flex; align-items: center; justify-content: center; color: var(--aic-violet); font: 700 20pt/1 var(--font-mono); }
+
+            /* Findings */
+            .aic-findings-layout {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: .16in;
+                height: 100%;
+            }
+            .aic-finding-card { padding: .22in; display: flex; flex-direction: column; }
+            .aic-finding-no { color: var(--aic-violet); font: 700 8pt/1 var(--font-mono); letter-spacing: .12em; }
+            .aic-finding-card h3 { max-width: 4.7in; margin-top: .1in; font-size: 17pt; line-height: 1.08; }
+            .aic-finding-card p { margin-top: .11in; font-size: 9pt; line-height: 1.48; }
+            .aic-metric {
+                display: flex;
+                align-items: flex-end;
+                gap: .11in;
+                margin-top: auto;
+                padding-top: .13in;
+                border-top: 1px solid var(--aic-line);
+            }
+            .aic-metric strong { color: #fff; font: 700 23pt/.9 var(--font-mono); letter-spacing: -.06em; }
+            .aic-metric span { max-width: 2in; color: #8a8698; font-size: 7.6pt; line-height: 1.3; }
+            .aic-logic-strip {
+                display: grid;
+                grid-template-columns: 1fr auto 1fr;
+                align-items: center;
+                gap: .1in;
+                margin-top: auto;
+                padding-top: .13in;
+                border-top: 1px solid var(--aic-line);
+            }
+            .aic-logic-strip span {
+                padding: .09in;
+                border-radius: .1in;
+                color: #d4d0df;
+                background: rgba(255,255,255,.045);
+                font-size: 7.8pt;
+                line-height: 1.3;
+                text-align: center;
+            }
+            .aic-logic-strip b { color: var(--aic-violet); font: 700 13pt/1 var(--font-mono); }
+            .aic-quote-card {
+                justify-content: center;
+                border-color: rgba(155,124,255,.28);
+                background: linear-gradient(150deg, rgba(155,124,255,.14), rgba(255,255,255,.025));
+            }
+            .aic-quote-mark { color: rgba(155,124,255,.42); font: 700 40pt/.7 Georgia, serif; }
+            .aic-quote-card blockquote { margin-top: .12in; color: #f2effb; font-size: 13pt; line-height: 1.35; letter-spacing: -.015em; }
+            .aic-quote-card cite { margin-top: .13in; color: #817d8f; font: 700 7pt/1 var(--font-mono); font-style: normal; letter-spacing: .08em; text-transform: uppercase; }
+
+            /* Practice / closing */
+            .aic-practice-layout {
+                display: grid;
+                grid-template-columns: 1.15fr .85fr;
+                gap: .18in;
+                height: 100%;
+            }
+            .aic-workflow { padding: .21in; }
+            .aic-workflow-row {
+                display: grid;
+                grid-template-columns: .38in 1fr;
+                gap: .12in;
+                padding: .115in 0;
+                border-bottom: 1px solid var(--aic-line);
+            }
+            .aic-workflow-row:last-child { border-bottom: 0; }
+            .aic-workflow-no { display: flex; align-items: center; justify-content: center; width: .32in; height: .32in; border-radius: 50%; color: var(--aic-violet); background: var(--aic-violet-soft); font: 700 8pt/1 var(--font-mono); }
+            .aic-workflow-row strong { display: block; color: #f2eff9; font-size: 9.5pt; }
+            .aic-workflow-row p { margin-top: .025in; font-size: 8.1pt; line-height: 1.35; }
+            .aic-limits { display: grid; grid-template-rows: auto 1fr; gap: .13in; }
+            .aic-position { padding: .18in; border-color: rgba(155,124,255,.28); }
+            .aic-position h3 { margin-top: .08in; font-size: 14pt; line-height: 1.15; }
+            .aic-position p { margin-top: .08in; font-size: 8.5pt; line-height: 1.4; }
+            .aic-limit-card { padding: .18in; }
+            .aic-limit-list { display: grid; gap: .09in; margin-top: .12in; }
+            .aic-limit-item { display: grid; grid-template-columns: .1in 1fr; gap: .08in; color: #aaa6b8; font-size: 8.1pt; line-height: 1.35; }
+            .aic-limit-item::before { content: ""; width: .055in; height: .055in; margin-top: .045in; border-radius: 50%; background: #5f5b6b; }
+
+            .aic-closing-layout {
+                display: grid;
+                grid-template-columns: 1.12fr .88fr;
+                gap: .28in;
+                align-items: stretch;
+                height: 100%;
+            }
+            .aic-reflection { display: flex; flex-direction: column; justify-content: center; padding-right: .1in; }
+            .aic-reflection .aic-big-line {
+                max-width: 6.3in;
+                color: #f7f4ff;
+                font-size: 22pt;
+                line-height: 1.16;
+                font-weight: 610;
+                letter-spacing: -.035em;
+            }
+            .aic-reflection .aic-big-line em { color: var(--aic-violet); font-style: normal; }
+            .aic-reflection p { max-width: 6.3in; margin-top: .16in; color: #a9a5b8; font-size: 9pt; line-height: 1.48; }
+            .aic-disclosure { margin-top: .18in; padding-top: .14in; border-top: 1px solid var(--aic-line); color: #716d7e; font-size: 7.2pt; line-height: 1.4; }
+            .aic-qr-stack { display: grid; grid-template-rows: 1fr 1fr; gap: .13in; }
+            .aic-qr-card { display: grid; grid-template-columns: 1.15in 1fr; align-items: center; gap: .17in; padding: .16in; text-decoration: none; }
+            .aic-qr-card img { display: block; width: 1.05in; height: 1.05in; padding: .06in; border-radius: .1in; background: #fff; }
+            .aic-qr-card h3 { font-size: 12pt; }
+            .aic-qr-card p { margin-top: .045in; font-size: 7.8pt; line-height: 1.35; }
+            .aic-qr-card .aic-url { margin-top: .07in; color: #7f7a91; font: 6.2pt/1.3 var(--font-mono); word-break: break-all; }
+
+            /* Editorial refinement: evidence logs and ruled notes replace
+               repeated equal-size dashboard cards on the analysis pages. */
+            .aic-version-grid {
+                display: grid;
+                grid-template-columns: 1fr;
+                grid-template-rows: .31in repeat(6, 1fr);
+                gap: 0;
+                border-top: 1px solid var(--aic-line);
+            }
+            .aic-ledger-head,
+            .aic-version-card {
+                display: grid;
+                grid-template-columns: 1.14in 1.72in 1fr 1.17in;
+                column-gap: .15in;
+                align-items: center;
+            }
+            .aic-ledger-head {
+                padding: 0 .1in;
+                color: #787486;
+                border-bottom: 1px solid var(--aic-line);
+                font: 700 6.6pt/1 var(--font-mono);
+                letter-spacing: .12em;
+                text-transform: uppercase;
+            }
+            .aic-version-card {
+                min-height: 0;
+                padding: .06in .1in;
+                overflow: hidden;
+                border: 0;
+                border-bottom: 1px solid var(--aic-line);
+                border-radius: 0;
+                background: transparent;
+                box-shadow: none;
+            }
+            .aic-version-card:nth-of-type(3) { background: rgba(255,113,120,.065); }
+            .aic-version-card.muted { opacity: .75; border-style: solid; }
+            .aic-version-head {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: .025in;
+            }
+            .aic-version-no { font-size: 15pt; }
+            .aic-version-time { margin: 0; font-size: 6.5pt; }
+            .aic-version-card h3 { margin: 0; font-size: 10.4pt; }
+            .aic-version-card p { margin: 0; font-size: 7.9pt; line-height: 1.32; }
+            .aic-version-card .aic-status { margin: 0; font-size: 6.6pt; white-space: nowrap; }
+
+            .aic-architecture { grid-template-columns: .72fr 1.28fr; }
+            .aic-scope-card {
+                padding: .21in .22in;
+                border: 0;
+                border-left: 2px solid var(--aic-violet);
+                border-radius: 0;
+                background: transparent;
+                box-shadow: none;
+            }
+            .aic-scope-card h3 { max-width: 3.5in; font-size: 18pt; }
+            .aic-scope-card p { max-width: 3.6in; font-size: 9.2pt; }
+            .aic-source-panel {
+                display: grid;
+                grid-template-rows: .35in repeat(3, 1fr) .32in;
+                min-height: 0;
+                border-top: 1px solid var(--aic-line);
+                border-bottom: 1px solid var(--aic-line);
+            }
+            .aic-source-top,
+            .aic-source-foot {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                color: #777384;
+                font: 700 6.8pt/1 var(--font-mono);
+                letter-spacing: .07em;
+            }
+            .aic-source-top { border-bottom: 1px solid var(--aic-line); }
+            .aic-source-foot { border-top: 1px solid var(--aic-line); font-weight: 500; }
+            .aic-source-row {
+                display: grid;
+                grid-template-columns: .35in 1fr;
+                gap: .13in;
+                align-items: center;
+                padding: .06in 0;
+                border-bottom: 1px solid rgba(255,255,255,.08);
+            }
+            .aic-source-row:nth-child(4) { border-bottom: 0; }
+            .aic-source-line { color: var(--aic-violet); font: 700 8pt/1 var(--font-mono); }
+            .aic-source-row strong { color: #f1eef9; font-size: 10.5pt; }
+            .aic-source-row p { margin-top: .045in; color: #aaa6b8; font-size: 8.1pt; line-height: 1.35; }
+            .aic-source-row code,
+            .aic-workflow-row code { color: #d0c2ff; font-family: var(--font-mono); font-size: .94em; }
+
+            .aic-failure-copy {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                gap: .2in;
+            }
+            .aic-failure-copy .aic-diagnosis {
+                padding: .04in .17in;
+                border: 0;
+                border-left: 2px solid var(--aic-green);
+                border-radius: 0;
+                background: transparent;
+                box-shadow: none;
+            }
+            .aic-failure-copy .aic-diagnosis.bad { border-left-color: var(--aic-red); }
+            .aic-failure-copy .aic-prompt { margin-top: .08in; }
+
+            .aic-lab-layout {
+                display: grid;
+                grid-template-rows: .8in 1fr 1.05in;
+                gap: .16in;
+            }
+            .aic-lab-input {
+                display: grid;
+                grid-template-columns: 1.7in 2.6in 1fr;
+                gap: .17in;
+                align-items: center;
+                padding: .06in .08in;
+                border-top: 1px solid var(--aic-line);
+                border-bottom: 1px solid var(--aic-line);
+            }
+            .aic-lab-input strong { color: #f2eff9; font-size: 16pt; letter-spacing: -.02em; }
+            .aic-lab-input p { color: var(--aic-muted); font-size: 9pt; }
+            .aic-lab-runs { display: grid; grid-template-columns: 1fr 1fr; gap: .28in; }
+            .aic-lab-run {
+                display: flex;
+                flex-direction: column;
+                min-height: 0;
+                padding: .08in .2in;
+                border-left: 2px solid var(--aic-red);
+                background: rgba(255,113,120,.035);
+            }
+            .aic-lab-run.after { border-left-color: var(--aic-green); background: rgba(85,223,160,.035); }
+            .aic-lab-run > span { color: var(--aic-red); font: 700 7.2pt/1 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; }
+            .aic-lab-run.after > span { color: var(--aic-green); }
+            .aic-lab-run h3 { margin-top: .13in; color: #f4f1fb; font-size: 17pt; letter-spacing: -.026em; }
+            .aic-lab-run p { max-width: 4.7in; margin-top: .08in; color: #aaa6b8; font-size: 9pt; line-height: 1.42; }
+            .aic-lab-run > strong { margin-top: auto; padding-top: .11in; color: var(--aic-red); font: 700 8pt/1 var(--font-mono); letter-spacing: .06em; text-transform: uppercase; }
+            .aic-lab-run.after > strong { color: var(--aic-green); }
+            .aic-lab-clause {
+                display: grid;
+                grid-template-columns: 1.6in 1fr;
+                gap: .2in;
+                align-items: center;
+                padding: .14in .18in;
+                border-left: 2px solid var(--aic-violet);
+                background: rgba(155,124,255,.08);
+            }
+            .aic-lab-clause span { color: var(--aic-violet); font: 700 7pt/1.35 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }
+            .aic-lab-clause p { color: #d0cbdc; font-size: 8.4pt; line-height: 1.42; }
+            .aic-lab-clause code { color: #f4eeff; font-family: var(--font-mono); }
+
+            .aic-findings-layout .aic-finding-card {
+                padding: .18in .1in .13in;
+                border: 0;
+                border-top: 1px solid var(--aic-line);
+                border-bottom: 1px solid var(--aic-line);
+                border-radius: 0;
+                background: transparent;
+                box-shadow: none;
+            }
+            .aic-findings-layout .aic-quote-card {
+                padding-left: .2in;
+                border-left: 2px solid var(--aic-violet);
+            }
+            .aic-findings-layout .aic-logic-strip span {
+                border-radius: 0;
+                background: transparent;
+            }
+
+            .aic-practice-layout .aic-workflow,
+            .aic-practice-layout .aic-position,
+            .aic-practice-layout .aic-limit-card {
+                border: 0;
+                border-top: 1px solid var(--aic-line);
+                border-bottom: 1px solid var(--aic-line);
+                border-radius: 0;
+                background: transparent;
+                box-shadow: none;
+            }
+            .aic-practice-layout .aic-position { border-top-color: var(--aic-violet); }
+
+            /* ========================================================
+               Field-notes edition: the print document borrows its ink,
+               coin yellow and player green from the actual game. A small
+               number of dark proof pages punctuate warm paper spreads.
+               No frosted panels, ambient glows or decorative grids.
+               ======================================================== */
+            .aicodegen-full-page {
+                --font-mono: "Fragment Mono", Consolas, monospace;
+                --aic-violet: #176d4e;
+                --aic-green: #177856;
+                --aic-red: #b74a3f;
+                --aic-ink: #1c211e;
+                --aic-muted: #5d625c;
+                --aic-line: #b5b9b0;
+                color: var(--aic-ink);
+                background: #f0eee5 !important;
+            }
+            .aicodegen-full-page::before { display: none; }
+            .aic-topline {
+                min-height: .29in;
+                padding-bottom: .09in;
+                border-bottom: 1px solid #969b91;
+            }
+            .aic-kicker { color: var(--aic-ink); font-size: 7.5pt; letter-spacing: .1em; }
+            .aic-kicker::before { width: .09in; height: .09in; background: #e3c914; }
+            .aic-chapter { color: #697069; }
+            .aic-heading { color: var(--aic-ink); font-size: 30pt; font-weight: 760; letter-spacing: -.05em; }
+            .aic-heading em { color: #176d4e; }
+            .aic-deck { color: var(--aic-muted); font-size: 10.2pt; line-height: 1.43; }
+            .aic-folio { color: #70766e; }
+            .aic-folio::after { color: #176d4e; }
+            .aic-card { border-color: var(--aic-line); border-radius: 0; background: transparent; box-shadow: none; }
+            .aic-card h3, .aic-card h4 { color: var(--aic-ink); }
+            .aic-card p { color: var(--aic-muted); }
+            .aic-label { color: #176d4e; }
+            .aic-pill { border-color: #8b9288; border-radius: 0; color: #434a43; background: transparent; }
+            .aic-dot { background: #176d4e; box-shadow: none; }
+
+            .aic-page-cover {
+                --aic-violet: #f3d51c;
+                --aic-ink: #f3f1e7;
+                --aic-muted: #bdbeb4;
+                --aic-line: #585d55;
+                background: #1d201e !important;
+            }
+            .aic-page-cover .aic-kicker { color: #f3d51c; }
+            .aic-page-cover .aic-kicker::before { background: #f3d51c; }
+            .aic-page-cover h1 { font-size: 41pt; color: #f4f2e9; }
+            .aic-page-cover h1 em { color: #f3d51c; }
+            .aic-page-cover .aic-summary { color: #c2c5b9; }
+            .aic-page-cover .aic-cover-meta { border-top-color: #5c615b; }
+            .aic-page-cover .aic-cover-meta span { color: #949a90; }
+            .aic-page-cover .aic-cover-meta strong { color: #f0f0e7; }
+            .aic-page-cover .aic-cover-frame {
+                border: 0;
+                border-radius: 0;
+                box-shadow: none;
+                background: #202020;
+            }
+            .aic-page-cover .aic-cover-frame::after {
+                left: 0;
+                bottom: 0;
+                padding: .1in .13in;
+                border: 0;
+                border-radius: 0;
+                color: #1a1d1a;
+                background: #f3d51c;
+            }
+            .aic-page-cover .aic-folio { color: #92988e; }
+            .aic-page-cover .aic-folio::after { color: #f3d51c; }
+
+            .aic-page-research .aic-rq-card {
+                padding: .12in .11in;
+                border: 0;
+                border-bottom: 1px solid #aeb3aa;
+                background: transparent;
+            }
+            .aic-page-research .aic-rq-card:first-child { border-top: 1px solid #aeb3aa; }
+            .aic-page-research .aic-rq-card p { color: #1f2520; font-size: 10.2pt; }
+            .aic-page-research .aic-rq-no { color: #176d4e; }
+            .aic-page-research .aic-method-card {
+                border: 0;
+                border-left: 3px solid #d3bb18;
+                background: #e4e1d3;
+            }
+            .aic-page-research .aic-method-item strong { color: #1f2520; }
+            .aic-page-research .aic-method-item p { color: #5b6259; }
+
+            .aic-page-versions .aic-ledger-head,
+            .aic-page-versions .aic-version-card { border-color: #aeb3aa; }
+            .aic-page-versions .aic-ledger-head { color: #626860; }
+            .aic-page-versions .aic-version-card h3 { color: #202520; }
+            .aic-page-versions .aic-version-card p { color: #515850; }
+            .aic-page-versions .aic-version-no { color: #176d4e; }
+            .aic-page-versions .aic-version-time { color: #70766e; }
+            .aic-page-versions .aic-version-card:nth-of-type(3) { background: #eadfd9; }
+            .aic-page-versions .aic-status { color: #176d4e; }
+            .aic-page-versions .aic-status.fail { color: #b74a3f; }
+
+            .aic-page-v6 .aic-architecture { grid-template-columns: 5.1in 1fr; gap: .29in; }
+            .aic-gameplay-figure { display: flex; flex-direction: column; min-height: 0; }
+            .aic-gameplay-figure img {
+                display: block;
+                width: 100%;
+                height: auto;
+                max-height: 4.45in;
+                object-fit: contain;
+                image-rendering: pixelated;
+                border: 1px solid #394039;
+                background: #333;
+            }
+            .aic-gameplay-figure figcaption {
+                margin-top: .1in;
+                color: #5d665d;
+                font: 7pt/1.3 var(--font-mono);
+                text-transform: uppercase;
+                letter-spacing: .04em;
+            }
+            .aic-v6-note {
+                margin-top: .16in;
+                padding-top: .1in;
+                border-top: 1px solid #b5b9b0;
+                color: #50584f;
+                font: 7.6pt/1.3 var(--font-sans);
+            }
+            .aic-v6-note strong { display: block; margin-bottom: .035in; color: #1f2520; font-size: 8.4pt; }
+            .aic-page-v6 .aic-source-panel,
+            .aic-page-v6 .aic-source-top,
+            .aic-page-v6 .aic-source-row,
+            .aic-page-v6 .aic-source-foot { border-color: #b5b9b0; }
+            .aic-page-v6 .aic-source-top,
+            .aic-page-v6 .aic-source-foot { color: #636a61; }
+            .aic-page-v6 .aic-source-line { color: #176d4e; }
+            .aic-page-v6 .aic-source-row strong { color: #1f2520; }
+            .aic-page-v6 .aic-source-row p { color: #60675e; }
+            .aic-page-v6 .aic-source-row code { color: #176d4e; }
+
+            .aic-page-bug,
+            .aic-page-findings-b,
+            .aic-page-close {
+                --aic-violet: #f3d51c;
+                --aic-ink: #f5f2e9;
+                --aic-muted: #b8bbb1;
+                --aic-line: #626760;
+                color: #f5f2e9;
+                background: #1d201e !important;
+            }
+            .aic-page-bug .aic-kicker,
+            .aic-page-findings-b .aic-kicker,
+            .aic-page-close .aic-kicker { color: #f3d51c; }
+            .aic-page-bug .aic-heading,
+            .aic-page-findings-b .aic-heading,
+            .aic-page-close .aic-heading { color: #f5f2e9; }
+            .aic-page-bug .aic-heading em { color: #ed8a7f; }
+            .aic-page-findings-b .aic-heading em,
+            .aic-page-close .aic-heading em { color: #f3d51c; }
+            .aic-page-bug .aic-deck,
+            .aic-page-findings-b .aic-deck { color: #bdc0b6; }
+            .aic-page-bug .aic-topline,
+            .aic-page-findings-b .aic-topline,
+            .aic-page-close .aic-topline { border-bottom-color: #646a62; }
+            .aic-page-bug .aic-chapter,
+            .aic-page-findings-b .aic-chapter,
+            .aic-page-close .aic-chapter { color: #adb2a8; }
+            .aic-page-bug .aic-folio,
+            .aic-page-findings-b .aic-folio,
+            .aic-page-close .aic-folio { color: #aeb3a9; }
+            .aic-page-bug .aic-folio::after,
+            .aic-page-findings-b .aic-folio::after,
+            .aic-page-close .aic-folio::after { color: #f3d51c; }
+            .aic-page-bug .aic-bug-frame { border: 1px solid #ed8a7f; border-radius: 0; background: transparent; }
+            .aic-page-bug .aic-bug-callout { border: 0; border-radius: 0; color: #1d201e; background: #ed8a7f; }
+            .aic-page-bug .aic-diagnosis h3 { color: #f5f2e9; }
+            .aic-page-bug .aic-diagnosis p { color: #bbc0b6; }
+            .aic-page-bug .aic-prompt { color: #c7cabf; background: #282c29; }
+
+            .aic-page-maps .aic-table-card { border: 1px solid #8f968b; }
+            .aic-page-maps .aic-table th { color: #3a4239; background: #deddd1; border-color: #aab1a5; }
+            .aic-page-maps .aic-table td { color: #323932; border-color: #c2c6bb; }
+            .aic-page-maps .aic-table tr.alert td { background: #ecd9d2; }
+            .aic-page-maps .aic-table tr.repair td { background: #dce9de; }
+            .aic-page-maps .aic-yes { color: #176d4e; }
+            .aic-page-maps .aic-unexpected { color: #b74a3f; }
+            .aic-page-maps .aic-stat-card,
+            .aic-page-maps .aic-insight-card {
+                border: 0;
+                border-top: 1px solid #aeb4a9;
+                border-bottom: 1px solid #aeb4a9;
+            }
+            .aic-page-maps .aic-stat-card strong,
+            .aic-page-maps .aic-insight-card h3 { color: #1d241e; }
+            .aic-page-maps .aic-stat-card span,
+            .aic-page-maps .aic-insight-card p { color: #5b6359; }
+
+            .aic-page-constraint {
+                --aic-violet: #1d241e;
+                --aic-ink: #1d241e;
+                --aic-muted: #40473d;
+                --aic-line: #737b68;
+                background: #ecd345 !important;
+            }
+            .aic-page-constraint .aic-kicker::before { background: #1d241e; }
+            .aic-page-constraint .aic-heading em { color: #1d241e; text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: .1em; }
+            .aic-page-constraint .aic-deck { color: #384035; }
+            .aic-page-constraint .aic-topline,
+            .aic-page-constraint .aic-lab-input { border-color: #6a725e; }
+            .aic-page-constraint .aic-lab-input strong { color: #1d241e; }
+            .aic-page-constraint .aic-lab-input p { color: #384035; }
+            .aic-page-constraint .aic-label { color: #1d241e; }
+            .aic-page-constraint .aic-lab-run { background: rgba(255,255,255,.22); }
+            .aic-page-constraint .aic-lab-run.before { border-left-color: #a23e34; }
+            .aic-page-constraint .aic-lab-run.after { border-left-color: #146747; }
+            .aic-page-constraint .aic-lab-run h3 { color: #1d241e; }
+            .aic-page-constraint .aic-lab-run p { color: #3e443a; }
+            .aic-page-constraint .aic-lab-run.before > span,
+            .aic-page-constraint .aic-lab-run.before > strong { color: #9e3e34; }
+            .aic-page-constraint .aic-lab-run.after > span,
+            .aic-page-constraint .aic-lab-run.after > strong { color: #146747; }
+            .aic-page-constraint .aic-lab-clause { border-left: 0; background: #1d201e; }
+            .aic-page-constraint .aic-lab-clause span { color: #f4d728; }
+            .aic-page-constraint .aic-lab-clause p { color: #e7e8dc; }
+            .aic-page-constraint .aic-folio,
+            .aic-page-constraint .aic-folio::after { color: #1d241e; }
+
+            .aic-page-findings-a .aic-finding-card,
+            .aic-page-practice .aic-workflow,
+            .aic-page-practice .aic-position,
+            .aic-page-practice .aic-limit-card { border-color: #aeb4a9; }
+            .aic-page-findings-a .aic-finding-card h3,
+            .aic-page-practice .aic-position h3,
+            .aic-page-practice .aic-workflow-row strong { color: #1d241e; }
+            .aic-page-findings-a .aic-finding-card p,
+            .aic-page-practice .aic-position p,
+            .aic-page-practice .aic-workflow-row p,
+            .aic-page-practice .aic-limit-item { color: #5c655b; }
+            .aic-page-findings-a .aic-metric strong { color: #1d241e; }
+            .aic-page-findings-a .aic-metric span,
+            .aic-page-findings-a .aic-logic-strip span { color: #4f594e; }
+            .aic-page-findings-a .aic-logic-strip b { color: #176d4e; }
+            .aic-page-findings-b .aic-finding-card { border-color: #676d65; }
+            .aic-page-findings-b .aic-finding-card h3,
+            .aic-page-findings-b .aic-quote-card blockquote { color: #f5f2e9; }
+            .aic-page-findings-b .aic-finding-card p,
+            .aic-page-findings-b .aic-logic-strip span { color: #b8bdb2; }
+            .aic-page-findings-b .aic-quote-card { border-left-color: #f3d51c; }
+            .aic-page-findings-b .aic-quote-mark { color: #f3d51c; }
+            .aic-page-findings-b .aic-quote-card cite { color: #c5c49a; }
+            .aic-page-findings-b .aic-logic-strip b { color: #f3d51c; }
+            .aic-page-practice .aic-workflow-no { border-radius: 0; color: #1d241e; background: #ead231; }
+            .aic-page-practice .aic-workflow-row code { color: #176d4e; }
+            .aic-page-practice .aic-position { border-top-color: #176d4e; }
+
+            .aic-page-close .aic-reflection .aic-big-line { color: #f4f2e8; }
+            .aic-page-close .aic-reflection .aic-big-line em { color: #f3d51c; }
+            .aic-page-close .aic-reflection p { color: #c2c5b9; }
+            .aic-page-close .aic-disclosure { border-color: #676d65; color: #a7ada2; }
+            .aic-page-close .aic-qr-card { border: 0; border-top: 1px solid #656b63; border-bottom: 1px solid #656b63; }
+            .aic-page-close .aic-qr-card h3 { color: #f4f2e8; }
+            .aic-page-close .aic-qr-card p { color: #b8bdb2; }
+            .aic-page-close .aic-qr-card .aic-url { color: #9fa89b; }
+            .aic-page-close .aic-label { color: #f3d51c; }
+            .aic-page-close .aic-qr-card img { border-radius: 0; }
+        }
     </style>
 </head>
 <body>
@@ -933,11 +2005,11 @@
         </defs>
     </svg>
 
-    <a href="index.html" class="back-home-btn" aria-label="Back to home">
+    <a href="Projects.html" class="back-home-btn" aria-label="Back to projects">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <span>Back to Home</span>
+        <span>Back to Projects</span>
     </a>
 
     <div class="scroll-track">
@@ -962,7 +2034,7 @@
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
                 </a>
                 <a href="https://github.com/Shuhan0001/Evaluating-AI--Assisted-Game-Code" target="_blank" rel="noopener" class="gameplay-btn-secondary">
-                    View on GitHub
+                    View the project on GitHub
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.73.5.75 5.48.75 11.75c0 5.02 3.26 9.28 7.78 10.78.57.1.78-.25.78-.55 0-.27-.01-1.15-.02-2.09-3.16.69-3.83-1.34-3.83-1.34-.52-1.31-1.26-1.66-1.26-1.66-1.03-.7.08-.69.08-.69 1.14.08 1.74 1.17 1.74 1.17 1.01 1.73 2.65 1.23 3.3.94.1-.73.4-1.23.72-1.51-2.52-.29-5.17-1.26-5.17-5.6 0-1.24.44-2.25 1.17-3.04-.12-.29-.51-1.45.11-3.02 0 0 .96-.31 3.15 1.16a10.9 10.9 0 0 1 5.74 0c2.19-1.47 3.15-1.16 3.15-1.16.62 1.57.23 2.73.11 3.02.73.79 1.17 1.8 1.17 3.04 0 4.35-2.65 5.31-5.18 5.59.41.35.77 1.05.77 2.12 0 1.53-.01 2.76-.01 3.14 0 .3.2.66.79.55 4.52-1.51 7.77-5.76 7.77-10.78C23.25 5.48 18.27.5 12 .5Z"/></svg>
                 </a>
             </div>
@@ -1229,6 +2301,207 @@ and allow movement.</span></code></pre>
                 </div>
             </div>
         </section>
+
+        <!-- ==========================================================
+             PRINT-ONLY 16:9 PORTFOLIO EDITION
+             Rendered by tmp/pdfs/render_aicodegen_full_pdf.cjs. Keeping
+             this parallel to the live case study prevents PDF layout
+             decisions from flattening the web experience.
+             ========================================================== -->
+
+        <section class="aicodegen-full-only aicodegen-full-page aic-cover aic-page-cover" aria-label="AI CodeGen portfolio cover">
+            <div class="aic-cover-grid">
+                <div>
+                    <span class="aic-kicker">Practice-based research</span>
+                    <h1>Evaluating AI-Assisted <em>Game Code</em></h1>
+                    <p class="aic-summary">A versioned study of where AI-generated browser-game code remains reliable—and what happens when runnable output conflicts with the truth of the input.</p>
+                    <div class="aic-cover-meta">
+                        <div><span>Researcher</span><strong>Shuhan Zhang · Y3931662</strong></div>
+                        <div><span>Study</span><strong>Six builds + map stress test</strong></div>
+                        <div><span>Module</span><strong>AI in Creative Practice</strong></div>
+                        <div><span>Focus</span><strong>Reliability · constraints · validation</strong></div>
+                    </div>
+                </div>
+                <figure class="aic-cover-frame">
+                    <img src="Image/AICodeGen_LiveCover.png" alt="The Pixel Adventure title screen captured directly from the live v6 HTML build">
+                </figure>
+            </div>
+            <div class="aic-folio"></div>
+        </section>
+
+        <section class="aicodegen-full-only aicodegen-full-page aic-page-research" aria-label="Research question and method">
+            <div class="aic-topline"><span class="aic-kicker">Research frame</span><span class="aic-chapter">Question + method</span></div>
+            <h2 class="aic-heading">What breaks when the model must <em>carry logic forward?</em></h2>
+            <p class="aic-deck">The study moves beyond “can AI write code?” and tests whether generated logic stays coherent as one small game accumulates state, collision rules and edge cases.</p>
+            <div class="aic-content aic-rq-layout">
+                <div class="aic-rq-stack">
+                    <article class="aic-card aic-rq-card"><span class="aic-rq-no">RQ1</span><p>To what extent can generative AI maintain logical consistency across multiple iterations of game-code development?</p></article>
+                    <article class="aic-card aic-rq-card"><span class="aic-rq-no">RQ2</span><p>In which situations does AI-generated game code hallucinate or break input constraints?</p></article>
+                    <article class="aic-card aic-rq-card"><span class="aic-rq-no">RQ3</span><p>How can AI-assisted workflows be used safely and effectively in small-scale game development?</p></article>
+                </div>
+                <aside class="aic-card aic-method-card">
+                    <div>
+                        <span class="aic-label">Study protocol</span>
+                        <div class="aic-method-list">
+                            <div class="aic-method-item"><span class="aic-dot"></span><div><strong>One evolving game</strong><p>The same single-file browser prototype grows from movement to combat, UI and scenes.</p></div></div>
+                            <div class="aic-method-item"><span class="aic-dot"></span><div><strong>One model</strong><p>Gemini 3 Pro Thinking, with thinking mode enabled.</p></div></div>
+                            <div class="aic-method-item"><span class="aic-dot"></span><div><strong>Traceable evidence</strong><p>Prompt, output file, screen recording and written log for each iteration.</p></div></div>
+                        </div>
+                    </div>
+                    <span class="aic-pill">Microsoft Edge test environment</span>
+                </aside>
+            </div>
+            <div class="aic-folio"></div>
+        </section>
+
+        <section class="aicodegen-full-only aicodegen-full-page aic-page-versions" aria-label="Six-build iteration study">
+            <div class="aic-topline"><span class="aic-kicker">Versioned study</span><span class="aic-chapter">Six builds</span></div>
+            <h2 class="aic-heading">From hand-written baseline to <em>AI-assisted systems</em></h2>
+            <p class="aic-deck">Implementation became dramatically faster, but each added dependency increased the need to verify what the model assumed.</p>
+            <div class="aic-content aic-version-grid">
+                <div class="aic-ledger-head"><span>Build / time</span><span>Added</span><span>Observed behaviour</span><span>Review</span></div>
+                <article class="aic-card aic-version-card"><div class="aic-version-head"><span class="aic-version-no">v1</span><span class="aic-version-time">27 min · manual</span></div><h3>Baseline</h3><p>Character movement and basic attack actions, written by the researcher as the comparison point.</p><span class="aic-status">No repair</span></article>
+                <article class="aic-card aic-version-card"><div class="aic-version-head"><span class="aic-version-no">v2</span><span class="aic-version-time">1 min · AI</span></div><h3>Replication</h3><p>Same functions, with clearer naming, comments and structure than the manual baseline.</p><span class="aic-status">No repair</span></article>
+                <article class="aic-card aic-version-card"><div class="aic-version-head"><span class="aic-version-no">v3</span><span class="aic-version-time">2 min · AI</span></div><h3>Tilemap + collision</h3><p>Collision worked, but the new spawn logic placed the player inside a wall.</p><span class="aic-status fail">Manual repair</span></article>
+                <article class="aic-card aic-version-card"><div class="aic-version-head"><span class="aic-version-no">v4</span><span class="aic-version-time">2 min · AI</span></div><h3>Enemies + combat</h3><p>HP, invulnerability timing, random movement and collision-based hit detection.</p><span class="aic-status">No repair</span></article>
+                <article class="aic-card aic-version-card"><div class="aic-version-head"><span class="aic-version-no">v5</span><span class="aic-version-time">1 min · AI</span></div><h3>Timing + respawn</h3><p>Complete death/respawn cycle and UI state across the combat loop.</p><span class="aic-status">No repair</span></article>
+                <article class="aic-card aic-version-card muted"><div class="aic-version-head"><span class="aic-version-no">v6</span><span class="aic-version-time">scaffold</span></div><h3>Scenes + music</h3><p>A playable extension demonstrating scope, kept outside the reliability analysis.</p><span class="aic-status">Demo only</span></article>
+            </div>
+            <div class="aic-folio"></div>
+        </section>
+
+        <section class="aicodegen-full-only aicodegen-full-page aic-page-v6" aria-label="v6 scene and music scaffold">
+            <div class="aic-topline"><span class="aic-kicker">Technical extension</span><span class="aic-chapter">v6 scaffold</span></div>
+            <h2 class="aic-heading">A working demo, <em>not a reliability claim</em></h2>
+            <p class="aic-deck">v6 extends the prototype with a title scene and music system. It shows the reach of AI assistance while remaining explicitly outside the v1–v5 analysis.</p>
+            <div class="aic-content aic-architecture">
+                <figure class="aic-gameplay-figure"><img src="Image/AICodeGen_Gameplay.png" alt="Actual v6 gameplay canvas, with player, enemies, walls and coins"><figcaption>v6 gameplay / captured from the running HTML, not a mockup</figcaption><div class="aic-v6-note"><strong>Playable does not mean fully tested.</strong>I built the scene and audio branch after the five-version study. It demonstrates what could be assembled with AI assistance, but it was not run through the same reliability tests.</div></figure>
+                <div class="aic-source-panel" aria-label="v6 source observations">
+                    <div class="aic-source-top"><span>v6_scene_music_system.html</span><span>Source observations</span></div>
+                    <div class="aic-source-row"><span class="aic-source-line">01</span><div><strong>Enter starts the game</strong><p><code>SceneManager.changeScene(GameScene)</code> runs only while the title scene is active.</p></div></div>
+                    <div class="aic-source-row"><span class="aic-source-line">02</span><div><strong>Scenes own their music</strong><p><code>TitleScene.enter</code> and <code>GameScene.enter</code> request different BGM tracks.</p></div></div>
+                    <div class="aic-source-row"><span class="aic-source-line">03</span><div><strong>Audio waits for interaction</strong><p><code>SoundManager.init()</code> runs after the user's first key press to satisfy browser playback rules.</p></div></div>
+                    <div class="aic-source-foot">Playable extension / outside the analysed sample</div>
+                </div>
+            </div>
+            <div class="aic-folio"></div>
+        </section>
+
+        <section class="aicodegen-full-only aicodegen-full-page aic-page-bug" aria-label="v3 spawn failure case">
+            <div class="aic-topline"><span class="aic-kicker">Failure case</span><span class="aic-chapter">v3 spawn bug</span></div>
+            <h2 class="aic-heading">The collision worked. <em>The assumption did not.</em></h2>
+            <p class="aic-deck">The first serious failure appeared when the map system was added: the generated player spawn overlapped a solid tile, leaving the character unable to move.</p>
+            <div class="aic-content aic-failure-layout">
+                <figure class="aic-card aic-bug-frame"><img src="Image/AICodeGen_SpawnBug.png" alt="v3 pixel-game screenshot with the player spawned inside a wall"><span class="aic-bug-callout"><span class="aic-dot" style="background:var(--aic-red)"></span>Player overlaps wall</span></figure>
+                <div class="aic-failure-copy">
+                    <article class="aic-card aic-diagnosis good"><span class="aic-label" style="color:var(--aic-green)">What succeeded</span><h3>Collision logic</h3><p>Solid walls correctly blocked movement—the system behaved exactly as coded.</p></article>
+                    <article class="aic-card aic-diagnosis bad"><span class="aic-label" style="color:var(--aic-red)">What failed</span><h3>Spawn feasibility</h3><p>The model reused or introduced spawn logic without checking whether the chosen coordinate was walkable in the new map.</p></article>
+                    <div class="aic-prompt">Prompt asked for a 16px tile grid, solid-wall collision, four-direction movement and collectible coins—while preserving existing DOM names and returning a fully executable single-file prototype.</div>
+                </div>
+            </div>
+            <div class="aic-folio"></div>
+        </section>
+
+        <section class="aicodegen-full-only aicodegen-full-page aic-page-maps" aria-label="Extended map experiment">
+            <div class="aic-topline"><span class="aic-kicker">Extended experiment</span><span class="aic-chapter">Map stress test</span></div>
+            <h2 class="aic-heading">The all-wall map exposed <em>a different failure</em></h2>
+            <p class="aic-deck">Five solvable maps test spatial reading. A sixth, made entirely of walls, tests whether the model reports an impossible condition or rewrites the input.</p>
+            <div class="aic-content aic-experiment-layout">
+                <div class="aic-card aic-table-card">
+                    <table class="aic-table">
+                        <thead><tr><th style="width:18%">Map</th><th>Condition</th><th style="width:18%">Expected</th><th style="width:19%">Map changed</th></tr></thead>
+                        <tbody>
+                            <tr><td>map01</td><td>Open room</td><td class="aic-yes">Yes</td><td class="aic-no">No</td></tr>
+                            <tr><td>map02</td><td>Narrow corridor</td><td class="aic-yes">Yes</td><td class="aic-no">No</td></tr>
+                            <tr><td>map03</td><td>Multiple rooms</td><td class="aic-yes">Yes</td><td class="aic-no">No</td></tr>
+                            <tr><td>map04</td><td>Dead-end maze</td><td class="aic-yes">Yes</td><td class="aic-no">No</td></tr>
+                            <tr><td>map05</td><td>Random noise</td><td class="aic-yes">Yes</td><td class="aic-no">No</td></tr>
+                            <tr class="alert"><td>map06_v1</td><td>All walls · constraint implicit</td><td class="aic-unexpected">No</td><td class="aic-unexpected">Yes</td></tr>
+                            <tr class="repair"><td>map06_v2</td><td>All walls · mutation forbidden</td><td class="aic-yes">Yes</td><td class="aic-yes">No</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="aic-evidence-stack">
+                    <article class="aic-card aic-stat-card"><strong>5 / 5</strong><span>Solvable maps were read correctly without modifying the tile data.</span></article>
+                    <article class="aic-card aic-insight-card"><span class="aic-label">Diagnostic shift</span><h3>Spatial recognition was not the core problem.</h3><p>The divergence appears only when no valid answer exists. The critical variable is how failure is handled—not whether walls can be recognised.</p></article>
+                </div>
+            </div>
+            <div class="aic-folio"></div>
+        </section>
+
+        <section class="aicodegen-full-only aicodegen-full-page aic-page-constraint" aria-label="Constraint repair comparison">
+            <div class="aic-topline"><span class="aic-kicker">Prompt intervention</span><span class="aic-chapter">Constraint repair</span></div>
+            <h2 class="aic-heading">One explicit boundary changed the <em>failure behaviour</em></h2>
+            <p class="aic-deck">The underlying map stayed identical. Only the instruction changed: mutation was prohibited, and honest failure was defined as an acceptable output.</p>
+            <div class="aic-content aic-lab-layout">
+                <div class="aic-lab-input"><span class="aic-label">Same input in both runs</span><strong>map06 · all walls</strong><p>No walkable tile; no valid spawn coordinate exists.</p></div>
+                <div class="aic-lab-runs">
+                    <article class="aic-lab-run before"><span>map06_v1 / constraint implicit</span><h3>Made the map solvable</h3><p>The prompt left the no-solution path undefined. The model changed tiles until it could return a runnable game.</p><strong>Input mutated</strong></article>
+                    <article class="aic-lab-run after"><span>map06_v2 / constraint explicit</span><h3>Reported no spawn</h3><p>The revised prompt prohibited tile changes and allowed a failure response. The model left the map intact.</p><strong>Input preserved</strong></article>
+                </div>
+                <div class="aic-lab-clause"><span>Clause added to the second prompt</span><p>“Do NOT modify or mutate the provided tilemap array… If the map contains no walkable tiles, the program must NOT carve or change tiles… set <code>spawn = null</code>.”</p></div>
+            </div>
+            <div class="aic-folio"></div>
+        </section>
+
+        <section class="aicodegen-full-only aicodegen-full-page aic-page-findings-a" aria-label="Findings one and two">
+            <div class="aic-topline"><span class="aic-kicker">Findings</span><span class="aic-chapter">01–02</span></div>
+            <h2 class="aic-heading">What improved, and <em>what v3 exposed</em></h2>
+            <p class="aic-deck">The strongest benefit appeared in well-defined implementation work; the decisive failure emerged at the boundary between new logic and existing state.</p>
+            <div class="aic-content aic-findings-layout">
+                <article class="aic-card aic-finding-card"><span class="aic-finding-no">FINDING 01</span><h3>Iteration accelerates implementation</h3><p>AI-generated versions added features in one to two minutes and often improved naming, comments and function separation over the manual baseline.</p><div class="aic-metric"><strong>1–2m</strong><span>AI build time after the 27-minute manual baseline</span></div></article>
+                <article class="aic-card aic-finding-card"><span class="aic-finding-no">FINDING 02</span><h3>Spatial recognition was never the problem</h3><p>Every solvable map was interpreted correctly. The v3 bug is better explained as unverified spawn logic carried into a changed environment.</p><div class="aic-logic-strip"><span>Wall detection<br><b style="color:var(--aic-green)">worked</b></span><b>≠</b><span>Spawn feasibility<br><b style="color:var(--aic-red)">unchecked</b></span></div></article>
+            </div>
+            <div class="aic-folio"></div>
+        </section>
+
+        <section class="aicodegen-full-only aicodegen-full-page aic-page-findings-b" aria-label="Findings three and four">
+            <div class="aic-topline"><span class="aic-kicker">Findings</span><span class="aic-chapter">03–04</span></div>
+            <h2 class="aic-heading">On map06, the model <em>changed the problem</em></h2>
+            <p class="aic-deck">The unsolvable map exposed the risk most clearly: absent a stated boundary, the model altered the problem rather than reporting failure.</p>
+            <div class="aic-content aic-findings-layout">
+                <article class="aic-card aic-finding-card aic-quote-card"><span class="aic-finding-no">FINDING 03</span><div class="aic-quote-mark">“</div><blockquote>This behaviour can be characterised as executability-oriented generation, where the model prioritises producing runnable outputs even at the cost of violating input constraints.</blockquote><cite>Analysis · section 5.3</cite></article>
+                <article class="aic-card aic-finding-card"><span class="aic-finding-no">FINDING 04</span><h3>Constraint awareness has to be stated</h3><p>The model respected an immutable-input boundary only after the prompt made it explicit and defined acceptable failure behaviour.</p><div class="aic-logic-strip"><span>Implicit boundary<br><b style="color:var(--aic-red)">data changed</b></span><b>→</b><span>Explicit boundary<br><b style="color:var(--aic-green)">failure reported</b></span></div></article>
+            </div>
+            <div class="aic-folio"></div>
+        </section>
+
+        <section class="aicodegen-full-only aicodegen-full-page aic-page-practice" aria-label="Practice positioning and limitations">
+            <div class="aic-topline"><span class="aic-kicker">Design implication</span><span class="aic-chapter">Practice + limits</span></div>
+            <h2 class="aic-heading">What this study changed in <em>my workflow</em></h2>
+            <p class="aic-deck">The v3 and map06 failures made the review step more specific: check inherited assumptions, impossible inputs and unrequested changes to source data.</p>
+            <div class="aic-content aic-practice-layout">
+                <article class="aic-card aic-workflow">
+                    <span class="aic-label">Working notes after the experiment</span>
+                    <div class="aic-workflow-row"><span class="aic-workflow-no">1</span><div><strong>Protect the input</strong><p>State that the tilemap and existing interfaces cannot be silently rewritten.</p></div></div>
+                    <div class="aic-workflow-row"><span class="aic-workflow-no">2</span><div><strong>Allow “no solution”</strong><p>Specify <code>spawn = null</code> or a visible error for an all-wall map.</p></div></div>
+                    <div class="aic-workflow-row"><span class="aic-workflow-no">3</span><div><strong>Keep the trail</strong><p>Connect each prompt with its output, recording and written observation.</p></div></div>
+                    <div class="aic-workflow-row"><span class="aic-workflow-no">4</span><div><strong>Retest after each feature</strong><p>The v3 bug appeared where new collision rules met an inherited spawn assumption.</p></div></div>
+                </article>
+                <div class="aic-limits">
+                    <article class="aic-card aic-position"><span class="aic-label">My position</span><h3>The model writes candidate logic. I decide whether it holds.</h3><p>The more systems the prototype gained, the more time moved from writing code to checking its boundaries.</p></article>
+                    <article class="aic-card aic-limit-card"><span class="aic-label">Study limitations</span><div class="aic-limit-list"><div class="aic-limit-item">Single-model study; no cross-model comparison.</div><div class="aic-limit-item">Small pixel-game environment, not a production codebase.</div><div class="aic-limit-item">Human judgement shaped repair and correctness decisions.</div><div class="aic-limit-item">Next: larger environments and automated validation tooling.</div></div></article>
+                </div>
+            </div>
+            <div class="aic-folio"></div>
+        </section>
+
+        <section class="aicodegen-full-only aicodegen-full-page aic-page-close" aria-label="Closing reflection and project links">
+            <div class="aic-topline"><span class="aic-kicker">Reflection</span><span class="aic-chapter">Evidence + access</span></div>
+            <h2 class="aic-heading">The developer did not disappear. <em>The role moved.</em></h2>
+            <div class="aic-content aic-closing-layout">
+                <div class="aic-reflection">
+                    <p class="aic-big-line">From writing every implementation to <em>validating what the model decided to change.</em></p>
+                    <p>Clear prompts produced playable features and readable code. Misconfigured or impossible inputs exposed the deeper risk: the model may manufacture success unless invariants and acceptable failure states are explicit. With versioned evidence and human boundary checks, AI remains a useful small-scale development collaborator.</p>
+                    <div class="aic-disclosure">Individual project by Shuhan Zhang. Gemini 3 Pro Thinking generated v2–v6 and the extended-experiment responses from author-written prompts. All outputs were tested, screen-recorded, logged and reviewed by the author.</div>
+                </div>
+                <div class="aic-qr-stack">
+                    <a class="aic-card aic-qr-card" href="https://shuhan0001.github.io/portfolio/v6_scene_music_system.html"><img src="Image/AICodeGen_QR_Live.svg" alt="QR code for the live AI CodeGen build"><div><span class="aic-label">Play</span><h3>Open the live build</h3><p>Experience the title scene, music and playable v6 prototype.</p><div class="aic-url">shuhan0001.github.io/portfolio/v6_scene_music_system.html</div></div></a>
+                    <a class="aic-card aic-qr-card" href="https://github.com/Shuhan0001/Evaluating-AI--Assisted-Game-Code"><img src="Image/AICodeGen_QR_GitHub.svg" alt="QR code for the AI CodeGen GitHub repository"><div><span class="aic-label">Inspect</span><h3>View the repository</h3><p>Browse the versioned code and project evidence.</p><div class="aic-url">github.com/Shuhan0001/Evaluating-AI--Assisted-Game-Code</div></div></a>
+                </div>
+            </div>
+            <div class="aic-folio"></div>
+        </section>
     </main>
 
     <footer class="site-footer container">
@@ -1307,7 +2580,15 @@ and allow movement.</span></code></pre>
         (function() {
             const btn = document.querySelector('.back-home-btn');
             const exit = document.getElementById('page-exit');
-            if (!btn || !exit) return;
+            if (!btn) return;
+
+            // AICodeGen is only ever entered from the Projects listing page,
+            // so the back button always points there.
+            btn.setAttribute('href', 'Projects.html');
+            const label = btn.querySelector('span');
+            if (label) label.textContent = 'Back to Projects';
+
+            if (!exit) return;
             btn.addEventListener('click', function(e) {
                 const href = btn.getAttribute('href');
                 if (!href || e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
