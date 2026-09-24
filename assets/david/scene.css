@@ -1,0 +1,41 @@
+/* Oversized type and a close-cropped sculpture share one poster composition. */
+:root { --stream-opacity: 0.13; }
+#canvas-container.ready { opacity: var(--stream-opacity); }
+#hero-section { --hero-center-offset:max(0px,calc(14.35vw - min(19.68vh,12.72vw))); background: radial-gradient(ellipse at 74% 43%, #83968b24, transparent 55%), linear-gradient(115deg,transparent 46%,#8a9a9109 56%,transparent 76%); }
+#hero-back-layer { position:absolute; inset:0; z-index:2; pointer-events:none; }
+#hero-david { position: absolute; inset: 0; z-index: 5; pointer-events: none; user-select: none; }
+#hero-david canvas { display: block; width: 100%; height: 100%; filter:drop-shadow(-18px 22px 16px #000b); }
+.david-fallback { position:absolute; left:calc(68% + var(--hero-center-offset)); top:50%; width:min(45vw,82vh); transform:translate(-50%,-43%); opacity:.65; filter:grayscale(1); }
+#hero-david.is-ready .david-fallback { display:none; }
+#hero-identity { position:absolute; inset:0; }
+.hero-name { position:absolute; left:4.7%; margin:0; font-size:clamp(90px,min(17.5vw,25vh),300px); line-height:.84; letter-spacing:-.075em; font-weight:650; }
+.hero-name-first { top:32%; left:calc(3.3% + var(--hero-center-offset)); font-size:max(90px,min(16.5vw,24vh)); color:#dce0dc; }
+.hero-name-last { top:60%; left:calc(12.3% + var(--hero-center-offset)); font-size:max(100px,min(20.5vw,28vh)); color:transparent; -webkit-text-stroke:1.7px #d1d8d3; filter:drop-shadow(0 0 1.5px #000); }
+.hero-byline { position:absolute; left:7.6%; top:88%; color:#858a89; font-size:12px; line-height:1.65; letter-spacing:.015em; }
+.hero-byline span { display:block; color:#c0c3c0; }
+#hero-content-wrapper header { position:relative; z-index:20; }
+#hero-content-wrapper header > div:first-child { max-width:240px; font-size:10px; letter-spacing:.12em; line-height:1.65; font-weight:500; }
+#hero-content-wrapper footer { position:absolute; right:4%; bottom:5%; width:auto; text-align:right; align-items:flex-end; transform:none; font-size:9px; letter-spacing:.12em; }
+#hero-content-wrapper footer p { display:none; }
+#hero-content-wrapper footer > span { margin-bottom:12px; }
+#hero-content-wrapper footer > div { height:32px; }
+.david-credit { color:inherit; text-decoration:none; }
+.david-credit:hover { color:white; }
+#zone-about { margin-top:-50vh; }
+@media (max-width:899px) {
+    #hero-section { --hero-center-offset:0px; background:radial-gradient(ellipse at 50% 47%,#73897d20,transparent 58%); }
+    #hero-david canvas { filter:drop-shadow(-8px 12px 8px #000b); }
+    #hero-content-wrapper header { align-items:flex-start; }
+    #hero-content-wrapper header > div:first-child { max-width:138px; font-size:8px; }
+    #hero-content-wrapper header > div:last-child { gap:8px; }
+    #hero-content-wrapper header a { font-size:9px; letter-spacing:.06em; padding:0 3px; }
+    #site-search-placeholder { position:absolute; right:0; top:36px; }
+    .hero-name { left:5.2%; font-size:clamp(60px,min(22vw,14vh),152px); }
+    .hero-name-first { top:22%; left:50%; width:max-content; transform:translateX(-50%); font-size:clamp(60px,min(22vw,14vh),152px); }
+    .hero-name-last { top:70%; left:50%; width:max-content; transform:translateX(-50%); font-size:clamp(66px,min(25vw,16vh),180px); }
+    .hero-byline { top:85%; left:7%; font-size:10px; }
+    .hero-byline span { display:inline; margin-left:4px; }
+    #hero-content-wrapper footer { bottom:5%; right:8%; font-size:7px; }
+    .david-fallback { left:50%; width:80vw; }
+}
+@media (prefers-reduced-motion:reduce) { #zone-about { margin-top:0; } }

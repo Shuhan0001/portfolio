@@ -633,14 +633,16 @@
     </div>
 </main>
 
+<script src="assets/projects-audio.js"></script>
 <script>
-    // Original layered Web Audio cues, inspired by a console's spacious UI feel.
+    // Short sci-fi scan and confirmation cues, synthesized locally.
     // Sound is enabled by default; browsers may defer it until the first user gesture.
     (() => {
         const list = document.getElementById('project-list');
         const rows = [...list.querySelectorAll('.project-row')];
         const AudioContextClass = window.AudioContext || window.webkitAudioContext;
         let audioContext;
+        let soundSynth;
         let selectedRow = null;
         let lastHoverAt = -Infinity;
         let lastPressAt = -Infinity;
@@ -651,6 +653,7 @@
             if (document.hidden) return false;
             try {
                 audioContext ||= new AudioContextClass();
+                soundSynth ||= window.createProjectSoundSynth(audioContext);
                 if (audioContext.state !== 'running') await audioContext.resume();
                 return audioContext.state === 'running';
             } catch (_) {
@@ -662,42 +665,12 @@
         window.addEventListener('pointerdown', () => { void ready(); }, { capture: true });
         window.addEventListener('keydown', () => { void ready(); }, { capture: true });
 
-        function voice(type, startHz, endHz, peak, attack, duration, startTime, shimmer = false) {
-            const oscillator = audioContext.createOscillator();
-            const envelope = audioContext.createGain();
-            oscillator.type = type;
-            oscillator.frequency.setValueAtTime(startHz, startTime);
-            oscillator.frequency.exponentialRampToValueAtTime(endHz, startTime + duration);
-            if (shimmer) {
-                const modulator = audioContext.createOscillator();
-                const depth = audioContext.createGain();
-                modulator.frequency.setValueAtTime(46, startTime);
-                modulator.frequency.exponentialRampToValueAtTime(18, startTime + duration);
-                depth.gain.setValueAtTime(65, startTime);
-                depth.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
-                modulator.connect(depth).connect(oscillator.frequency);
-                modulator.start(startTime);
-                modulator.stop(startTime + duration + 0.015);
-            }
-            envelope.gain.setValueAtTime(0.0001, startTime);
-            envelope.gain.exponentialRampToValueAtTime(peak, startTime + attack);
-            envelope.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
-            oscillator.connect(envelope).connect(audioContext.destination);
-            oscillator.start(startTime);
-            oscillator.stop(startTime + duration + 0.015);
-        }
-
         async function playHover(index, row) {
             const now = performance.now();
             if (now - lastHoverAt < 90 || now - lastPressAt < 160) return;
             lastHoverAt = now;
             if (!await ready() || selectedRow !== row || performance.now() - now > 180 || performance.now() - lastPressAt < 160) return;
-            const t = audioContext.currentTime;
-            const pitch = 570 + index * 19;
-            voice('sine', pitch, pitch * 1.37, 0.027, 0.006, 0.16, t, true);
-            voice('triangle', pitch * 1.82, pitch * 2.25, 0.008, 0.012, 0.12, t + 0.012);
-            voice('sine', pitch * 2.72, pitch * 2.95, 0.004, 0.02, 0.22, t + 0.045);
-            voice('sine', pitch * 1.48, pitch * 1.3, 0.006, 0.015, 0.2, t + 0.09);
+            soundSynth.hover(audioContext.currentTime, index);
         }
 
         async function playPress(index) {
@@ -705,13 +678,7 @@
             if (now - lastPressAt < 420) return;
             lastPressAt = now;
             if (!await ready()) return;
-            const t = audioContext.currentTime;
-            const pitch = 235 + index * 5;
-            voice('triangle', pitch, pitch * 0.7, 0.047, 0.008, 0.35, t);
-            voice('sine', pitch * 2.4, pitch * 2.08, 0.029, 0.012, 0.31, t, true);
-            voice('sine', pitch * 3.6, pitch * 4.2, 0.015, 0.012, 0.31, t + 0.036);
-            voice('triangle', pitch * 6.4, pitch * 7.1, 0.007, 0.018, 0.22, t + 0.075);
-            voice('sine', pitch * 4.2, pitch * 3.8, 0.008, 0.014, 0.28, t + 0.14);
+            soundSynth.press(audioContext.currentTime, index);
         }
 
         rows.forEach((row, index) => {
