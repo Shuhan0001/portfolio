@@ -23,8 +23,8 @@ This motion blends out as scrolling takes over, pauses offscreen and in
 background tabs, and is disabled by the reduced-motion preference.
 
 The model is self-hosted in `model.js` as gzip-compressed mesh data. The runtime
-uses the browser's DecompressionStream API and retains the original SVG artwork
-as a fallback if WebGL or decompression is unavailable. Rebuild with:
+uses the browser's DecompressionStream API. The canvas appears after its first
+render; no 2D placeholder is shown while loading or if 3D is unavailable. Rebuild with:
 
     node tools/build_david.cjs path/to/source.glb
 

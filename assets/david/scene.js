@@ -2,7 +2,8 @@
 (() => {
   'use strict';
   const host = document.getElementById('hero-david');
-  if (!host || !window.THREE || !window.DAVID_MODEL_GZIP) return;
+  if (!host) return;
+  if (!window.THREE || !window.DAVID_MODEL_GZIP) {host.dataset.state='unavailable';return;}
   const T = THREE, motion = matchMedia('(prefers-reduced-motion: reduce)');
   const scene = new T.Scene(), sculpture = new T.Group();
   const camera = new T.PerspectiveCamera(35, 1, 0.1, 60);
@@ -15,7 +16,7 @@
   let headScale = 0.8, homeX = 0, splitShrink = 0.25;
   const pointer = { x:0, y:0, active:false };
   const gaze = { x:0, y:0, weight:0 };
-  let gazeCenterX = 0.70;
+  let gazeCenterX = 0.715;
   const rootStyle = document.documentElement.style;
 
   // Coarse four-tone halftone: the black pixels are opaque so the back of
@@ -171,9 +172,11 @@
     // Center the combined title/sculpture silhouette, keeping their overlap intact.
     // Match --hero-center-offset in CSS so both title layers move with the head.
     const centerOffset=small?0:Math.max(0,w*0.1435-targetHeight*0.24);
-    gazeCenterX=small?0.50:0.70+centerOffset/w;
+    // A small extra gap exposes more of the N while retaining the overlap.
+    const headOffset=centerOffset+(small?0:w*0.015);
+    gazeCenterX=small?0.50:0.70+headOffset/w;
     headScale=targetHeight*worldHeight/(h*3.8)*0.90;
-    homeX=small?0:worldHeight*camera.aspect*(0.18+centerOffset/w);
+    homeX=small?0:worldHeight*camera.aspect*(0.18+headOffset/w);
     host.style.setProperty('--sculpture-height',`${targetHeight}px`);
     schedule();
   }
@@ -201,9 +204,9 @@
       host.appendChild(renderer.domElement);resize();progress=target;pose(progress);renderer.render(scene,camera);
       host.classList.add('is-ready');host.dataset.state='ready';
       ready=true;schedule();
-      renderer.domElement.addEventListener('webglcontextlost',event=>{event.preventDefault();ready=false;pauseRendering();host.classList.remove('is-ready');host.dataset.state='fallback';});
+      renderer.domElement.addEventListener('webglcontextlost',event=>{event.preventDefault();ready=false;pauseRendering();host.classList.remove('is-ready');host.dataset.state='unavailable';});
       renderer.domElement.addEventListener('webglcontextrestored',()=>{ready=true;host.classList.add('is-ready');host.dataset.state='ready';schedule();});
-    } catch(error) {host.dataset.state='fallback';if(renderer)renderer.dispose();console.warn('David uses its static fallback:',error);}
+    } catch(error) {ready=false;pauseRendering();host.classList.remove('is-ready');host.dataset.state='unavailable';if(renderer)renderer.dispose();console.warn('David 3D could not load:',error);}
   }
   window.addEventListener('david:progress',event=>{target=clamp(event.detail);schedule();});
   window.addEventListener('scroll',()=>{if(!window.ScrollTrigger){target=clamp(scrollY/(innerHeight*1.9));schedule();}},{passive:true});
