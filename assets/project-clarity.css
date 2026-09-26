@@ -1,0 +1,60 @@
+/* Scope and authorship notes supplement the existing project designs. */
+.project-brief {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+    margin: 2.5rem 0 0;
+    padding: 1.5rem 0 0;
+    border-top: 1px solid rgba(255, 255, 255, .18);
+    text-align: left;
+}
+.project-brief > div { min-width: 0; }
+.project-brief dt {
+    color: #f4f4f4;
+    font: 600 .78rem/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    letter-spacing: .04em;
+    margin-bottom: .5rem;
+}
+.project-brief dd {
+    color: #bfc4ca;
+    font: 400 .92rem/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    margin: 0;
+    max-width: 40rem;
+    overflow-wrap: anywhere;
+}
+.project-evidence-note {
+    color: #c7cbd0;
+    font-size: .95rem;
+    line-height: 1.7;
+    border-left: 2px solid rgba(255, 255, 255, .3);
+    padding: .65rem 0 .65rem 1rem;
+    margin: 1.5rem 0;
+    max-width: 75ch;
+}
+.project-evidence-note strong { color: #f3f4f6; }
+@media screen {
+    /* Section spacing must retain the container's reading margins. */
+    .section.container { padding-left: 6vw; padding-right: 6vw; }
+    .grid-split > * { min-width: 0; }
+    .results-data .data-label { white-space: normal; }
+    .results-data .caption { color: #bfc4ca; }
+}
+@media (max-width: 700px) {
+    .project-brief { grid-template-columns: 1fr; gap: 1.1rem; }
+}
+@media screen and (max-width: 900px) {
+    /* Keep intrinsic code/table widths inside the existing single-column layout. */
+    .grid-split { grid-template-columns: minmax(0, 1fr); }
+    .grid-split > * { min-width: 0; }
+    .code-panel-head { flex-wrap: wrap; gap: .5rem; }
+    .code-panel-file { overflow-wrap: anywhere; }
+    .result-table { display: block; max-width: 100%; overflow-x: auto; }
+    .stack-gallery { overflow: clip; }
+    .stack-btn-next { right: 0; }
+    .stack-btn-prev { left: 0; }
+}
+@media print {
+    /* Existing print compositions retain their own contribution/status areas. */
+    .project-brief { display: none !important; }
+    .project-evidence-note { font-size: .8rem; line-height: 1.45; }
+}

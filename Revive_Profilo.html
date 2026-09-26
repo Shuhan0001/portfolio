@@ -2257,6 +2257,8 @@
             }
         }
     </style>
+<link rel="stylesheet" href="assets/project-clarity.css">
+<link rel="stylesheet" href="assets/project-overview.css">
 </head>
 <body>
 <!-- Fused cinematic mesh background -->
@@ -2308,8 +2310,10 @@
 <main>
 <section class="container hero">
 <h1 class="hero-title reveal">The Bridge of<br/>Pixel and <span class="text-outline">Light</span></h1>
-<p class="text-lead reveal delay-1">A controlled study of how lighting changes visibility, search behaviour and immersion in a 2.5D pixel environment.</p>
-<div class="hero-meta reveal delay-2">
+<p class="text-lead reveal delay-1">A nine-participant study comparing visibility, search behaviour and immersion across three lighting configurations in a UE5 pixel environment.</p>
+<div class="project-overview" data-project="Revive">
+<dl class="project-brief" aria-label="Project scope and contribution"><div><dt>My contribution</dt><dd>Research design, UE5 lighting and Blueprint implementation, study and analysis.</dd></div><div><dt>Evidence</dt><dd>Nine participants; three counterbalanced conditions; behaviour records and questionnaires.</dd></div><div><dt>Scope</dt><dd>Completed prototype study. Descriptive findings from one level, with lighting and scanning combined.</dd></div></dl>
+<div class="hero-meta">
 <div class="meta-item">
 <span>Researcher</span>
 <strong>Shuhan Zhang</strong>
@@ -2323,8 +2327,8 @@
 <strong>BSc Interactive Media 2025 to 2026</strong>
 </div>
 </div>
-<div class="hero-actions reveal delay-3">
-<a class="gameplay-btn" href="https://youtu.be/-3xa17G_q5k" rel="noopener" target="_blank">
+<div class="hero-actions overview-actions">
+<a class="gameplay-btn overview-primary" href="https://youtu.be/-3xa17G_q5k" rel="noopener" target="_blank">
                     <span class="action-label">Watch Gameplay Video</span>
                     <svg aria-hidden="true" fill="none" height="15" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" viewbox="0 0 24 24" width="15"><path d="M7 17L17 7M7 7h10v10"></path></svg>
 <span class="print-link-card">
@@ -2332,14 +2336,15 @@
 <span class="print-link-copy"><span class="print-link-kicker">Watch</span><span class="print-link-title">Gameplay video</span><span class="print-link-url">youtu.be/-3xa17G_q5k</span></span>
 </span>
 </a>
-<a class="gameplay-btn-secondary" href="https://github.com/Shuhan0001/Revive" rel="noopener" target="_blank">
-                    <span class="action-label">View on the project GitHub</span>
+<a class="gameplay-btn-secondary overview-secondary" href="https://github.com/Shuhan0001/Revive" rel="noopener" target="_blank">
+                    <span class="action-label">View on GitHub</span>
                     <svg aria-hidden="true" fill="currentColor" height="16" viewbox="0 0 24 24" width="16"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58 0-.29-.01-1.04-.02-2.04-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.21.08 1.85 1.24 1.85 1.24 1.07 1.84 2.81 1.31 3.5 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22 0 1.6-.02 2.89-.02 3.29 0 .32.22.7.83.58C20.56 21.79 24 17.3 24 12c0-6.63-5.37-12-12-12z"></path></svg>
 <span class="print-link-card">
 <img alt="QR code for the Revive GitHub repository" src="Image/Revive_QR_GitHub.svg"/>
 <span class="print-link-copy"><span class="print-link-kicker">Explore</span><span class="print-link-title">Project GitHub</span><span class="print-link-url">github.com/Shuhan0001/Revive</span></span>
 </span>
 </a>
+</div>
 </div>
 </section>
 <section class="section container">
@@ -2381,11 +2386,12 @@
 </div>
 <div class="reveal delay-2" style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
 <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Participant measures</h3>
-<p class="text-body" style="font-size: 1rem;">After each condition, participants rated visibility, search efficiency, attention, exploration, atmosphere and immersion on a five point Likert scale. Gameplay was also recorded for later observation.</p>
+<p class="text-body" style="font-size: 1rem;">Participants completed five-point ratings of visibility, search and exploration, alongside cross-condition preferences for atmosphere, immersion and difficulty. Gameplay was recorded for observation.</p>
 </div>
 <div class="reveal delay-3" style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
 <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Behaviour and analysis</h3>
 <p class="text-body" style="font-size: 1rem;">UE5 Blueprints recorded completion time and lantern duration. Lantern uses, fragments found through scanning and backtracks were also documented during each trial. Because the sample was small, the final analysis focused on descriptive statistics and cross condition patterns.</p>
+<p class="project-evidence-note"><strong>Reading the evidence.</strong> Total collection was 3/3 in every condition. The scanning count records only fragments detected with the lantern. Lighting, fog and post-processing formed each configuration; the lantern's illumination and scanning effects were not isolated.</p>
 </div>
 </div>
 </div>
@@ -2462,11 +2468,11 @@
 <div class="grid-split">
 <div class="sticky-col reveal">
 <h2>Results<br/><span class="text-outline">Findings</span></h2>
-<p class="text-body reveal delay-1">Across nine participants, the three lighting conditions produced distinct behavioural patterns. Lower illumination reduced perceived visibility and increased the need for careful search. Night involved more lantern use, backtracking and task time than Day, while Sunset had the shortest completion time and fewest backtracks. The strongest result was not a simple bright versus dark effect. Each condition changed how players searched.</p>
+<p class="text-body reveal delay-1">Across nine participants, search behaviour differed between Day, Sunset and Night. Night had the longest mean lantern duration and completion time; Sunset had the shortest mean completion time. Every participant collected all three fragments in every condition. The differences concern search behaviour, not collection success.</p>
 </div>
 <div class="results-data">
 <div class="results-column results-measures">
-<p class="data-label reveal">Objective behavioural measures from nine participants</p>
+<p class="data-label reveal">Behavioural measures · N = 9 · means unless stated</p>
 <div class="stat-table-wrap reveal delay-1">
 <table class="stat-table">
 <thead>
@@ -2479,7 +2485,7 @@
 </thead>
 <tbody>
 <tr>
-<td>Completion time (s)</td>
+<td>Completion time (mean s)</td>
 <td>106.01</td>
 <td>96.26</td>
 <td class="highlight">124.41</td>
@@ -2503,7 +2509,7 @@
 <td class="highlight">1.00</td>
 </tr>
 <tr>
-<td>Lantern duration (s)</td>
+<td>Lantern duration (mean s)</td>
 <td>11.64</td>
 <td>42.97</td>
 <td class="highlight">98.67</td>
@@ -2517,7 +2523,7 @@
 </tbody>
 </table>
 </div>
-<p class="data-label reveal delay-1" style="margin-top: 3rem;">Subjective ratings on a five point scale</p>
+<p class="data-label reveal delay-1" style="margin-top: 3rem;">Descriptive questionnaire summaries · five-point ratings</p>
 <div class="subscale-grid">
 <div class="subscale-item reveal delay-1">
 <span class="label">Visibility</span>
@@ -2544,7 +2550,7 @@
 </div>
 </div>
 </div>
-<p class="caption reveal" style="margin-top: 1.5rem;">Means are calculated from the nine participants' five point ratings. Negatively worded search items were reverse coded so higher scores indicate more efficient searching.</p>
+<p class="caption reveal" style="margin-top: 1.5rem;">Report-derived summaries, not validated scales. Search items were reverse coded so higher scores indicate more efficient searching; these recalculated values differ from the report's original summary. Questionnaire condition mapping and aggregate consistency still need checking against the original responses.</p>
 </div>
 <div class="results-column results-preferences">
 <p class="data-label reveal" style="margin-top: 3rem;">Participant preferences from nine participants</p>
@@ -2668,7 +2674,7 @@
 <p class="text-body" style="max-width: none;">selected Night as the <span class="accent">most immersive</span> condition.</p>
 </div>
 </div>
-<p class="text-body reveal delay-3" style="margin-top: 3rem;">Night produced the lowest search efficiency rating at 1.81, compared with 3.22 in Day and 2.93 in Sunset. Participants also reported more scanning and slower searching. The qualitative responses suggest that reduced illumination changed how spatial information was acquired rather than simply making the scene darker.</p>
+<p class="text-body reveal delay-3" style="margin-top: 3rem;">The behavioural records show longer lantern use in Night, while the preference question separates immersion from task difficulty. These observations suggest a trade-off worth investigating; they do not establish that darkness causes greater immersion.</p>
 </div>
 </div>
 </section>
@@ -2678,7 +2684,7 @@
 <h2>Design<br/><span class="text-outline">Implications</span></h2>
 </div>
 <div>
-<p class="text-body reveal">Lighting can shape behaviour without changing the level itself. The findings suggest four practical principles for 2.5D pixel games.</p>
+<p class="text-body reveal">These descriptive findings suggest lighting choices worth testing in other 2.5D pixel environments. The following are design implications, not general rules established by this small study.</p>
 <div style="margin-top: 2.5rem; display: grid; gap: 2rem;">
 <div class="reveal delay-1" style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
 <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Use light to guide behaviour</h3>
@@ -2686,7 +2692,7 @@
 </div>
 <div class="reveal delay-2" style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
 <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Balance efficiency and immersion</h3>
-<p class="text-body" style="font-size: 1rem;">Night created the strongest challenge and the highest immersion preference. Sunset offered the shortest completion time and the strongest atmosphere. Lighting can therefore be tuned to the intended experience.</p>
+<p class="text-body" style="font-size: 1rem;">All nine participants selected Night as most difficult, while five selected it as most immersive. Sunset had the shortest mean completion time and eight atmosphere preferences. I would test lighting against the intended experience rather than assume that greater visibility is always preferable.</p>
 </div>
 <div class="reveal delay-3" style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
 <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Use diegetic tools as guidance</h3>
@@ -2707,7 +2713,7 @@
 </div>
 <div>
 <p class="text-body reveal">Unreal Engine 5 was chosen because Lumen allowed real time changes in illumination while keeping the 2.5D scene intact. The lantern scan was implemented through an invisible collision volume. This avoided visual prompts that could have influenced participant behaviour.</p>
-<p class="text-body reveal delay-1">The main limitation is the small sample of nine participants. The study therefore reports descriptive patterns rather than inferential claims. Future work could use a larger sample, eye tracking, more varied level geometry and finer lighting gradients. Separating the lantern's lighting and scanning functions would also help isolate their individual effects.</p>
+<p class="text-body reveal delay-1">The sample contains nine participants in one fixed level, so I report descriptive patterns rather than inferential claims. The lantern also combines illumination and scanning. A follow-up study would separate those functions, vary the level geometry and check participants' prior gaming experience; eye tracking and finer lighting changes could then examine search behaviour more closely.</p>
 <p class="text-body reveal delay-2" style="margin-top: 1.5rem;">Participation was voluntary and anonymised. Informed consent and data protection procedures were followed under the University of York research ethics process. Generative AI was used only for technical assistance with Blueprint refinement and a small number of 2D textures. It was not used for data collection, recruitment, writing or analysis.</p>
 </div>
 </div>

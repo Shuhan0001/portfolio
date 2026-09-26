@@ -874,7 +874,7 @@
                 padding: 0.6rem 0.75rem !important;
             }
 
-            /* "Watch the test video" / "View the project on GitHub" are
+            /* "Watch the prototype demo" / "View the project on GitHub" are
                dead ends on paper — nothing to click. The live glowing
                moss pill is a screen affordance for a clickable target;
                kept as-is it just reads as a stray highlighter block on a
@@ -1689,6 +1689,8 @@
             body.miniquest-full-portfolio .full-reflection-links .full-link-card img { width: 24mm; height: 24mm; }
         }
     </style>
+<link rel="stylesheet" href="assets/project-clarity.css">
+<link rel="stylesheet" href="assets/project-overview.css">
 </head>
 <body>
 
@@ -1729,26 +1731,29 @@
     <main>
         <section class="container hero">
             <h1 class="hero-title reveal">Gamifying the<br>Break From <span class="text-outline">Routine</span></h1>
-            <p class="text-lead reveal delay-1">MiniQuest is a native Android application that turns two behavioral-intervention strategies, response interruption and environmental enrichment, into a pocket-sized RPG, using pervasive accelerometer sensing to reward the body for stepping outside its own habits.</p>
+            <p class="text-lead reveal delay-1">MiniQuest is a native Android prototype inspired by response interruption and environmental enrichment, combining movement-based rewards, timed quests and optional activities in a pocket-sized RPG.</p>
 
-            <div class="hero-meta reveal delay-2">
+            <div class="project-overview" data-project="MiniQuest">
+<dl class="project-brief" aria-label="Project scope and contribution"><div><dt>My contribution</dt><dd>Research-informed concept, interaction and visual design, Kotlin/Compose implementation and integration.</dd></div><div><dt>Implemented</dt><dd>Room persistence, motion counter, timed quests, rewards, haptic feedback and Wizard fallback.</dd></div><div><dt>Evaluation boundary</dt><dd>Working Android prototype. No participant study of behavioural or wellbeing effects.</dd></div></dl>
+<div class="hero-meta">
                 <div class="meta-item"><span>Author</span><strong>Shuhan Zhang</strong></div>
                 <div class="meta-item"><span>Project</span><strong>MiniQuest: Android, Kotlin</strong></div>
                 <div class="meta-item"><span>Module</span><strong>Mobile Interaction · TFT00069H</strong></div>
                 <div class="meta-item"><span>Programme</span><strong>University of York</strong></div>
             </div>
 
-            <div class="prototype-btn-group">
-                <a href="https://youtube.com/shorts/CBCdqMNu3ZE" target="_blank" rel="noopener" class="prototype-btn reveal delay-3">
-                    Watch the test video
+            <div class="prototype-btn-group overview-actions">
+                <a href="https://youtube.com/shorts/CBCdqMNu3ZE" target="_blank" rel="noopener" class="prototype-btn overview-primary">
+                    Watch the prototype demo
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
                 </a>
-                <a href="https://github.com/Shuhan0001/MiniQuest" target="_blank" rel="noopener" class="prototype-btn secondary reveal delay-3">
-                    View the project on GitHub
+                <a href="https://github.com/Shuhan0001/MiniQuest" target="_blank" rel="noopener" class="prototype-btn secondary overview-secondary">
+                    <span class="action-label">View on GitHub</span>
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.79-.25.79-.55 0-.27-.01-1.16-.02-2.11-3.2.7-3.88-1.36-3.88-1.36-.52-1.34-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.69 1.25 3.35.96.1-.74.4-1.25.73-1.54-2.56-.29-5.25-1.28-5.25-5.7 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.06 11.06 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.24 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.43-2.69 5.41-5.26 5.69.42.36.78 1.07.78 2.15 0 1.55-.01 2.8-.01 3.18 0 .3.21.66.8.55A10.51 10.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
                 </a>
             </div>
-        </section>
+        </div>
+</section>
 
         <!-- Premise -->
         <section class="section container">
@@ -1757,11 +1762,11 @@
                     <h2>The<br><span class="text-outline">Rigidity</span> Problem</h2>
                 </div>
                 <div>
-                    <p class="text-body reveal">Rapp and Vollmer (2005) describe stereotyped behavior as repetitive action or sound that appears to serve no external purpose. It's a pattern most associated with autism, but not confined to it. Nwaordu and Charlton (2024) find that adults without ASD also fall into repetitive routines, just less frequently and less intensely.</p>
-                    <p class="text-body reveal">The animal-behavior literature points at the trigger: Gross, Richter, Engel and Würbel (2012) tie cage-induced stereotypies to environments that are monotonous or under-stimulating, and Turner, Yang and Lewis (2002) show that enriched, variable environments measurably reduce them. Modern urban routine, in other words, is its own kind of cage.</p>
+                    <p class="text-body reveal">Rapp and Vollmer (2005) discuss stereotyped behaviour, while Nwaordu and Charlton (2024) examine repetitive behaviours in autistic and non-autistic adults. I used this literature to frame a design question about everyday variety, without equating ordinary routines with a clinical condition.</p>
+                    <p class="text-body reveal">Research on environmental enrichment and repetitive behaviour informed the idea of offering varied activities. Applying ideas from animal and clinical research to everyday adult routines is a design hypothesis here, not an established outcome of this prototype.</p>
 
                     <div class="quote-block reveal">
-                        <p>A single-purpose habit tracker rewards you for staying inside the loop. MiniQuest is designed to reward you for stepping outside it.</p>
+                        <p>MiniQuest keeps the familiar quest list and adds movement-based rewards and timed invitations to try something different.</p>
                         <span>The design premise behind MiniQuest's dual reward system</span>
                     </div>
 
@@ -1783,7 +1788,7 @@
                     <div class="shots-dots" id="homeScreenDots"></div>
                     <p class="caption reveal">Fig. Home screen, rendered with vector pixel fonts and the custom HardShadowBox component to keep edges sharp on high-DPI displays.</p>
 
-                    <p class="data-label reveal" style="margin-top: 3rem;">Two evidence-based interventions (Boyd, McDonough & Bodfish, 2012)</p>
+                    <p class="data-label reveal" style="margin-top: 3rem;">Two research-informed design directions (Boyd, McDonough & Bodfish, 2012)</p>
                     <div class="quest-log">
                         <div class="quest-track"><div class="quest-track-glow"></div></div>
                         <div class="quest-row reveal">
@@ -1792,7 +1797,7 @@
                                 <span class="quest-tag">Response Interruption / Redirection</span>
                             </div>
                             <div class="quest-name">Urgent Quests <span class="quest-row-mech">— in-app</span></div>
-                            <p class="quest-desc">When a stereotyped pattern would otherwise continue, the app interrupts it and redirects attention toward a new action. It's effective in the short term for low-level rigidity.</p>
+                            <p class="quest-desc">A timer introduces random urgent quests outside the user's planned task list. This implements a prompt to try another action; it does not detect repetitive behaviour or establish that an intervention is effective.</p>
                         </div>
                         <div class="quest-row reveal delay-1">
                             <div class="quest-head">
@@ -1804,6 +1809,7 @@
                         </div>
                     </div>
                     <p class="caption reveal">MiniQuest builds directly on this pair: the Emergency Loop coroutine handles interruption, and the Adventure Tools area handles enrichment.</p>
+<p class="project-evidence-note"><strong>What is implemented.</strong> Timed quests, acceleration-based counting, local progress, tactile feedback and an online/offline Wizard. <strong>What remains untested.</strong> Whether these mechanisms change routines or wellbeing; the report provides implementation evidence, not a participant evaluation.</p>
                 </div>
             </div>
         </section>
@@ -1815,8 +1821,8 @@
                     <h3 style="font-size: 1.7rem;">Against <span class="accent">Habitica</span></h3>
                 </div>
                 <div>
-                    <p class="text-body reveal">Habitica gamifies daily planning in an RPG shell. It's a genuinely motivating idea, and the closest existing comparison. But its reward loop stays locked to one thing: finishing your own pre-written tasks. Over time that narrow focus is exactly the kind of monotony the behavioral literature warns against, and engagement fades.</p>
-                    <p class="text-body reveal">MiniQuest keeps the RPG reward structure but opens two channels Habitica doesn't have: <strong style="color: var(--text-primary);">Passive Sensing</strong>, where simply walking accrues energy in the background, and <strong style="color: var(--text-primary);">Induced Novelty</strong>, where the system itself, not the user's to-do list, decides when to surface an emergency task. The reward loop no longer depends entirely on the user already having planned their own escape from routine.</p>
+                    <p class="text-body reveal">Habitica's RPG-style task and reward structure was a design reference. MiniQuest explores an additional emphasis on movement and system-generated quests; I did not conduct a comparative engagement study.</p>
+                    <p class="text-body reveal"><strong>Movement-based rewards</strong> let users redeem an acceleration-based counter for XP and gold. <strong>Timed novelty</strong> adds random quests through the Emergency Loop. Both extend the task list; neither measures whether a person has broken a habit.</p>
                 </div>
             </div>
         </section>
@@ -1832,21 +1838,21 @@
                         <img src="Image/MiniQuest_Habitica.webp" alt="Habitica RPG habit-tracker UI" style="object-position: center 30%;">
                     </div>
                     <h3 style="font-size: 1.3rem; margin-bottom: 0.8rem;">Habitica: the RPG Reward Loop</h3>
-                    <p class="text-body" style="font-size: 1rem;">Habitica proved a game shell could make routine self-management genuinely motivating. MiniQuest keeps that XP-and-gold loop but opens two new reward channels, Passive Sensing and Induced Novelty, so progress isn't gated entirely behind tasks the user already wrote down.</p>
+                    <p class="text-body" style="font-size: 1rem;">Habitica's XP-and-gold reward loop informed MiniQuest. I retained that familiar progression structure while adding movement-based rewards and timed quests.</p>
                 </div>
                 <div class="reveal delay-1 ref-card">
                     <div class="media-frame aspect-portrait" style="margin-bottom: 1.5rem;">
                         <img src="Image/MiniQuest_16bitRef.webp" alt="16-bit pixel art sprite sheet reference: hero, slime, sword and potion icons with hard-edged rendering" style="image-rendering: pixelated;">
                     </div>
                     <h3 style="font-size: 1.3rem; margin-bottom: 0.8rem;">16-bit Pixel Aesthetic</h3>
-                    <p class="text-body" style="font-size: 1rem;">Classic sprite-based RPGs read as playful, low-stakes and unmistakably game-like, the opposite tone of a clinical intervention app. The custom HardShadowBox component and vector pixel fonts exist purely to protect that crisp, hand-drawn edge against modern anti-aliasing.</p>
+                    <p class="text-body" style="font-size: 1rem;">Pixel fonts, block shadows and sprite imagery establish a playful visual language. HardShadowBox draws an offset shadow; the sprite views use separate bitmap-filtering settings.</p>
                 </div>
                 <div class="reveal delay-2 ref-card">
                     <div class="media-frame aspect-portrait" style="margin-bottom: 1.5rem;">
                         <img src="Image/MiniQuest_WoodenFish.webp" alt="Electronic wooden fish app icon, a mindfulness tapping object" style="object-fit: contain;">
                     </div>
                     <h3 style="font-size: 1.3rem; margin-bottom: 0.8rem;">The Electronic Wooden Fish</h3>
-                    <p class="text-body" style="font-size: 1rem;">The wooden fish (muyu) is a centuries-old tool for repetitive, meditative tapping. MiniQuest's stress-relief module borrows that same one-tap ritual, paired with a haptic pulse instead of a physical knock, as Brewster and Brown's (2004) non-visual tactile channel for anxiety relief.</p>
+                    <p class="text-body" style="font-size: 1rem;">The wooden-fish module borrows a simple tapping ritual, pairing each tap with a haptic pulse. Brewster and Brown's (2004) work on tactile feedback informed this non-visual confirmation channel.</p>
                 </div>
             </div>
         </section>
@@ -1863,17 +1869,17 @@
                         <div class="arch-track"><div class="arch-track-glow"></div></div>
                         <div class="arch-layer">
                             <div class="arch-layer-title">View</div>
-                            <div class="arch-layer-body">Jetpack Compose UI: a passive consumer that maps <code>StateFlow</code> to screen and forwards user intent upward. No business logic lives here.</div>
+                            <div class="arch-layer-body">Jetpack Compose UI: maps <code>StateFlow</code> to screen and forwards user intent upward. UI state and interaction handling remain in the Compose layer.</div>
                         </div>
                         <div class="arch-arrow">↓ StateFlow updates · ↑ user intent</div>
                         <div class="arch-layer">
                             <div class="arch-layer-title">ViewModel: AppViewModel</div>
-                            <div class="arch-layer-body">Holds the immutable <code>StateFlow&lt;T&gt;</code>, orchestrates repository calls, sensor input and the AI API, and scopes every coroutine to <code>viewModelScope</code> so nothing outlives the screen.</div>
+                            <div class="arch-layer-body">Holds the immutable <code>StateFlow&lt;T&gt;</code>, orchestrates repository calls, sensor input and the AI API, and scopes coroutines to <code>viewModelScope</code>.</div>
                         </div>
                         <div class="arch-arrow">↓ raw data streams · ↑ read / write calls</div>
                         <div class="arch-layer">
                             <div class="arch-layer-title">Model</div>
-                            <div class="arch-layer-body"><code>QuestRepository</code> (Room persistence) · <code>StepSensorManager</code> (hardware abstraction) · <code>OkClient</code> (web service): each with a single responsibility, none aware of the UI.</div>
+                            <div class="arch-layer-body"><code>QuestRepository</code> (Room persistence) · <code>StepSensorManager</code> (hardware abstraction) · <code>OkClient</code> (web service): provide persistence, sensor input and network access.</div>
                         </div>
                     </div>
                     <p class="caption reveal">Reconstructed from Figure A1, the report's full system architecture diagram.</p>
@@ -1884,7 +1890,7 @@
                     <p class="caption reveal">Fig. A1: the original diagram as submitted in the technical report appendix.</p>
 
                     <p class="data-label reveal" style="margin-top: 3rem;">Why Room + Flow</p>
-                    <p class="text-body reveal">All quest and player-stat data is written to a local Room database first, so gameplay stays instant and offline-first regardless of network state. Any change to <code>repository.allQuests</code> flows automatically into a <code>StateFlow</code> that Compose subscribes to, so a backend-inserted emergency task redraws the UI with no manual refresh. Room's compile-time SQL checking and strongly-typed <code>Quest</code> objects also remove an entire class of runtime crashes that a raw <code>Cursor</code> would allow.</p>
+                    <p class="text-body reveal">Quests and player statistics are persisted locally in Room. Flow and StateFlow connect stored data to Compose, including newly inserted emergency quests. Room checks queries at compile time; the Wizard remains a separate network-dependent feature with an offline reply fallback.</p>
                 </div>
             </div>
         </section>
@@ -1898,8 +1904,8 @@
                     <h3 style="font-size: 1.7rem;">Pervasive sensing from raw acceleration</h3>
                 </div>
                 <div>
-                    <p class="text-body reveal">Android's dedicated step-counter sensor is missing on many low-end or older devices. MiniQuest sidesteps that entirely by reading the raw tri-axis accelerometer directly, a sensor present on nearly every Android phone, and computing motion magnitude itself, so step detection is never limited by hardware tier.</p>
-                    <p class="code-note reveal">The vector magnitude <code>?x² + y² + z²)</code> is orientation-independent: however the phone is carried, any real motion changes the scalar, which is what drives the step-counting logic.</p>
+                    <p class="text-body reveal">MiniQuest reads the tri-axis accelerometer rather than depending on a dedicated step-counter sensor. The prototype checks whether that sensor is available and estimates steps from acceleration magnitude; it has not been validated across devices or carrying positions.</p>
+                    <p class="code-note reveal">The vector magnitude <code>√(x² + y² + z²)</code> is orientation-independent: however the phone is carried, any real motion changes the scalar, which is what drives the step-counting logic.</p>
                     <div class="code-panel reveal">
                         <div class="code-panel-head">
                             <div class="code-panel-dots"><span></span><span></span><span></span></div>
@@ -1912,14 +1918,14 @@
         <span class="kw">val</span> z = it.values[2]
         <span class="kw">val</span> magnitude = <span class="tg">sqrt</span>(x * x + y * y + z * z)</code></pre>
                     </div>
-                    <p class="code-note reveal"><strong>Noise filtering:</strong> a 300ms window stops a single shake being read as several steps in a row.</p>
+                    <p class="code-note reveal"><strong>Minimum interval:</strong> the counter requires magnitude &gt; 13 and more than 300ms since the last event. This reduces rapid repeat counts, but does not distinguish walking from deliberate shaking.</p>
                     <div class="code-panel reveal">
                         <div class="code-panel-head">
                             <div class="code-panel-dots"><span></span><span></span><span></span></div>
                             <span class="code-panel-file">StepSensorManager.kt</span>
                         </div>
                         <pre><code><span class="kw">val</span> currentTime = System.currentTimeMillis()
-<span class="kw">if</span> (currentTime - lastShakeTime > <span class="st">300</span>) {
+<span class="kw">if</span> (magnitude &gt; 13 &amp;&amp; currentTime - lastShakeTime &gt; <span class="st">300</span>) {
     internalSteps++
     saveStepsToStorage()
     lastShakeTime = currentTime
@@ -1933,8 +1939,8 @@
                     <h3 style="font-size: 1.7rem;">Multimodal & sensory regulation</h3>
                 </div>
                 <div>
-                    <p class="text-body reveal">Brewster and Brown (2004) treat tactile feedback as a non-visual information channel, useful precisely when visual load is already high. A single tap on the app's <code>stress_relief</code> module fires a haptic pulse, a small, immersive confirmation intended to take the edge off anxiety without asking for more visual attention.</p>
-                    <p class="text-body reveal">On the visual side, standard anti-aliasing quietly blurs pixel-art edges on high-DPI screens. MiniQuest counters this with vector-based pixel fonts and a custom <code>HardShadowBox</code> component that forces hard edges past the renderer's automatic smoothing, keeping the game's pixel aesthetic genuinely sharp rather than approximated.</p>
+                    <p class="text-body reveal">A tap in the <code>stress_relief</code> module produces a haptic pulse and visual feedback. This explores tactile confirmation as a non-visual channel; the project does not provide evidence of anxiety relief.</p>
+                    <p class="text-body reveal"><code>HardShadowBox</code> creates an offset block shadow for the UI. In the Wizard and wooden-fish views, bitmap filtering is disabled to retain crisp sprite edges. These are specific rendering choices, not a global override of anti-aliasing.</p>
                 </div>
             </div>
 
@@ -1943,7 +1949,7 @@
                     <h3 style="font-size: 1.7rem;">Async intelligence: the Grand Wizard</h3>
                 </div>
                 <div>
-                    <p class="text-body reveal">An in-app character, the Grand Wizard, is backed by a live call to the HuggingFace Inference API. Because that network call is inherently unpredictable, MiniQuest wraps it in Kotlin Coroutines rather than AsyncTask or a heavier RxJava dependency. It's scoped to <code>viewModelScope</code> so a suspended request is cancelled automatically the moment the user leaves the screen, avoiding both leaks and wasted battery.</p>
+                    <p class="text-body reveal">The Grand Wizard attempts HuggingFace requests on <code>Dispatchers.IO</code> within <code>viewModelScope</code>. If no model response succeeds, it selects a predefined offline reply. This keeps a response available without treating the fallback as an AI-generated answer.</p>
                     <div class="code-panel reveal">
                         <div class="code-panel-head">
                             <div class="code-panel-dots"><span></span><span></span><span></span></div>
@@ -1951,7 +1957,7 @@
                         </div>
                         <pre><code><span class="kw">fun</span> askGrandWizard(userQuestion: String) {
     viewModelScope.launch {
-        <span class="cm">// Step 1: enter "thinking", lock the UI</span>
+        <span class="cm">// Step 1: show the thinking state</span>
         _isWizardThinking.value = <span class="kw">true</span>
         _wizardReply.value = <span class="st">"..."</span>
 
@@ -1967,12 +1973,12 @@
         <span class="cm">// Step 3: resolve, with an offline fallback line</span>
         _wizardReply.value = finalResult ?: offlineGrimoire.random()
 
-        <span class="cm">// Step 4: unlock the UI</span>
+        <span class="cm">// Step 4: clear the thinking state</span>
         _isWizardThinking.value = <span class="kw">false</span>
     }
 }</code></pre>
                     </div>
-                    <p class="code-note reveal">The <code>isThinking</code> flag is a minimal state machine that locks the UI mid-request so a user can't fire off duplicate calls out of "uncertainty anxiety" while waiting.</p>
+                    <p class="code-note reveal">The thinking flag displays a waiting state and the reply is then replaced by a model response or offline line. The current Wizard screen does not disable repeated submissions while waiting.</p>
                     <div class="state-flow">
                         <div class="state-track"><div class="state-track-glow"></div></div>
                         <div class="state-item idle reveal">
@@ -1981,7 +1987,7 @@
                         </div>
                         <div class="state-item thinking reveal delay-1">
                             <div class="state-name">Thinking</div>
-                            <div class="state-desc">Request in flight on Dispatchers.IO. UI is locked; a transient "..." placeholder is shown.</div>
+                            <div class="state-desc">Request in flight on Dispatchers.IO. A transient "..." placeholder is shown.</div>
                         </div>
                         <div class="state-item reply reveal delay-2">
                             <div class="state-name">Reply</div>
@@ -2002,7 +2008,7 @@
                     <table class="perm-table reveal">
                         <tr><th>Permission</th><th>Usage</th></tr>
                         <tr><td>Internet</td><td>OkHttp calls to the HuggingFace API powering the Wizard Q&A.</td></tr>
-                        <tr><td>Network State</td><td>Checks Wi-Fi / mobile connectivity before an AI request.</td></tr>
+                        
                         <tr><td>Vibrate</td><td>Haptic feedback for the stress-relief module.</td></tr>
                         <tr><td>Post Notifications</td><td>System pop-ups for emergency quest alerts.</td></tr>
                         <tr><td>Body Sensor</td><td>Reserved for biometric data, in preparation for future expansion.</td></tr>
@@ -2041,8 +2047,8 @@
                     <h2>Closing<br><span class="text-outline">Reflection</span></h2>
                 </div>
                 <div>
-                    <p class="text-lead reveal">MiniQuest isn't just a task-management app wearing an RPG skin. It's a small, working test of whether phone sensors can be pointed at a real behavioral-health problem instead of a to-do list.</p>
-                    <p class="text-body reveal">By pairing a self-built perception layer, raw-acceleration step counting that's immune to hardware gaps, with an offline-first MVVM data foundation and lifecycle-safe coroutine concurrency for its AI character, the project tries to hold two things at once: sound mobile engineering, and a genuinely immersive, pixel-perfect feel. The balance between those two is the actual deliverable.</p>
+                    <p class="text-lead reveal">MiniQuest is a working Android prototype exploring how mobile sensing and playful prompts can support a design about everyday variety. It does not establish behavioural or wellbeing benefits.</p>
+                    <p class="text-body reveal">The project connected acceleration-based counting, Room persistence, Compose feedback and an online/offline Wizard interaction. Building these mechanisms taught me how sensing, state and presentation depend on one another. Whether they help users vary their routines remains to be evaluated.</p>
                 </div>
             </div>
         </section>
@@ -2052,7 +2058,7 @@
             <div class="full-cover-copy">
                 <span class="full-kicker">CASE STUDY / 00</span>
                 <h1>Gamifying the<br>break from <span>routine</span></h1>
-                <p>MiniQuest is a native Android application that translates response interruption and environmental enrichment into a pocket-sized RPG, using pervasive accelerometer sensing to reward the body for stepping outside its own habits.</p>
+                <p>MiniQuest is a native Android prototype inspired by response interruption and environmental enrichment, combining movement-based rewards, timed quests and optional activities in a pocket-sized RPG.</p>
                 <div class="full-meta-grid">
                     <div><small>AUTHOR</small><strong>Shuhan Zhang</strong></div>
                     <div><small>ROLE</small><strong>Research · UX/UI · Android development</strong></div>
@@ -2072,43 +2078,43 @@
                 <p>The opportunity was not another productivity tracker. It was a playful intervention for moments when repetition becomes a closed environment.</p>
             </header>
             <div class="full-research-grid">
-                <article><span class="full-card-index">01 / PATTERN</span><h3>Repetition is not confined to ASD</h3><p>Stereotyped behavior describes repetitive action or sound with no apparent external purpose. Although strongly associated with autism, adults without ASD also fall into repetitive routines, at lower frequency and intensity.</p><cite>Rapp &amp; Vollmer, 2005 · Nwaordu &amp; Charlton, 2024</cite></article>
+                <article><span class="full-card-index">01 / PATTERN</span><h3>Repetition is not confined to ASD</h3><p>Research on stereotyped behaviour and repetitive patterns informed the design question. I used it as inspiration for everyday variety, without equating ordinary routines with a clinical condition.</p><cite>Rapp &amp; Vollmer, 2005 · Nwaordu &amp; Charlton, 2024</cite></article>
                 <article><span class="full-card-index">02 / TRIGGER</span><h3>Monotony reinforces the loop</h3><p>Animal-behavior research links cage-induced stereotypies to monotonous, under-stimulating environments. Enriched and variable environments measurably reduce those patterns.</p><cite>Gross et al., 2012 · Turner, Yang &amp; Lewis, 2002</cite></article>
                 <article><span class="full-card-index">03 / DIRECTION</span><h3>Interruption plus enrichment</h3><p>Two behavioral strategies offered distinct product mechanics: redirect an active repetitive pattern, then broaden the environment with several low-friction activity choices.</p><cite>Boyd, McDonough &amp; Bodfish, 2012</cite></article>
             </div>
-            <blockquote class="full-quote">A single-purpose habit tracker rewards you for staying inside the loop. MiniQuest is designed to reward you for stepping outside it.</blockquote>
+            <blockquote class="full-quote">MiniQuest keeps the familiar quest list and adds movement-based rewards and timed invitations to try something different.</blockquote>
         </section>
 
         <section aria-hidden="true" class="full-page full-portfolio-only">
             <header class="full-page-header">
                 <div><span class="full-kicker">STRATEGY / 01</span><h2>Two routes beyond <span>routine</span></h2></div>
-                <p>The research became two complementary experience loops: one intervenes at the right moment; the other gives the user several inviting ways to change state.</p>
+                <p>The concept became two experience loops: timed quests introduce an unplanned action, while optional tools offer different activities. Their effects on routines remain unevaluated.</p>
             </header>
             <div class="full-strategy-grid">
                 <article class="full-strategy-card">
-                    <div><span class="full-card-index">01 / INTERRUPT</span><h3>Urgent quests</h3><p>When a stereotyped pattern would otherwise continue, the app interrupts it and redirects attention toward a new action. The Emergency Loop coroutine turns that moment into a short playable challenge.</p></div>
-                    <div class="full-strategy-visual"><div class="full-interrupt-flow"><article><span>01</span><div><strong>Detect a closed loop</strong><small>Routine continues without an external prompt.</small></div></article><article><span>02</span><div><strong>Introduce novelty</strong><small>An urgent quest arrives outside the planned list.</small></div></article><article><span>03</span><div><strong>Reward redirection</strong><small>A new action feeds back into XP and gold.</small></div></article></div></div>
+                    <div><span class="full-card-index">01 / INTERRUPT</span><h3>Urgent quests</h3><p>The Emergency Loop coroutine introduces random quests on a timer. It offers an unplanned action without detecting whether the user is in a repetitive behavioural pattern.</p></div>
+                    <div class="full-strategy-visual"><div class="full-interrupt-flow"><article><span>01</span><div><strong>Timed quest trigger</strong><small>A timer schedules the next random quest.</small></div></article><article><span>02</span><div><strong>Introduce novelty</strong><small>An urgent quest arrives outside the planned list.</small></div></article><article><span>03</span><div><strong>Reward redirection</strong><small>A new action feeds back into XP and gold.</small></div></article></div></div>
                 </article>
                 <article class="full-strategy-card">
                     <div><span class="full-card-index">02 / ENRICH</span><h3>Adventure tools</h3><p>A menu of activity modules offers relaxation and exploration choices, adding the sensory and interactive variety monotonous days are missing.</p></div>
                     <div class="full-strategy-visual"><div class="full-tool-map"><strong>ADVENTURE<br>TOOLS</strong><span>MOVE</span><span>EXPLORE</span><span>REGULATE</span><span>ASK</span></div></div>
                 </article>
             </div>
-            <div class="full-strategy-note"><strong>Behavioral model → product system.</strong> Emergency quests handle response interruption; the Adventure Tools area handles environmental enrichment. Both earn XP or gold, so breaking routine remains legible inside one coherent RPG economy.</div>
+            <div class="full-strategy-note"><strong>Behavioral model → product system.</strong> Emergency quests handle response interruption; the Adventure Tools area handles environmental enrichment. Quest completion and movement redemption earn XP or gold; optional tools provide additional activities.</div>
         </section>
 
         <section aria-hidden="true" class="full-page full-portfolio-only">
             <header class="full-page-header">
                 <div><span class="full-kicker">POSITIONING / 01</span><h2>Beyond a gamified <span>to-do list</span></h2></div>
-                <p>Habitica proved that an RPG reward shell could motivate routine self-management. MiniQuest keeps the motivation, but changes what progress can mean.</p>
+                <p>Habitica's XP-and-gold reward loop informed MiniQuest. I retained that familiar progression structure while adding movement-based rewards and timed quests.</p>
             </header>
             <div class="full-compare-grid">
                 <figure class="full-compare-figure"><img src="Image/MiniQuest_Habitica.webp" alt="Habitica RPG habit-tracker interface"><figcaption>Habitica: progress is primarily gated behind tasks the user has already written.</figcaption></figure>
                 <div class="full-compare-copy">
-                    <p>Habitica's reward loop stays locked to finishing pre-written tasks. Over time, that narrow focus can reproduce the same monotony the behavioral literature warns against: the user must already have planned their own escape from routine.</p>
+                    <p>The RPG task-and-reward structure was my starting point. I added movement-based rewards and timed quests to explore progress beyond a user-written task list, without claiming that this is more effective than Habitica.</p>
                     <p>MiniQuest opens two additional channels. They allow progress to arrive through movement and system-induced novelty, without discarding the clarity of XP, gold and levels.</p>
                     <div class="full-difference-grid">
-                        <article><span class="full-card-index">PASSIVE SENSING</span><h3>Movement earns energy</h3><p>Walking accrues progress in the background through raw accelerometer sensing, so the body can advance the game without another checklist.</p></article>
+                        <article><span class="full-card-index">PASSIVE SENSING</span><h3>Movement earns energy</h3><p>Acceleration events accumulate a counter that the user can redeem for XP and gold. It is a prototype motion signal, not a validated measure of steps or habit change.</p></article>
                         <article><span class="full-card-index">INDUCED NOVELTY</span><h3>The system can surprise</h3><p>MiniQuest, not the user's to-do list, decides when to surface an emergency task and redirect attention toward a new action.</p></article>
                     </div>
                 </div>
@@ -2145,7 +2151,7 @@
                 <p>Three reference points shaped how MiniQuest looks, rewards and redirects attention without adopting a clinical tone.</p>
             </header>
             <div class="full-reference-grid">
-                <article><div class="full-reference-system"><article><span>ACTION</span><strong>QUEST</strong></article><article><span>FEEDBACK</span><strong>XP + GOLD</strong></article><article><span>PROGRESS</span><strong>LEVEL</strong></article><p>TASK → REWARD → PROGRESSION</p></div><span class="full-card-index">01 / MOTIVATION</span><h3>Habitica's RPG reward loop</h3><p>Habitica demonstrated that XP and gold can make routine self-management motivating. MiniQuest retains that clarity while allowing movement and system-generated novelty to produce progress.</p></article>
+                <article><div class="full-reference-system"><article><span>ACTION</span><strong>QUEST</strong></article><article><span>FEEDBACK</span><strong>XP + GOLD</strong></article><article><span>PROGRESS</span><strong>LEVEL</strong></article><p>TASK → REWARD → PROGRESSION</p></div><span class="full-card-index">01 / MOTIVATION</span><h3>Habitica's RPG reward loop</h3><p>Habitica's XP-and-gold reward loop informed MiniQuest. I retained that familiar progression structure while adding movement-based rewards and timed quests.</p></article>
                 <article><figure><img src="Image/MiniQuest_16bitRef.webp" alt="16-bit pixel art reference"></figure><span class="full-card-index">02 / CHARACTER</span><h3>Hard-edged pixel aesthetic</h3><p>Classic sprite-based RPGs feel playful and low-stakes. Vector pixel fonts and a custom HardShadowBox resist high-DPI smoothing, keeping the game's edge crisp rather than approximate.</p></article>
                 <article><figure><img src="Image/MiniQuest_WoodenFish.webp" alt="Electronic wooden fish mindfulness app"></figure><span class="full-card-index">03 / REGULATION</span><h3>One-tap ritual</h3><p>The wooden fish is a repetitive meditative object. Its low-demand interaction informed a stress-relief module that pairs a single tap with haptic confirmation instead of asking for more visual attention.</p></article>
             </div>
@@ -2158,7 +2164,7 @@
             </header>
             <div class="full-architecture-grid">
                 <div class="full-architecture-copy">
-                    <article><span class="full-card-index">VIEW</span><h3>Jetpack Compose UI</h3><p>A passive consumer maps StateFlow to the screen and forwards user intent upward. No business logic lives in the view.</p></article>
+                    <article><span class="full-card-index">VIEW</span><h3>Jetpack Compose UI</h3><p>Maps StateFlow to the screen and forwards user intent upward. The Compose layer also handles local UI state and ordering.</p></article>
                     <article><span class="full-card-index">VIEWMODEL</span><h3>AppViewModel</h3><p>Holds immutable StateFlow, orchestrates repository calls, sensor input and AI requests, and scopes coroutines to viewModelScope.</p></article>
                     <article><span class="full-card-index">MODEL</span><h3>Focused data services</h3><p>QuestRepository, StepSensorManager and OkClient each hold one responsibility and remain unaware of the UI.</p></article>
                     <div class="full-architecture-note"><strong>Why Room + Flow.</strong> Data is written locally first for instant offline play. Repository changes stream into Compose automatically, so an inserted emergency quest redraws the interface without a manual refresh.</div>
@@ -2174,9 +2180,9 @@
             </header>
             <div class="full-implementation-grid">
                 <div class="full-implementation-copy">
-                    <p>MiniQuest reads the raw tri-axis accelerometer, present on nearly every Android phone, and computes motion magnitude itself. Step detection is therefore not limited by device tier.</p>
+                    <p>MiniQuest estimates steps from the tri-axis accelerometer instead of a dedicated step-counter sensor. Availability and counting accuracy still depend on the device and motion; shaking can produce false counts.</p>
                     <div class="full-callout"><strong>Orientation-independent signal.</strong> The vector magnitude √(x² + y² + z²) turns motion into one scalar value, however the phone is carried.</div>
-                    <div class="full-callout"><strong>Noise filtering.</strong> A 300ms window stops a single shake from being counted as several steps in a row.</div>
+                    <div class="full-callout"><strong>Noise filtering.</strong> A magnitude threshold and 300ms minimum interval reduce rapid repeat counts; shaking can still register.</div>
                 </div>
                 <div class="full-code-stack">
                     <div class="code-panel"><div class="code-panel-head"><div class="code-panel-dots"><span></span><span></span><span></span></div><span class="code-panel-file">StepSensorManager.kt · magnitude</span></div><pre><code><span class="kw">override fun</span> onSensorChanged(event: SensorEvent?) {
@@ -2188,7 +2194,7 @@
     }
 }</code></pre></div>
                     <div class="code-panel"><div class="code-panel-head"><div class="code-panel-dots"><span></span><span></span><span></span></div><span class="code-panel-file">StepSensorManager.kt · debounce</span></div><pre><code><span class="kw">val</span> currentTime = System.currentTimeMillis()
-<span class="kw">if</span> (currentTime - lastShakeTime &gt; <span class="st">300</span>) {
+<span class="kw">if</span> (magnitude &gt; 13 &amp;&amp; currentTime - lastShakeTime &gt; <span class="st">300</span>) {
     internalSteps++
     saveStepsToStorage()
     lastShakeTime = currentTime
@@ -2205,11 +2211,11 @@
             <div class="full-sensory-grid">
                 <article class="full-sensory-card">
                     <div class="full-sensory-visual"><div class="full-haptic-flow"><span>SINGLE TAP</span><b>↓</b><span>HAPTIC PULSE</span><b>↓</b><span>LOW-VISUAL CONFIRMATION</span></div></div>
-                    <div><span class="full-card-index">TACTILE CHANNEL</span><h3>A one-tap confirmation</h3><p>Brewster and Brown (2004) describe tactile feedback as a non-visual information channel, useful when visual load is already high. A tap in the stress-relief module fires a haptic pulse: a small confirmation designed to take the edge off anxiety without demanding more visual attention.</p></div>
+                    <div><span class="full-card-index">TACTILE CHANNEL</span><h3>A one-tap confirmation</h3><p>A tap in the wooden-fish module produces a haptic pulse and visual feedback. This applies the idea of a non-visual feedback channel; anxiety relief has not been measured.</p></div>
                 </article>
                 <article class="full-sensory-card">
-                    <div class="full-sensory-visual"><div class="full-pixel-system"><article><span>01</span><strong>Vector pixel glyphs</strong></article><article><span>02</span><strong>HardShadowBox edges</strong></article><article><span>03</span><strong>Anti-aliasing resisted</strong></article><div class="full-pixel-result">CRISP 16-BIT CHARACTER</div></div></div>
-                    <div><span class="full-card-index">VISUAL CHANNEL</span><h3>Sharp pixels on modern screens</h3><p>Standard anti-aliasing blurs pixel-art edges on high-density displays. Vector-based pixel fonts and the custom HardShadowBox force hard edges past automatic smoothing, preserving an intentional 16-bit character rather than a softened approximation.</p></div>
+                    <div class="full-sensory-visual"><div class="full-pixel-system"><article><span>01</span><strong>Vector pixel glyphs</strong></article><article><span>02</span><strong>HardShadowBox edges</strong></article><article><span>03</span><strong>Sprite filtering disabled</strong></article><div class="full-pixel-result">CRISP 16-BIT CHARACTER</div></div></div>
+                    <div><span class="full-card-index">VISUAL CHANNEL</span><h3>Sharp pixels on modern screens</h3><p>HardShadowBox creates offset block shadows. Bitmap filtering is disabled for the Wizard and wooden-fish sprites to retain their crisp edges.</p></div>
                 </article>
             </div>
         </section>
@@ -2221,17 +2227,17 @@
             </header>
             <div class="full-ai-grid">
                 <div class="full-ai-copy">
-                    <p>Because network latency is unpredictable, the request runs in Kotlin Coroutines rather than AsyncTask or a heavier RxJava dependency. viewModelScope automatically cancels a suspended request when the user leaves the screen, avoiding leaks and wasted battery.</p>
+                    <p>Requests run on Dispatchers.IO within viewModelScope, which is tied to the ViewModel rather than the Wizard screen. If the model requests fail, a predefined offline reply is shown.</p>
                     <div class="full-state-grid">
                         <article><h3>Idle</h3><p>The dialogue is available and waiting on the user.</p></article>
-                        <article><h3>Thinking</h3><p>The request runs on Dispatchers.IO; the UI locks and shows “...”.</p></article>
+                        <article><h3>Thinking</h3><p>The request runs on Dispatchers.IO; a thinking indicator shows “...”.</p></article>
                         <article><h3>Reply</h3><p>The API result resolves, or the offline grimoire supplies a fallback.</p></article>
                     </div>
-                    <div class="full-callout"><strong>Uncertainty control.</strong> The thinking flag prevents duplicate requests while the user is waiting for an answer.</div>
+                    <div class="full-callout"><strong>Uncertainty control.</strong> The thinking flag displays progress; repeated submissions are not yet blocked in the current Wizard screen.</div>
                 </div>
                 <div class="code-panel"><div class="code-panel-head"><div class="code-panel-dots"><span></span><span></span><span></span></div><span class="code-panel-file">AppViewModel.kt · askGrandWizard()</span></div><pre><code><span class="kw">fun</span> askGrandWizard(userQuestion: String) {
     viewModelScope.launch {
-        <span class="cm">// enter “thinking” and lock the UI</span>
+        <span class="cm">// show the thinking state</span>
         _isWizardThinking.value = <span class="kw">true</span>
         _wizardReply.value = <span class="st">"..."</span>
 
@@ -2264,7 +2270,7 @@
                     <thead><tr><th>Permission</th><th>Usage</th></tr></thead>
                     <tbody>
                         <tr><td>Internet</td><td>OkHttp calls to the HuggingFace API powering Wizard Q&amp;A.</td></tr>
-                        <tr><td>Network State</td><td>Checks Wi-Fi or mobile connectivity before an AI request.</td></tr>
+                        
                         <tr><td>Vibrate</td><td>Haptic feedback for the stress-relief module.</td></tr>
                         <tr><td>Post Notifications</td><td>System pop-ups for emergency quest alerts.</td></tr>
                         <tr><td>Body Sensor</td><td>Reserved for biometric data in preparation for future expansion.</td></tr>
@@ -2281,16 +2287,16 @@
         <section aria-hidden="true" class="full-page full-portfolio-only">
             <header class="full-page-header">
                 <div><span class="full-kicker">REFLECTION / 01</span><h2>Engineering and experience, <span>held together</span></h2></div>
-                <p>The final value is not one feature in isolation, but the balance between a credible mobile system and a deliberately playful intervention.</p>
+                <p>The outcome is an Android prototype connecting sensing, persistence, rewards and feedback. Its intended behavioural benefits remain untested.</p>
             </header>
             <div class="full-reflection-grid">
                 <div class="full-reflection-copy">
-                    <p class="lead">MiniQuest is not simply a task manager wearing an RPG skin. It is a working test of whether phone sensors can be pointed at a behavioral-health problem instead of another to-do list.</p>
-                    <p>By pairing a self-built perception layer with an offline-first MVVM foundation and lifecycle-safe coroutine concurrency, the project makes its immersive pixel-art feel rest on a coherent technical system.</p>
+                    <p class="lead">MiniQuest is a working Android prototype exploring movement-based rewards and timed prompts. Its effects on everyday routines and wellbeing have not been evaluated in a participant study.</p>
+                    <p>The implementation brought together sensing, local data and asynchronous requests. A next iteration should guard against duplicate Wizard requests and connect request cancellation explicitly to the interaction lifecycle.</p>
                     <div class="full-contribution"><span class="full-kicker">INDIVIDUAL CONTRIBUTION</span><p>Behavioral research, concept development, interaction design, visual direction, Kotlin implementation, testing and final case-study curation.</p></div>
                 </div>
                 <div class="full-reflection-links">
-                    <a href="https://youtube.com/shorts/CBCdqMNu3ZE" target="_blank" rel="noopener"><span class="full-link-card"><img src="Image/MiniQuest_QR_Video.svg" alt="QR code for the MiniQuest test video"><span><small>WATCH</small><strong>Test video</strong><em>youtube.com/shorts/CBCdqMNu3ZE</em></span></span></a>
+                    <a href="https://youtube.com/shorts/CBCdqMNu3ZE" target="_blank" rel="noopener"><span class="full-link-card"><img src="Image/MiniQuest_QR_Video.svg" alt="QR code for the MiniQuest test video"><span><small>WATCH</small><strong>Prototype demo</strong><em>youtube.com/shorts/CBCdqMNu3ZE</em></span></span></a>
                     <a href="https://github.com/Shuhan0001/MiniQuest" target="_blank" rel="noopener"><span class="full-link-card"><img src="Image/MiniQuest_QR_GitHub.svg" alt="QR code for the MiniQuest GitHub repository"><span><small>EXPLORE</small><strong>Project GitHub</strong><em>github.com/Shuhan0001/MiniQuest</em></span></span></a>
                 </div>
             </div>
@@ -2300,7 +2306,7 @@
             <div class="application-cover-copy">
                 <span class="application-index">CASE STUDY / 00</span>
                 <h1>Gamifying the<br>break from <span>routine</span></h1>
-                <p>MiniQuest is a native Android RPG that turns response interruption and environmental enrichment into a playable system, using phone sensors to reward movement beyond habitual routines.</p>
+                <p>MiniQuest is a native Android prototype inspired by response interruption and environmental enrichment, combining movement-based rewards, timed quests and optional activities in a pocket-sized RPG.</p>
                 <div class="application-meta-grid">
                     <div><small>Designer &amp; developer</small><strong>Shuhan Zhang</strong></div>
                     <div><small>Platform</small><strong>Android · Kotlin</strong></div>
@@ -2311,7 +2317,7 @@
                     <a href="https://youtube.com/shorts/CBCdqMNu3ZE" target="_blank" rel="noopener">
                         <span class="application-link-card">
                             <img src="Image/MiniQuest_QR_Video.svg" alt="QR code for the MiniQuest test video">
-                            <span><small>WATCH</small><strong>Test video</strong><em>youtube.com/shorts/CBCdqMNu3ZE</em></span>
+                            <span><small>WATCH</small><strong>Prototype demo</strong><em>youtube.com/shorts/CBCdqMNu3ZE</em></span>
                         </span>
                     </a>
                     <a href="https://github.com/Shuhan0001/MiniQuest" target="_blank" rel="noopener">
@@ -2331,15 +2337,15 @@
         <section aria-hidden="true" class="application-page application-research application-only">
             <div class="application-page-header">
                 <div><span class="application-index">RESEARCH / 01</span><h2>Breaking the <span>rigidity loop</span></h2></div>
-                <p>Behavioral research reframed repetitive routine as an interaction problem: the app must interrupt the loop, then offer enough novelty to prevent an immediate return.</p>
+                <p>The design asks whether timed prompts and optional activities could introduce variety into daily routines. The prototype implements those mechanisms without claiming a measured behavioural effect.</p>
             </div>
             <div class="application-research-grid">
-                <article><span>01</span><h3>Monotony reinforces repetition</h3><p>Under-stimulating environments are associated with more stereotyped behavior; routine can become its own closed environment.</p><strong>Design implication: reward variation, not only completion.</strong></article>
-                <article><span>02</span><h3>Response interruption</h3><p>A well-timed alternative action can redirect attention before a repetitive pattern continues unchecked.</p><strong>Design response: emergency quests surface without being pre-planned.</strong></article>
-                <article><span>03</span><h3>Environmental enrichment</h3><p>Greater sensory and activity variety gives users more routes away from a narrow behavioral loop.</p><strong>Design response: multiple adventure and regulation tools.</strong></article>
+                <article><span>01</span><h3>Monotony reinforces repetition</h3><p>Animal research links under-stimulating environments with stereotyped behaviour. This inspired a question about offering greater activity variety in everyday routines.</p><strong>Design implication: reward variation, not only completion.</strong></article>
+                <article><span>02</span><h3>Response interruption</h3><p>The literature informed a timed quest mechanic that offers another action; the prototype does not detect when a prompt would be helpful.</p><strong>Design response: emergency quests surface without being pre-planned.</strong></article>
+                <article><span>03</span><h3>Environmental enrichment</h3><p>The design offers several optional activities as an interpretation of environmental enrichment. Its effect on everyday routines remains untested.</p><strong>Design response: multiple adventure and regulation tools.</strong></article>
             </div>
-            <blockquote>A conventional habit tracker rewards staying inside the loop. MiniQuest rewards stepping outside it.</blockquote>
-            <div class="application-research-evidence"><strong>Research context</strong><p>Stereotyped behaviour is associated with ASD but also appears, at lower frequency and intensity, in adults without ASD. The design translates response interruption and environmental enrichment into distinct interaction mechanics.</p><small>Rapp &amp; Vollmer, 2005; Nwaordu &amp; Charlton, 2024; Gross et al., 2012; Turner, Yang &amp; Lewis, 2002; Boyd, McDonough &amp; Bodfish, 2012.</small></div>
+            <blockquote>MiniQuest pairs a familiar quest list with movement-based rewards and timed invitations to try something different.</blockquote>
+            <div class="application-research-evidence"><strong>Research context</strong><p>The literature informed the interaction concept. Transferring ideas from clinical and animal research to everyday adult routines remains a design hypothesis, without a participant evaluation in this project.</p><small>Rapp &amp; Vollmer, 2005; Nwaordu &amp; Charlton, 2024; Gross et al., 2012; Turner, Yang &amp; Lewis, 2002; Boyd, McDonough &amp; Bodfish, 2012.</small></div>
         </section>
 
         <section aria-hidden="true" class="application-page application-model application-only">
@@ -2349,9 +2355,9 @@
             </div>
             <div class="application-model-grid">
                 <div class="application-model-copy">
-                    <article><span>01 / INTERRUPT</span><h3>Urgent quests</h3><p>The system introduces an unexpected action at the moment routine needs to be broken, turning redirection into a short playable challenge.</p></article>
+                    <article><span>01 / INTERRUPT</span><h3>Urgent quests</h3><p>The prototype introduces a random quest on a timer to prompt an unplanned action. Whether the timing feels helpful requires evaluation.</p></article>
                     <article><span>02 / ENRICH</span><h3>Adventure tools</h3><p>Stress relief, exploration and passive movement rewards create several low-friction ways to re-enter the world beyond the to-do list.</p></article>
-                    <div class="application-contrast"><small>BEYOND HABITICA</small><p><strong>Passive sensing</strong> rewards walking in the background. <strong>Induced novelty</strong> lets the system, not the user, decide when a new quest appears.</p></div>
+                    <div class="application-contrast"><small>BEYOND HABITICA</small><p><strong>Movement-based rewards</strong> use an acceleration counter redeemed for XP and gold. <strong>Timed novelty</strong> adds random quests without requiring the user to plan them.</p></div>
                 </div>
                 <div class="application-model-visuals">
                     <figure><img src="Image/MiniQuest_EmergencyQuest.webp" alt="Emergency quest prompt"><figcaption>Induced novelty</figcaption></figure>
@@ -2379,7 +2385,7 @@
                 <p>The visual language reduces the clinical feeling of intervention while keeping feedback crisp, immediate and legible.</p>
             </div>
             <div class="application-reference-grid">
-                <article><figure><img src="Image/MiniQuest_Habitica.webp" alt="Habitica RPG habit-tracker interface"></figure><span>01</span><h3>RPG reward loop</h3><p>Habitica demonstrated that XP and gold can make self-management motivating; MiniQuest expands the loop beyond pre-written tasks.</p></article>
+                <article><figure><img src="Image/MiniQuest_Habitica.webp" alt="Habitica RPG habit-tracker interface"></figure><span>01</span><h3>RPG reward loop</h3><p>Habitica's XP-and-gold reward loop informed MiniQuest. I retained that familiar progression structure while adding movement-based rewards and timed quests.</p></article>
                 <article><figure><img src="Image/MiniQuest_16bitRef.webp" alt="16-bit pixel art reference"></figure><span>02</span><h3>Hard-edged pixel system</h3><p>Vector pixel fonts and the custom HardShadowBox protect the playful 16-bit character on high-density displays.</p></article>
                 <article><figure><img src="Image/MiniQuest_WoodenFish.webp" alt="Electronic wooden fish mindfulness app"></figure><span>03</span><h3>One-tap regulation</h3><p>The wooden-fish ritual informed a tactile stress-relief interaction that asks for less visual attention, not more.</p></article>
             </div>
@@ -2409,11 +2415,11 @@
             <div class="application-implementation-grid">
                 <article><span>01 / SENSING</span><h3>Raw acceleration, broader access</h3><p>Using the tri-axis accelerometer avoids dependence on a dedicated step sensor that many lower-end devices lack.</p><div class="code-panel"><div class="code-panel-head"><span class="code-panel-file">StepSensorManager.kt</span></div><pre><code><span class="kw">val</span> magnitude = <span class="tg">sqrt</span>(x*x + y*y + z*z)
 
-<span class="kw">if</span> (currentTime - lastShakeTime &gt; <span class="st">300</span>) {
+<span class="kw">if</span> (magnitude &gt; 13 &amp;&amp; currentTime - lastShakeTime &gt; <span class="st">300</span>) {
     internalSteps++
     saveStepsToStorage()
 }</code></pre></div></article>
-                <article><span>02 / ASYNC AI</span><h3>A wizard that fails gracefully</h3><p><code>viewModelScope</code> cancels suspended requests with the screen; an offline grimoire keeps the interaction usable without a network.</p><div class="code-panel"><div class="code-panel-head"><span class="code-panel-file">AppViewModel.kt</span></div><pre><code>viewModelScope.launch {
+                <article><span>02 / ASYNC AI</span><h3>A wizard that fails gracefully</h3><p>Requests run on Dispatchers.IO within viewModelScope; a predefined offline reply is shown if no model response succeeds.</p><div class="code-panel"><div class="code-panel-head"><span class="code-panel-file">AppViewModel.kt</span></div><pre><code>viewModelScope.launch {
     _isWizardThinking.value = <span class="kw">true</span>
     <span class="kw">val</span> result = tryRouterModels(question)
     _wizardReply.value = result
@@ -2421,7 +2427,7 @@
     _isWizardThinking.value = <span class="kw">false</span>
 }</code></pre></div></article>
             </div>
-            <div class="application-implementation-note"><strong>Multimodal detail</strong><span>Haptic confirmation reduces visual load, while vector pixel fonts and hard shadows preserve a crisp game identity.</span></div>
+            <div class="application-implementation-note"><strong>Multimodal detail</strong><span>Haptic confirmation provides a non-visual response to a tap; pixel typography and block shadows establish the game identity.</span></div>
         </section>
 
         <section aria-hidden="true" class="application-page application-reflection application-only">
@@ -2437,11 +2443,11 @@
             <div class="application-reflection-footer">
                 <div><small>INDIVIDUAL CONTRIBUTION</small><p>Behavioral research, concept development, interaction design, visual direction, Kotlin implementation, testing and final curation.</p></div>
                 <div class="application-link-grid">
-                    <a href="https://youtube.com/shorts/CBCdqMNu3ZE" target="_blank" rel="noopener"><span class="application-link-card"><img src="Image/MiniQuest_QR_Video.svg" alt="QR code for the MiniQuest test video"><span><small>WATCH</small><strong>Test video</strong><em>youtube.com/shorts/CBCdqMNu3ZE</em></span></span></a>
+                    <a href="https://youtube.com/shorts/CBCdqMNu3ZE" target="_blank" rel="noopener"><span class="application-link-card"><img src="Image/MiniQuest_QR_Video.svg" alt="QR code for the MiniQuest test video"><span><small>WATCH</small><strong>Prototype demo</strong><em>youtube.com/shorts/CBCdqMNu3ZE</em></span></span></a>
                     <a href="https://github.com/Shuhan0001/MiniQuest" target="_blank" rel="noopener"><span class="application-link-card"><img src="Image/MiniQuest_QR_GitHub.svg" alt="QR code for the MiniQuest GitHub repository"><span><small>EXPLORE</small><strong>Project GitHub</strong><em>github.com/Shuhan0001/MiniQuest</em></span></span></a>
                 </div>
             </div>
-            <div class="application-reflection-detail"><div><strong>What remains unproven</strong><p>This is a working Android prototype, not a claim of behavioural efficacy. Local Room data is lost on uninstall; phone-only acceleration cannot use wearables and is vulnerable to mechanical step-cheating.</p></div><div><strong>Next validation</strong><p>Firebase sync, Health Connect signals and ML-based waveform checks could improve continuity and sensing reliability. The central outcome is a tested technical system that makes interruption playful rather than punitive.</p></div></div>
+            <div class="application-reflection-detail"><div><strong>What remains unproven</strong><p>This is a working Android prototype, not a claim of behavioural efficacy. Local Room data is lost on uninstall; phone-only acceleration cannot use wearables and is vulnerable to mechanical step-cheating.</p></div><div><strong>Planned development</strong><p>Firebase sync, Health Connect signals and ML-based waveform checks could improve continuity and sensing reliability. The current outcome is an implemented prototype; usability, sensing accuracy and behavioural effects remain to be evaluated.</p></div></div>
         </section>
     </main>
 

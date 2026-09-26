@@ -853,6 +853,8 @@
             body.haunted-full-portfolio .hs-status { margin-top: 36px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,.18); color: #858584; font: 400 12px/1.4 Arial, sans-serif; }
         }
     </style>
+<link rel="stylesheet" href="assets/project-clarity.css">
+<link rel="stylesheet" href="assets/project-overview.css">
 </head>
 <body>
 
@@ -900,19 +902,22 @@
             <h1 class="hero-title reveal">Silent Night at the<br><span class="text-outline">Haunted School</span></h1>
             <p class="text-lead reveal delay-1">A first-person horror RPG built in Unity, about a bullied student locked in his school on the night the dead return, and the three ghosts who won't let anyone leave quietly.</p>
 
-            <div class="hero-meta reveal delay-2">
-                <div class="meta-item"><span>My Role</span><strong>Design Team · Team Manager</strong></div>
+            <div class="project-overview" data-project="HauntedSchool">
+<dl class="project-brief" aria-label="Project scope and contribution"><div><dt>My contribution</dt><dd>Character backstories, school layout and routes, Main Ghost modelling in Maya; Unity work from week 9.</dd></div><div><dt>Team context</dt><dd>Four-person project. I coordinated meetings and design-to-technical handovers; Ewan led the project and technical work.</dd></div><div><dt>Evidence shown</dt><dd>Narrative and route designs, character model and production process. Safeguards are labelled as design plans.</dd></div></dl>
+<div class="hero-meta">
+                <div class="meta-item"><span>My Role</span><strong>Design · Production coordination</strong></div>
                 <div class="meta-item"><span>Team</span><strong>Group of 4 · Group 1</strong></div>
                 <div class="meta-item"><span>Engine</span><strong>Unity · C#</strong></div>
                 <div class="meta-item"><span>Module</span><strong>Media Production for Interactive Environment</strong></div>
             </div>
 
-            <a href="https://github.com/em05niper/Group-Project-Repository" target="_blank" rel="noopener" class="github-btn reveal delay-3">
+            <div class="overview-actions"><a href="https://github.com/em05niper/Group-Project-Repository" target="_blank" rel="noopener" class="github-btn overview-secondary">
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58 0-.29-.01-1.04-.02-2.04-3.34.72-4.04-1.61-4.04-1.61-.55-1.38-1.33-1.76-1.33-1.76-1.09-.74.08-.72.08-.72 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.93.43.37.81 1.1.81 2.22 0 1.6-.02 2.89-.02 3.29 0 .32.22.7.83.58C20.56 21.79 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
-                See this project on GitHub
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M7 7h10v10"/></svg>
-            </a>
-            <a href="#responsible-design" class="content-note reveal delay-3">Content note. Rated 18+, includes jump scares, and requires a microphone.</a>
+                <span class="action-label">View on GitHub</span>
+                
+            </a></div>
+            </div>
+<a href="#responsible-design" class="content-note">Content note. Intended for adults (18+), includes jump scares, and requires a microphone.</a>
         </section>
 
         <section class="section container">
@@ -1041,14 +1046,14 @@
 
         <section id="responsible-design" class="section container" style="border-top: 1px solid var(--border-subtle); scroll-margin-top: 10vh;">
             <h2 class="reveal" style="text-align: center; margin-bottom: 1rem;">Responsible <span class="text-outline">Design</span></h2>
-            <p class="text-lead reveal" style="text-align: center; margin: 0 auto 2rem; max-width: 760px;">A horror game about bullying and a live microphone raises real questions before it raises a single jump scare. This is how the group answered them.</p>
+            <p class="text-lead reveal" style="text-align: center; margin: 0 auto 2rem; max-width: 760px;">The group considered age, player comfort, cultural context and microphone consent alongside the horror mechanics. The following safeguards are design plans, rather than evidence that every option was implemented and evaluated.</p>
 
             <div class="ethics-grid">
                 <div class="ethics-item reveal">
                     <span class="index">01</span>
                     <div class="ethics-text">
                         <div class="name">Age Appropriateness</div>
-                        <div class="desc">Rated 18+, with a clear age warning shown before the game starts.</div>
+                        <div class="desc">Intended for adults (18+), with a planned age warning before play.</div>
                     </div>
                 </div>
                 <div class="ethics-item reveal delay-1">
@@ -1069,7 +1074,7 @@
                     <span class="index">04</span>
                     <div class="ethics-text">
                         <div class="name">Privacy & Consent</div>
-                        <div class="desc">The microphone captures screams to drive gameplay, gated behind an explicit consent prompt. Players who decline get a button-based alternative for the same interactions.</div>
+                        <div class="desc">The design plan pairs sound-sensitive encounters with explicit microphone consent and a button-based alternative. These safeguards describe the intended experience; implementation and evaluation are not documented here.</div>
                     </div>
                 </div>
             </div>
@@ -1152,7 +1157,7 @@
                     <h1>Silent Night<br>at the <span>Haunted<br>School</span></h1>
                     <p>A first-person horror RPG in which a bullied student is locked inside his school on the night the dead return.</p>
                     <div class="hs-cover-meta">
-                        <div><small>My role</small><strong>Design team · Team manager</strong></div>
+                        <div><small>My role</small><strong>Design · Production coordination</strong></div>
                         <div><small>Team</small><strong>Four collaborators</strong></div>
                         <div><small>Focus</small><strong>Narrative · world · character</strong></div>
                         <div><small>Build</small><strong>Unity · Maya · C#</strong></div>
@@ -1286,9 +1291,9 @@
             <div class="hs-inner">
                 <div class="hs-topline"><span>06 / Responsible design</span><span>Care is a game mechanic, too</span></div>
                 <h2 class="hs-heading">Make the fear <em>consensual.</em></h2>
-                <p class="hs-deck">A bullying story with microphone input needs safeguards alongside its dramatic ideas.</p>
+                <p class="hs-deck">The group planned warnings, microphone consent and alternative controls alongside the horror mechanics. Implementation and evaluation of these safeguards are not documented here.</p>
                 <div class="hs-ethics-grid">
-                    <article><b>01</b><div><h3>Age gate</h3><p>18+ rating and a warning before play, so the subject matter is clear in advance.</p></div></article>
+                    <article><b>01</b><div><h3>Age gate</h3><p>An intended 18+ audience and a planned warning before play, so the subject matter is clear in advance.</p></div></article>
                     <article><b>02</b><div><h3>Player wellbeing</h3><p>Warnings for jump scares and photosensitive content, plus a planned reduced-horror option.</p></div></article>
                     <article><b>03</b><div><h3>Cultural context</h3><p>The Hungry Ghost Festival is presented as a real tradition, with in-game context rather than caricature.</p></div></article>
                     <article><b>04</b><div><h3>Microphone consent</h3><p>Explicit permission before listening; a button-based alternative for players who decline.</p></div></article>
@@ -1313,7 +1318,7 @@
                     </div>
                     <div class="hs-close-side">
                         <span class="hs-label">Case-study note</span>
-                        <p style="margin-top: 13px;">The most important design move was making the story’s silence rule playable: the microphone turns the player’s own reaction into part of the risk.</p>
+                        <p style="margin-top: 13px;">The key design connection is between the story's silence rule and the proposed sound-sensitive encounters. My contribution joins narrative, character modelling and spatial routes; the images here show design work and a model rather than gameplay evidence.</p>
                         <a class="hs-repo-link" href="https://github.com/em05niper/Group-Project-Repository">
                             <img src="Image/HauntedSchool_QR_GitHub.svg" alt="QR code to the project GitHub repository">
                             <span><strong>Explore the project</strong><small>github.com/em05niper/Group-Project-Repository</small></span>

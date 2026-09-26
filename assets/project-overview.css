@@ -1,0 +1,146 @@
+/* Shared project overview, based on the approved Revive layout. */
+.project-overview { display: contents; }
+
+@media screen {
+    .project-overview {
+        display: grid;
+        grid-template-columns: minmax(0, 2.4fr) minmax(15rem, 1fr);
+        grid-template-areas: "brief meta" "actions meta";
+        column-gap: clamp(2rem, 4vw, 4rem);
+        row-gap: 1.75rem;
+        margin-top: 3rem;
+        padding: 2rem 0;
+        border-top: 1px solid var(--overview-rule, rgba(255, 178, 71, .25));
+        border-bottom: 1px solid rgba(255, 255, 255, .12);
+    }
+    .project-overview .project-brief {
+        grid-area: brief;
+        display: block;
+        margin: 0;
+        padding: 0;
+        border: 0;
+    }
+    .project-overview .project-brief > div {
+        display: grid;
+        grid-template-columns: 8.5rem minmax(0, 1fr);
+        gap: 1.5rem;
+        padding: 1rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, .08);
+    }
+    .project-overview .project-brief > div:first-child { padding-top: 0; }
+    .project-overview .project-brief > div:last-child { padding-bottom: 0; border: 0; }
+    .project-overview .project-brief dt {
+        padding-top: .15rem;
+        margin: 0;
+        font-size: .8rem;
+        line-height: 1.6;
+        letter-spacing: .02em;
+        color: var(--overview-label, #e7c28b);
+    }
+    .project-overview .project-brief dd { font-size: 1rem; line-height: 1.65; color: #d1cfcb; }
+    .project-overview .hero-meta {
+        grid-area: meta;
+        display: flex;
+        flex-direction: column;
+        align-self: stretch;
+        gap: 1.5rem;
+        max-width: none;
+        margin: 0;
+        padding: 0 0 0 2rem;
+        border-top: 0;
+        border-left: 1px solid rgba(255, 255, 255, .13);
+    }
+    .project-overview .meta-item span { display: block; font-size: .75rem; color: #a5a19a; margin-bottom: .4rem; }
+    .project-overview .meta-item strong { display: block; font-size: .95rem; line-height: 1.55; font-weight: 500; }
+    .project-overview .overview-actions {
+        grid-area: actions;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        margin: 0;
+        align-items: center;
+    }
+    .project-overview .overview-actions > a {
+        box-sizing: border-box;
+        display: inline-flex;
+        align-items: center;
+        gap: .65rem;
+        max-width: 100%;
+        margin-top: 0;
+        font-size: .9rem;
+        min-height: 3.125rem;
+        line-height: 1.3;
+    }
+    .project-overview .overview-primary { border: 1px solid transparent; box-shadow: 0 0 24px var(--overview-glow, rgba(255,178,71,.1)); }
+    .project-overview .overview-secondary {
+        border: 0;
+        border-radius: 0;
+        padding: .8rem .25rem;
+        background: transparent;
+        color: #d1cfcb;
+        font-weight: 500;
+        box-shadow: none;
+    }
+    .project-overview .overview-secondary:hover {
+        color: #fff;
+        background: transparent;
+        transform: translateY(-2px);
+    }
+    .project-overview .overview-secondary .action-label {
+        text-decoration: underline;
+        text-decoration-color: rgba(255,255,255,.25);
+        text-underline-offset: .35em;
+        text-decoration-thickness: 1px;
+    }
+    .project-overview .overview-actions > a > svg { width: 1rem; height: 1rem; flex-shrink: 0; }
+}
+
+@media screen and (max-width: 900px) {
+    .project-overview {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas: "brief" "meta" "actions";
+        row-gap: 1.5rem;
+    }
+    .project-overview .hero-meta {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem 1.5rem;
+        border-left: 0;
+        border-top: 1px solid rgba(255,255,255,.12);
+        padding: 1.5rem 0 0;
+    }
+    .project-overview .meta-item:last-child:nth-child(odd) { grid-column: 1 / -1; }
+}
+@media screen and (max-width: 540px) {
+    .project-overview { margin-top: 2rem; padding: 1.5rem 0; }
+    .project-overview .project-brief > div { grid-template-columns: minmax(0, 1fr); gap: .45rem; }
+    .project-overview .project-brief dt { padding: 0; }
+    .project-overview .project-brief dd { font-size: .95rem; }
+    .project-overview .overview-actions { gap: .65rem 1.25rem; }
+}
+
+@media screen {
+    .project-overview[data-project="CogniStream"] { --overview-label: #91dce6; --overview-rule: rgba(69,230,255,.25); --overview-glow: rgba(69,230,255,.1); }
+    .project-overview[data-project="MiniQuest"] { --overview-label: #b9d896; --overview-rule: rgba(159,209,91,.25); --overview-glow: rgba(159,209,91,.1); }
+    .project-overview[data-project="AICodeGen"] { --overview-label: #cbb3e7; --overview-rule: rgba(192,132,252,.25); --overview-glow: rgba(192,132,252,.1); }
+    .project-overview[data-project="HauntedSchool"] { --overview-label: #da9da9; --overview-rule: rgba(185,66,91,.3); }
+    .project-overview[data-project="Threshold"],
+    .project-overview[data-project="Supermarket_Simulator"] { --overview-label: #c0d5ce; --overview-rule: rgba(255,255,255,.2); }
+    .project-overview--no-actions { grid-template-areas: "brief meta"; }
+    .project-overview .overview-secondary > svg { order: 1; }
+}
+@media screen and (max-width: 900px) {
+    .project-overview--no-actions { grid-template-areas: "brief" "meta"; }
+}
+@media print {
+    .project-overview .overview-added-meta { display: none !important; }
+}
+@media screen and (max-width: 380px) {
+    body:has(.project-overview[data-project="Threshold"]) h1,
+    body:has(.project-overview[data-project="Supermarket_Simulator"]) h1 {
+        font-size: clamp(2rem, 11.5vw, 3rem);
+    }
+    body:has(.project-overview[data-project="Supermarket_Simulator"]) .m-repo {
+        overflow-wrap: anywhere;
+    }
+}

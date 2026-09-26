@@ -644,7 +644,7 @@
                 margin-top: 0.75rem !important;
             }
 
-            /* The three centred section leads ("Six Builds", "Extended
+            /* The three centred section leads ("Versions &amp; Scope", "Extended
                Map Experiment", "Findings") carry large bottom margins
                meant to separate a hero-style intro from a tall scrolling
                column below it. On a short page that alone eats a chunk
@@ -1979,6 +1979,8 @@
             .aic-page-close .aic-qr-card img { border-radius: 0; }
         }
     </style>
+<link rel="stylesheet" href="assets/project-clarity.css">
+<link rel="stylesheet" href="assets/project-overview.css">
 </head>
 <body>
 
@@ -2019,26 +2021,29 @@
     <main>
         <section class="container hero">
             <h1 class="hero-title reveal">Evaluating AI-<br>Assisted <span class="text-outline">Game Code</span></h1>
-            <p class="text-lead reveal delay-1">A versioned experimental study on LLM reliability, spatial reasoning, and robustness. Six builds of the same browser game, each handing more of the logic to a language model, to see where its confidence stops matching its accuracy.</p>
+            <p class="text-lead reveal delay-1">An iterative study of versions v1–v5 and a separate map experiment, examining code consistency and input constraints. v6 is a playable extension outside the analysis.</p>
 
-            <div class="hero-meta reveal delay-2">
+            <div class="project-overview" data-project="AICodeGen">
+<dl class="project-brief" aria-label="Project scope and contribution"><div><dt>My contribution</dt><dd>Hand-written baseline, experiment design, prompts, manual repair, testing and interpretation.</dd></div><div><dt>Evidence</dt><dd>v1–v5 logs and recordings; five solvable maps and an all-wall prompt comparison.</dd></div><div><dt>Scope</dt><dd>One model and a small browser game. v6 is a demo, not part of the reliability analysis.</dd></div></dl>
+<div class="hero-meta">
                 <div class="meta-item"><span>Researcher</span><strong>Shuhan Zhang · Y3931662</strong></div>
                 <div class="meta-item"><span>Module</span><strong>AI and its Application in Creative Practice · TFT00112M-A</strong></div>
                 <div class="meta-item"><span>Type</span><strong>Practice-based Research Project</strong></div>
-                <div class="meta-item"><span>Institution</span><strong>University of York · 2025026</strong></div>
+                <div class="meta-item"><span>Institution</span><strong>University of York · 2025–2026</strong></div>
             </div>
 
-            <div class="hero-actions reveal delay-3">
-                <a href="v6_scene_music_system.html" target="_blank" rel="noopener" class="gameplay-btn">
+            <div class="hero-actions overview-actions">
+                <a href="v6_scene_music_system.html" target="_blank" rel="noopener" class="gameplay-btn overview-primary">
                     Open the live build
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
                 </a>
-                <a href="https://github.com/Shuhan0001/Evaluating-AI--Assisted-Game-Code" target="_blank" rel="noopener" class="gameplay-btn-secondary">
-                    View the project on GitHub
+                <a href="https://github.com/Shuhan0001/Evaluating-AI--Assisted-Game-Code" target="_blank" rel="noopener" class="gameplay-btn-secondary overview-secondary">
+                    <span class="action-label">View on GitHub</span>
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.73.5.75 5.48.75 11.75c0 5.02 3.26 9.28 7.78 10.78.57.1.78-.25.78-.55 0-.27-.01-1.15-.02-2.09-3.16.69-3.83-1.34-3.83-1.34-.52-1.31-1.26-1.66-1.26-1.66-1.03-.7.08-.69.08-.69 1.14.08 1.74 1.17 1.74 1.17 1.01 1.73 2.65 1.23 3.3.94.1-.73.4-1.23.72-1.51-2.52-.29-5.17-1.26-5.17-5.6 0-1.24.44-2.25 1.17-3.04-.12-.29-.51-1.45.11-3.02 0 0 .96-.31 3.15 1.16a10.9 10.9 0 0 1 5.74 0c2.19-1.47 3.15-1.16 3.15-1.16.62 1.57.23 2.73.11 3.02.73.79 1.17 1.8 1.17 3.04 0 4.35-2.65 5.31-5.18 5.59.41.35.77 1.05.77 2.12 0 1.53-.01 2.76-.01 3.14 0 .3.2.66.79.55 4.52-1.51 7.77-5.76 7.77-10.78C23.25 5.48 18.27.5 12 .5Z"/></svg>
                 </a>
             </div>
-        </section>
+        </div>
+</section>
 
         <section class="section container">
             <div class="grid-split">
@@ -2046,7 +2051,7 @@
                     <h2>The<br><span class="text-outline">Question</span></h2>
                 </div>
                 <div>
-                    <p class="text-body reveal">AI coding assistants are already part of how many developers build games, lowering the barrier for people with little or no programming background. But game logic has to be precise. A small error in collision detection or spawn handling doesn't stay small. A character gets stuck in a wall, or a core mechanic breaks outright. This project treats that gap as an open question rather than an assumption. It tests the question directly, building the same small game six times and handing progressively more of the implementation to the model, to see where it holds up and where it doesn't.</p>
+                    <p class="text-body reveal">Game logic depends on consistent collision, state and spawn rules. I used a small browser game to investigate whether AI-generated additions preserve those rules across versions v1–v5, then tested spawn selection on separate maps. v6 adds scenes and music as a demo outside the analysis.</p>
 
                     <div class="rq-list reveal delay-1">
                         <div class="rq-item">
@@ -2073,7 +2078,7 @@
             <div class="grid-split">
                 <div class="sticky-col reveal">
                     <h3 style="font-size: 1.5rem;">Recording method</h3>
-                    <p class="text-body" style="font-size: 1rem; margin-top: 1rem;">Every round left a paper trail: the prompt that produced it, the full output file, a screen recording of it running, and a written log tying the three together. Each version's behaviour stays traceable back to the exact instruction that caused it.</p>
+                    <p class="text-body" style="font-size: 1rem; margin-top: 1rem;">For each iteration, I recorded the prompt, output file, screen recording and a written log. These records connect each observation to the tested version and instruction; they do not by themselves establish the cause of every failure.</p>
                 </div>
                 <div>
                     <div class="version-timeline">
@@ -2121,7 +2126,7 @@
                             <div><div class="version-tag">v6</div><div class="version-time">scaffold</div></div>
                             <div class="version-body">
                                 <h4>Scene manager + music</h4>
-                                <p>An audio module and title/game scene system, added as a working demo rather than an object of study. It sits outside the scope of the analysis, but it's playable above.</p>
+                                <p>v6 adds a title/game scene system and music to the prototype. It is a playable demonstration of the extension, outside the v1–v5 reliability analysis.</p>
                             </div>
                         </div>
                     </div>
@@ -2137,7 +2142,7 @@
                     <p class="version-time" style="margin-top: 1rem;">scaffold · outside the analysis</p>
                 </div>
                 <div>
-                    <p class="text-body reveal">An audio module and title/game scene system, added as a working demo rather than an object of study. It extends the v1–v5 mainline but sits outside the scope of the analysis — evidence of how far a non-technical collaborator could get with AI assistance, not a claim about reliability. It's playable from the live build link on the opening page.</p>
+                    <p class="text-body reveal">v6 adds a title/game scene system and music to the prototype. It is a playable demonstration of the extension, outside the v1–v5 reliability analysis.</p>
                 </div>
             </div>
         </section>
@@ -2219,7 +2224,7 @@ on-canvas message and return an error object or set `spawn = null`.
 Only if walkable tiles exist should the script choose a spawn
 and allow movement.</span></code></pre>
                     </div>
-                    <p class="text-body reveal delay-2">With that clause in place, map06_v2 returned exactly what it should: no valid spawn point, reported plainly, map untouched. The model could tell a wall from a floor all along. What it couldn't do on its own was report failure instead of manufacturing a false success.</p>
+                    <p class="text-body reveal delay-2">In the recorded map06 tests, the model modified the all-wall map without an explicit restriction. With map modification forbidden and a failure response specified, it returned no valid spawn point and preserved the map.</p>
                 </div>
             </div>
         </section>
@@ -2232,20 +2237,20 @@ and allow movement.</span></code></pre>
                 <div class="grid-split">
                     <div class="sticky-col reveal">
                         <span class="finding-num">01</span>
-                        <h3 style="font-size: 1.6rem; margin-top: 0.6rem;">Iteration speeds up implementation</h3>
+                        <h3 style="font-size: 1.6rem; margin-top: 0.6rem;">Recorded iteration time and readability</h3>
                     </div>
                     <div>
-                        <p class="text-body reveal">When the requirements were clearly defined, AI code accelerated feature implementation noticeably, especially for system expansion and code organisation. Against the v1 baseline, the AI-generated versions showed clearer function division, better naming, and more complete comments, all of which lowered maintenance cost as complexity increased across v2 to v5.</p>
+                        <p class="text-body reveal">In these iterations, the AI outputs often had clearer function names, comments and separation of logic than my manual baseline. That made them easier for me to inspect. The recorded times describe individual iterations, not a controlled comparison of total development or maintenance effort.</p>
                     </div>
                 </div>
 
                 <div class="grid-split" style="margin-top: 8vh;">
                     <div class="sticky-col reveal">
                         <span class="finding-num">02</span>
-                        <h3 style="font-size: 1.6rem; margin-top: 0.6rem;">Spatial recognition was never the problem</h3>
+                        <h3 style="font-size: 1.6rem; margin-top: 0.6rem;">Map tests point to an integration problem</h3>
                     </div>
                     <div>
-                        <p class="text-body reveal">The extended experiment confirms the AI can reliably tell walls from walkable floor on simple maps. That means the v3 spawn bug wasn't a failure to understand the map. It was more likely the reuse of earlier spawn logic during iteration, without re-checking it against the feasibility of the new one.</p>
+                        <p class="text-body reveal">The model selected valid spawn points on the five solvable test maps. This suggests that the v3 failure may have involved integration of spawn logic, rather than map recognition alone. The map tests do not establish a general spatial-reasoning capability.</p>
                     </div>
                 </div>
 
@@ -2255,7 +2260,7 @@ and allow movement.</span></code></pre>
                         <h3 style="font-size: 1.6rem; margin-top: 0.6rem;">Executability wins over constraint</h3>
                     </div>
                     <div>
-                        <p class="text-body reveal">Given a genuinely unsolvable input, the model's default was to alter the original data until it had something runnable to return, not to say no solution existed.</p>
+                        <p class="text-body reveal">In map06_v1, the model changed the all-wall input to produce a runnable result. In map06_v2, the revised prompt prohibited mutation and allowed a no-spawn response. These are observations from the recorded tests, not a model-wide failure rate.</p>
                         <div class="quote-block reveal delay-1">
                             <p>This behaviour can be characterised as executability-oriented generation, where the model prioritises producing runnable outputs even at the cost of violating input constraints.</p>
                             <span>Analysis, section 5.3</span>
@@ -2269,7 +2274,7 @@ and allow movement.</span></code></pre>
                         <h3 style="font-size: 1.6rem; margin-top: 0.6rem;">Constraint awareness has to be stated</h3>
                     </div>
                     <div>
-                        <p class="text-body reveal">The model showed no strong built-in awareness of an "input cannot be modified" restriction unless the prompt said so explicitly. In practice, that means AI-generated code in high-reliability logic still needs human review and a verification step. The constraint has to be written down, not assumed.</p>
+                        <p class="text-body reveal">The two map06 runs led me to state input boundaries and acceptable failure responses explicitly. Human review remains part of my workflow; this small, single-model study does not establish how reliably that prompt would work across repeated runs or other models.</p>
                     </div>
                 </div>
             </div>
@@ -2282,7 +2287,7 @@ and allow movement.</span></code></pre>
                 </div>
                 <div>
                     <p class="text-body reveal">None of this is really about whether generative AI can produce working game code. It clearly can. The more useful question is how AI integration reshapes decision-making across an iterative development process, and who ends up responsible when something breaks. Three patterns run through this study: a generation style that favours runnable output, compliance with input constraints that is fragile unless stated outright, and a development role that shifts steadily toward human validation as complexity grows.</p>
-                    <p class="text-body reveal">Taken together, this points to a specific position: AI belongs in a small-scale development workflow as an aid for prototyping and coding, not as an independent decision-maker. The audio-scene branch, v6, was left out of the analysis for this reason. It's useful evidence of how far a non-technical collaborator could get with AI assistance, but it isn't a claim about reliability.</p>
+                    <p class="text-body reveal">I use AI as an aid for prototyping and coding, with responsibility for checking the output remaining with me. v6 demonstrates an additional scene and audio system; it was not evaluated as part of the reliability study.</p>
 
                     <p class="data-label reveal" style="margin-top: 3rem;">Limitations</p>
                     <p class="text-body reveal">The study used a single model with no cross-model comparison. The test environment, a small pixel game with a handful of systems, doesn't generalise cleanly to larger production codebases. The repair process itself also involved human judgement, which leaves room for subjective bias in how "correct" was decided. Cross-model testing, larger environments, and automated validation tooling would all be reasonable next steps.</p>
@@ -2297,7 +2302,7 @@ and allow movement.</span></code></pre>
                 </div>
                 <div>
                     <p class="text-lead reveal">The developer's role didn't disappear across these six versions. It moved from writing implementation to validating what the model decided to change.</p>
-                    <p class="text-body reveal">Across v1 to v5, clear prompts reliably produced playable features, written more readably than the hand-written baseline. But the same runs showed that when a task is unresolvable or a scene starts out misconfigured, the model keeps adjusting the underlying data until the result looks executable, instead of surfacing the problem. That is the practical takeaway of RQ1 and RQ2: logical consistency holds up well under clear constraints, and breaks down where the constraints are implicit. Used with clear prompts, versioned logs, and a human checking the boundary conditions, AI is a useful collaborator in small-scale game development. It just can't be left to police its own assumptions.</p>
+                    <p class="text-body reveal">Versions v2, v4 and v5 produced working features in the recorded tests, while v3 required manual repair. The map06 branch showed why runnable output is not enough: the input must also remain intact. My takeaway is to preserve prompts and outputs, test boundary conditions and review unrequested changes, while treating the findings as specific to this small, single-model study.</p>
                 </div>
             </div>
         </section>
@@ -2317,7 +2322,7 @@ and allow movement.</span></code></pre>
                     <p class="aic-summary">A versioned study of where AI-generated browser-game code remains reliable—and what happens when runnable output conflicts with the truth of the input.</p>
                     <div class="aic-cover-meta">
                         <div><span>Researcher</span><strong>Shuhan Zhang · Y3931662</strong></div>
-                        <div><span>Study</span><strong>Six builds + map stress test</strong></div>
+                        <div><span>Study</span><strong>v1–v5 + map tests; v6 demo</strong></div>
                         <div><span>Module</span><strong>AI in Creative Practice</strong></div>
                         <div><span>Focus</span><strong>Reliability · constraints · validation</strong></div>
                     </div>
@@ -2355,9 +2360,9 @@ and allow movement.</span></code></pre>
         </section>
 
         <section class="aicodegen-full-only aicodegen-full-page aic-page-versions" aria-label="Six-build iteration study">
-            <div class="aic-topline"><span class="aic-kicker">Versioned study</span><span class="aic-chapter">Six builds</span></div>
+            <div class="aic-topline"><span class="aic-kicker">Versioned study</span><span class="aic-chapter">v1–v5 + v6 demo</span></div>
             <h2 class="aic-heading">From hand-written baseline to <em>AI-assisted systems</em></h2>
-            <p class="aic-deck">Implementation became dramatically faster, but each added dependency increased the need to verify what the model assumed.</p>
+            <p class="aic-deck">The report records 27 minutes for the manual baseline and one to two minutes for the AI iterations. These timings do not separately account for all prompting, repair and validation work.</p>
             <div class="aic-content aic-version-grid">
                 <div class="aic-ledger-head"><span>Build / time</span><span>Added</span><span>Observed behaviour</span><span>Review</span></div>
                 <article class="aic-card aic-version-card"><div class="aic-version-head"><span class="aic-version-no">v1</span><span class="aic-version-time">27 min · manual</span></div><h3>Baseline</h3><p>Character movement and basic attack actions, written by the researcher as the comparison point.</p><span class="aic-status">No repair</span></article>
@@ -2423,7 +2428,7 @@ and allow movement.</span></code></pre>
                 </div>
                 <div class="aic-evidence-stack">
                     <article class="aic-card aic-stat-card"><strong>5 / 5</strong><span>Solvable maps were read correctly without modifying the tile data.</span></article>
-                    <article class="aic-card aic-insight-card"><span class="aic-label">Diagnostic shift</span><h3>Spatial recognition was not the core problem.</h3><p>The divergence appears only when no valid answer exists. The critical variable is how failure is handled—not whether walls can be recognised.</p></article>
+                    <article class="aic-card aic-insight-card"><span class="aic-label">Diagnostic shift</span><h3>Map recognition alone may not explain v3.</h3><p>The all-wall case raised a further question: would the model preserve an impossible input or change it? The two recorded prompts produced different outcomes.</p></article>
                 </div>
             </div>
             <div class="aic-folio"></div>
@@ -2449,8 +2454,8 @@ and allow movement.</span></code></pre>
             <h2 class="aic-heading">What improved, and <em>what v3 exposed</em></h2>
             <p class="aic-deck">The strongest benefit appeared in well-defined implementation work; the decisive failure emerged at the boundary between new logic and existing state.</p>
             <div class="aic-content aic-findings-layout">
-                <article class="aic-card aic-finding-card"><span class="aic-finding-no">FINDING 01</span><h3>Iteration accelerates implementation</h3><p>AI-generated versions added features in one to two minutes and often improved naming, comments and function separation over the manual baseline.</p><div class="aic-metric"><strong>1–2m</strong><span>AI build time after the 27-minute manual baseline</span></div></article>
-                <article class="aic-card aic-finding-card"><span class="aic-finding-no">FINDING 02</span><h3>Spatial recognition was never the problem</h3><p>Every solvable map was interpreted correctly. The v3 bug is better explained as unverified spawn logic carried into a changed environment.</p><div class="aic-logic-strip"><span>Wall detection<br><b style="color:var(--aic-green)">worked</b></span><b>≠</b><span>Spawn feasibility<br><b style="color:var(--aic-red)">unchecked</b></span></div></article>
+                <article class="aic-card aic-finding-card"><span class="aic-finding-no">FINDING 01</span><h3>Recorded iteration time and readability</h3><p>AI-generated versions added features in one to two minutes and often improved naming, comments and function separation over the manual baseline.</p><div class="aic-metric"><strong>1–2m</strong><span>Recorded iteration time; not total development effort</span></div></article>
+                <article class="aic-card aic-finding-card"><span class="aic-finding-no">FINDING 02</span><h3>Map tests point to an integration problem</h3><p>The model selected valid spawn points on all five solvable test maps. The v3 failure may instead have involved integrating spawn logic into the changed environment.</p><div class="aic-logic-strip"><span>Wall detection<br><b style="color:var(--aic-green)">worked</b></span><b>≠</b><span>Spawn feasibility<br><b style="color:var(--aic-red)">unchecked</b></span></div></article>
             </div>
             <div class="aic-folio"></div>
         </section>
@@ -2461,7 +2466,7 @@ and allow movement.</span></code></pre>
             <p class="aic-deck">The unsolvable map exposed the risk most clearly: absent a stated boundary, the model altered the problem rather than reporting failure.</p>
             <div class="aic-content aic-findings-layout">
                 <article class="aic-card aic-finding-card aic-quote-card"><span class="aic-finding-no">FINDING 03</span><div class="aic-quote-mark">“</div><blockquote>This behaviour can be characterised as executability-oriented generation, where the model prioritises producing runnable outputs even at the cost of violating input constraints.</blockquote><cite>Analysis · section 5.3</cite></article>
-                <article class="aic-card aic-finding-card"><span class="aic-finding-no">FINDING 04</span><h3>Constraint awareness has to be stated</h3><p>The model respected an immutable-input boundary only after the prompt made it explicit and defined acceptable failure behaviour.</p><div class="aic-logic-strip"><span>Implicit boundary<br><b style="color:var(--aic-red)">data changed</b></span><b>→</b><span>Explicit boundary<br><b style="color:var(--aic-green)">failure reported</b></span></div></article>
+                <article class="aic-card aic-finding-card"><span class="aic-finding-no">FINDING 04</span><h3>Constraint awareness has to be stated</h3><p>In the recorded pair of tests, the revised prompt preserved the map and returned failure. This informed my workflow; it does not establish a general guarantee of constraint compliance.</p><div class="aic-logic-strip"><span>Implicit boundary<br><b style="color:var(--aic-red)">data changed</b></span><b>→</b><span>Explicit boundary<br><b style="color:var(--aic-green)">failure reported</b></span></div></article>
             </div>
             <div class="aic-folio"></div>
         </section>
@@ -2492,7 +2497,7 @@ and allow movement.</span></code></pre>
             <div class="aic-content aic-closing-layout">
                 <div class="aic-reflection">
                     <p class="aic-big-line">From writing every implementation to <em>validating what the model decided to change.</em></p>
-                    <p>Clear prompts produced playable features and readable code. Misconfigured or impossible inputs exposed the deeper risk: the model may manufacture success unless invariants and acceptable failure states are explicit. With versioned evidence and human boundary checks, AI remains a useful small-scale development collaborator.</p>
+                    <p>The study produced playable features, a documented spawn failure and a contrasting pair of responses to an impossible map. Those cases made human validation more explicit in my workflow. Broader reliability claims would require repeated tests, other models and larger systems.</p>
                     <div class="aic-disclosure">Individual project by Shuhan Zhang. Gemini 3 Pro Thinking generated v2–v6 and the extended-experiment responses from author-written prompts. All outputs were tested, screen-recorded, logged and reviewed by the author.</div>
                 </div>
                 <div class="aic-qr-stack">

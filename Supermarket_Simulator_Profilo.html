@@ -100,7 +100,8 @@
         .github-btn:hover svg { transform: translate(2px, -2px); }
         .github-btn:active { transform: translateY(-1px) scale(0.98); }
     </style>
-    <link rel="stylesheet" href="tools/case_study_print.css">
+<link rel="stylesheet" href="assets/project-clarity.css">
+<link rel="stylesheet" href="assets/project-overview.css">
 </head>
 <body class="selection:bg-primary selection:text-white">
 
@@ -135,10 +136,7 @@
                     <span class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-mono uppercase tracking-widest">Low-Poly</span>
                     <span class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-mono uppercase tracking-widest">Collaborative Team</span>
                 </div>
-                <a href="https://github.com/TaoMingxuan/Lets_Supermarket" target="_blank" rel="noopener" class="hover-trigger github-btn mt-8">
-                    View the project on GitHub
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.79-.25.79-.55 0-.27-.01-1.16-.02-2.11-3.2.7-3.88-1.36-3.88-1.36-.52-1.34-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.69 1.25 3.35.96.1-.74.4-1.25.73-1.54-2.56-.29-5.25-1.28-5.25-5.7 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.06 11.06 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.24 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.43-2.69 5.41-5.26 5.69.42.36.78 1.07.78 2.15 0 1.55-.01 2.8-.01 3.18 0 .3.21.66.8.55A10.51 10.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
-                </a>
+                
             </div>
             <div class="lg:col-span-1 lg:pt-2">
                 <div class="border-l-2 border-white/20 pl-6 py-1">
@@ -148,7 +146,15 @@
                 </div>
             </div>
         </div>
-    </section>
+    <div class="project-overview" data-project="Supermarket_Simulator">
+<dl class="project-brief" aria-label="Project scope and contribution"><div><dt>My contribution</dt><dd>Game and interaction design on a four-person team, alongside narrative and art collaborators.</dd></div><div><dt>Current build</dt><dd>Ordering, restocking, pricing, opening and checkout, scoped around two starter goods.</dd></div><div><dt>Planned expansion</dt><dd>Additional goods, buildable zones, staff systems and story hooks. No completed evaluation claimed.</dd></div></dl>
+<div class="hero-meta overview-added-meta"><div class="meta-item"><span>Engine</span><strong>Unreal Engine 5</strong></div><div class="meta-item"><span>Team</span><strong>Four-person project</strong></div><div class="meta-item"><span>My role</span><strong>Game &amp; interaction design</strong></div><div class="meta-item"><span>Status</span><strong>In development</strong></div></div>
+<div class="overview-actions"><a href="https://github.com/TaoMingxuan/Lets_Supermarket" target="_blank" rel="noopener" class="hover-trigger github-btn overview-secondary">
+                    <span class="action-label">View on GitHub</span>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.79-.25.79-.55 0-.27-.01-1.16-.02-2.11-3.2.7-3.88-1.36-3.88-1.36-.52-1.34-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.69 1.25 3.35.96.1-.74.4-1.25.73-1.54-2.56-.29-5.25-1.28-5.25-5.7 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.06 11.06 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.24 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.43-2.69 5.41-5.26 5.69.42.36.78 1.07.78 2.15 0 1.55-.01 2.8-.01 3.18 0 .3.21.66.8.55A10.51 10.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+                </a></div>
+</div>
+</section>
 
     <!-- Overview -->
     <section class="py-14 border-t border-white/10">
@@ -187,28 +193,28 @@
 
     <!-- Systems -->
     <section class="py-14 border-t border-white/10">
-        <h2 class="text-sm font-mono tracking-widest text-white mb-8 uppercase">02 / Systems</h2>
+        <h2 class="text-sm font-mono tracking-widest text-white mb-8 uppercase">02 / Planned Systems</h2>
         <div class="flex flex-col">
             <div class="system-row grid grid-cols-1 md:grid-cols-[auto_1fr] gap-x-8 gap-y-2 py-7">
                 <div class="flex items-baseline gap-4 md:min-w-[220px]">
                     <span class="system-index text-xs font-mono text-gray-600">01</span>
                     <span class="text-white font-medium text-lg">Staff AI</span>
                 </div>
-                <p class="text-gray-500 text-sm md:text-base font-light leading-relaxed max-w-lg">Recruited NPCs each take on a single assigned role, and their efficiency varies from character to character. Mistreating them lowers morale, and productivity along with it.</p>
+                <p class="text-gray-500 text-sm md:text-base font-light leading-relaxed max-w-lg">The planned staff system assigns each recruited NPC a role, with differences in efficiency and morale. These relationships are part of the design direction while the first playable shop loop is being built.</p>
             </div>
             <div class="system-row grid grid-cols-1 md:grid-cols-[auto_1fr] gap-x-8 gap-y-2 py-7 border-t border-white/8">
                 <div class="flex items-baseline gap-4 md:min-w-[220px]">
                     <span class="system-index text-xs font-mono text-gray-600">02</span>
                     <span class="text-white font-medium text-lg">Dynamic Pricing</span>
                 </div>
-                <p class="text-gray-500 text-sm md:text-base font-light leading-relaxed max-w-lg">Wholesale prices fluctuate like a real market, rewarding players who buy in when costs dip. Each customer also carries their own acceptable price range, and demand falls off sharply once you go beyond it.</p>
+                <p class="text-gray-500 text-sm md:text-base font-light leading-relaxed max-w-lg">The planned pricing system links wholesale cost, shelf price and customer tolerance. The first loop uses two starter goods to explore that relationship before the economy expands.</p>
             </div>
             <div class="system-row grid grid-cols-1 md:grid-cols-[auto_1fr] gap-x-8 gap-y-2 py-7 border-t border-white/8">
                 <div class="flex items-baseline gap-4 md:min-w-[220px]">
                     <span class="system-index text-xs font-mono text-gray-600">03</span>
                     <span class="text-white font-medium text-lg">Store Building</span>
                 </div>
-                <p class="text-gray-500 text-sm md:text-base font-light leading-relaxed max-w-lg">Modular zones like the bakery and produce section can be paired for bonuses, or placed badly enough to hurt sales, like setting a restroom right next to the deli counter.</p>
+                <p class="text-gray-500 text-sm md:text-base font-light leading-relaxed max-w-lg">The proposed building system uses relationships between zones, such as complementary food sections or conflicting placements. These are design rules for future expansion, not measured effects on player behaviour.</p>
             </div>
             <div class="system-row grid grid-cols-1 md:grid-cols-[auto_1fr] gap-x-8 gap-y-2 py-7 border-t border-white/8">
                 <div class="flex items-baseline gap-4 md:min-w-[220px]">
@@ -306,34 +312,34 @@
     </section>
 
     <section class="case-page case-only" data-project="Let's Supermarket" data-total="06">
-        <div class="case-topline"><span>02 / Economy + space</span><span>Connected decisions</span></div>
+        <div class="case-topline"><span>02 / Planned economy + space</span><span>Connected decisions</span></div>
         <h2 class="case-title">The shelf and the price tag<br>both change the <em>outcome.</em></h2>
         <div class="m-systems-grid">
             <div class="m-system">
                 <span class="case-label">System A</span>
                 <h3>Dynamic pricing</h3>
-                <p>Wholesale costs fluctuate, creating moments to buy low. Each customer has an acceptable price range; demand drops when the store prices beyond it.</p>
+                <p>The planned system connects fluctuating wholesale costs with shelf prices and customer tolerance. This is a design model for the prototype, not a validated economy.</p>
                 <div class="m-equation"><strong>Buy cost</strong><i>→</i><strong>Shelf price</strong><i>→</i><strong>Demand</strong></div>
                 <p class="case-small" style="margin-top:14px;">Design intent: profit depends on reading both supply and customer tolerance.</p>
             </div>
             <div class="m-system">
                 <span class="case-label">System B</span>
                 <h3>Store building</h3>
-                <p>Modular zones can reinforce each other or create friction. The project page gives bakery and produce as a productive pairing, and a restroom beside the deli as a bad one.</p>
+                <p>The proposed building rules let zones reinforce or conflict with one another. Bakery and produce, or a restroom beside a deli, illustrate the intended relationships.</p>
                 <div class="m-zones"><span><small>Reinforces</small>Bakery + Produce</span><span><small>Hurts sales</small>Restroom + Deli</span></div>
             </div>
         </div>
     </section>
 
     <section class="case-page case-only" data-project="Let's Supermarket" data-total="06">
-        <div class="case-topline"><span>03 / People + progression</span><span>Two supporting systems</span></div>
+        <div class="case-topline"><span>03 / Planned people + progression</span><span>Two supporting systems</span></div>
         <h2 class="case-title">A store is more than<br>its <em>inventory.</em></h2>
         <p class="case-deck">Staff behaviour and small narrative hooks give the management loop a social layer.</p>
         <div class="m-behaviour-grid">
             <article>
                 <span class="case-label">Staff AI</span>
                 <h3>Role, efficiency, morale</h3>
-                <p>Recruited NPCs take a single assigned role. Their efficiency varies, and poor treatment lowers morale and productivity.</p>
+                <p>The planned staff system gives NPCs an assigned role, with efficiency and morale intended to affect their work.</p>
                 <ol><li><b>01</b>Recruit an NPC</li><li><b>02</b>Assign a role</li><li><b>03</b>Manage morale as well as output</li></ol>
             </article>
             <article>
@@ -366,10 +372,10 @@
 
     <section class="case-page case-only" data-project="Let's Supermarket" data-total="06">
         <div class="case-topline"><span>05 / Current evidence</span><span>Open project</span></div>
-        <h2 class="case-title">A store day to<br><em>prove the loop.</em></h2>
+        <h2 class="case-title">A first build to<br><em>test the loop.</em></h2>
         <div class="m-close-grid">
             <div>
-                <p class="m-close-lead">The first build tests the five-step loop with two starter goods.</p>
+                <p class="m-close-lead">The team is developing the five-step loop around two starter goods before expanding the demo.</p>
                 <p class="case-copy">The larger demo aims to add a handful of buildable structures, a couple of controllable characters, more sellable goods and a short story hook.</p>
             </div>
             <div class="m-close-side">
