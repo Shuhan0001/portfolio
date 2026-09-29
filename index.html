@@ -10,10 +10,9 @@
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary">
 
-    <!-- Small-text typeface (index numbers, tags, labels) ?kept separate
-         from the big display headings, which stay on the system font.
-         Self-hosted instead of loaded from fonts.googleapis.com so the
-         page doesn't stall on a third-party font request. -->
+    <!-- Self-hosted display and small-text faces keep the title treatment
+         independent of third-party font services. -->
+    <link rel="preload" href="Fonts/Anton-Regular.ttf" as="font" type="font/ttf" crossorigin>
     <link rel="preload" href="Fonts/FragmentMono-Regular.ttf" as="font" type="font/ttf" crossorigin>
 
     <!-- Tailwind CSS -->
@@ -352,6 +351,8 @@
     </style>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/david/scene.css">
+    <link rel="stylesheet" href="assets/index-transitions.css">
+    <link rel="stylesheet" href="assets/index-typography.css">
 </head>
 <body class="selection:bg-primary selection:text-white">
 
@@ -450,7 +451,16 @@
             <section id="zone-about" class="w-full bg-[#050505]/25 backdrop-blur-md relative z-20 rounded-t-[3rem] shadow-[0_-20px_50px_rgba(0,0,0,0.5),0_1px_0_0_rgba(255,255,255,0.09)_inset] border-t border-white/[0.12] pointer-events-auto pt-32 pb-20 px-8 md:px-24">
                 <div class="max-w-4xl mx-auto w-full">
                     <h2 class="section-kicker mb-4 gsap-reveal">00 / About</h2>
-                    <h3 class="text-4xl md:text-6xl font-bold tracking-tight mb-6 gsap-reveal">Hi, I'm <span class="text-outline">Ashton (Shuhan)</span>.</h3>
+                    <h3 class="text-4xl md:text-6xl font-bold tracking-tight mb-6 gsap-reveal" aria-label="Hi, I'm Ashton Zhang.">
+                        Hi, I'm
+                        <span class="text-outline about-name-swap" tabindex="0" aria-label="Ashton Zhang">
+                            <span class="about-name-swap__slot">
+                                <span class="about-name-swap__word">Ashton</span>
+                                <span class="about-name-swap__word about-name-swap__hover" aria-hidden="true">Shuhan</span>
+                            </span>
+                            <span class="about-name-swap__tail"> Zhang</span>
+                        </span>.
+                    </h3>
                     <p class="text-gray-400 text-lg leading-relaxed max-w-2xl font-light gsap-reveal">
                         I'm a BSc (Hons) Interactive Media graduate of the University of York, with Upper Second-Class Honours. I work where game systems design meets human-computer interaction. My practice ranges from controlled in-engine experiments on player behaviour to speculative and critical design that makes its argument through an interface rather than an essay. Lately I've been moving toward tangible and embodied interaction, building instruments you hold rather than screens you tap.
                     </p>
@@ -876,6 +886,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="assets/index-transitions.js"></script>
 
     <script>
         // --------------------------------------------------------
@@ -907,9 +918,10 @@
         const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
 
         const lenis = new Lenis({
-            duration: 1.2,
+            duration: 1.05,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-            smooth: !prefersReducedMotion,
+            smoothWheel: !prefersReducedMotion,
+            syncTouch: false,
         });
 
         // 只用 gsap.ticker 驱动 Lenis，避免双?tick
@@ -929,19 +941,11 @@
                 if (!target) return;
                 e.preventDefault();
 
-                const scrollOptions = {
-                    duration: 1.6,
-                    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
-                };
-
-                if (href === '#contact-section') {
-                    // Contact 直接瞬间跳转，彻底跳过中间那些滚动锁定区?
-                    // （横?pin 轨道、堆叠卡片），不用再去处理途中禁用/
-                    // 恢复 ScrollTrigger 的时机问题，最简单也最不容易出错?
-                    lenis.scrollTo(target, { immediate: true });
-                } else {
-                    lenis.scrollTo(target, scrollOptions);
-                }
+                lenis.scrollTo(target, {
+                    duration: href === '#contact-section' ? 1.25 : 1.05,
+                    immediate: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+                    easing: t => 1 - Math.pow(1 - t, 4)
+                });
             });
         });
 
@@ -976,100 +980,7 @@
         // --------------------------------------------------------
         const heroSection = document.querySelector("#hero-content-wrapper").parentElement;
         
-        const heroTl = gsap.timeline({
-            scrollTrigger: {
-                trigger: heroSection,
-                start: "top top",
-                end: () => prefersReducedMotion ? "bottom top" : "+=" + window.innerHeight * 1.9,
-                pin: true,         // 将大标题区域固定在原地
-                pinSpacing: !prefersReducedMotion,
-                invalidateOnRefresh: true,
-                onUpdate: (self) => {
-                    window.davidScrollProgress = self.progress;
-                    window.dispatchEvent(new CustomEvent('david:progress', { detail: self.progress }));
-                },
-                scrub: true
-            }
-        });
-
-        // The rear title recedes separately from the foreground surname.
-        heroTl.to("#hero-back-layer", {
-            scale: 0.92,
-            x: "-4vw",
-            y: "-2vh",
-            ease: "none",
-            duration: 0.42
-        }, 0).to("#hero-back-layer", {
-            opacity: 0,
-            ease: "power2.inOut",
-            duration: 0.3
-        }, 0.04);
-        heroTl.to("#hero-content-wrapper", {
-            scale: 0.75,       // 缩小，营造向背景折叠退后的空间感
-            y: "8vh",          // 稍微往下沉一点
-            ease: "none",
-            duration: 0.42
-        }, 0).to("#hero-content-wrapper", {
-            opacity: 0,        // 逐渐完全消失
-            ease: "power2.inOut",
-            duration: 0.3
-        }, 0.08);
-        // Keep the remaining scroll time for the sculpture's separation.
-        heroTl.to({}, { duration: 0.58 }, 0.42);
-
-        // 注：搜索框已经被搬到 #site-search-fixed（固定定位，位于
-        // #hero-content-wrapper 之外），不再跟 Hero 区一起缩放/淡出，
-        // 所以这里不需要再给它单独同步一个 opacity 补间了。
-
-        const stackCards = gsap.utils.toArray('.stack-card-wrapper');
-        stackCards.forEach((card, index) => {
-            const innerCard = card.querySelector('.stack-card-inner');
-            if (index < stackCards.length - 1) {
-                gsap.to(innerCard, {
-                    scale: 0.9,
-                    opacity: 0.3,
-                    y: -20,
-                    scrollTrigger: {
-                        trigger: card,
-                        start: "top top",
-                        end: () => `+=${window.innerHeight}`,
-                        scrub: true,
-                        invalidateOnRefresh: true
-                    }
-                });
-            }
-        });
-
-        const track = document.getElementById('featured-track');
-        gsap.to(track, {
-            x: () => -(track.scrollWidth - window.innerWidth) + "px",
-            ease: "none",
-            scrollTrigger: {
-                trigger: "#zone-2-featured",
-                start: "top top", 
-                end: () => "+=" + track.scrollWidth, 
-                pin: true,        
-                scrub: 1,         
-                invalidateOnRefresh: true
-            }
-        });
-
-        // --------------------------------------------------------
-        // 3.5 Logic & Form 手风琴展开/收起 同步 ScrollTrigger
-        // --------------------------------------------------------
-        const accordionStack = document.querySelector('.group\\/accordion');
-        if (accordionStack && window.ResizeObserver) {
-            let refreshQueued = false;
-            const syncScrollTrigger = () => {
-                if (refreshQueued) return;
-                refreshQueued = true;
-                requestAnimationFrame(() => {
-                    ScrollTrigger.refresh();
-                    refreshQueued = false;
-                });
-            };
-            new ResizeObserver(syncScrollTrigger).observe(accordionStack);
-        }
+        setupIndexTransitions({ lenis, heroSection });
 
         // --------------------------------------------------------
         // 5. 新增高级交互：视差、磁性元素与滚动揭示
@@ -1088,24 +999,6 @@
                 // 鼠标移出时，带弹性的回正动画
                 gsap.to(elem, { x: 0, y: 0, duration: 0.8, ease: "elastic.out(1, 0.3)" });
             });
-        });
-
-        // 5.3 滚动文本平滑揭示 (Scroll Text Reveals)
-        // 初始化隐藏状?
-        gsap.set('.gsap-reveal', { y: 30, autoAlpha: 0 }); 
-        
-        ScrollTrigger.batch('.gsap-reveal', {
-            interval: 0.1, // 批处理时间窗?
-            batchMax: 3,   // 每批次最多处理的数量
-            onEnter: batch => gsap.to(batch, {
-                autoAlpha: 1,
-                y: 0,
-                stagger: 0.15, // 依次出现的间?
-                duration: 1.2,
-                ease: "power3.out",
-                overwrite: true
-            }),
-            start: "top 85%", // 元素顶部到达视口85%位置时触?
         });
 
         // Contact form handler ?builds a prefilled mailto link so the

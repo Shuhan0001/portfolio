@@ -6,8 +6,11 @@
   if (!window.THREE || !window.DAVID_MODEL_GZIP) {host.dataset.state='unavailable';return;}
   const T = THREE, motion = matchMedia('(prefers-reduced-motion: reduce)');
   const scene = new T.Scene(), sculpture = new T.Group();
-  const camera = new T.PerspectiveCamera(35, 1, 0.1, 60);
-  camera.position.set(0, 0.25, 10); camera.lookAt(0, 0, 0);
+  const cameraHomeFov = 35;
+  const camera = new T.PerspectiveCamera(cameraHomeFov, 1, 0.1, 60);
+  const cameraHomeZ = 10;
+  camera.position.set(0, 0.25, cameraHomeZ); camera.lookAt(0, 0, 0);
+  const cameraHomePitch = camera.rotation.x;
   scene.add(sculpture);
   const slices = [];
   let renderer, frame = 0, visible = true, disposed = false, ready = false;
@@ -94,13 +97,62 @@
   }
   const texture = new T.CanvasTexture(atlas); texture.colorSpace = T.SRGBColorSpace;
   const core = new T.MeshBasicMaterial({map:texture,side:T.DoubleSide});
+  // The lens target stores the original display tones unchanged. Keep the
+  // cap artwork in the same color space as the custom halftone material.
+  core.onBeforeCompile=shader=>{
+    shader.fragmentShader=shader.fragmentShader.replace('#include <colorspace_fragment>',
+      'gl_FragColor = sRGBTransferOETF( gl_FragColor );');
+  };
   const clamp = x=>Math.max(0,Math.min(1,x));
   const smooth = (a,b,x)=>{const t=clamp((x-a)/(b-a));return t*t*(3-2*t);};
+  let lensTarget;
+  const drawingSize=new T.Vector2();
+  const lensScene=new T.Scene();
+  const lensCamera=new T.OrthographicCamera(-1,1,1,-1,0,1);
+  const lensGeometry=new T.PlaneGeometry(2,2);
+  const lensMaterial=new T.ShaderMaterial({
+    uniforms:{image:{value:null},strength:{value:0},aspect:{value:1}},
+    depthTest:false,depthWrite:false,blending:T.NoBlending,
+    vertexShader:`
+      varying vec2 lensUv;
+      void main(){lensUv=uv;gl_Position=vec4(position.xy,0.0,1.0);}
+    `,
+    fragmentShader:`
+      uniform sampler2D image;
+      uniform float strength;
+      uniform float aspect;
+      varying vec2 lensUv;
+      void main(){
+        vec2 point=lensUv*2.0-1.0;
+        vec2 radial=point*vec2(aspect,1.0);
+        float radius=dot(radial,radial)/(1.0+aspect*aspect);
+        // Barrel distortion bends the slice edges around the viewing axis.
+        // Overscan keeps the full frame covered, including on narrow screens.
+        vec2 source=point*(1.0+strength*radius)/(1.0+strength);
+        gl_FragColor=texture2D(image,source*0.5+0.5);
+      }
+    `
+  });
+  lensScene.add(new T.Mesh(lensGeometry,lensMaterial));
+  function drawScene() {
+    if(lensMaterial.uniforms.strength.value<0.0001){renderer.render(scene,camera);return;}
+    if(!lensTarget){
+      renderer.getDrawingBufferSize(drawingSize);
+      lensTarget=new T.WebGLRenderTarget(drawingSize.x,drawingSize.y,{samples:renderer.capabilities.isWebGL2?2:0});
+      lensMaterial.uniforms.image.value=lensTarget.texture;
+    }
+    renderer.setRenderTarget(lensTarget);
+    renderer.render(scene,camera);
+    renderer.setRenderTarget(null);
+    renderer.render(lensScene,lensCamera);
+  }
   function pose(p) {
     const reduced=motion.matches;
-    const turn=reduced?0:smooth(0,0.82,p);
-    const split=reduced?0:smooth(0.16,0.64,p);
-    const escape=reduced?0:smooth(0.64,1,p);
+    const turn=reduced?0:smooth(0,0.48,p);
+    const split=reduced?0:smooth(0.16,0.50,p);
+    const approach=reduced?0:smooth(0.52,0.80,p);
+    const passage=reduced?0:smooth(0.62,0.98,p);
+    const faceForward=reduced?0:smooth(0.48,0.72,p);
     // Slow physical motion only; the printed grain and light stay steady.
     // Scroll gently takes over before the slices begin to open fully.
     const idle=reduced?0:1-smooth(0.02,0.24,p);
@@ -108,20 +160,33 @@
     const follow=idle*gaze.weight;
     const floatY=Math.sin(idleTime*0.78)*0.065*idle;
     sculpture.rotation.set(
-      -0.025+split*0.35+Math.sin(idleTime*0.68)*0.017*wander+(gaze.y*0.30-0.07)*follow,
-      0.22+turn*0.9+Math.sin(idleTime*0.52)*0.07*wander+(gaze.x*0.75-0.55)*follow,
-      -0.07+split*0.1+Math.sin(idleTime*0.62)*0.014*wander
+      (-0.025+split*0.22)*(1-faceForward)+Math.sin(idleTime*0.68)*0.017*wander+(gaze.y*0.30-0.07)*follow,
+      (0.22+turn*0.72)*(1-faceForward)+Math.sin(idleTime*0.52)*0.07*wander+(gaze.x*0.75-0.55)*follow,
+      (-0.07+split*0.1)*(1-faceForward)+Math.sin(idleTime*0.62)*0.014*wander
     );
     sculpture.scale.setScalar(headScale*(1-split*splitShrink));
-    sculpture.position.set(homeX*(1-smooth(0,0.38,p)),-0.03+floatY,0);
+    sculpture.position.set(homeX*(1-smooth(0,0.38,p)),-0.03+floatY,approach*2.6);
+    // After opening, the sculpture approaches while the camera enters the
+    // gap below the central slice. Keep looking forward even after passing
+    // the model; lookAt(origin) here would turn the camera back around.
+    const corridorY=-0.33*sculpture.scale.x-0.03;
+    camera.position.set(0,T.MathUtils.lerp(0.25,corridorY,faceForward),cameraHomeZ-passage*13.2);
+    camera.rotation.set(cameraHomePitch*(1-faceForward),0,0);
+    // Briefly compress the approach, then widen the lens through the gap.
+    // The optical curve is scroll-bound and settles before the next chapter.
+    const lens=reduced?0:smooth(0.62,0.79,p)*(1-smooth(0.83,0.94,p));
+    const compression=reduced?0:smooth(0.54,0.64,p)*(1-smooth(0.66,0.78,p));
+    const fov=cameraHomeFov+10*lens-2*compression;
+    if(Math.abs(camera.fov-fov)>0.001){camera.fov=fov;camera.updateProjectionMatrix();}
+    lensMaterial.uniforms.strength.value=lens*0.32;
     core.visible=split>0.001;
     slices.forEach((slice,i)=>{
       const c=i-(slices.length-1)/2,sign=i%2===0?-1:1;
-      slice.position.set(sign*split*(0.018+Math.abs(c)*0.04)+sign*escape*(2+Math.abs(c)*0.6),slice.userData.center+c*split*0.24+c*escape*0.5,split*Math.sin(i*1.7)*0.09+escape*(i%3-1)*1.7);
-      slice.rotation.set(split*0.045*sign+escape*c*0.11,split*c*0.045+escape*sign*0.7,escape*sign*0.3);
+      slice.position.set(sign*split*(0.018+Math.abs(c)*0.04),slice.userData.center+c*split*0.34,split*Math.sin(i*1.7)*0.09);
+      slice.rotation.set(split*0.045*sign*(1-faceForward),split*c*0.045*(1-faceForward),0);
     });
-    host.style.opacity=String(1-smooth(0.88,1,p));
-    rootStyle.setProperty('--stream-opacity',String(0.13+smooth(0.55,1,p)*0.87));
+    host.style.opacity=String(1-smooth(0.97,1,p));
+    rootStyle.setProperty('--stream-opacity',String(0.13+smooth(0.76,0.99,p)*0.87));
   }
   function render(now) {
     frame=0;
@@ -140,7 +205,7 @@
     gaze.weight+=(gazeWeight-gaze.weight)*ease;
     progress+=(target-progress)*(1-Math.exp(-9*delta));
     if(Math.abs(target-progress)<0.0002)progress=target;
-    pose(progress);renderer.render(scene,camera);
+    pose(progress);drawScene();
     if(progress!==target||(!motion.matches&&progress<0.24))frame=requestAnimationFrame(render);
     else lastRenderTime=0;
   }
@@ -160,13 +225,17 @@
   function resize() {
     if(!renderer)return;
     const w=host.clientWidth,h=host.clientHeight,small=w<900;
+    if(!w||!h)return;
     pointer.active=false;
     const ratio=Math.min(devicePixelRatio,small?1.5:1.8);
     renderer.setPixelRatio(ratio);surface.uniforms.pixelRatio.value=ratio;
     splitShrink=small?0.14:0.25;
     surface.uniforms.dotPitch.value=small?2.6:3.2;
     renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();
-    const worldHeight=2*Math.tan(T.MathUtils.degToRad(camera.fov/2))*camera.position.z;
+    lensMaterial.uniforms.aspect.value=camera.aspect;
+    if(lensTarget){renderer.getDrawingBufferSize(drawingSize);lensTarget.setSize(drawingSize.x,drawingSize.y);}
+    // Responsive sizing is measured at the home camera, not mid-passage.
+    const worldHeight=2*Math.tan(T.MathUtils.degToRad(cameraHomeFov/2))*cameraHomeZ;
     // Keep the head woven through both title layers, including on large displays.
     const targetHeight=small?Math.min(w*0.99,h*0.47):Math.min(h*0.82,w*0.53);
     // Center the combined title/sculpture silhouette, keeping their overlap intact.
@@ -201,7 +270,7 @@
         const mesh=new T.Mesh(g,[surface,core]);mesh.userData.center=part.center;sculpture.add(mesh);slices.push(mesh);
       });
       delete window.DAVID_MODEL_GZIP;
-      host.appendChild(renderer.domElement);resize();progress=target;pose(progress);renderer.render(scene,camera);
+      host.appendChild(renderer.domElement);resize();progress=target;pose(progress);drawScene();
       host.classList.add('is-ready');host.dataset.state='ready';
       ready=true;schedule();
       renderer.domElement.addEventListener('webglcontextlost',event=>{event.preventDefault();ready=false;pauseRendering();host.classList.remove('is-ready');host.dataset.state='unavailable';});
@@ -214,8 +283,11 @@
   window.addEventListener('pointerout',event=>{if(!event.relatedTarget)resetPointer();});
   window.addEventListener('blur',resetPointer);
   window.addEventListener('resize',resize,{passive:true});document.addEventListener('visibilitychange',()=>{if(document.hidden){resetPointer();pauseRendering();}else schedule();});motion.addEventListener('change',()=>{resetPointer();schedule();});
+  // Pin refreshes settle after the window resize event. Observe the final
+  // canvas host size so the projection cannot retain the previous aspect.
+  const sizeObserver=new ResizeObserver(resize);sizeObserver.observe(host);
   const observer=new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(visible)schedule();else pauseRendering();},{rootMargin:'100px'});observer.observe(host);
-  window.addEventListener('pagehide',event=>{if(event.persisted){pauseRendering();return;}disposed=true;pauseRendering();observer.disconnect();slices.forEach(s=>s.geometry.dispose());surface.dispose();core.dispose();texture.dispose();if(renderer)renderer.dispose();});
+  window.addEventListener('pagehide',event=>{if(event.persisted){pauseRendering();return;}disposed=true;pauseRendering();observer.disconnect();sizeObserver.disconnect();slices.forEach(s=>s.geometry.dispose());surface.dispose();core.dispose();texture.dispose();lensGeometry.dispose();lensMaterial.dispose();if(lensTarget)lensTarget.dispose();if(renderer)renderer.dispose();});
   window.addEventListener('pageshow',schedule);
   init();
 })();

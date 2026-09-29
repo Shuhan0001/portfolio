@@ -1,0 +1,96 @@
+/* A condensed, heavy display voice inspired by the reference's
+   Kommissar Condensed Ultra. Anton is an open-source alternative, not
+   the original commercial face. License: ../Fonts/Anton-OFL.txt. */
+@font-face {
+  font-family: 'Anton';
+  src: url('../Fonts/Anton-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root { --font-display: 'Anton', Impact, 'Arial Narrow', sans-serif; }
+
+.hero-name,
+#zone-about h3,
+#zone-1 h3,
+#zone-1 h4,
+#zone-2-featured h3,
+#contact-content h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-synthesis: none;
+  letter-spacing: -.025em;
+  text-transform: uppercase;
+}
+
+/* The global small-text rule also targets spans; title fragments must
+   inherit the display face so solid and outlined words stay consistent. */
+#zone-about h3 span,
+#zone-1 h3 span,
+#zone-2-featured h3 span,
+#contact-content h3 span { font-family: inherit; }
+
+/* The About name borrows the reference site's identity trick: a stable
+   first-name slot changes its call-name on hover without moving the surname
+   or paragraph below. Focus mirrors hover for keyboard users. */
+.about-name-swap {
+  display: inline-flex;
+  align-items: baseline;
+  position: relative;
+  cursor: default;
+  white-space: nowrap;
+  outline: 0;
+  transition: color .45s ease, -webkit-text-stroke-color .45s ease;
+}
+
+.about-name-swap__slot {
+  display: inline-grid;
+  align-items: baseline;
+  min-width: max-content;
+}
+
+.about-name-swap__word {
+  display: inline-grid;
+  grid-area: 1 / 1;
+  transition: opacity .45s cubic-bezier(.22,.61,.36,1), transform .45s cubic-bezier(.22,.61,.36,1);
+}
+
+.about-name-swap__word:first-child { opacity: 1; transform: translateY(0); }
+.about-name-swap__hover { opacity: 0; transform: translateY(.22em); }
+.about-name-swap__tail { display: inline-block; }
+
+.about-name-swap:is(:hover, :focus-visible) {
+  color: #fff;
+  -webkit-text-stroke-color: transparent;
+}
+
+.about-name-swap:is(:hover, :focus-visible) .about-name-swap__word:first-child {
+  opacity: 0;
+  transform: translateY(-.22em);
+}
+
+.about-name-swap:is(:hover, :focus-visible) .about-name-swap__hover {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-name-swap,
+  .about-name-swap__word { transition-duration: .001ms; }
+}
+
+.hero-name { line-height: .94; }
+.hero-name-first { top: 25%; font-size: max(112px, min(22vw, 34vh)); }
+.hero-name-last { top: 57%; font-size: max(120px, min(24vw, 34vh)); }
+
+#zone-about h3 { font-size: clamp(34px, 4.4vw, 64px); line-height: 1.08; }
+#zone-1 h3 { font-size: clamp(72px, 11.5vw, 160px); line-height: .96; }
+#zone-1 h4 { font-size: clamp(40px, 5.9vw, 88px); line-height: 1.08; }
+#zone-2-featured h3 { font-size: clamp(38px, 6.2vw, 88px); line-height: 1.04; }
+#contact-content h3 { font-size: clamp(48px, 6vw, 88px); line-height: 1.04; }
+
+@media (max-width: 899px) {
+  .hero-name-first { top: 21%; font-size: clamp(76px, min(26vw, 16vh), 160px); }
+  .hero-name-last { top: 69%; font-size: clamp(84px, min(29vw, 18vh), 180px); }
+}

@@ -11,7 +11,10 @@ shoulders, chest, plinth and original coloring; normalized and quantized the
 geometry; cut seven horizontal pieces; added closed black cross sections with
 original code artwork; added an opaque four-tone monochrome halftone shader
 with coarse dots, sparse pixel dropouts and fixed scan interruptions. Scroll rotates the head,
-opens the horizontal sections, then releases the pieces. The hero pairs the
+opens the horizontal sections, then brings the sculpture toward the lens as
+the camera passes forward through the gap below the central slice. During the
+passage, a scroll-driven lens widens and adds gentle barrel distortion, then
+returns to its original projection before the next chapter. The hero pairs the
 sculpture with oversized typography; its material has no timed flashes.
 The hero places the solid first name behind the sculpture and the outlined
 surname in front, with directional halftone lighting and a soft cast shadow.
