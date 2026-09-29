@@ -22,16 +22,11 @@ html.lenis, html.lenis body { height: auto; }
 }
 .index-motion #zone-about > .chapter-seam { display: none; }
 .index-motion #zone-1,
-.index-motion #zone-3-archive,
 .index-motion #contact-section { margin-top: -56px; padding-top: 184px; }
 .index-motion #zone-1 { z-index: 21; }
 .index-motion #zone-2-works { z-index: 22; }
-.index-motion #zone-3-archive { z-index: 23; background-color: rgba(5, 5, 5, .88); }
 .index-motion #contact-section { z-index: 24; background-color: rgba(5, 5, 5, .95); }
 .index-motion #zone-2-featured { background-color: rgba(5, 5, 5, .8); }
-/* Passing under a stationary pointer must not make moving cards bob up. */
-#featured-track > .glass-panel:hover,
-#featured-track > .glass-panel > div:last-child { transform: none; }
 .gallery-runway { position: relative; width: 100%; }
 .index-scroll-gallery #zone-2-featured { position: sticky; top: 0; }
 
@@ -48,22 +43,8 @@ html.lenis, html.lenis body { height: auto; }
 .index-motion #zone-2-works::before,
 .index-motion #contact-section::before { opacity: 0; }
 
-/* Native horizontal browsing for reduced motion and short touch screens. */
-.index-native-gallery #zone-2-featured { height: auto; min-height: 100svh; padding-top: 64px; padding-bottom: 64px; overflow: visible; }
-.index-native-gallery #zone-2-featured > div:first-child { position: relative; top: auto; left: auto; padding: 0 32px; }
-.index-native-gallery #featured-track { width: 100%; height: auto; margin-top: 40px; padding-top: 8px; padding-bottom: 20px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; align-items: stretch; }
-.index-native-gallery #featured-track > a { scroll-snap-align: center; }
-.index-native-gallery #featured-track > a.glass-panel { min-height: 520px; height: auto; }
-.index-native-gallery #featured-track > a.glass-panel > div:last-child { position: relative; inset: auto; margin-top: 180px; padding: 28px; }
-.index-native-gallery #featured-track > a.glass-panel p { font-size: 14px; }
-.index-native-gallery #featured-track > a.glass-panel h4 { font-size: 36px; }
-
-@media (min-width: 768px) {
-  .index-native-gallery #zone-2-featured > div:first-child { padding: 0 96px; }
-}
 @media (max-width: 767px) {
   .index-motion #zone-1,
-  .index-motion #zone-3-archive,
   .index-motion #contact-section { margin-top: -28px; padding-top: 156px; }
 }
 @media (prefers-reduced-motion: reduce) {

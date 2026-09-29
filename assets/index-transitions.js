@@ -1,4 +1,4 @@
-/* global gsap, ScrollTrigger */
+/* global gsap, ScrollTrigger, setupIndexWorks */
 'use strict';
 window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSection }) {
     const track = document.getElementById('featured-track');
@@ -10,8 +10,8 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
     const html = document.documentElement;
     const media = gsap.matchMedia();
     let syncGallery = () => {};
-    const sheets = ['#zone-about', '#zone-1', '#zone-2-featured', '#zone-3-archive', '#contact-section'].map(selector => document.querySelector(selector));
-    const surfaces = [sheets[0].firstElementChild, sheets[1].lastElementChild, featured.firstElementChild, sheets[3].lastElementChild, document.getElementById('contact-content')];
+    const sheets = ['#zone-about', '#zone-1', '#zone-2-featured', '#contact-section'].map(selector => document.querySelector(selector));
+    const surfaces = [sheets[0].firstElementChild, sheets[1].lastElementChild, featured.firstElementChild, document.getElementById('contact-content')];
     const seams = sheets.map(section => {
         const seam = document.createElement('div');
         seam.className = 'chapter-seam';
@@ -23,7 +23,7 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
     media.add({
         reduced: '(prefers-reduced-motion: reduce)',
         mobile: '(max-width: 767px)',
-        shortTouch: '(max-height: 740px) and (pointer: coarse)',
+        shortTouch: '(max-height: 480px) and (pointer: coarse)',
         all: '(min-width: 0px)'
     }, context => {
         const { reduced, mobile, shortTouch } = context.conditions;
@@ -32,9 +32,6 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
         html.classList.toggle('index-native-gallery', nativeGallery);
         html.classList.toggle('index-scroll-gallery', !nativeGallery);
         lenis.options.smoothWheel = !reduced;
-        // Stop at the last link, rather than travelling through the track's
-        // unused fixed-width tail. Lenis already smooths the input once.
-        const travel = () => Math.max(0, track.lastElementChild.offsetLeft + track.lastElementChild.offsetWidth + parseFloat(getComputedStyle(track).paddingRight) - featured.clientWidth);
         // Remove the old hidden-on-load state before managing section entrances.
         gsap.set('.gsap-reveal', { autoAlpha: 1, y: 0 });
         const passageStart = .62;
@@ -68,43 +65,10 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
             window.dispatchEvent(new CustomEvent('david:progress', { detail: 0 }));
         }
 
-        // Native sticky follows the live layout even while an accordion above
-        // changes height. No fixed/relative swap or cached pin start is needed.
-        let galleryObserver;
-        let renderGallery = () => {};
-        if (!nativeGallery) {
-            let distance = 0, ramp = 0, runwayTravel = 0;
-            gsap.set(track, { x: 0, y: 0 });
-            const setX = gsap.quickSetter(track, 'x', 'px');
-            renderGallery = () => {
-                if (!distance) { setX(0); return; }
-                const position = Math.max(0, Math.min(runwayTravel, -runway.getBoundingClientRect().top));
-                const remaining = runwayTravel - position;
-                // Ease the change from vertical to horizontal over a short
-                // distance, without a second time-based smoothing/snap layer.
-                const x = position < ramp ? position * position / (2 * ramp)
-                    : remaining < ramp ? distance - remaining * remaining / (2 * ramp)
-                    : position - ramp / 2;
-                setX(-x);
-            };
-            const measureGallery = () => {
-                distance = travel();
-                ramp = Math.min(144, window.innerHeight * .18, distance * .25);
-                runwayTravel = distance + ramp;
-                runway.style.height = `${featured.offsetHeight + runwayTravel}px`;
-                renderGallery();
-            };
-            measureGallery();
-            galleryObserver = new ResizeObserver(measureGallery);
-            galleryObserver.observe(featured);
-            galleryObserver.observe(track.lastElementChild);
-            syncGallery = renderGallery;
-            lenis.on('scroll', renderGallery);
-            window.addEventListener('scroll', renderGallery, { passive: true });
-        } else {
-            runway.style.removeProperty('height');
-            syncGallery = () => {};
-        }
+        // One live sticky surface now owns both projects and archive entries.
+        const gallery = setupIndexWorks({ lenis, featured, track, runway, native: nativeGallery, reduced });
+        syncGallery = gallery.refresh;
+        window.focusIndexArtifact = gallery.focusTarget;
 
         if (!reduced) {
             // The real About content occupies the space beyond the slices.
@@ -156,9 +120,7 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
             // and the gallery pin retains a stable, untransformed ancestor.
             [
                 { content: surfaces[0], next: sheets[1] },
-                { content: surfaces[1], next: document.getElementById('zone-2-works') },
-                { content: document.querySelector('#zone-2-works > div:last-child'), next: sheets[3] },
-                { content: surfaces[3], next: sheets[4] }
+                { content: surfaces[1], next: document.getElementById('zone-2-works') }
             ].forEach(({ content, next }, i) => {
                 gsap.fromTo(content, { scale: 1 }, {
                     scale: mobile ? .99 : .965, transformOrigin: '50% 100%', ease: 'none', immediateRender: false,
@@ -166,13 +128,6 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
                 });
             });
 
-            // Small follow-through in reading order, with no wipe over text.
-            document.querySelectorAll('.archive-row').forEach((row, i) => {
-                gsap.fromTo(row, { opacity: .4, y: 6 }, {
-                    opacity: 1, y: 0, ease: 'power2.out',
-                    scrollTrigger: { trigger: row, start: 'top 102%', end: 'top 86%', scrub: true }
-                });
-            });
             gsap.fromTo('#contact-content > .grid > *', { y: mobile ? 8 : 16 }, {
                 y: 0, stagger: .12, ease: 'power2.out',
                 scrollTrigger: { trigger: '#contact-content > .grid', start: 'top 94%', end: 'top 60%', scrub: true }
@@ -181,20 +136,20 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
 
         // Do not leave a focused control behind an entrance mask when tabbing.
         const revealFocus = event => {
-            const section = event.target.closest('#zone-about, #zone-1, #zone-2-featured, #zone-3-archive, #contact-section');
+            const section = event.target.closest('#zone-about, #zone-1, #zone-2-featured, #contact-section');
             if (!section) return;
             const transition = ScrollTrigger.getById(`chapter-enter-${sheets.indexOf(section)}`);
             if (transition && transition.progress < 1) {
                 transition.animation.progress(1);
-                transition.getTween()?.progress(1);
+                const scrubTween = transition.getTween();
+                if (scrubTween) scrubTween.progress(1);
             }
         };
         document.addEventListener('focusin', revealFocus);
         return () => {
             document.removeEventListener('focusin', revealFocus);
-            if (galleryObserver) galleryObserver.disconnect();
-            lenis.off('scroll', renderGallery);
-            window.removeEventListener('scroll', renderGallery);
+            gallery.destroy();
+            if (window.focusIndexArtifact === gallery.focusTarget) delete window.focusIndexArtifact;
             syncGallery = () => {};
             runway.style.removeProperty('height');
             html.classList.remove('index-motion', 'index-native-gallery', 'index-scroll-gallery');
@@ -244,9 +199,9 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
     let refreshTimer;
     const refreshLayout = () => {
         clearTimeout(refreshTimer);
+        syncGallery();
         lenis.resize();
         ScrollTrigger.refresh();
-        syncGallery();
     };
     const queueRefresh = () => {
         syncGallery();
@@ -259,9 +214,11 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
         if (event.propertyName === 'grid-template-rows') refreshLayout();
     };
     if (accordion) accordion.addEventListener('transitionend', afterTransition);
+    window.addEventListener('works:layout', queueRefresh);
     window.addEventListener('pagehide', event => {
         if (event.persisted) return;
         clearTimeout(refreshTimer);
+        window.removeEventListener('works:layout', queueRefresh);
         if (observer) observer.disconnect();
         if (accordion) accordion.removeEventListener('transitionend', afterTransition);
         media.revert();

@@ -1981,6 +1981,7 @@
     </style>
 <link rel="stylesheet" href="assets/project-clarity.css">
 <link rel="stylesheet" href="assets/project-overview.css">
+    <script src="assets/back-home.js" defer></script>
 </head>
 <body>
 
@@ -2007,11 +2008,11 @@
         </defs>
     </svg>
 
-    <a href="Projects.html" class="back-home-btn" aria-label="Back to projects">
+    <a href="index.html" class="back-home-btn" aria-label="Back to home">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <span>Back to Projects</span>
+        <span>Back to Home</span>
     </a>
 
     <div class="scroll-track">
@@ -2582,29 +2583,6 @@ and allow movement.</span></code></pre>
     </script>
 
     <script>
-        (function() {
-            const btn = document.querySelector('.back-home-btn');
-            const exit = document.getElementById('page-exit');
-            if (!btn) return;
-
-            // AICodeGen is only ever entered from the Projects listing page,
-            // so the back button always points there.
-            btn.setAttribute('href', 'Projects.html');
-            const label = btn.querySelector('span');
-            if (label) label.textContent = 'Back to Projects';
-
-            if (!exit) return;
-            btn.addEventListener('click', function(e) {
-                const href = btn.getAttribute('href');
-                if (!href || e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
-                e.preventDefault();
-                exit.style.pointerEvents = 'auto';
-                exit.style.opacity = '1';
-                setTimeout(() => { window.location.href = href; }, 650);
-            });
-        })();
-
-
         document.addEventListener('DOMContentLoaded', () => {
             const reveals = document.querySelectorAll('.reveal');
             const observerOptions = { root: null, rootMargin: '0px 0px -15% 0px', threshold: 0.1 };
