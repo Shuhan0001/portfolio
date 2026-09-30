@@ -10,8 +10,8 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
     const html = document.documentElement;
     const media = gsap.matchMedia();
     let syncGallery = () => {};
-    const sheets = ['#zone-about', '#zone-1', '#zone-2-featured', '#contact-section'].map(selector => document.querySelector(selector));
-    const surfaces = [sheets[0].firstElementChild, sheets[1].lastElementChild, featured.firstElementChild, document.getElementById('contact-content')];
+    const sheets = ['#zone-about', '#zone-2-featured', '#zone-1', '#contact-section'].map(selector => document.querySelector(selector));
+    const surfaces = [sheets[0].firstElementChild, featured.firstElementChild, sheets[2].lastElementChild, document.getElementById('contact-content')];
     const seams = sheets.map(section => {
         const seam = document.createElement('div');
         seam.className = 'chapter-seam';
@@ -101,11 +101,11 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
                 // pin ancestors flat; the horizontal gallery stays stationary.
                 const arrival = gsap.timeline({
                     scrollTrigger: {
-                        id: `chapter-enter-${i}`, trigger: i === 2 ? runway : sheet, start: 'top 94%', end: 'top 30%',
+                        id: `chapter-enter-${i}`, trigger: i === 1 ? runway : sheet, start: 'top 94%', end: 'top 30%',
                         scrub: true, invalidateOnRefresh: true
                     }
                 });
-                if (i !== 2) {
+                if (i !== 1) {
                     arrival.fromTo(surfaces[i], {
                         transformPerspective: 1200, transformOrigin: '50% 18vh',
                         z: mobile ? -35 : -100, y: mobile ? 8 : 16, opacity: .38
@@ -119,8 +119,8 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
             // Only the outgoing content recedes. Section boxes keep their layout
             // and the gallery pin retains a stable, untransformed ancestor.
             [
-                { content: surfaces[0], next: sheets[1] },
-                { content: surfaces[1], next: document.getElementById('zone-2-works') }
+                { content: surfaces[0], next: document.getElementById('zone-2-works') },
+                { content: surfaces[2], next: document.getElementById('contact-section') }
             ].forEach(({ content, next }, i) => {
                 gsap.fromTo(content, { scale: 1 }, {
                     scale: mobile ? .99 : .965, transformOrigin: '50% 100%', ease: 'none', immediateRender: false,
@@ -156,11 +156,78 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
         };
     });
 
-    // Hover must never collapse content just because scrolling moved it away
-    // from the pointer. Explicit, persistent controls work on touch/keyboard too.
+    // Track deliberate pointer movement, so scrolling or the changing panel
+    // height cannot masquerade as entering/leaving another accordion row.
     const accordion = document.querySelector('.group\\/accordion');
     if (accordion) {
         accordion.classList.add('logic-accordion');
+        const rows = Array.from(accordion.querySelectorAll('.accordion-panel'), panel => panel.parentElement);
+        const hoverCapable = window.matchMedia('(hover: hover) and (pointer: fine)');
+        let hoverTimer, closeTimer, hoverCandidate = null, closeCandidate = null, dismissedRow = null;
+        const cancelHover = () => {
+            clearTimeout(hoverTimer);
+            hoverCandidate = null;
+        };
+        const cancelClose = () => {
+            clearTimeout(closeTimer);
+            closeCandidate = null;
+        };
+        const setOpen = (row, open) => {
+            const control = row.querySelector('.logic-toggle');
+            const panel = row.querySelector('.accordion-panel');
+            row.dataset.open = String(open);
+            control.setAttribute('aria-expanded', String(open));
+            panel.setAttribute('aria-hidden', String(!open));
+            panel.inert = !open;
+        };
+        const openRow = row => rows.forEach(item => setOpen(item, item === row));
+        const onPointerMove = event => {
+            if (event.pointerType !== 'mouse' || !hoverCapable.matches) return;
+            const hoveredRow = rows.find(row => row.contains(event.target));
+            if (hoveredRow !== dismissedRow) dismissedRow = null;
+            const open = rows.find(row => row.dataset.open === 'true');
+            if (!open || hoveredRow === open) cancelClose();
+            else if (closeCandidate !== open) {
+                cancelClose();
+                closeCandidate = open;
+                closeTimer = setTimeout(() => {
+                    if (!open.querySelector(':focus-visible')) setOpen(open, false);
+                    closeCandidate = null;
+                }, 220);
+            }
+            const control = hoveredRow && hoveredRow.querySelector('.logic-toggle');
+            if (!control || !control.contains(event.target) || hoveredRow === open || hoveredRow === dismissedRow) {
+                cancelHover();
+                return;
+            }
+            if (hoverCandidate === hoveredRow) return;
+            cancelHover();
+            hoverCandidate = hoveredRow;
+            hoverTimer = setTimeout(() => {
+                cancelClose();
+                openRow(hoveredRow);
+                hoverCandidate = null;
+            }, 100);
+        };
+        document.addEventListener('pointermove', onPointerMove, { passive: true });
+        const onPointerOut = event => {
+            if (event.relatedTarget !== null || event.pointerType !== 'mouse') return;
+            cancelHover();
+            cancelClose();
+            closeTimer = setTimeout(() => rows.forEach(row => {
+                if (!row.querySelector(':focus-visible')) setOpen(row, false);
+            }), 220);
+        };
+        document.addEventListener('pointerout', onPointerOut);
+        const revealRow = row => requestAnimationFrame(() => {
+            const panel = row.querySelector('.accordion-panel');
+            if (panel.getBoundingClientRect().top < window.innerHeight - 180) return;
+            lenis.scrollTo(row, {
+                offset: window.innerWidth < 768 ? -120 : -96,
+                duration: .45,
+                immediate: window.matchMedia('(prefers-reduced-motion: reduce)').matches
+            });
+        });
         accordion.querySelectorAll('.accordion-panel').forEach((panel, i) => {
             const row = panel.parentElement;
             const control = panel.previousElementSibling;
@@ -178,19 +245,28 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
             panel.setAttribute('aria-labelledby', heading.id);
             panel.inert = true;
             panel.setAttribute('aria-hidden', 'true');
-            const toggle = () => {
-                const open = row.dataset.open !== 'true';
-                row.dataset.open = String(open);
-                control.setAttribute('aria-expanded', String(open));
-                panel.setAttribute('aria-hidden', String(!open));
-                panel.inert = !open;
-            };
-            control.addEventListener('click', toggle);
+            control.addEventListener('click', event => {
+                cancelHover();
+                cancelClose();
+                if (row.dataset.open === 'true') { dismissedRow = row; setOpen(row, false); }
+                else { dismissedRow = null; openRow(row); revealRow(row); }
+            });
             control.addEventListener('keydown', event => {
                 if (event.key !== 'Enter' && event.key !== ' ') return;
                 event.preventDefault();
-                if (!event.repeat) toggle();
+                if (event.repeat) return;
+                cancelHover();
+                cancelClose();
+                if (row.dataset.open === 'true') { dismissedRow = row; setOpen(row, false); }
+                else { dismissedRow = null; openRow(row); revealRow(row); }
             });
+        });
+        window.addEventListener('pagehide', event => {
+            cancelHover();
+            cancelClose();
+            if (event.persisted) return;
+            document.removeEventListener('pointermove', onPointerMove);
+            document.removeEventListener('pointerout', onPointerOut);
         });
     }
 

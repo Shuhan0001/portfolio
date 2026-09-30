@@ -21,17 +21,22 @@
     function rectFrame(rect) {
         return { left: rect.left + 'px', top: rect.top + 'px', width: rect.width + 'px', height: rect.height + 'px' };
     }
+    function clipFrame(rect) {
+        return { clipPath: `inset(${rect.top}px calc(100% - ${rect.left + rect.width}px) calc(100% - ${rect.top + rect.height}px) ${rect.left}px)` };
+    }
 
     function setupIndexWorks({ lenis, featured, track, runway, native, reduced }) {
         const viewport = featured.querySelector('.slice-viewport');
         const items = Array.from(track.querySelectorAll('.artifact-slice'));
         const title = document.getElementById('slice-current-title');
-        const count = document.getElementById('slice-current-count');
+        const indexNav = document.getElementById('slice-index');
         const category = document.getElementById('slice-current-category');
         const dialog = document.getElementById('work-viewer');
         const surface = dialog.querySelector('.work-viewer__surface');
         const frame = dialog.querySelector('.work-viewer__frame');
         const heading = document.getElementById('work-viewer-title');
+        const outlineHeading = document.getElementById('work-viewer-title-outline');
+        const outlineWindow = dialog.querySelector('.work-viewer__title-window');
         const topBar = dialog.querySelector('.work-viewer__top');
         const description = dialog.querySelector('.work-viewer__description');
         const neighbours = dialog.querySelector('.work-viewer__neighbours');
@@ -48,6 +53,34 @@
         let viewerIndex = -1, switching = false, switchVersion = 0, queuedDirection = 0;
         let viewerMoved = false, outgoingFrame = null;
 
+        // Derive navigation from the covers so its order and labels stay in sync.
+        indexNav.replaceChildren();
+        const ticks = items.map((item, index) => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'slice-index__tick hover-trigger';
+            button.setAttribute('aria-label', `Go to ${item.dataset.title}`);
+            button.setAttribute('aria-controls', track.id);
+            const label = document.createElement('span');
+            label.className = 'slice-index__name';
+            label.textContent = item.dataset.title;
+            label.setAttribute('aria-hidden', 'true');
+            button.appendChild(label);
+            button.addEventListener('click', () => seek(index, false, true), { signal });
+            button.addEventListener('keydown', event => {
+                if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+                const next = event.key === 'ArrowRight' ? Math.min(items.length - 1, index + 1)
+                    : event.key === 'ArrowLeft' ? Math.max(0, index - 1)
+                    : event.key === 'Home' ? 0 : event.key === 'End' ? items.length - 1 : null;
+                if (next === null) return;
+                event.preventDefault();
+                ticks[next].focus({ preventScroll: true });
+                seek(next, false, true);
+            }, { signal });
+            indexNav.appendChild(button);
+            return button;
+        });
+
         function select(index, animate = true) {
             if (index === current) return;
             current = index;
@@ -55,10 +88,11 @@
                 item.classList.toggle('is-current', i === index);
                 if (i === index) item.setAttribute('aria-current', 'true');
                 else item.removeAttribute('aria-current');
+                if (i === index) ticks[i].setAttribute('aria-current', 'true');
+                else ticks[i].removeAttribute('aria-current');
             });
             const item = items[index];
             title.textContent = item.dataset.title;
-            count.textContent = `${String(index + 1).padStart(2, '0')} / ${String(items.length).padStart(2, '0')}`;
             category.textContent = item.dataset.category;
             captionAnimation?.cancel();
             if (animate && !reduced && title.animate) {
@@ -102,8 +136,22 @@
             render(false);
             if (changed) window.dispatchEvent(new CustomEvent('works:layout'));
         }
-        function seek(index, focus = false) {
+        function seek(index, focus = false, smooth = false) {
+            if (destroyed || (smooth && dialog.open)) return;
             const offset = positionForIndex(index, items.length, native ? distance : travel, native);
+            if (smooth && !reduced) {
+                if (native) {
+                    viewport.scrollTo({ left: offset, behavior: 'smooth' });
+                } else {
+                    viewport.scrollLeft = 0;
+                    lenis.scrollTo(window.scrollY + runway.getBoundingClientRect().top + offset, {
+                        duration: 1.15, easing: ease, onComplete: onScroll
+                    });
+                }
+                // Scroll events update the marker as each cover passes, rather
+                // than marking the destination before the strip gets there.
+                return;
+            }
             if (native) {
                 viewport.scrollLeft = offset;
                 lenis.scrollTo(featured, { immediate: true, force: dialog.open });
@@ -137,25 +185,43 @@
             viewerAnimations.forEach(animation => animation.cancel());
             viewerAnimations = [];
         }
+        function animateHeading(frames, options) {
+            const animation = animate(heading, frames, options);
+            const outlineAnimation = animate(outlineHeading, frames, options);
+            return {
+                finished: animation.finished,
+                cancel() { animation.cancel(); outlineAnimation.cancel(); }
+            };
+        }
         function fitTitle() {
-            // Broaden the glyphs within their slots, keeping long titles inside the frame.
-            // offsetWidth ignores the glyph's visual scale, so repeated fits are stable.
-            titleRows.forEach(({ row, letters }) => {
-                const widest = Math.max(1, ...letters.map(({ glyph }) => glyph.offsetWidth));
-                const slot = row.clientWidth / letters.length;
-                const scale = clamp(slot * .94 / widest, .15, 1.15);
+            // Reserve the actual caption height before exposing more of the lower row.
+            dialog.style.setProperty('--viewer-footer-room', `${description.offsetHeight + 16}px`);
+            // Allocate space by each glyph's natural width: I and W should not
+            // create identical gaps. Both depth layers keep precisely the same fit.
+            titleRows.forEach(({ row, letters, outlineRow, outlineLetters }) => {
+                const widths = letters.map(({ glyph }) => Math.max(1, glyph.offsetWidth));
+                const naturalWidth = widths.reduce((total, width) => total + width, 0);
+                const scale = clamp(row.clientWidth * .94 / naturalWidth, .15, 1.35);
                 row.style.setProperty('--letter-width', scale);
+                outlineRow.style.setProperty('--letter-width', scale);
+                letters.forEach(({ letter }, index) => {
+                    letter.style.flexGrow = String(widths[index]);
+                    outlineLetters[index].letter.style.flexGrow = String(widths[index]);
+                });
             });
         }
         function setTitle(titleText) {
             heading.replaceChildren();
+            outlineHeading.replaceChildren();
             heading.setAttribute('aria-label', titleText);
             const lines = titleLines(titleText);
             heading.dataset.rows = String(lines.length);
-            titleRows = lines.map(line => {
+            outlineHeading.dataset.rows = String(lines.length);
+            function createRow(line, parent) {
                 const row = document.createElement('span');
                 row.className = 'work-viewer__title-row';
                 row.setAttribute('aria-hidden', 'true');
+                row.style.setProperty('--title-row-span', `${clamp(58 + (line.length - 3) * 7, 58, 94)}%`);
                 const letters = Array.from(line).map(character => {
                     const letter = document.createElement('span');
                     letter.className = 'work-viewer__letter';
@@ -166,8 +232,13 @@
                     row.appendChild(letter);
                     return { letter, glyph };
                 });
-                heading.appendChild(row);
+                parent.appendChild(row);
                 return { row, letters };
+            }
+            titleRows = lines.map(line => {
+                const solid = createRow(line, heading);
+                const outline = createRow(line, outlineHeading);
+                return { ...solid, outlineRow: outline.row, outlineLetters: outline.letters };
             });
         }
         function setNeighbours(index) {
@@ -237,7 +308,9 @@
             const sourceOpacity = getComputedStyle(source).opacity;
             const sourceFilter = getComputedStyle(source).filter;
             const oldFrameOpacity = getComputedStyle(frame).opacity;
+            const oldArtworkTransform = getComputedStyle(media.firstElementChild).transform;
             const oldHeadingOpacity = getComputedStyle(heading).opacity;
+            const oldOutlineOpacity = getComputedStyle(outlineWindow).opacity;
             const oldDescriptionOpacity = getComputedStyle(description).opacity;
             const oldDescriptionTop = description.getBoundingClientRect().top;
             // The outgoing cover and incoming cover keep their own crop; the
@@ -271,15 +344,22 @@
                 { ...rectFrame(outgoingRect), opacity: .28 }
             ], { ...timing, fill: 'forwards' });
             animate(outgoingFrame.querySelector('.artifact-artwork'), [
-                { filter: 'none' }, { filter: 'grayscale(1)' }
+                { filter: 'none', transform: oldArtworkTransform },
+                { filter: 'grayscale(1)', transform: 'scale(1.035)' }
             ], { ...timing, fill: 'forwards' });
+            const destinationRect = frame.getBoundingClientRect();
             frameAnimation = frame.animate([
                 { ...rectFrame(incomingRect), opacity: sourceOpacity },
-                { ...rectFrame(frame.getBoundingClientRect()), opacity: 1 }
+                { ...rectFrame(destinationRect), opacity: 1 }
             ], timing);
             const incomingAnimation = frameAnimation;
-            animate(artwork, [{ filter: sourceFilter }, { filter: 'none' }], timing);
-            const titleOut = animate(heading, [
+            animate(outlineWindow, [clipFrame(incomingRect), clipFrame(destinationRect)], timing);
+            const outlineOut = animate(outlineWindow, [{ opacity: oldOutlineOpacity }, { opacity: 0 }], { duration: 140, fill: 'forwards' });
+            animate(artwork, [
+                { filter: sourceFilter, transform: 'scale(1.045)' },
+                { filter: 'none', transform: 'scale(1)' }
+            ], timing);
+            const titleOut = animateHeading([
                 { opacity: oldHeadingOpacity, transform: 'translateX(0)' },
                 { opacity: 0, transform: `translateX(${-direction * 32}px)` }
             ], { duration: 180, fill: 'forwards', easing: 'ease-out' });
@@ -294,12 +374,14 @@
             source.style.removeProperty('visibility');
             fitTitle();
             titleOut.cancel();
+            outlineOut.cancel();
             descriptionOut.cancel();
             neighboursOut.cancel();
-            animate(heading, [
+            animateHeading([
                 { opacity: 0, transform: `translateX(${direction * 40}px)` },
                 { opacity: 1, transform: 'translateX(0)' }
             ], { duration: 650, easing: timing.easing });
+            animate(outlineWindow, [{ opacity: 0 }, { opacity: 1 }], { duration: 420, delay: 400, fill: 'backwards', easing: timing.easing });
             const descriptionShift = oldDescriptionTop - description.getBoundingClientRect().top;
             animate(description, [
                 { opacity: 0, transform: `translate(-50%, ${descriptionShift + 8}px)` },
@@ -350,20 +432,28 @@
                     { ...rectFrame(origin), opacity: sourceOpacity },
                     { ...rectFrame(destination), opacity: 1 }
                 ], timing);
-                animate(artwork, [{ filter: sourceFilter }, { filter: 'none' }], timing);
+                animate(outlineWindow, [clipFrame(origin), clipFrame(destination)], timing);
+                animate(outlineWindow, [{ opacity: 0 }, { opacity: 1 }], { duration: 420, delay: 700, fill: 'backwards', easing: timing.easing });
+                animate(artwork, [
+                    { filter: sourceFilter, transform: 'scale(1.045)' },
+                    { filter: 'none', transform: 'scale(1)' }
+                ], { ...timing, duration: 1380 });
                 animate(surface, [{ backgroundColor: '#07070700' }, { backgroundColor: '#070707' }], { duration: 620, easing: 'ease' });
                 animate(neighbours, [{ opacity: 0 }, { opacity: 1 }], { duration: 800, delay: 160, fill: 'backwards' });
                 animate(topBar, [{ opacity: 0 }, { opacity: 1 }], { duration: 450, delay: 180, fill: 'backwards' });
-                titleRows.forEach(({ letters }, rowIndex) => letters.forEach(({ letter }, indexInRow) => {
-                    animate(letter, [
-                        { opacity: 0, transform: 'translate(' + (rowIndex % 2 ? 28 : -28) + 'px, 16px)' },
+                titleRows.forEach(({ letters, outlineLetters }, rowIndex) => letters.forEach(({ letter }, indexInRow) => {
+                    const frames = [
+                        { opacity: 0, transform: 'translate(' + (rowIndex % 2 ? 18 : -18) + 'px, 28px)' },
                         { opacity: 1, transform: 'translate(0, 0)' }
-                    ], { duration: 850, delay: 150 + rowIndex * 90 + indexInRow * 26, fill: 'backwards', easing: 'cubic-bezier(.22,.72,.18,1)' });
+                    ];
+                    const options = { duration: 960, delay: 240 + rowIndex * 70 + indexInRow / Math.max(1, letters.length - 1) * 160, fill: 'backwards', easing: timing.easing };
+                    animate(letter, frames, options);
+                    animate(outlineLetters[indexInRow].letter, frames, options);
                 }));
                 animate(description, [
                     { opacity: 0, transform: 'translate(-50%, 12px)' },
                     { opacity: 1, transform: 'translate(-50%, 0)' }
-                ], { duration: 580, delay: 460, fill: 'backwards', easing: 'cubic-bezier(.22,.72,.18,1)' });
+                ], { duration: 620, delay: 640, fill: 'backwards', easing: 'cubic-bezier(.22,.72,.18,1)' });
             }
         }
         async function closeItem() {
@@ -378,18 +468,25 @@
             const origin = frame.getBoundingClientRect();
             const artwork = dialog.querySelector('.work-viewer__media').firstElementChild;
             const sourceFilter = getComputedStyle(artwork).filter;
+            const sourceTransform = getComputedStyle(artwork).transform;
             const frameOpacity = getComputedStyle(frame).opacity;
             const backgroundColor = getComputedStyle(surface).backgroundColor;
-            const fading = [heading, description, topBar, neighbours, ...titleRows.flatMap(({ letters }) => letters.map(({ letter }) => letter))]
+            const outlineOpacity = getComputedStyle(outlineWindow).opacity;
+            const fading = [heading, outlineHeading, description, topBar, neighbours, ...titleRows.flatMap(({ letters, outlineLetters }) => [...letters, ...outlineLetters].map(({ letter }) => letter))]
                 .map(element => ({ element, opacity: getComputedStyle(element).opacity, transform: getComputedStyle(element).transform }));
             cancelAnimations();
             if (!reduced && frame.animate && opener) {
-                const timing = { duration: 760, fill: 'forwards', easing: 'cubic-bezier(.55,0,.2,1)' };
+                const timing = { duration: 760, delay: 120, fill: 'both', easing: 'cubic-bezier(.55,0,.2,1)' };
+                animate(outlineWindow, [{ opacity: outlineOpacity }, { opacity: 0 }], { duration: 100, fill: 'forwards' });
+                animate(outlineWindow, [clipFrame(origin), clipFrame(sourceFrame(opener))], timing);
                 fading.forEach(({ element, opacity, transform }) => animate(element, [
                     { opacity, transform }, { opacity: 0, transform }
                 ], { duration: 240, fill: 'forwards' }));
                 animate(surface, [{ backgroundColor }, { backgroundColor: '#07070700' }], timing);
-                animate(artwork, [{ filter: sourceFilter }, { filter: getComputedStyle(opener.querySelector('.artifact-artwork')).filter }], timing);
+                animate(artwork, [
+                    { filter: sourceFilter, transform: sourceTransform },
+                    { filter: getComputedStyle(opener.querySelector('.artifact-artwork')).filter, transform: 'scale(1)' }
+                ], timing);
                 frameAnimation = frame.animate([
                     { ...rectFrame(origin), opacity: frameOpacity },
                     { ...rectFrame(sourceFrame(opener)), opacity: getComputedStyle(opener.querySelector('.artifact-slice__frame') || opener).opacity }
@@ -448,7 +545,7 @@
                 cancelAnimations();
                 setViewerContent(items[viewerIndex]);
                 setNeighbours(viewerIndex);
-            } else frameAnimation?.cancel();
+            } else cancelAnimations();
             fitTitle();
         }, { signal });
         if (document.fonts) document.fonts.ready.then(() => {
@@ -490,9 +587,10 @@
                 if (dialog.open) { dialog.close(); resumePage(); }
                 track.style.removeProperty('transform');
                 runway.style.removeProperty('height');
+                indexNav.replaceChildren();
             }
         };
     }
     if (root) root.setupIndexWorks = setupIndexWorks;
-    if (typeof module !== 'undefined' && module.exports) module.exports = { scrollState, positionForIndex, titleLines, rectFrame, setupIndexWorks };
+    if (typeof module !== 'undefined' && module.exports) module.exports = { scrollState, positionForIndex, titleLines, rectFrame, clipFrame, setupIndexWorks };
 })(typeof window === 'undefined' ? null : window);

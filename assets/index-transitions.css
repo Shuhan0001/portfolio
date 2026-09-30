@@ -23,17 +23,19 @@ html.lenis, html.lenis body { height: auto; }
 .index-motion #zone-about > .chapter-seam { display: none; }
 .index-motion #zone-1,
 .index-motion #contact-section { margin-top: -56px; padding-top: 184px; }
-.index-motion #zone-1 { z-index: 21; }
 .index-motion #zone-2-works { z-index: 22; }
+.index-motion #zone-1 { z-index: 23; }
 .index-motion #contact-section { z-index: 24; background-color: rgba(5, 5, 5, .95); }
 .index-motion #zone-2-featured { background-color: rgba(5, 5, 5, .8); }
 .gallery-runway { position: relative; width: 100%; }
 .index-scroll-gallery #zone-2-featured { position: sticky; top: 0; }
 
-.logic-accordion .logic-toggle { position: relative; cursor: pointer; padding-right: 52px; }
+.logic-accordion .logic-toggle { position: relative; cursor: pointer; padding-right: 52px; touch-action: manipulation; }
 .logic-accordion .logic-toggle:focus-visible { outline: 1px solid #ffffff85; outline-offset: -5px; }
 .logic-toggle::after { content: '+'; position: absolute; right: 16px; top: 50%; font-size: 26px; line-height: 1; font-weight: 300; color: #ffffff80; transform: translateY(-50%); }
 .logic-toggle[aria-expanded="true"]::after { content: '−'; }
+.logic-accordion [data-open="true"] { background: rgba(255, 255, 255, .02); }
+.logic-accordion [data-open="true"] h4 { color: #fff; }
 .logic-accordion [data-open="true"] > .accordion-panel { grid-template-rows: 1fr; }
 .logic-accordion .accordion-panel { transition-duration: 450ms; transition-timing-function: cubic-bezier(.25,.8,.25,1); }
 .logic-toggle > div:last-child { display: none; }
@@ -46,6 +48,7 @@ html.lenis, html.lenis body { height: auto; }
 @media (max-width: 767px) {
   .index-motion #zone-1,
   .index-motion #contact-section { margin-top: -28px; padding-top: 156px; }
+  .logic-accordion .logic-toggle { scroll-margin-top: 120px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .chapter-seam { display: none; }
