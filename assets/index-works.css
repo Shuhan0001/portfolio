@@ -151,6 +151,7 @@
   opacity: 0;
   transition: transform .6s var(--work-ease), opacity .5s ease, bottom .85s var(--work-ease);
 }
+.artifact-artwork--xuanwu { object-position: 62% 35%; }
 .artifact-slice.is-current { z-index: 2; }
 .artifact-slice.is-current .artifact-slice__frame { opacity: 1; transform: scaleY(1.025); }
 .artifact-slice.is-current::after { opacity: .7; transform: translateX(-50%) scaleX(1); }
@@ -270,11 +271,15 @@
 /* The dialog only owns focus. The artwork itself stays a framed, central view. */
 html.works-viewer-open { overflow: hidden; }
 .work-viewer {
-  --viewer-width: min(66vw, 1320px);
-  --viewer-height: min(46svh, calc(var(--viewer-width) * .5625));
-  --viewer-title-size: calc(var(--viewer-height) * .74);
-  --viewer-title-top: max(0px, min(calc(var(--viewer-height) * .44), calc(50svh - var(--viewer-height) / 2 - clamp(88px, 13svh, 132px))));
-  --viewer-title-bottom: min(calc(var(--viewer-height) * .28), max(0px, calc(50svh - var(--viewer-height) / 2 - var(--viewer-footer-room, 140px) - clamp(18px, 2.6svh, 32px))));
+  /* Give the artwork the visual priority of a case-study hero while
+     keeping a measured band for the title and the two-line project info. */
+  --viewer-width: min(74vw, 1440px);
+  --viewer-height: min(52svh, calc(var(--viewer-width) * .5625));
+  --viewer-title-fit: 1;
+  --viewer-title-size: min(240px, calc(var(--viewer-height) * .6));
+  --viewer-title-column: 58%;
+  --viewer-title-top: max(0px, min(calc(var(--viewer-title-size) * var(--viewer-title-fit) * .62), calc(50svh - var(--viewer-height) / 2 - clamp(88px, 13svh, 132px))));
+  --viewer-title-bottom: min(calc(var(--viewer-title-size) * var(--viewer-title-fit) * .3), max(0px, calc(50svh - var(--viewer-height) / 2 - var(--viewer-footer-room, 140px) - clamp(18px, 2.6svh, 32px))));
   position: fixed;
   inset: 0;
   width: 100%;
@@ -291,6 +296,7 @@ html.works-viewer-open { overflow: hidden; }
 .work-viewer:not([open]) { display: none; }
 .work-viewer::backdrop { background: transparent; }
 .work-viewer:has(#work-viewer-title[data-rows="1"]) { --viewer-title-bottom: 0px; }
+.work-viewer:has(#work-viewer-title[data-rows="2"]) { --viewer-title-size: min(210px, calc(var(--viewer-height) * .48)); }
 .work-viewer__surface { position: absolute; inset: 0; isolation: isolate; background: #070707; overflow: hidden; }
 .work-viewer__frame {
   position: absolute;
@@ -383,7 +389,7 @@ html.works-viewer-open { overflow: hidden; }
   height: 100%;
   margin: 0;
   color: #e9e7e2;
-  font-size: var(--viewer-title-size);
+  font-size: calc(var(--viewer-title-size) * var(--viewer-title-fit));
   line-height: .86;
   font-weight: 400;
   text-transform: uppercase;
@@ -398,7 +404,7 @@ html.works-viewer-open { overflow: hidden; }
   pointer-events: none;
   clip-path: inset(calc(50% - var(--viewer-height) / 2) calc(50% - var(--viewer-width) / 2));
 }
-.work-viewer__title-window .work-viewer__glyph {
+.work-viewer__title-window .work-viewer__word {
   color: transparent;
   -webkit-text-stroke: 1px #f6f5ef80;
 }
@@ -408,28 +414,38 @@ html.works-viewer-open { overflow: hidden; }
   left: 0;
   display: flex;
   align-items: center;
-  width: var(--title-row-span, 94%);
+  width: var(--viewer-title-column);
 }
 .work-viewer__title-row:nth-child(2) {
-  top: calc(100% - var(--viewer-title-size) * .86 + var(--viewer-title-bottom));
+  top: auto;
+  bottom: calc(0px - var(--viewer-title-bottom));
   left: auto;
   right: 0;
+  justify-content: flex-end;
 }
-.work-viewer__title[data-rows="1"] .work-viewer__title-row { width: 100%; }
+.work-viewer__title[data-rows="1"] .work-viewer__title-row { width: 86%; }
 /* Keep all three words legible: BSc and Interactive share the upper edge. */
 .work-viewer__title[data-rows="3"] .work-viewer__title-row:nth-child(-n+2) {
   top: calc(0px - var(--viewer-title-top));
-  font-size: calc(var(--viewer-height) * .54);
+  bottom: auto;
+  font-size: calc(var(--viewer-height) * .42 * var(--viewer-title-fit));
 }
 .work-viewer__title[data-rows="3"] .work-viewer__title-row:first-child { width: 22%; }
 .work-viewer__title[data-rows="3"] .work-viewer__title-row:nth-child(2) { left: 26%; width: 74%; }
 .work-viewer__title[data-rows="3"] .work-viewer__title-row:nth-child(3) {
-  top: calc(100% - var(--viewer-title-size) * .86 + var(--viewer-title-bottom));
+  top: auto;
+  bottom: calc(0px - var(--viewer-title-bottom));
   left: auto;
   right: 0;
+  justify-content: flex-end;
 }
-.work-viewer__letter { display: flex; justify-content: center; flex: 1 1 0; min-width: 0; }
-.work-viewer__glyph { display: block; flex: 0 0 auto; transform: scaleX(var(--letter-width, 1.1)); transform-origin: center; }
+.work-viewer__word {
+  display: block;
+  flex: 0 0 auto;
+  white-space: nowrap;
+  font-kerning: normal;
+  letter-spacing: -.01em;
+}
 .work-viewer__description {
   position: absolute;
   z-index: 3;
@@ -496,7 +512,7 @@ html.works-viewer-open { overflow: hidden; }
   #slice-current-category { padding-left: 12px; font-size: 15px; }
   .slice-gallery__footer { align-items: flex-end; gap: 16px; }
   #slice-current-title { max-width: 13ch; font-size: 28px; }
-  .work-viewer { --viewer-width: 86vw; --viewer-height: min(42svh, 64vw); }
+  .work-viewer { --viewer-width: 88vw; --viewer-height: min(48svh, 64vw); --viewer-title-column: 76%; }
   .work-viewer__copy { width: 96vw; }
   .work-viewer__neighbour { width: 5vw; min-width: 18px; opacity: .35; }
   .work-viewer__neighbour--previous { left: 0; }

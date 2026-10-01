@@ -25,7 +25,18 @@ html.lenis, html.lenis body { height: auto; }
 .index-motion #contact-section { margin-top: -56px; padding-top: 184px; }
 .index-motion #zone-2-works { z-index: 22; }
 .index-motion #zone-1 { z-index: 23; }
-.index-motion #contact-section { z-index: 24; background-color: rgba(5, 5, 5, .95); }
+.index-motion #contact-section { z-index: 24; }
+/* Match About's translucent glass material across the entire contact sheet. */
+#contact-section {
+  background: rgba(5, 5, 5, .12);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 3rem 3rem 0 0;
+  border-top: 1px solid rgba(255, 255, 255, .12);
+  box-shadow: 0 -20px 50px rgba(0, 0, 0, .5), 0 1px 0 rgba(255, 255, 255, .09) inset;
+}
+#contact-section::before,
+#contact-section > .chapter-seam { display: none; }
 .index-motion #zone-2-featured { background-color: rgba(5, 5, 5, .8); }
 .gallery-runway { position: relative; width: 100%; }
 .index-scroll-gallery #zone-2-featured { position: sticky; top: 0; }
@@ -46,10 +57,12 @@ html.lenis, html.lenis body { height: auto; }
 .index-motion #contact-section::before { opacity: 0; }
 
 @media (max-width: 767px) {
+  #contact-section { border-radius: 2rem 2rem 0 0; }
   .index-motion #zone-1,
   .index-motion #contact-section { margin-top: -28px; padding-top: 156px; }
   .logic-accordion .logic-toggle { scroll-margin-top: 120px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .chapter-seam { display: none; }
+  .logic-accordion .accordion-panel { transition-duration: .001ms; }
 }

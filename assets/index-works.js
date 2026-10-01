@@ -196,19 +196,13 @@
         function fitTitle() {
             // Reserve the actual caption height before exposing more of the lower row.
             dialog.style.setProperty('--viewer-footer-room', `${description.offsetHeight + 16}px`);
-            // Allocate space by each glyph's natural width: I and W should not
-            // create identical gaps. Both depth layers keep precisely the same fit.
-            titleRows.forEach(({ row, letters, outlineRow, outlineLetters }) => {
-                const widths = letters.map(({ glyph }) => Math.max(1, glyph.offsetWidth));
-                const naturalWidth = widths.reduce((total, width) => total + width, 0);
-                const scale = clamp(row.clientWidth * .94 / naturalWidth, .15, 1.35);
-                row.style.setProperty('--letter-width', scale);
-                outlineRow.style.setProperty('--letter-width', scale);
-                letters.forEach(({ letter }, index) => {
-                    letter.style.flexGrow = String(widths[index]);
-                    outlineLetters[index].letter.style.flexGrow = String(widths[index]);
-                });
-            });
+            // Measure complete words at the design size, preserving native
+            // kerning. A shared font-size reduction fits long names without
+            // stretching short words or separating glyphs from their boxes.
+            dialog.style.setProperty('--viewer-title-fit', 1);
+            const fit = Math.min(1, ...titleRows.map(({ row, word }) =>
+                row.clientWidth > 0 && word.offsetWidth > 0 ? row.clientWidth * .98 / word.offsetWidth : 1));
+            dialog.style.setProperty('--viewer-title-fit', fit);
         }
         function setTitle(titleText) {
             heading.replaceChildren();
@@ -221,24 +215,17 @@
                 const row = document.createElement('span');
                 row.className = 'work-viewer__title-row';
                 row.setAttribute('aria-hidden', 'true');
-                row.style.setProperty('--title-row-span', `${clamp(58 + (line.length - 3) * 7, 58, 94)}%`);
-                const letters = Array.from(line).map(character => {
-                    const letter = document.createElement('span');
-                    letter.className = 'work-viewer__letter';
-                    const glyph = document.createElement('span');
-                    glyph.className = 'work-viewer__glyph';
-                    glyph.textContent = character;
-                    letter.appendChild(glyph);
-                    row.appendChild(letter);
-                    return { letter, glyph };
-                });
+                const word = document.createElement('span');
+                word.className = 'work-viewer__word';
+                word.textContent = line;
+                row.appendChild(word);
                 parent.appendChild(row);
-                return { row, letters };
+                return { row, word };
             }
             titleRows = lines.map(line => {
                 const solid = createRow(line, heading);
                 const outline = createRow(line, outlineHeading);
-                return { ...solid, outlineRow: outline.row, outlineLetters: outline.letters };
+                return { ...solid, outlineRow: outline.row, outlineWord: outline.word };
             });
         }
         function setNeighbours(index) {
@@ -441,15 +428,15 @@
                 animate(surface, [{ backgroundColor: '#07070700' }, { backgroundColor: '#070707' }], { duration: 620, easing: 'ease' });
                 animate(neighbours, [{ opacity: 0 }, { opacity: 1 }], { duration: 800, delay: 160, fill: 'backwards' });
                 animate(topBar, [{ opacity: 0 }, { opacity: 1 }], { duration: 450, delay: 180, fill: 'backwards' });
-                titleRows.forEach(({ letters, outlineLetters }, rowIndex) => letters.forEach(({ letter }, indexInRow) => {
+                titleRows.forEach(({ word, outlineWord }, rowIndex) => {
                     const frames = [
-                        { opacity: 0, transform: 'translate(' + (rowIndex % 2 ? 18 : -18) + 'px, 28px)' },
+                        { opacity: 0, transform: 'translate(' + (rowIndex % 2 ? 14 : -14) + 'px, 16px)' },
                         { opacity: 1, transform: 'translate(0, 0)' }
                     ];
-                    const options = { duration: 960, delay: 240 + rowIndex * 70 + indexInRow / Math.max(1, letters.length - 1) * 160, fill: 'backwards', easing: timing.easing };
-                    animate(letter, frames, options);
-                    animate(outlineLetters[indexInRow].letter, frames, options);
-                }));
+                    const options = { duration: 960, delay: 240 + rowIndex * 90, fill: 'backwards', easing: timing.easing };
+                    animate(word, frames, options);
+                    animate(outlineWord, frames, options);
+                });
                 animate(description, [
                     { opacity: 0, transform: 'translate(-50%, 12px)' },
                     { opacity: 1, transform: 'translate(-50%, 0)' }
@@ -472,7 +459,7 @@
             const frameOpacity = getComputedStyle(frame).opacity;
             const backgroundColor = getComputedStyle(surface).backgroundColor;
             const outlineOpacity = getComputedStyle(outlineWindow).opacity;
-            const fading = [heading, outlineHeading, description, topBar, neighbours, ...titleRows.flatMap(({ letters, outlineLetters }) => [...letters, ...outlineLetters].map(({ letter }) => letter))]
+            const fading = [heading, outlineHeading, description, topBar, neighbours, ...titleRows.flatMap(({ word, outlineWord }) => [word, outlineWord])]
                 .map(element => ({ element, opacity: getComputedStyle(element).opacity, transform: getComputedStyle(element).transform }));
             cancelAnimations();
             if (!reduced && frame.animate && opener) {

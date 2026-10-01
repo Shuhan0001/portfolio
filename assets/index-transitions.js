@@ -163,7 +163,9 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
         accordion.classList.add('logic-accordion');
         const rows = Array.from(accordion.querySelectorAll('.accordion-panel'), panel => panel.parentElement);
         const hoverCapable = window.matchMedia('(hover: hover) and (pointer: fine)');
-        let hoverTimer, closeTimer, hoverCandidate = null, closeCandidate = null, dismissedRow = null;
+        let hoverTimer, closeTimer, revealTimer;
+        let hoverCandidate = null, closeCandidate = null, dismissedRow = null, pinnedRow = null;
+        let pointerX = null, pointerY = null;
         const cancelHover = () => {
             clearTimeout(hoverTimer);
             hoverCandidate = null;
@@ -173,6 +175,7 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
             closeCandidate = null;
         };
         const setOpen = (row, open) => {
+            if (row.dataset.open === String(open)) return;
             const control = row.querySelector('.logic-toggle');
             const panel = row.querySelector('.accordion-panel');
             row.dataset.open = String(open);
@@ -183,6 +186,12 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
         const openRow = row => rows.forEach(item => setOpen(item, item === row));
         const onPointerMove = event => {
             if (event.pointerType !== 'mouse' || !hoverCapable.matches) return;
+            // Layout changes can retarget the pointer without the hand moving.
+            if (pointerX === event.clientX && pointerY === event.clientY) return;
+            pointerX = event.clientX;
+            pointerY = event.clientY;
+            // An explicit click owns the open row until the next click.
+            if (pinnedRow) return;
             const hoveredRow = rows.find(row => row.contains(event.target));
             if (hoveredRow !== dismissedRow) dismissedRow = null;
             const open = rows.find(row => row.dataset.open === 'true');
@@ -214,20 +223,43 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
             if (event.relatedTarget !== null || event.pointerType !== 'mouse') return;
             cancelHover();
             cancelClose();
+            if (pinnedRow) return;
             closeTimer = setTimeout(() => rows.forEach(row => {
                 if (!row.querySelector(':focus-visible')) setOpen(row, false);
             }), 220);
         };
         document.addEventListener('pointerout', onPointerOut);
-        const revealRow = row => requestAnimationFrame(() => {
-            const panel = row.querySelector('.accordion-panel');
-            if (panel.getBoundingClientRect().top < window.innerHeight - 180) return;
-            lenis.scrollTo(row, {
-                offset: window.innerWidth < 768 ? -120 : -96,
-                duration: .45,
-                immediate: window.matchMedia('(prefers-reduced-motion: reduce)').matches
-            });
-        });
+        const revealRow = row => {
+            clearTimeout(revealTimer);
+            const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            // Wait until sibling rows stop moving before choosing a scroll target.
+            revealTimer = setTimeout(() => {
+                if (row.dataset.open !== 'true' || pinnedRow !== row) return;
+                const panel = row.querySelector('.accordion-panel');
+                if (panel.getBoundingClientRect().top < window.innerHeight - 180) return;
+                lenis.scrollTo(row, {
+                    offset: window.innerWidth < 768 ? -120 : -96,
+                    duration: .45,
+                    immediate: reduced
+                });
+            }, reduced ? 0 : 520);
+        };
+        const toggleRow = row => {
+            cancelHover();
+            cancelClose();
+            clearTimeout(revealTimer);
+            if (pinnedRow === row && row.dataset.open === 'true') {
+                pinnedRow = null;
+                dismissedRow = row;
+                setOpen(row, false);
+            } else {
+                // Clicking an already-hovered preview keeps its animation going.
+                pinnedRow = row;
+                dismissedRow = null;
+                openRow(row);
+                revealRow(row);
+            }
+        };
         accordion.querySelectorAll('.accordion-panel').forEach((panel, i) => {
             const row = panel.parentElement;
             const control = panel.previousElementSibling;
@@ -246,55 +278,56 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
             panel.inert = true;
             panel.setAttribute('aria-hidden', 'true');
             control.addEventListener('click', event => {
-                cancelHover();
-                cancelClose();
-                if (row.dataset.open === 'true') { dismissedRow = row; setOpen(row, false); }
-                else { dismissedRow = null; openRow(row); revealRow(row); }
+                toggleRow(row);
             });
             control.addEventListener('keydown', event => {
                 if (event.key !== 'Enter' && event.key !== ' ') return;
                 event.preventDefault();
                 if (event.repeat) return;
-                cancelHover();
-                cancelClose();
-                if (row.dataset.open === 'true') { dismissedRow = row; setOpen(row, false); }
-                else { dismissedRow = null; openRow(row); revealRow(row); }
+                toggleRow(row);
             });
         });
         window.addEventListener('pagehide', event => {
             cancelHover();
             cancelClose();
+            clearTimeout(revealTimer);
             if (event.persisted) return;
             document.removeEventListener('pointermove', onPointerMove);
             document.removeEventListener('pointerout', onPointerOut);
         });
     }
 
-    // The sticky scene reads the live boundary during resizing; only the other
-    // decorative section triggers need a single remeasure after settling.
+    // The accordion is below the gallery: its height never changes gallery
+    // geometry. Coalesce its resize frames and refresh only after settling.
     let refreshTimer;
+    let galleryDirty = false;
     const refreshLayout = () => {
         clearTimeout(refreshTimer);
-        syncGallery();
+        const refreshGallery = galleryDirty;
+        galleryDirty = false;
+        if (refreshGallery) syncGallery();
         lenis.resize();
         ScrollTrigger.refresh();
     };
     const queueRefresh = () => {
-        syncGallery();
         clearTimeout(refreshTimer);
         refreshTimer = setTimeout(refreshLayout, 160);
+    };
+    const queueGalleryRefresh = () => {
+        galleryDirty = true;
+        queueRefresh();
     };
     const observer = accordion && window.ResizeObserver ? new ResizeObserver(queueRefresh) : null;
     if (observer) observer.observe(accordion);
     const afterTransition = event => {
-        if (event.propertyName === 'grid-template-rows') refreshLayout();
+        if (event.propertyName === 'grid-template-rows') queueRefresh();
     };
     if (accordion) accordion.addEventListener('transitionend', afterTransition);
-    window.addEventListener('works:layout', queueRefresh);
+    window.addEventListener('works:layout', queueGalleryRefresh);
     window.addEventListener('pagehide', event => {
         if (event.persisted) return;
         clearTimeout(refreshTimer);
-        window.removeEventListener('works:layout', queueRefresh);
+        window.removeEventListener('works:layout', queueGalleryRefresh);
         if (observer) observer.disconnect();
         if (accordion) accordion.removeEventListener('transitionend', afterTransition);
         media.revert();
