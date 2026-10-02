@@ -195,7 +195,8 @@
         }
         function fitTitle() {
             // Reserve the actual caption height before exposing more of the lower row.
-            dialog.style.setProperty('--viewer-footer-room', `${description.offsetHeight + 16}px`);
+            const captionHeight = Math.max(description.offsetHeight, description.querySelector('.work-viewer__details').scrollHeight);
+            dialog.style.setProperty('--viewer-footer-room', `${captionHeight + 16}px`);
             // Measure complete words at the design size, preserving native
             // kerning. A shared font-size reduction fits long names without
             // stretching short words or separating glyphs from their boxes.
@@ -248,6 +249,10 @@
             document.getElementById('work-viewer-category').textContent = item.dataset.category;
             document.getElementById('work-viewer-meta').textContent = item.dataset.meta;
             document.getElementById('work-viewer-summary').textContent = item.dataset.summary;
+            const aiStatement = item.dataset.aiStatement || '';
+            document.getElementById('work-viewer-ai-text').textContent = aiStatement;
+            document.getElementById('work-viewer-ai').hidden = !aiStatement;
+            dialog.setAttribute('aria-describedby', aiStatement ? 'work-viewer-summary work-viewer-ai' : 'work-viewer-summary');
             const credit = document.getElementById('work-viewer-credit');
             if (credit) {
                 credit.textContent = item.dataset.credit || '';

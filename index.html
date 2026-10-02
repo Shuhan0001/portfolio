@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ashton (Shuhan) Zhang | Game Designer &amp; Technologist</title>
-    <meta name="description" content="Ashton (Shuhan) Zhang is a Game Designer and Technologist, and an Interactive Media graduate of the University of York. He builds gameplay systems, prototypes and interactive experiences across Unity, Unreal Engine 5, Android and AI-driven tools.">
-    <meta property="og:title" content="Ashton (Shuhan) Zhang | Game Designer &amp; Technologist">
-    <meta property="og:description" content="Game Designer and Technologist, Interactive Media graduate of the University of York. Builds gameplay systems, prototypes and interactive experiences across Unity, Unreal Engine 5, Android and AI-driven tools.">
+    <title>Ashton (Shuhan) Zhang | Interactive Designer &amp; Creative Technologist</title>
+    <meta name="description" content="Ashton (Shuhan) Zhang is an Interactive Designer and Creative Technologist exploring how interactive systems shape perception, behaviour and connection through game design, real-time technology and speculative interaction.">
+    <meta property="og:title" content="Ashton (Shuhan) Zhang | Interactive Designer &amp; Creative Technologist">
+    <meta property="og:description" content="Interactive Designer and Creative Technologist exploring game design, real-time technology and speculative interaction.">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary">
 
@@ -341,6 +341,9 @@
     <link rel="stylesheet" href="assets/index-transitions.css">
     <link rel="stylesheet" href="assets/index-typography.css">
     <link rel="stylesheet" href="assets/index-works.css">
+    <link rel="stylesheet" href="assets/index-responsive.css">
+    <link rel="stylesheet" href="assets/fps-cursor.css">
+    <script defer src="assets/fps-cursor.js"></script>
 </head>
 <body class="selection:bg-primary selection:text-white">
 
@@ -403,7 +406,7 @@
 
                 <div id="hero-content-wrapper" class="w-full h-full flex flex-col justify-between p-8 md:p-12 relative z-10">
                     <header class="flex justify-between items-center w-full pointer-events-auto">
-                        <div class="font-bold tracking-widest text-sm uppercase">Game Designer &amp; Technologist</div>
+                        <div class="font-bold text-[10px] md:text-sm leading-tight tracking-[0.12em] md:tracking-widest uppercase max-w-[44vw] md:max-w-none">Interactive Designer &amp; Creative Technologist</div>
                         <div class="flex items-center gap-6 relative z-[9998]">
                             <!-- Invisible placeholder: keeps Resume/Contact in the same spot.
                                  The real, always-visible search box lives outside the hero
@@ -449,9 +452,10 @@
                             <span class="about-name-swap__tail"> Zhang</span>
                         </span>.
                     </h3>
-                    <p class="text-gray-400 text-lg leading-relaxed max-w-2xl font-light gsap-reveal">
-                        I'm a BSc (Hons) Interactive Media graduate of the University of York, with Upper Second-Class Honours. I work where game systems design meets human-computer interaction. My practice ranges from controlled in-engine experiments on player behaviour to speculative and critical design that makes its argument through an interface rather than an essay. Lately I've been moving toward tangible and embodied interaction, building instruments you hold rather than screens you tap.
-                    </p>
+                    <div class="text-gray-400 text-lg leading-relaxed max-w-2xl font-light gsap-reveal space-y-5 text-justify">
+                        <p>I explore how interactive systems shape the way people perceive, behave and connect with digital experiences.</p>
+                        <p>Combining game design, real-time technology and speculative interaction, I create experimental experiences that investigate player engagement, human behaviour and the evolving relationship between people and technology.</p>
+                    </div>
                 </div>
             </section>
 
@@ -460,26 +464,41 @@
                 <div id="zone-2-featured" class="slice-gallery">
                     <div class="slice-gallery__heading">
                         <h2 class="section-kicker">01 / Works &amp; Archive</h2>
-                        <h3 id="works-heading">SELECTED <span class="text-outline">ARTIFACTS</span></h3>
+                        <h3 id="works-heading" class="selection-title">SELECTED <span class="text-outline">ARTIFACTS</span><span class="selection-title__gizmo" aria-hidden="true">
+                            <svg class="selection-title__box" viewBox="0 0 440 200" preserveAspectRatio="none" fill="none" focusable="false">
+                                <g class="selection-title__bounds">
+                                    <path class="selection-title__back" d="M15 12H435V165H15Z"/>
+                                    <path d="M5 32H425V185H5Z M5 32L15 12 M425 32L435 12 M425 185L435 165 M5 185L15 165"/>
+                                    <path class="selection-title__corners" d="M5 44V32H13 M417 32H425V44 M425 173V185H417 M13 185H5V173"/>
+                                </g>
+                            </svg>
+                            <svg class="selection-title__axes" viewBox="330 70 110 130" fill="none" focusable="false">
+                                <g stroke="#7da7cc" fill="#7da7cc"><path d="M355 150V94"/><path d="M355 84L351 96H359Z" stroke="none"/></g>
+                                <g stroke="#99b58b" fill="#99b58b"><path d="M355 150L411 131"/><path d="M422 127L408 127L411 135Z" stroke="none"/></g>
+                                <g stroke="#c58683" fill="#c58683"><path d="M355 150L380 181"/><path d="M387 189L383 176L376 181Z" stroke="none"/></g>
+                                <circle cx="355" cy="150" r="10" stroke="#eee8d7"/>
+                                <circle cx="355" cy="150" r="2" fill="#eee8d7"/>
+                            </svg>
+                        </span></h3>
                     </div>
                     <div class="slice-viewport">
                         <div id="featured-track" class="slice-track">
                         <section class="slice-group" aria-labelledby="slice-group-0">
                             <h4 id="slice-group-0" class="slice-group__label">Completed</h4>
                             <div class="slice-group__items">
-                                <a class="artifact-slice hover-trigger" href="Revive_Profilo.html" data-title="Revive" data-meta="UE5 · Narrative &amp; lighting study" data-summary="A narrative demo exploring how lighting changes difficulty and immersion." data-category="Completed" data-cta="View project" aria-label="Preview Revive">
+                                <a class="artifact-slice hover-trigger" href="Revive_Profilo.html" data-title="Revive" data-meta="UE5 · Narrative &amp; lighting study" data-summary="A narrative demo exploring how lighting changes difficulty and immersion." data-ai-statement="Gemini assisted with UE5 Blueprint refinement and a small number of 2D textures. AI was not used for writing, data collection, participant recruitment or analysis." data-category="Completed" data-cta="View project" aria-label="Preview Revive">
                                     <span class="artifact-slice__frame"><img class="artifact-artwork" src="Image/Index_Revive.webp" alt="" loading="lazy" decoding="async"></span>
                                 </a>
-                                <a class="artifact-slice hover-trigger" href="CogniStream_Profilo.html" data-title="Cogni-Stream" data-meta="Speculative web experience" data-summary="A fictional brain-computer interface that makes knowledge a subscription." data-category="Completed" data-cta="View project" aria-label="Preview Cogni-Stream">
+                                <a class="artifact-slice hover-trigger" href="CogniStream_Profilo.html" data-title="Cogni-Stream" data-meta="Speculative web experience" data-summary="A fictional brain-computer interface that makes knowledge a subscription." data-ai-statement="Gemini assisted with JavaScript debugging; Midjourney generated conceptual product imagery; Runway AI generated promotional video elements. I reviewed, curated and directed all outputs." data-category="Completed" data-cta="View project" aria-label="Preview Cogni-Stream">
                                     <span class="artifact-slice__frame"><img class="artifact-artwork" src="Image/Index_CogniStream.webp" alt="" loading="lazy" decoding="async"></span>
                                 </a>
-                                <a class="artifact-slice hover-trigger" href="MiniQuest_Profilo.html" data-title="MiniQuest" data-meta="Android · Interaction prototype" data-summary="An Android prototype turning movement and everyday quests into an RPG reward loop." data-category="Completed" data-cta="View project" aria-label="Preview MiniQuest">
+                                <a class="artifact-slice hover-trigger" href="MiniQuest_Profilo.html" data-title="MiniQuest" data-meta="Android · Interaction prototype" data-summary="An Android prototype turning movement and everyday quests into an RPG reward loop." data-ai-statement="Level 3 AI-assisted editing for refactoring suggestions and debugging; Level 2 idea development for the written report. I independently produced and validated all design decisions, implementation logic and final code." data-category="Completed" data-cta="View project" aria-label="Preview MiniQuest">
                                     <span class="artifact-slice__frame"><img class="artifact-artwork artifact-artwork--contain" src="Image/Index_MiniQuest_Green.png" alt="" loading="lazy" decoding="async"></span>
                                 </a>
                                 <a class="artifact-slice hover-trigger" href="HauntedSchool_Profilo.html" data-title="Silent Night" data-meta="Unity · Horror RPG" data-summary="A school after dark, three ghosts, and a story told through the routes you take." data-category="Completed" data-cta="View project" aria-label="Preview Silent Night">
                                     <span class="artifact-slice__frame"><img class="artifact-artwork" src="Image/Index_SilentNight.webp" alt="" loading="lazy" decoding="async"></span>
                                 </a>
-                                <a class="artifact-slice hover-trigger" href="AICodeGen_Profilo.html" data-title="AI Codegen" data-meta="Research · 2026" data-summary="A versioned browser-game study of code consistency, prompt constraints and recorded failures." data-category="Completed" data-cta="View project" aria-label="Preview AI Codegen">
+                                <a class="artifact-slice hover-trigger" href="AICodeGen_Profilo.html" data-title="AI Codegen" data-meta="Research · 2026" data-summary="A versioned browser-game study of code consistency, prompt constraints and recorded failures." data-ai-statement="Gemini 3 Pro Thinking generated iterative game-code additions from a hand-written baseline. I checked the outputs, tested each build and documented failures. The v6 scene and audio demo was outside the reliability study." data-category="Completed" data-cta="View project" aria-label="Preview AI Codegen">
                                     <span class="artifact-slice__frame"><img class="artifact-artwork" src="Image/Index_AI.webp" alt="" loading="lazy" decoding="async"></span>
                                 </a>
                             </div>
@@ -517,7 +536,7 @@
                 </div>
             </section>
 
-            <dialog id="work-viewer" class="work-viewer" aria-labelledby="work-viewer-title" aria-describedby="work-viewer-summary" data-lenis-prevent>
+            <dialog id="work-viewer" class="work-viewer" aria-labelledby="work-viewer-title" aria-describedby="work-viewer-summary work-viewer-ai" data-lenis-prevent>
                 <article class="work-viewer__surface">
                     <div class="work-viewer__neighbours">
                         <button type="button" class="work-viewer__neighbour work-viewer__neighbour--previous hover-trigger" aria-label="Previous project" disabled></button>
@@ -543,6 +562,7 @@
                         <div class="work-viewer__details">
                             <p id="work-viewer-meta" class="font-mono"></p>
                             <p id="work-viewer-summary"></p>
+                            <p id="work-viewer-ai" class="work-viewer__ai" hidden><span class="work-viewer__ai-label">AI disclosure</span> <span id="work-viewer-ai-text"></span></p>
                             <a id="work-viewer-credit" class="work-viewer__credit" href="#" target="_blank" rel="noopener noreferrer" hidden></a>
                         </div>
                         <a id="work-viewer-link" class="hover-trigger" href="index.html">Explore</a>
@@ -561,18 +581,18 @@
                 <div class="max-w-[90rem] mx-auto w-full relative z-10 px-8 md:px-16 lg:px-24">
                     
                     <!-- Avant-Garde Header -->
-                    <div class="flex flex-col mb-24 md:mb-32 gsap-reveal">
+                    <div class="logic-header flex flex-col mb-24 md:mb-32 gsap-reveal">
                         <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12 border-b border-white/15 pb-8">
                             <h2 class="section-kicker">
                                 02 / The Engine
                             </h2>
                         </div>
                         
-                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start">
+                        <div class="logic-intro grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start">
                             <div class="lg:col-span-8">
                                 <h3 class="text-5xl sm:text-7xl md:text-8xl lg:text-[7.5rem] font-bold tracking-tighter text-white leading-[0.85] uppercase">
                                     Logic<br>
-                                    &<span class="text-outline"> Form</span>
+                                    &amp;<span class="text-outline"> Form</span>
                                 </h3>
                             </div>
                             <div class="lg:col-span-4 lg:pt-4">
@@ -607,7 +627,7 @@
                             </div>
 
                             <!-- Expandable Tech Specs - Editorial List Design -->
-                            <div class="accordion-panel grid grid-rows-[0fr] group-hover/row:grid-rows-[1fr] transition-[grid-template-rows] duration-700 ease-[cubic-bezier(0.76,0,0.24,1)]">
+                            <div class="accordion-panel grid grid-rows-[0fr] transition-[grid-template-rows] duration-700 ease-[cubic-bezier(0.76,0,0.24,1)]">
                                 <div class="overflow-hidden">
                                     <div class="pb-12 md:pb-16 px-4 md:ml-[5.5rem] lg:ml-[8rem] md:pr-12">
                                         <div class="w-full flex flex-col border-t border-white/10">
@@ -663,7 +683,7 @@
                                 </div>
                             </div>
 
-                            <div class="accordion-panel grid grid-rows-[0fr] group-hover/row:grid-rows-[1fr] transition-[grid-template-rows] duration-700 ease-[cubic-bezier(0.76,0,0.24,1)]">
+                            <div class="accordion-panel grid grid-rows-[0fr] transition-[grid-template-rows] duration-700 ease-[cubic-bezier(0.76,0,0.24,1)]">
                                 <div class="overflow-hidden">
                                     <div class="pb-12 md:pb-16 px-4 md:ml-[5.5rem] lg:ml-[8rem] md:pr-12">
                                         <div class="w-full flex flex-col border-t border-white/10">
@@ -719,7 +739,7 @@
                                 </div>
                             </div>
 
-                            <div class="accordion-panel grid grid-rows-[0fr] group-hover/row:grid-rows-[1fr] transition-[grid-template-rows] duration-700 ease-[cubic-bezier(0.76,0,0.24,1)]">
+                            <div class="accordion-panel grid grid-rows-[0fr] transition-[grid-template-rows] duration-700 ease-[cubic-bezier(0.76,0,0.24,1)]">
                                 <div class="overflow-hidden">
                                     <div class="pb-12 md:pb-16 px-4 md:ml-[5.5rem] lg:ml-[8rem] md:pr-12">
                                         <div class="w-full flex flex-col border-t border-white/10">
@@ -780,19 +800,19 @@
                         </h3>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24">
+                    <div class="contact-grid grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24">
                         <!-- Contact Form -->
                         <form class="flex flex-col gap-6" onsubmit="handleContactSubmit(event)">
                             <div class="flex flex-col gap-2">
-                                <label class="text-xs font-mono tracking-widest text-gray-500 uppercase">Name</label>
-                                <input type="text" id="contact-name" placeholder="Your name" class="bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-gray-600 focus:outline-none focus:border-white/60 focus:bg-white/8 transition-all duration-300 hover-trigger" required>
+                                <label for="contact-name" class="text-xs font-mono tracking-widest text-gray-500 uppercase">Name</label>
+                                <input type="text" id="contact-name" autocomplete="name" placeholder="Your name" class="bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-gray-600 focus:outline-none focus:border-white/60 focus:bg-white/8 transition-all duration-300 hover-trigger" required>
                             </div>
                             <div class="flex flex-col gap-2">
-                                <label class="text-xs font-mono tracking-widest text-gray-500 uppercase">Email</label>
-                                <input type="email" id="contact-email" placeholder="your@email.com" class="bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-gray-600 focus:outline-none focus:border-white/60 focus:bg-white/8 transition-all duration-300 hover-trigger" required>
+                                <label for="contact-email" class="text-xs font-mono tracking-widest text-gray-500 uppercase">Email</label>
+                                <input type="email" id="contact-email" autocomplete="email" placeholder="your@email.com" class="bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-gray-600 focus:outline-none focus:border-white/60 focus:bg-white/8 transition-all duration-300 hover-trigger" required>
                             </div>
                             <div class="flex flex-col gap-2">
-                                <label class="text-xs font-mono tracking-widest text-gray-500 uppercase">Message</label>
+                                <label for="contact-message" class="text-xs font-mono tracking-widest text-gray-500 uppercase">Message</label>
                                 <textarea id="contact-message" placeholder="Tell me about your project..." rows="5" class="bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-gray-600 focus:outline-none focus:border-white/60 focus:bg-white/8 transition-all duration-300 resize-none hover-trigger" required></textarea>
                             </div>
                             <button type="submit" id="contact-submit-btn" class="hover-trigger mt-2 px-8 py-4 bg-white text-black rounded-xl font-bold tracking-widest uppercase text-sm transition-all duration-300 hover:bg-white/85 hover:shadow-[0_0_30px_rgba(255,255,255,0.25)] active:scale-95 inline-block">
@@ -852,6 +872,7 @@
     <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script src="assets/index-works.js"></script>
+    <script src="assets/index-title-drag.js"></script>
     <script src="assets/index-transitions.js"></script>
 
     <script>
@@ -1104,7 +1125,7 @@
 
             // Mock dictionary extracted from portfolio content
             const searchDictionary = [
-                "Game Designer", "Unreal Engine 5", "Unity 3D", "C# Scripting", "C++",
+                "Interactive Designer", "Creative Technologist", "Game Designer", "Unreal Engine 5", "Unity 3D", "C# Scripting", "C++",
                 "Android Native", "MVVM Structure", "HTML / CSS / JS", "GSAP",
                 "Systems Design", "Level Blockouts", "HCI Research",
                 "Revive", "Cogni-Stream", "MiniQuest", "Supermarket Together",

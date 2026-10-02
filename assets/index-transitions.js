@@ -179,24 +179,12 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
         };
     });
 
-    // Track deliberate pointer movement, so scrolling or the changing panel
-    // height cannot masquerade as entering/leaving another accordion row.
+    // Opening is deliberate: mouse, touch and keyboard share the same toggle.
     const accordion = document.querySelector('.group\\/accordion');
     if (accordion) {
         accordion.classList.add('logic-accordion');
         const rows = Array.from(accordion.querySelectorAll('.accordion-panel'), panel => panel.parentElement);
-        const hoverCapable = window.matchMedia('(hover: hover) and (pointer: fine)');
-        let hoverTimer, closeTimer, revealTimer;
-        let hoverCandidate = null, closeCandidate = null, dismissedRow = null, pinnedRow = null;
-        let pointerX = null, pointerY = null;
-        const cancelHover = () => {
-            clearTimeout(hoverTimer);
-            hoverCandidate = null;
-        };
-        const cancelClose = () => {
-            clearTimeout(closeTimer);
-            closeCandidate = null;
-        };
+        let revealTimer, activeRow = null;
         const setOpen = (row, open) => {
             if (row.dataset.open === String(open)) return;
             const control = row.querySelector('.logic-toggle');
@@ -207,57 +195,12 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
             panel.inert = !open;
         };
         const openRow = row => rows.forEach(item => setOpen(item, item === row));
-        const onPointerMove = event => {
-            if (event.pointerType !== 'mouse' || !hoverCapable.matches) return;
-            // Layout changes can retarget the pointer without the hand moving.
-            if (pointerX === event.clientX && pointerY === event.clientY) return;
-            pointerX = event.clientX;
-            pointerY = event.clientY;
-            // An explicit click owns the open row until the next click.
-            if (pinnedRow) return;
-            const hoveredRow = rows.find(row => row.contains(event.target));
-            if (hoveredRow !== dismissedRow) dismissedRow = null;
-            const open = rows.find(row => row.dataset.open === 'true');
-            if (!open || hoveredRow === open) cancelClose();
-            else if (closeCandidate !== open) {
-                cancelClose();
-                closeCandidate = open;
-                closeTimer = setTimeout(() => {
-                    if (!open.querySelector(':focus-visible')) setOpen(open, false);
-                    closeCandidate = null;
-                }, 220);
-            }
-            const control = hoveredRow && hoveredRow.querySelector('.logic-toggle');
-            if (!control || !control.contains(event.target) || hoveredRow === open || hoveredRow === dismissedRow) {
-                cancelHover();
-                return;
-            }
-            if (hoverCandidate === hoveredRow) return;
-            cancelHover();
-            hoverCandidate = hoveredRow;
-            hoverTimer = setTimeout(() => {
-                cancelClose();
-                openRow(hoveredRow);
-                hoverCandidate = null;
-            }, 100);
-        };
-        document.addEventListener('pointermove', onPointerMove, { passive: true });
-        const onPointerOut = event => {
-            if (event.relatedTarget !== null || event.pointerType !== 'mouse') return;
-            cancelHover();
-            cancelClose();
-            if (pinnedRow) return;
-            closeTimer = setTimeout(() => rows.forEach(row => {
-                if (!row.querySelector(':focus-visible')) setOpen(row, false);
-            }), 220);
-        };
-        document.addEventListener('pointerout', onPointerOut);
         const revealRow = row => {
             clearTimeout(revealTimer);
             const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
             // Wait until sibling rows stop moving before choosing a scroll target.
             revealTimer = setTimeout(() => {
-                if (row.dataset.open !== 'true' || pinnedRow !== row) return;
+                if (row.dataset.open !== 'true' || activeRow !== row) return;
                 const panel = row.querySelector('.accordion-panel');
                 if (panel.getBoundingClientRect().top < window.innerHeight - 180) return;
                 lenis.scrollTo(row, {
@@ -268,17 +211,12 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
             }, reduced ? 0 : 520);
         };
         const toggleRow = row => {
-            cancelHover();
-            cancelClose();
             clearTimeout(revealTimer);
-            if (pinnedRow === row && row.dataset.open === 'true') {
-                pinnedRow = null;
-                dismissedRow = row;
+            if (activeRow === row && row.dataset.open === 'true') {
+                activeRow = null;
                 setOpen(row, false);
             } else {
-                // Clicking an already-hovered preview keeps its animation going.
-                pinnedRow = row;
-                dismissedRow = null;
+                activeRow = row;
                 openRow(row);
                 revealRow(row);
             }
@@ -287,7 +225,6 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
             const row = panel.parentElement;
             const control = panel.previousElementSibling;
             const heading = control.querySelector('h4');
-            panel.classList.remove('group-hover/row:grid-rows-[1fr]');
             panel.id = `logic-details-${i}`;
             heading.id = `logic-title-${i}`;
             control.classList.add('logic-toggle');
@@ -300,9 +237,7 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
             panel.setAttribute('aria-labelledby', heading.id);
             panel.inert = true;
             panel.setAttribute('aria-hidden', 'true');
-            control.addEventListener('click', event => {
-                toggleRow(row);
-            });
+            control.addEventListener('click', () => toggleRow(row));
             control.addEventListener('keydown', event => {
                 if (event.key !== 'Enter' && event.key !== ' ') return;
                 event.preventDefault();
@@ -310,14 +245,7 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
                 toggleRow(row);
             });
         });
-        window.addEventListener('pagehide', event => {
-            cancelHover();
-            cancelClose();
-            clearTimeout(revealTimer);
-            if (event.persisted) return;
-            document.removeEventListener('pointermove', onPointerMove);
-            document.removeEventListener('pointerout', onPointerOut);
-        });
+        window.addEventListener('pagehide', () => clearTimeout(revealTimer));
     }
 
     // The accordion is below the gallery: its height never changes gallery
@@ -329,8 +257,9 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
         const refreshGallery = galleryDirty;
         galleryDirty = false;
         if (refreshGallery) syncGallery();
-        lenis.resize();
         ScrollTrigger.refresh();
+        // Measure scrolling bounds after the pinned sections restore their spacing.
+        lenis.resize();
     };
     const queueRefresh = () => {
         clearTimeout(refreshTimer);
@@ -342,6 +271,7 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
     };
     const observer = accordion && window.ResizeObserver ? new ResizeObserver(queueRefresh) : null;
     if (observer) observer.observe(accordion);
+    if (observer) observer.observe(contact);
     const afterTransition = event => {
         if (event.propertyName === 'grid-template-rows') queueRefresh();
     };

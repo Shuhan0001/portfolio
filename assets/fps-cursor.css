@@ -1,0 +1,22 @@
+/* Native cursor images keep the aim point attached to the pointer, including
+   in top-layer project dialogs, without a trailing animation or overlay. */
+@media (hover: hover) and (pointer: fine) {
+  :root { --fps-cursor: url('cursor/crosshair.svg') 16 16, crosshair; }
+  :where(html, body, body *) { cursor: var(--fps-cursor) !important; }
+  :where(a, button, [role="button"], select, summary, .selection-title.is-draggable):hover {
+    --fps-cursor: url('cursor/crosshair-hover.svg') 16 16, crosshair;
+  }
+  :where(a, button, [role="button"], select, summary, .selection-title.is-draggable):active,
+  .selection-title.is-dragging {
+    --fps-cursor: url('cursor/crosshair-pressed.svg') 16 16, crosshair;
+  }
+  html.fps-cursor-pressed :where(body, body *) {
+    --fps-cursor: url('cursor/crosshair-pressed.svg') 16 16, crosshair !important;
+  }
+  :where(input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="color"]), textarea, [contenteditable="true"]) {
+    cursor: text !important;
+  }
+  :where(button:disabled, input:disabled, select:disabled, textarea:disabled, [aria-disabled="true"]) {
+    cursor: not-allowed !important;
+  }
+}

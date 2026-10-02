@@ -461,6 +461,28 @@ html.works-viewer-open { overflow: hidden; }
 }
 .work-viewer__details { display: grid; gap: 9px; min-width: 0; }
 #work-viewer-summary { max-width: 46ch; color: #92928e; font-size: 12px; line-height: 1.65; text-wrap: pretty; }
+.work-viewer__ai {
+  max-width: 82ch;
+  color: #92928e;
+  font-size: 11px;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+.work-viewer__ai-label {
+  margin-right: 6px;
+  color: #c0bfba;
+  font-family: var(--font-mono, 'Fragment Mono', monospace);
+  font-size: 9px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.work-viewer__details {
+  max-height: calc(50svh - var(--viewer-height) / 2 - var(--viewer-title-bottom) - clamp(18px, 2.6svh, 32px) - 16px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #ffffff30 transparent;
+}
 .work-viewer__credit {
   color: #777;
   font-family: var(--font-mono, 'Fragment Mono', monospace);
