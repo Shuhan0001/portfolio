@@ -904,7 +904,7 @@
                 e.preventDefault();
 
                 if (window.focusIndexArtifact?.(target)) return;
-                lenis.scrollTo(target, {
+                lenis.scrollTo(target.id === 'contact-section' ? target.closest('.contact-reveal') || target : target, {
                     duration: href === '#contact-section' ? 1.25 : 1.05,
                     immediate: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
                     easing: t => 1 - Math.pow(1 - t, 4)
@@ -1086,7 +1086,7 @@
                     ScrollTrigger.refresh();
                     const target = document.querySelector(pendingScrollTarget);
                     if (target && !window.focusIndexArtifact?.(target)) {
-                        lenis.scrollTo(target, { immediate: true });
+                        lenis.scrollTo(target.id === 'contact-section' ? target.closest('.contact-reveal') || target : target, { immediate: true });
                     }
                 });
             });

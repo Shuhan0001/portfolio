@@ -8,6 +8,13 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
     featured.before(runway);
     runway.appendChild(featured);
     const html = document.documentElement;
+    // The wrapper reserves the full contact height and clips the portion still
+    // behind Logic & Form. Its own box never moves, so anchors remain stable.
+    const contact = document.getElementById('contact-section');
+    const contactReveal = document.createElement('div');
+    contactReveal.className = 'contact-reveal';
+    contact.before(contactReveal);
+    contactReveal.appendChild(contact);
     const media = gsap.matchMedia();
     let syncGallery = () => {};
     const sheets = ['#zone-about', '#zone-2-featured', '#zone-1', '#contact-section'].map(selector => document.querySelector(selector));
@@ -96,7 +103,7 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
             }, .1);
 
             sheets.forEach((sheet, i) => {
-                if (i === 0) return;
+                if (i !== 2) return;
                 // Move only content through depth. Keep section edges and all
                 // pin ancestors flat; the horizontal gallery stays stationary.
                 const arrival = gsap.timeline({
@@ -116,21 +123,28 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
                 }, .3);
             });
 
-            // Only the outgoing content recedes. Section boxes keep their layout
-            // and the gallery pin retains a stable, untransformed ancestor.
-            [
-                { content: surfaces[0], next: document.getElementById('zone-2-works') },
-                { content: surfaces[2], next: document.getElementById('contact-section') }
-            ].forEach(({ content, next }, i) => {
-                gsap.fromTo(content, { scale: 1 }, {
-                    scale: mobile ? .99 : .965, transformOrigin: '50% 100%', ease: 'none', immediateRender: false,
-                    scrollTrigger: { id: `chapter-exit-${i}`, trigger: next, start: 'top 78%', end: 'top 12%', scrub: true, invalidateOnRefresh: true }
-                });
+            // Hold About in place while the opaque works sheet rises over it.
+            // The gallery keeps its natural position, then CSS sticky takes
+            // over at the top for the existing horizontal browse.
+            gsap.fromTo(sheets[0], { y: 0 }, {
+                y: () => window.innerHeight, ease: 'none',
+                scrollTrigger: {
+                    id: 'works-cover', trigger: runway,
+                    start: 'top bottom', end: 'top top',
+                    scrub: true, invalidateOnRefresh: true
+                }
             });
 
-            gsap.fromTo('#contact-content > .grid > *', { y: mobile ? 8 : 16 }, {
-                y: 0, stagger: .12, ease: 'power2.out',
-                scrollTrigger: { trigger: '#contact-content > .grid', start: 'top 94%', end: 'top 60%', scrub: true }
+            // Cancel exactly one viewport of document travel. While the lower
+            // edge of Logic scrolls from bottom to top, Contact stays still
+            // behind it; afterwards the long form resumes normal scrolling.
+            gsap.fromTo(contact, { y: () => -window.innerHeight }, {
+                y: 0, ease: 'none',
+                scrollTrigger: {
+                    id: 'contact-uncover', trigger: contactReveal,
+                    start: 'top bottom', end: 'top top',
+                    scrub: true, invalidateOnRefresh: true
+                }
             });
         }
 
@@ -138,6 +152,15 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
         const revealFocus = event => {
             const section = event.target.closest('#zone-about, #zone-1, #zone-2-featured, #contact-section');
             if (!section) return;
+            if (section === contact && !reduced && contactReveal.getBoundingClientRect().top > 0) {
+                // A keyboard user can tab straight to a form field before the
+                // curtain is open. Reveal it before positioning that field.
+                lenis.scrollTo(contactReveal, { immediate: true });
+                const bounds = event.target.getBoundingClientRect();
+                if (bounds.bottom > window.innerHeight || bounds.top < 0) {
+                    lenis.scrollTo(event.target, { immediate: true, offset: -96 });
+                }
+            }
             const transition = ScrollTrigger.getById(`chapter-enter-${sheets.indexOf(section)}`);
             if (transition && transition.progress < 1) {
                 transition.animation.progress(1);

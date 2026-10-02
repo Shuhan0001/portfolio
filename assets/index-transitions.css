@@ -37,8 +37,21 @@ html.lenis, html.lenis body { height: auto; }
 }
 #contact-section::before,
 #contact-section > .chapter-seam { display: none; }
+/* A stationary lower sheet is exposed by the outgoing section's bottom edge.
+   clip, unlike hidden, does not create a second scrolling container. */
+.contact-reveal { position: relative; width: 100%; display: flow-root; }
+.index-motion .contact-reveal { overflow: clip; z-index: 21; }
+.index-motion .contact-reveal #contact-section {
+  margin-top: 0;
+  border-radius: 0;
+  border-top: 0;
+  box-shadow: none;
+  will-change: transform;
+}
 .index-motion #zone-2-featured { background-color: rgba(5, 5, 5, .8); }
 .gallery-runway { position: relative; width: 100%; }
+.index-motion #zone-about { will-change: transform; }
+.index-motion #zone-2-featured > .chapter-seam { display: none; }
 .index-scroll-gallery #zone-2-featured { position: sticky; top: 0; }
 
 .logic-accordion .logic-toggle { position: relative; cursor: pointer; padding-right: 52px; touch-action: manipulation; }
