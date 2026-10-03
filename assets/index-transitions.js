@@ -152,6 +152,20 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
         const revealFocus = event => {
             const section = event.target.closest('#zone-about, #zone-1, #zone-2-featured, #contact-section');
             if (!section) return;
+            const transition = ScrollTrigger.getById(`chapter-enter-${sheets.indexOf(section)}`);
+            if (section === sheets[0]) {
+                // Pointer focus on the name must not finish the scroll-driven handoff.
+                if (!event.target.matches(':focus-visible')) return;
+                const bounds = event.target.getBoundingClientRect();
+                const hidden = Number(getComputedStyle(surfaces[0]).opacity) < .1;
+                if (transition && transition.progress < 1 &&
+                    (hidden || bounds.top < 0 || bounds.bottom > window.innerHeight)) {
+                    // Reveal through the actual scroll position, keeping the hero,
+                    // About and covering works sheet on the same timeline.
+                    lenis.scrollTo(transition.end, { immediate: true });
+                }
+                return;
+            }
             if (section === contact && !reduced && contactReveal.getBoundingClientRect().top > 0) {
                 // A keyboard user can tab straight to a form field before the
                 // curtain is open. Reveal it before positioning that field.
@@ -161,7 +175,6 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
                     lenis.scrollTo(event.target, { immediate: true, offset: -96 });
                 }
             }
-            const transition = ScrollTrigger.getById(`chapter-enter-${sheets.indexOf(section)}`);
             if (transition && transition.progress < 1) {
                 transition.animation.progress(1);
                 const scrubTween = transition.getTween();

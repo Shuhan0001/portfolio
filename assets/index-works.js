@@ -52,6 +52,19 @@
         let wasStopped = false;
         let viewerIndex = -1, switching = false, switchVersion = 0, queuedDirection = 0;
         let viewerMoved = false, outgoingFrame = null;
+        window.addEventListener('wheel', event => {
+            if (destroyed || dialog.open || event.ctrlKey || (!event.deltaX && !event.deltaY)) return;
+            const bounds = runway.getBoundingClientRect();
+            if (native ? !viewport.contains(event.target) : bounds.top > 1 || bounds.bottom < window.innerHeight - 1) return;
+            const delta = native ? event.deltaX || (event.shiftKey ? event.deltaY : 0) : event.deltaY;
+            const position = native ? viewport.scrollLeft : -bounds.top;
+            const limit = native ? distance : travel;
+            // Give immediate feedback only when this input can move the filmstrip.
+            // At either end, ordinary vertical scrolling resumes without a tick.
+            if (delta > 0 && position < limit - .5 || delta < 0 && position > .5) {
+                window.portfolioAudio?.playScrollTick(Math.sign(delta));
+            }
+        }, { capture: true, passive: true, signal });
 
         // Derive navigation from the covers so its order and labels stay in sync.
         indexNav.replaceChildren();
@@ -86,6 +99,7 @@
             current = index;
             items.forEach((item, i) => {
                 item.classList.toggle('is-current', i === index);
+                item.classList.toggle('is-adjacent', Math.abs(i - index) === 1);
                 if (i === index) item.setAttribute('aria-current', 'true');
                 else item.removeAttribute('aria-current');
                 if (i === index) ticks[i].setAttribute('aria-current', 'true');
@@ -97,9 +111,9 @@
             captionAnimation?.cancel();
             if (animate && !reduced && title.animate) {
                 captionAnimation = title.animate([
-                    { opacity: .25, transform: 'translateY(6px)' },
+                    { opacity: .65, transform: 'translateY(4px)' },
                     { opacity: 1, transform: 'translateY(0)' }
-                ], { duration: 380, easing: 'cubic-bezier(.22,1,.36,1)' });
+                ], { duration: 300, easing: 'cubic-bezier(.22,1,.36,1)' });
             }
         }
 
