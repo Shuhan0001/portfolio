@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="antialiased">
 <head>
     <meta charset="UTF-8">
@@ -338,7 +338,8 @@
     </style>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/david/scene.css">
-    <link rel="stylesheet" href="assets/index-transitions.css">
+    <link rel="stylesheet" href="assets/index-transitions.css?v=contact-pace-1">
+    <link rel="stylesheet" href="assets/index-logic-david.css?v=rest-10">
     <link rel="stylesheet" href="assets/index-typography.css">
     <link rel="stylesheet" href="assets/index-works.css">
     <link rel="stylesheet" href="assets/index-responsive.css">
@@ -605,7 +606,12 @@
                     </div>
 
                     <!-- Brutalist Accordion Stack - REDESIGNED FOR HIGH-END HUMAN AESTHETIC -->
-                    <div class="w-full flex flex-col border-t border-white/15 gsap-reveal group/accordion">
+                    <div class="w-full flex flex-col border-t border-white/15 gsap-reveal group/accordion logic-head-study">
+                        <div class="logic-david" role="group" aria-label="David — Core Engines, Interactive and Praxis">
+                            <button type="button" class="logic-david__layer hover-trigger" aria-label="Core Engines sculpture layer" aria-expanded="false"></button>
+                            <button type="button" class="logic-david__layer hover-trigger" aria-label="Interactive sculpture layer" aria-expanded="false"></button>
+                            <button type="button" class="logic-david__layer hover-trigger" aria-label="Praxis sculpture layer" aria-expanded="false"></button>
+                        </div>
                         
                         <!-- Item 01 -->
                         <div class="group/row relative border-b border-white/15 transition-colors duration-500 hover:bg-white/[0.02]">
@@ -873,7 +879,7 @@
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script src="assets/index-works.js"></script>
     <script src="assets/index-title-drag.js"></script>
-    <script src="assets/index-transitions.js"></script>
+    <script src="assets/index-transitions.js?v=logic-rows-3"></script>
 
     <script>
         // --------------------------------------------------------
@@ -914,6 +920,13 @@
         gsap.ticker.lagSmoothing(0);
         lenis.on('scroll', ScrollTrigger.update);
 
+        const sectionScrollTarget = target => {
+            const wrapper = target.id === 'contact-section' && target.closest('.contact-reveal');
+            return wrapper
+                ? wrapper.getBoundingClientRect().top + window.scrollY + parseFloat(getComputedStyle(wrapper).paddingBottom)
+                : target;
+        };
+
         // 让页内锚点链接（比如导航栏的 Contact）走 Lenis 的丝滑滚动，
         // 而不是浏览器原生的瞬间跳?
         document.querySelectorAll('a[href^="#"]').forEach((link) => {
@@ -925,7 +938,7 @@
                 e.preventDefault();
 
                 if (window.focusIndexArtifact?.(target)) return;
-                lenis.scrollTo(target.id === 'contact-section' ? target.closest('.contact-reveal') || target : target, {
+                lenis.scrollTo(sectionScrollTarget(target), {
                     duration: href === '#contact-section' ? 1.25 : 1.05,
                     immediate: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
                     easing: t => 1 - Math.pow(1 - t, 4)
@@ -1107,7 +1120,7 @@
                     ScrollTrigger.refresh();
                     const target = document.querySelector(pendingScrollTarget);
                     if (target && !window.focusIndexArtifact?.(target)) {
-                        lenis.scrollTo(target.id === 'contact-section' ? target.closest('.contact-reveal') || target : target, { immediate: true });
+                        lenis.scrollTo(sectionScrollTarget(target), { immediate: true });
                     }
                 });
             });
@@ -1536,6 +1549,7 @@
     </script>
     <script defer src="assets/vendor/three.min.js"></script>
     <script defer src="assets/david/model.js"></script>
+    <script defer src="assets/index-logic-david.js?v=rest-10"></script>
     <script defer src="assets/david/scene.js"></script>
 </body>
 </html>

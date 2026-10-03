@@ -1,0 +1,144 @@
+/* The labels and the information occupy the same space as the sliced sculpture. */
+#zone-1 { overflow: clip; }
+#zone-1 .logic-head-study.logic-accordion {
+  display: block;
+  position: relative;
+  height: 700px;
+  overflow: clip;
+}
+#zone-1 .logic-head-study.logic-accordion > .group\/row {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: transparent;
+  pointer-events: none;
+  z-index: 3;
+}
+#zone-1 .logic-head-study > .group\/row > div:first-child { display: none; }
+#zone-1 .logic-head-study .logic-toggle {
+  position: absolute;
+  left: 64%;
+  top: 50%;
+  width: 36%;
+  padding: 0 26px 0 0;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  pointer-events: auto;
+  opacity: 0;
+  transition: opacity .35s ease;
+}
+#zone-1 .logic-head-study.is-david-ready .logic-toggle { opacity: 1; }
+#zone-1 .logic-head-study .logic-toggle > div:nth-child(2) { display: none; }
+#zone-1 .logic-head-study .logic-toggle::after { right: 0; font-size: 22px; }
+#zone-1 .logic-head-study .logic-toggle h4 { font-size: clamp(28px, 3.3vw, 50px); line-height: 1; white-space: nowrap; }
+#zone-1 .logic-head-study .logic-toggle h4,
+#zone-1 .logic-head-study .logic-toggle:hover h4 { transform: scale(calc(1 + var(--logic-rest, 1) * .1)); transform-origin: left center; }
+#zone-1 .logic-head-study .logic-toggle__preview {
+  position: absolute;
+  left: 26px;
+  top: calc(50% + 29px);
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 400;
+  letter-spacing: .01em;
+  color: #ffffff60;
+  opacity: var(--logic-rest, 1);
+  transform: translateY(calc((1 - var(--logic-rest, 1)) * -5px));
+  pointer-events: none;
+  white-space: nowrap;
+}
+#zone-1 .logic-head-study .logic-toggle > div:first-child {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr);
+  align-items: center;
+  gap: 0;
+  width: 100%;
+}
+#zone-1 .logic-head-study .logic-toggle > div:first-child > span {
+  align-self: center;
+  margin: 0;
+  line-height: 1;
+  font-size: 11px;
+  font-weight: 400;
+  color: #ffffff55;
+}
+#zone-1 .logic-head-study .logic-toggle h4 { min-width: 0; margin: 0; }
+#zone-1 .logic-head-study .accordion-panel {
+  position: absolute;
+  display: block;
+  left: 64%;
+  top: 50%;
+  width: 36%;
+  transform: none;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: none;
+}
+#zone-1 .logic-head-study .accordion-panel[aria-hidden="false"] { visibility: visible; pointer-events: auto; }
+#zone-1 .logic-head-study .accordion-panel > div > div { padding: 0; margin: 0; }
+#zone-1 .logic-head-study .accordion-panel .group\/spec { padding: 12px 0; gap: 12px; align-items: flex-start; }
+#zone-1 .logic-head-study .accordion-panel .group\/spec .text-xl { font-size: 18px; line-height: 1.25; }
+#zone-1 .logic-head-study .accordion-panel .group\/spec .text-xs { font-size: 12px; line-height: 1.5; color: #ffffff80; }
+#zone-1 .logic-head-study .accordion-panel .group\/spec > span { padding-top: 4px; }
+.logic-david {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 60%;
+  height: 1100px;
+  z-index: 2;
+  opacity: 0;
+  visibility: hidden;
+  touch-action: pan-y;
+  transition: opacity .6s ease;
+}
+.logic-david.is-ready { opacity: 1; visibility: visible; }
+.logic-david-guides { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; overflow: visible; opacity: 0; }
+.is-david-ready .logic-david-guides { opacity: 1; }
+.logic-david-guide { stroke: #ffffff38; stroke-width: 1; fill: #ffffff65; transition: stroke .3s, fill .3s; }
+.logic-david-guide.is-active { stroke: #ffffff90; fill: #fff; }
+.logic-david-guide line { vector-effect: non-scaling-stroke; }
+.logic-david canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.logic-david__layer {
+  position: absolute;
+  left: 10%;
+  width: 80%;
+  min-height: 28px;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  z-index: 1;
+  cursor: pointer;
+  touch-action: pan-y;
+}
+.logic-david__layer:focus-visible { outline: 1px solid #ffffff60; outline-offset: -4px; }
+@media (max-width: 1023px) {
+  #zone-1 .logic-head-study .logic-toggle__preview { left: 22px; font-size: 10px; }
+  #zone-1 .logic-head-study .logic-toggle h4 { font-size: clamp(23px, 3.5vw, 38px); }
+  #zone-1 .logic-head-study .logic-toggle > div:first-child { grid-template-columns: 22px minmax(0, 1fr); }
+  #zone-1 .logic-head-study .logic-toggle > div:first-child > span { font-size: 10px; }
+}
+@media (max-width: 639px) {
+  #zone-1 .logic-head-study .logic-toggle__preview { display: none; }
+  #zone-1 .logic-head-study .logic-toggle h4,
+  #zone-1 .logic-head-study .logic-toggle:hover h4 { transform: none; }
+  #zone-1 .logic-head-study.logic-accordion { height: 380px; }
+  #zone-1 .logic-head-study .logic-toggle { left: 66%; width: 34%; min-height: 44px; padding: 0; }
+  #zone-1 .logic-head-study .logic-toggle > div:first-child { grid-template-columns: minmax(0, 1fr); }
+  #zone-1 .logic-head-study .logic-toggle::after,
+  #zone-1 .logic-head-study .logic-toggle > div:first-child > span { display: none; }
+  #zone-1 .logic-head-study .logic-toggle h4 { font-size: clamp(17px, 4.8vw, 24px); letter-spacing: -.02em; }
+  #zone-1 .logic-head-study .accordion-panel { left: 0; width: 100%; }
+  #zone-1 .logic-head-study .accordion-panel .group\/spec { padding: 10px 0; gap: 6px; }
+  #zone-1 .logic-head-study .accordion-panel .group\/spec .text-xl { font-size: 16px; }
+  #zone-1 .logic-head-study .accordion-panel .group\/spec .text-xs { font-size: 11px; }
+}
+
+@media (max-width: 639px) {
+  .logic-david { left: 0; width: 58%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .logic-david, #zone-1 .logic-head-study .logic-toggle { transition: none; }
+}

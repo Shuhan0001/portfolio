@@ -25,7 +25,19 @@ the window restores the idle pose; touch scrolling does not steer the head.
 This motion blends out as scrolling takes over, pauses offscreen and in
 background tabs, and is disabled by the reduced-motion preference.
 
-The model is self-hosted in `model.js` as gzip-compressed mesh data. The runtime
+The model is self-hosted in `model.js` as gzip-compressed mesh data.
+The Logic & Form study reuses the full model as one large, connected sculpture.
+Its middle sections (4, 3, 2, ordered from top to bottom) align with the
+Core Engines, Interactive and Praxis labels at right, with fine leader lines
+tracking the corresponding sections of the sculpture at left. Selecting a layer
+slides it gently outward with a small forward tilt while the head keeps its
+scale and position. The associated tool list unfolds beneath the right-hand
+label, or below the sculpture on narrow screens; closing returns the layer. The
+renderer captures the existing model data before the hero releases it, so both
+also work from a local HTML file. No changes were made to the source scan or
+hero pose.
+
+The runtime
 uses the browser's DecompressionStream API. The canvas appears after its first
 render; no 2D placeholder is shown while loading or if 3D is unavailable. Rebuild with:
 

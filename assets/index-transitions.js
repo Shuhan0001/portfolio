@@ -8,13 +8,17 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
     featured.before(runway);
     runway.appendChild(featured);
     const html = document.documentElement;
-    // The wrapper reserves the full contact height and clips the portion still
-    // behind Logic & Form. Its own box never moves, so anchors remain stable.
+    const works = document.getElementById('zone-2-works');
+    // The outer wrapper reserves Contact plus its reveal travel. A separate
+    // inner mask follows Logic's edge while the scroll anchor remains stable.
     const contact = document.getElementById('contact-section');
     const contactReveal = document.createElement('div');
     contactReveal.className = 'contact-reveal';
     contact.before(contactReveal);
-    contactReveal.appendChild(contact);
+    const contactMask = document.createElement('div');
+    contactMask.className = 'contact-reveal__mask';
+    contactReveal.appendChild(contactMask);
+    contactMask.appendChild(contact);
     const media = gsap.matchMedia();
     let syncGallery = () => {};
     const sheets = ['#zone-about', '#zone-2-featured', '#zone-1', '#contact-section'].map(selector => document.querySelector(selector));
@@ -38,6 +42,7 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
         html.classList.toggle('index-motion', !reduced);
         html.classList.toggle('index-native-gallery', nativeGallery);
         html.classList.toggle('index-scroll-gallery', !nativeGallery);
+        html.classList.toggle('index-center-cover', !nativeGallery);
         lenis.options.smoothWheel = !reduced;
         // Remove the old hidden-on-load state before managing section entrances.
         gsap.set('.gsap-reveal', { autoAlpha: 1, y: 0 });
@@ -123,29 +128,54 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
                 }, .3);
             });
 
-            // Hold About in place while the opaque works sheet rises over it.
-            // The gallery keeps its natural position, then CSS sticky takes
-            // over at the top for the existing horizontal browse.
-            gsap.fromTo(sheets[0], { y: 0 }, {
-                y: () => window.innerHeight, ease: 'none',
-                scrollTrigger: {
-                    id: 'works-cover', trigger: runway,
-                    start: 'top bottom', end: 'top top',
-                    scrub: true, invalidateOnRefresh: true
-                }
-            });
+            if (!nativeGallery) {
+                // Keep About below the Works sheet as its two edges part from
+                // the center. Reveal full-size artwork without scaling type.
+                // Horizontal browsing begins only after the curtain is open.
+                const coverTravel = () => window.innerHeight + parseFloat(getComputedStyle(works).paddingTop);
+                const cover = gsap.timeline({
+                    scrollTrigger: {
+                        id: 'chapter-enter-1', trigger: works,
+                        start: 'top bottom', end: () => '+=' + coverTravel(),
+                        scrub: true, invalidateOnRefresh: true
+                    }
+                });
+                cover.fromTo(sheets[0], { y: 0 }, {
+                    y: coverTravel, ease: 'none', duration: 1
+                }, 0).fromTo(featured, { y: () => -coverTravel() }, {
+                    y: 0, ease: 'none', duration: 1
+                }, 0).fromTo(featured, { clipPath: 'inset(0 50% 0 50%)' }, {
+                    clipPath: 'inset(0 0% 0 0%)', ease: 'sine.inOut', duration: 1
+                }, 0);
+            } else {
+                gsap.fromTo(sheets[0], { y: 0 }, {
+                    y: () => window.innerHeight, ease: 'none',
+                    scrollTrigger: {
+                        id: 'works-cover', trigger: runway,
+                        start: 'top bottom', end: 'top top',
+                        scrub: true, invalidateOnRefresh: true
+                    }
+                });
+            }
 
-            // Cancel exactly one viewport of document travel. While the lower
-            // edge of Logic scrolls from bottom to top, Contact stays still
-            // behind it; afterwards the long form resumes normal scrolling.
-            gsap.fromTo(contact, { y: () => -window.innerHeight }, {
-                y: 0, ease: 'none',
+            // Reserve extra scroll distance on a stable outer anchor. Move the
+            // Logic edge and Contact mask together so uncovering slows down
+            // without exposing a gap, even after an accordion changes height.
+            const contactExtra = () => parseFloat(getComputedStyle(contactReveal).paddingBottom);
+            const uncover = gsap.timeline({
                 scrollTrigger: {
                     id: 'contact-uncover', trigger: contactReveal,
-                    start: 'top bottom', end: 'top top',
+                    start: 'top bottom', end: () => '+=' + (window.innerHeight + contactExtra()),
                     scrub: true, invalidateOnRefresh: true
                 }
             });
+            uncover.fromTo(sheets[2], { y: 0 }, {
+                y: contactExtra, ease: 'none', duration: 1
+            }, 0).fromTo(contactMask, { y: 0 }, {
+                y: contactExtra, ease: 'none', duration: 1
+            }, 0).fromTo(contact, { y: () => -window.innerHeight }, {
+                y: 0, ease: 'none', duration: 1
+            }, 0);
         }
 
         // Do not leave a focused control behind an entrance mask when tabbing.
@@ -166,10 +196,17 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
                 }
                 return;
             }
-            if (section === contact && !reduced && contactReveal.getBoundingClientRect().top > 0) {
+            if (section === featured && !nativeGallery) {
+                if (event.target.matches(':focus-visible') && transition && transition.progress < 1) {
+                    lenis.scrollTo(transition.end, { immediate: true });
+                }
+                return;
+            }
+            const contactTransition = ScrollTrigger.getById('contact-uncover');
+            if (section === contact && !reduced && contactTransition && contactTransition.progress < 1) {
                 // A keyboard user can tab straight to a form field before the
                 // curtain is open. Reveal it before positioning that field.
-                lenis.scrollTo(contactReveal, { immediate: true });
+                lenis.scrollTo(contactTransition.end, { immediate: true });
                 const bounds = event.target.getBoundingClientRect();
                 if (bounds.bottom > window.innerHeight || bounds.top < 0) {
                     lenis.scrollTo(event.target, { immediate: true, offset: -96 });
@@ -188,7 +225,7 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
             if (window.focusIndexArtifact === gallery.focusTarget) delete window.focusIndexArtifact;
             syncGallery = () => {};
             runway.style.removeProperty('height');
-            html.classList.remove('index-motion', 'index-native-gallery', 'index-scroll-gallery');
+            html.classList.remove('index-motion', 'index-native-gallery', 'index-scroll-gallery', 'index-center-cover');
         };
     });
 
