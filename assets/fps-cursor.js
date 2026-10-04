@@ -6,6 +6,25 @@
   let releaseTimer, context, clickBuffer, scrollBuffer;
   let lastScrollTick = -Infinity;
   let resumePromise = null, scrollVersion = 0;
+  const cursorImages = [];
+
+  function prepareCursors() {
+    if (!pointer.matches || cursorImages.length) return;
+    // Decode every inline state before the first hover or short click pulse.
+    // Native cursor rendering then reuses ready PNGs instead of loading an SVG.
+    const style = getComputedStyle(root);
+    for (const state of ['default', 'hover', 'pressed']) {
+      const value = style.getPropertyValue(`--fps-cursor-${state}`).trim();
+      const url = value.match(/^url\(['"]?(data:image\/png;base64,[A-Za-z0-9+/=]+)['"]?\)/);
+      if (!url) continue;
+      const image = new Image();
+      image.src = url[1];
+      cursorImages.push(image);
+      image.decode().catch(() => {});
+    }
+  }
+
+  prepareCursors();
 
   function ensureContext() {
     const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -166,5 +185,5 @@
     scrollVersion++;
     if (context?.state === 'running') context.suspend().catch(() => {});
   });
-  pointer.addEventListener('change', release);
+  pointer.addEventListener('change', () => { release(); prepareCursors(); });
 })();

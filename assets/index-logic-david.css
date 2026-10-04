@@ -30,38 +30,56 @@
 }
 #zone-1 .logic-head-study.is-david-ready .logic-toggle { opacity: 1; }
 #zone-1 .logic-head-study .logic-toggle > div:nth-child(2) { display: none; }
-#zone-1 .logic-head-study .logic-toggle::after { right: 0; font-size: 22px; }
+#zone-1 .logic-head-study .logic-toggle::after {
+  content: '';
+  left: calc(26px + var(--logic-title-width, 200px) * (1 + var(--logic-rest, 1) * .1) + 18px);
+  right: auto;
+  width: 14px;
+  height: 14px;
+  background: linear-gradient(currentColor, currentColor) center / 100% 1px no-repeat,
+              linear-gradient(currentColor, currentColor) center / 1px 100% no-repeat;
+  color: #ffffff80;
+  transform: translateY(-50%) rotate(0deg);
+  transition: transform .45s cubic-bezier(.22, 1, .36, 1), color .25s ease;
+}
+#zone-1 .logic-head-study .logic-toggle[aria-expanded="true"]::after { transform: translateY(-50%) rotate(45deg); color: #e2e4e2; }
+#zone-1 .logic-head-study .logic-toggle:hover::after { color: #e2e4e2; }
 #zone-1 .logic-head-study .logic-toggle h4 { font-size: clamp(28px, 3.3vw, 50px); line-height: 1; white-space: nowrap; }
 #zone-1 .logic-head-study .logic-toggle h4,
 #zone-1 .logic-head-study .logic-toggle:hover h4 { transform: scale(calc(1 + var(--logic-rest, 1) * .1)); transform-origin: left center; }
 #zone-1 .logic-head-study .logic-toggle__preview {
   position: absolute;
   left: 26px;
-  top: calc(50% + 29px);
+  top: calc(100% + 10px);
+  width: calc(var(--logic-title-width, 200px) * 1.1 + 20px);
+  max-width: calc(100% - 26px);
   font-size: 12px;
-  line-height: 1.4;
+  line-height: 1.55;
   font-weight: 400;
   letter-spacing: .01em;
-  color: #ffffff60;
+  color: #ffffff8c;
   opacity: var(--logic-rest, 1);
   transform: translateY(calc((1 - var(--logic-rest, 1)) * -5px));
   pointer-events: none;
-  white-space: nowrap;
+  white-space: normal;
+  text-wrap: pretty;
 }
 #zone-1 .logic-head-study .logic-toggle > div:first-child {
   display: grid;
-  grid-template-columns: 26px minmax(0, 1fr);
+  grid-template-columns: 26px max-content;
   align-items: center;
   gap: 0;
   width: 100%;
 }
+#zone-1 .logic-head-study .logic-toggle__preview > span { display: inline-block; white-space: nowrap; }
 #zone-1 .logic-head-study .logic-toggle > div:first-child > span {
   align-self: center;
   margin: 0;
   line-height: 1;
   font-size: 11px;
   font-weight: 400;
-  color: #ffffff55;
+  color: #ffffff80;
+  font-variant-numeric: tabular-nums;
 }
 #zone-1 .logic-head-study .logic-toggle h4 { min-width: 0; margin: 0; }
 #zone-1 .logic-head-study .accordion-panel {
@@ -98,7 +116,8 @@
 .logic-david-guides { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; overflow: visible; opacity: 0; }
 .is-david-ready .logic-david-guides { opacity: 1; }
 .logic-david-guide { stroke: #ffffff38; stroke-width: 1; fill: #ffffff65; transition: stroke .3s, fill .3s; }
-.logic-david-guide.is-active { stroke: #ffffff90; fill: #fff; }
+.logic-david-guide.is-active { fill: #fff; }
+.logic-david-guide .logic-david-guide__trace { stroke: #d9dedb; stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0; }
 .logic-david-guide line { vector-effect: non-scaling-stroke; }
 .logic-david canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .logic-david__layer {
@@ -117,7 +136,8 @@
 @media (max-width: 1023px) {
   #zone-1 .logic-head-study .logic-toggle__preview { left: 22px; font-size: 10px; }
   #zone-1 .logic-head-study .logic-toggle h4 { font-size: clamp(23px, 3.5vw, 38px); }
-  #zone-1 .logic-head-study .logic-toggle > div:first-child { grid-template-columns: 22px minmax(0, 1fr); }
+  #zone-1 .logic-head-study .logic-toggle > div:first-child { grid-template-columns: 22px max-content; }
+  #zone-1 .logic-head-study .logic-toggle::after { left: calc(22px + var(--logic-title-width, 160px) * (1 + var(--logic-rest, 1) * .1) + 14px); width: 12px; height: 12px; }
   #zone-1 .logic-head-study .logic-toggle > div:first-child > span { font-size: 10px; }
 }
 @media (max-width: 639px) {
@@ -140,5 +160,5 @@
   .logic-david { left: 0; width: 58%; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .logic-david, #zone-1 .logic-head-study .logic-toggle { transition: none; }
+  .logic-david, #zone-1 .logic-head-study .logic-toggle, #zone-1 .logic-head-study .logic-toggle::after { transition: none; }
 }

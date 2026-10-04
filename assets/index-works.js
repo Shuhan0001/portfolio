@@ -52,6 +52,19 @@
         let wasStopped = false;
         let viewerIndex = -1, switching = false, switchVersion = 0, queuedDirection = 0;
         let viewerMoved = false, outgoingFrame = null;
+        const exploreLink = document.getElementById('work-viewer-link');
+        function rememberReturn(item) {
+            if (!item?.id) return;
+            // Keep this on the history entry being left, so browser Back also
+            // restores the viewed project, including after a neighbour switch.
+            history.replaceState({ ...history.state, portfolioArtifact: item.id }, '');
+        }
+        exploreLink.addEventListener('click', event => {
+            if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+            const displayedItem = items[viewerIndex];
+            rememberReturn(displayedItem?.href === exploreLink.href ? displayedItem
+                : items.find(item => item.href === exploreLink.href));
+        }, { signal });
         window.addEventListener('wheel', event => {
             if (destroyed || dialog.open || event.ctrlKey || (!event.deltaX && !event.deltaY)) return;
             const bounds = runway.getBoundingClientRect();
@@ -514,7 +527,8 @@
             item.setAttribute('aria-haspopup', 'dialog');
             item.setAttribute('aria-controls', dialog.id);
             item.addEventListener('click', event => {
-                if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || !dialog.showModal) return;
+                if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                if (!dialog.showModal) { rememberReturn(item); return; }
                 event.preventDefault();
                 openItem(item);
             }, { signal });
@@ -577,7 +591,19 @@
                 const item = target.matches('.artifact-slice') ? target : target.querySelector('.artifact-slice');
                 const index = items.indexOf(item);
                 if (index < 0) return false;
+                // BFCache can bring back a still-open viewer and stopped Lenis.
+                // Return directly to the filmstrip without replaying its close.
+                if (dialog.open) {
+                    cancelSwitch();
+                    cancelAnimations();
+                    dialog.close();
+                    resumePage();
+                    closing = false;
+                }
+                measure();
+                previousX = null;
                 seek(index);
+                settle();
                 return true;
             },
             destroy() {

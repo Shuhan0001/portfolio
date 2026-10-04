@@ -1,17 +1,24 @@
-/* Native cursor images keep the aim point attached to the pointer, including
-   in top-layer project dialogs, without a trailing animation or overlay. */
+/* Inline PNGs preserve the four diagonal SVG strokes and avoid fetching or
+   rasterizing a new SVG on hover/press. Hotspots stay at the same aim point,
+   including in top-layer project dialogs. Source artwork: cursor/*.svg. */
 @media (hover: hover) and (pointer: fine) {
-  :root { --fps-cursor: url('cursor/crosshair.svg') 16 16, crosshair; }
+  :root {
+    --fps-cursor-default: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAfklEQVR4nO2WSwqAMAxEc+eA1rjpWb2AG10rBXdiKEkkgvP2mUlpfkQAAAWRsRIROyR4llLN5vu2HlMZFmMS3GKbxvUQu4AhCU+sWyjM3CIYbn4T1v4zoG70JHqKKaBzAACPdC2Wt9owdRCljuLUZZS7jr9wkIScZGZzAH7DCW1nxpn5w1JVAAAAAElFTkSuQmCC') 16 16, default;
+    --fps-cursor-hover: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAbklEQVR4nO2V0QnAMAhE3dkROoY4YKcwBEp+WoqKxRLufat3RKNEAADgQEQOIuJACl85NeJmZqp6Ok3wjJ05VSZWQYeJSGy5ic/EbwJPT5toVc7EW18TwwpAmNYhbP2GrYuodxX/4Rj1nmMAwPYMncq1Yd/agKQAAAAASUVORK5CYII=') 16 16, default;
+    --fps-cursor-pressed: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAaUlEQVR4nO3U0QnAIAxF0eycETpGyICdIkUopR9WLBhSyj2/BvLUqAgA4AUz20REByV61uQ0j4hw9/0hhLa1VpMV4mrQCTFaywlx3+XE6awN0TviifnAMqVXUDqEtc/wCx9R7VcMAL91ALqdi9mUPTfuAAAAAElFTkSuQmCC') 16 16, default;
+    --fps-cursor: var(--fps-cursor-default);
+  }
   :where(html, body, body *) { cursor: var(--fps-cursor) !important; }
+  :where(dialog)::backdrop { cursor: inherit !important; }
   :where(a, button, [role="button"], select, summary, .selection-title.is-draggable):hover {
-    --fps-cursor: url('cursor/crosshair-hover.svg') 16 16, crosshair;
+    --fps-cursor: var(--fps-cursor-hover);
   }
   :where(a, button, [role="button"], select, summary, .selection-title.is-draggable):active,
   .selection-title.is-dragging {
-    --fps-cursor: url('cursor/crosshair-pressed.svg') 16 16, crosshair;
+    --fps-cursor: var(--fps-cursor-pressed);
   }
   html.fps-cursor-pressed :where(body, body *) {
-    --fps-cursor: url('cursor/crosshair-pressed.svg') 16 16, crosshair !important;
+    --fps-cursor: var(--fps-cursor-pressed) !important;
   }
   :where(input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="color"]), textarea, [contenteditable="true"]) {
     cursor: text !important;

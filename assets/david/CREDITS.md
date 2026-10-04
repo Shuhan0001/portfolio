@@ -30,9 +30,9 @@ The Logic & Form study reuses the full model as one large, connected sculpture.
 Its middle sections (4, 3, 2, ordered from top to bottom) align with the
 Core Engines, Interactive and Praxis labels at right, with fine leader lines
 tracking the corresponding sections of the sculpture at left. Selecting a layer
-slides it gently outward with a small forward tilt while the head keeps its
-scale and position. The associated tool list unfolds beneath the right-hand
-label, or below the sculpture on narrow screens; closing returns the layer. The
+slides that section slightly outward with a subtle tilt while the rest stays
+in place. Its existing tool list appears at right, or below on narrow screens;
+closing it returns the section to the head. The
 renderer captures the existing model data before the hero releases it, so both
 also work from a local HTML file. No changes were made to the source scan or
 hero pose.

@@ -18,8 +18,11 @@
     const preview = document.createElement('span');
     preview.className = 'logic-toggle__preview';
     preview.setAttribute('aria-hidden', 'true');
-    preview.textContent = [...panels[i].querySelectorAll('.group\\/spec > div > span:first-child')]
-      .slice(0, 2).map(item => item.textContent.trim()).join(' / ');
+    [...panels[i].querySelectorAll('.group\\/spec > div > span:first-child')].slice(0, 2).forEach((item, index) => {
+      if (index) preview.append(document.createTextNode(' / '));
+      const phrase = document.createElement('span');
+      phrase.textContent = item.textContent.trim(); preview.append(phrase);
+    });
     control.append(preview);
   });
   const svgNS = 'http://www.w3.org/2000/svg';
@@ -28,8 +31,10 @@
   const guideParts = controls.map(() => {
     const group = document.createElementNS(svgNS, 'g'); group.classList.add('logic-david-guide');
     const line = document.createElementNS(svgNS, 'line'), dot = document.createElementNS(svgNS, 'circle');
-    dot.setAttribute('r', '2'); group.append(line, dot); guides.append(group);
-    return { group, line, dot };
+    const trace = document.createElementNS(svgNS, 'line');
+    trace.classList.add('logic-david-guide__trace'); trace.setAttribute('pathLength', '1');
+    dot.setAttribute('r', '2'); group.append(line, trace, dot); guides.append(group);
+    return { group, line, trace, dot };
   });
   accordion.append(guides);
   let titleLeft = 0;
@@ -38,6 +43,17 @@
   const camera = new T.OrthographicCamera(-4, 4, 4, -4, .1, 40);
   sculpture.rotation.set(.035, .22, -.035); scene.add(sculpture);
   const meshes = [], materials = [], middle = [4, 3, 2];
+  const contours = [], pointer = { x: 0, y: 0 }, neutralRotation = sculpture.rotation.clone();
+  const guideReveal = [0, 0, 0];
+  let restingAnchors;
+  accordion.addEventListener('pointermove', event => {
+    if (event.pointerType === 'touch' || reduced.matches) return;
+    const rect = accordion.getBoundingClientRect();
+    pointer.x = Math.max(-1, Math.min(1, (event.clientX - rect.left) / rect.width * 2 - 1));
+    pointer.y = Math.max(-1, Math.min(1, (event.clientY - rect.top) / baseHeight * 2 - 1));
+    schedule();
+  }, { passive: true });
+  accordion.addEventListener('pointerleave', () => { pointer.x = pointer.y = 0; schedule(); });
   let renderer, texture, cap, ready = false, loading = false, visible = false;
   let frame = 0, last = 0, active = -1, hover = -1, disposed = false;
   let fitPoints, fitCenter;
@@ -105,6 +121,13 @@
     controls[next].focus({ preventScroll: true });
   });
   const stateObserver = new MutationObserver(sync);
+  const titleObserver = new ResizeObserver(entries => {
+    entries.forEach(entry => {
+      const control = entry.target.closest('.logic-toggle');
+      control.style.setProperty('--logic-title-width', entry.target.offsetWidth + 'px');
+    });
+  });
+  controls.forEach(control => titleObserver.observe(control.querySelector('h4')));
   controls.forEach(control => stateObserver.observe(control, { attributes: true, attributeFilter: ['aria-expanded'] }));
   sync();
   function resize() {
@@ -113,6 +136,7 @@
     baseHeight = innerWidth < 640 ? Math.min(440, Math.max(340, innerHeight * .45)) : Math.min(780, Math.max(600, innerHeight * .92));
     panelHeights = panels.map(panel => panel.offsetHeight);
     titleLeft = controls[0].offsetLeft;
+    controls.forEach(control => control.style.setProperty('--logic-title-width', control.querySelector('h4').offsetWidth + 'px'));
     canvasHeight = baseHeight;
     host.style.height = canvasHeight + 'px';
     const ratio = Math.min(devicePixelRatio, 1.5);
@@ -137,6 +161,7 @@
     camera.left = -host.clientWidth / (2 * pixelsPerUnit); camera.right = -camera.left;
     camera.top = canvasHeight / (2 * pixelsPerUnit); camera.bottom = -camera.top;
     camera.updateProjectionMatrix(); sync(); schedule();
+    restingAnchors = null;
   }
   function render(now) {
     frame = 0;
@@ -158,15 +183,18 @@
     camera.updateProjectionMatrix();
     camera.position.set(fitCenter.x, fitCenter.y, 10);
     camera.lookAt(fitCenter.x, fitCenter.y, 0);
+    sculpture.rotation.x = settle(sculpture.rotation.x, neutralRotation.x + (reduced.matches || mobile ? 0 : pointer.y * .018));
+    sculpture.rotation.y = settle(sculpture.rotation.y, neutralRotation.y + (reduced.matches || mobile ? 0 : pointer.x * .035));
     meshes.forEach((mesh, i) => {
       const discipline = middle.indexOf(i), selected = discipline >= 0 && discipline === active;
       const lit = discipline >= 0 && discipline === hover;
       // A restrained sideways extraction, with just enough tilt to reveal the cut face.
-      mesh.position.x = settle(mesh.position.x, selected ? .48 : 0);
-      mesh.position.z = settle(mesh.position.z, selected ? .24 : 0);
-      mesh.rotation.z = settle(mesh.rotation.z, selected ? -.035 : 0);
-      mesh.rotation.y = settle(mesh.rotation.y, selected ? -.09 : 0);
+      mesh.position.x = settle(mesh.position.x, selected ? .48 : lit ? .075 : 0);
+      mesh.position.z = settle(mesh.position.z, selected ? .24 : lit ? .045 : 0);
+      mesh.rotation.z = settle(mesh.rotation.z, selected ? -.035 : lit ? -.006 : 0);
+      mesh.rotation.y = settle(mesh.rotation.y, selected ? -.09 : lit ? -.015 : 0);
       materials[i].uniforms.emphasis.value = settle(materials[i].uniforms.emphasis.value, selected ? 1 : lit ? .85 : .45);
+      if (contours[i]) contours[i].material.opacity = settle(contours[i].material.opacity, selected ? .65 : lit ? .42 : .12);
     });
     renderer.render(scene, camera);
     // At rest, labels follow their layers; selection makes room for the reading column.
@@ -175,15 +203,16 @@
       return meshes[i].localToWorld(new T.Vector3(bounds.max.x, 0, (bounds.min.z + bounds.max.z) / 2)).project(camera);
     });
     const y = points.map(point => (1 - point.y) * host.clientHeight / 2);
+    if (!restingAnchors) restingAnchors = y.slice();
     let nextLabel = baseHeight * .23;
-    const labelStep = Math.max(68, baseHeight * .115);
+    const labelStep = Math.max(80, baseHeight * .125);
     let lastBottom = baseHeight;
     buttons.forEach((button, i) => {
       const hitHeight = Math.max(28, pixelsPerUnit * .52);
       button.style.top = (y[i] - hitHeight / 2) + 'px'; button.style.height = hitHeight + 'px';
       reveal[i] = settle(reveal[i], active === i ? 1 : 0);
-      const restingY = y[1] + (i - 1) * Math.max(94, y[1] - y[0]);
-      const targetY = mobile ? y[1] + (i - 1) * 44 : nextLabel * (1 - rest) + restingY * rest;
+      const restingY = restingAnchors[1] + (i - 1) * Math.max(112, baseHeight * .17, restingAnchors[1] - restingAnchors[0]);
+      const targetY = mobile ? restingAnchors[1] + (i - 1) * 44 : nextLabel * (1 - rest) + restingY * rest;
       labelY[i] = labelY[i] === null ? targetY : settle(labelY[i], targetY);
       controls[i].style.top = labelY[i] + 'px';
       const guide = guideParts[i];
@@ -191,6 +220,10 @@
       const startX = Math.min(endX - 8, host.offsetLeft + (points[i].x + 1) * host.clientWidth / 2 + 5);
       guide.line.setAttribute('x1', startX); guide.line.setAttribute('x2', endX);
       guide.line.setAttribute('y1', y[i]); guide.line.setAttribute('y2', labelY[i]);
+      ['x1', 'x2', 'y1', 'y2'].forEach(name => guide.trace.setAttribute(name, guide.line.getAttribute(name)));
+      guideReveal[i] = settle(guideReveal[i], active === i || hover === i ? 1 : 0);
+      guide.trace.style.strokeDashoffset = String(1 - guideReveal[i]);
+      guide.trace.style.opacity = String(guideReveal[i]);
       guide.dot.setAttribute('cx', startX); guide.dot.setAttribute('cy', y[i]);
       guide.group.classList.toggle('is-active', active === i || hover === i);
       const panel = panels[i];
@@ -253,6 +286,28 @@
         geometry.computeBoundingSphere(); geometry.computeBoundingBox();
         const surface = new T.ShaderMaterial({ uniforms: { pixelRatio: { value: 1 }, emphasis: { value: .45 } }, vertexShader: vertex, fragmentShader: fragment });
         const mesh = new T.Mesh(geometry, [surface, cap]);
+        if (middle.includes(i)) {
+          // Weld cap edges by position: only the real cut perimeter remains,
+          // without exposing the triangulation across the face.
+          const edges = new Map();
+          const key = index => [0, 1, 2].map(axis => Math.round(positions[index * 3 + axis] * 8192)).join(',');
+          for (let n = part.surfaceCount; n < indices.length; n += 3) {
+            for (let edge = 0; edge < 3; edge++) {
+              const a = indices[n + edge], b = indices[n + (edge + 1) % 3];
+              const ka = key(a), kb = key(b), id = ka < kb ? ka + ':' + kb : kb + ':' + ka;
+              const entry = edges.get(id);
+              if (entry) entry.count++; else edges.set(id, { a, b, count: 1 });
+            }
+          }
+          const vertices = [];
+          edges.forEach(({ a, b, count }) => {
+            if (count === 1) vertices.push(...positions.slice(a * 3, a * 3 + 3), ...positions.slice(b * 3, b * 3 + 3));
+          });
+          const outline = new T.BufferGeometry();
+          outline.setAttribute('position', new T.Float32BufferAttribute(vertices, 3));
+          const contour = new T.LineSegments(outline, new T.LineBasicMaterial({ color: 0xd9dedb, transparent: true, opacity: .12, depthWrite: false }));
+          contour.renderOrder = 1; mesh.add(contour); contours[i] = contour;
+        }
         mesh.userData.homeY = part.center + (i >= 4 ? .018 : i <= 2 ? -.018 : 0);
         mesh.position.y = mesh.userData.homeY;
         sculpture.add(mesh); meshes.push(mesh); materials.push(surface);
@@ -285,16 +340,18 @@
     measuredWidth = accordion.clientWidth; resize();
   }); sizeObserver.observe(accordion);
   window.addEventListener('resize', resize, { passive: true });
+  if (document.fonts) document.fonts.ready.then(() => { if (!disposed) resize(); });
   reduced.addEventListener('change', schedule);
   document.addEventListener('visibilitychange', () => document.hidden ? pause() : schedule());
   window.addEventListener('pageshow', schedule);
   function disposeResources() {
+    contours.forEach(contour => { contour.geometry.dispose(); contour.material.dispose(); });
     meshes.forEach(mesh => mesh.geometry.dispose()); materials.forEach(material => material.dispose());
     if (cap) cap.dispose(); if (texture) texture.dispose(); if (renderer) renderer.dispose();
   }
   window.addEventListener('pagehide', event => {
     pause(); if (event.persisted) return;
-    disposed = true; compressed = null; observer.disconnect(); sizeObserver.disconnect(); stateObserver.disconnect(); window.removeEventListener('resize', resize); window.removeEventListener('scroll', checkVisibility); disposeResources();
+    disposed = true; compressed = null; observer.disconnect(); sizeObserver.disconnect(); stateObserver.disconnect(); titleObserver.disconnect(); window.removeEventListener('resize', resize); window.removeEventListener('scroll', checkVisibility); disposeResources();
   });
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
