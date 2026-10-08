@@ -129,8 +129,8 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
             });
 
             if (!nativeGallery) {
-                // Keep About below the Works sheet as its two edges part from
-                // the center. Reveal full-size artwork without scaling type.
+                // Keep About below the Works sheet as its top and bottom edges
+                // part from the center. Reveal full-size artwork without scaling type.
                 // Horizontal browsing begins only after the curtain is open.
                 const coverTravel = () => window.innerHeight + parseFloat(getComputedStyle(works).paddingTop);
                 const cover = gsap.timeline({
@@ -144,8 +144,8 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
                     y: coverTravel, ease: 'none', duration: 1
                 }, 0).fromTo(featured, { y: () => -coverTravel() }, {
                     y: 0, ease: 'none', duration: 1
-                }, 0).fromTo(featured, { clipPath: 'inset(0 50% 0 50%)' }, {
-                    clipPath: 'inset(0 0% 0 0%)', ease: 'sine.inOut', duration: 1
+                }, 0).fromTo(featured, { clipPath: 'inset(50% 0 50% 0)' }, {
+                    clipPath: 'inset(0% 0 0% 0)', ease: 'sine.inOut', duration: 1
                 }, 0);
             } else {
                 gsap.fromTo(sheets[0], { y: 0 }, {

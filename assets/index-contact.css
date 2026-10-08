@@ -1,0 +1,71 @@
+/* Filled type sits behind the fresco; outlined type stays in front. */
+.contact-title-scene {
+  position: relative;
+  margin-top: clamp(56px, 7.5vw, 136px);
+  padding-bottom: 12cqi;
+  isolation: isolate;
+  --contact-parallax-x: 0px;
+  --contact-parallax-y: 0px;
+}
+#contact-content .contact-title-scene h3.contact-title { position: relative; margin: 0; }
+.contact-title-scene .contact-title-line:first-child {
+  position: relative;
+  z-index: 1;
+  translate: calc(var(--contact-parallax-x) * -.22) calc(var(--contact-parallax-y) * -.22);
+}
+.contact-title-scene .contact-title-line:nth-child(2) {
+  position: relative;
+  z-index: 4;
+  margin-left: auto;
+  -webkit-text-stroke: 1.2px #eeede8d9;
+  mix-blend-mode: difference;
+}
+.contact-title-echo {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 3;
+  pointer-events: none;
+  white-space: nowrap;
+  -webkit-text-stroke: 1px #eeede8a0;
+  mix-blend-mode: difference;
+  translate: calc(var(--contact-parallax-x) * -.22) calc(var(--contact-parallax-y) * -.22);
+}
+.contact-reach {
+  position: absolute;
+  right: -18%;
+  top: -4.8cqi;
+  z-index: 2;
+  display: block;
+  width: 82%;
+  translate: var(--contact-parallax-x) var(--contact-parallax-y);
+  pointer-events: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.contact-reach svg { display: block; width: 100%; height: auto; overflow: visible; }
+.contact-reach image { pointer-events: visiblePainted; }
+.contact-reach__hand {
+  filter: grayscale(1) brightness(.91);
+  opacity: .87;
+  transition: transform 850ms cubic-bezier(.22, 1, .36, 1), filter 650ms ease;
+}
+.contact-reach__cursor {
+  transition: transform 850ms cubic-bezier(.22, 1, .36, 1);
+}
+.contact-reach:focus-visible { outline: 1px solid #eeede899; outline-offset: 10px; }
+.contact-reach:focus-visible .contact-reach__hand { transform: translateX(-1px); filter: grayscale(1) brightness(1); }
+.contact-reach:focus-visible .contact-reach__cursor { transform: translateX(1px); }
+@media (hover: hover) and (pointer: fine) {
+  .contact-reach:hover .contact-reach__hand { transform: translateX(-1px); filter: grayscale(1) brightness(1); }
+  .contact-reach:hover .contact-reach__cursor { transform: translateX(1px); }
+}
+@media (max-width: 767px) {
+  .contact-title-scene { margin-top: 40px; padding-bottom: 12cqi; }
+  .contact-title-scene .contact-title-line:nth-child(2) { margin-top: 28cqi; }
+  .contact-reach { width: 98%; right: -18%; top: 6cqi; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .contact-reach__hand, .contact-reach__cursor { transition: none; }
+  .contact-reach, .contact-title-line:first-child, .contact-title-echo { translate: none !important; }
+  .contact-reach .contact-reach__hand, .contact-reach .contact-reach__cursor { transform: none; }
+}

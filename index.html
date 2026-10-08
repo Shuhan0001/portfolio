@@ -338,11 +338,13 @@
     </style>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/david/scene.css">
-    <link rel="stylesheet" href="assets/index-transitions.css?v=contact-pace-1">
+    <link rel="stylesheet" href="assets/index-transitions.css?v=horizontal-open-1">
     <link rel="stylesheet" href="assets/index-logic-david.css?v=type-detail-2">
     <link rel="stylesheet" href="assets/index-typography.css">
     <link rel="stylesheet" href="assets/index-works.css">
     <link rel="stylesheet" href="assets/index-responsive.css">
+    <link rel="stylesheet" href="assets/index-contact.css?v=pixel-touch-1">
+    <script defer src="assets/index-contact.js?v=creation-2"></script>
     <link rel="stylesheet" href="assets/fps-cursor.css?v=diagonal-2">
     <script defer src="assets/fps-cursor.js?v=diagonal-2"></script>
 </head>
@@ -800,10 +802,23 @@
                         <div class="contact-title-eyebrow gsap-reveal">
                             <h2 class="section-kicker">03 / Connect</h2>
                         </div>
-                        <h3 class="contact-title gsap-reveal" aria-label="Let's work together.">
-                            <span class="contact-title-line">Let's work</span>
-                            <span class="contact-title-line text-outline">together.</span>
-                        </h3>
+                        <div class="contact-title-scene gsap-reveal">
+                            <h3 class="contact-title" aria-label="Let's work together.">
+                                <span class="contact-title-line">Let's work</span>
+                                <span class="contact-title-line text-outline">together.</span>
+                                <span class="contact-title-echo text-outline" aria-hidden="true">Let's work</span>
+                            </h3>
+                            <a href="#contact-name" class="contact-reach hover-trigger" aria-label="Write me a message">
+                                <svg viewBox="90 210 410 250" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                                    <g class="contact-reach__hand">
+                                        <image href="assets/contact/creation-hand-halftone.png" x="117" y="193" width="385" height="256.667"/>
+                                    </g>
+                                    <g class="contact-reach__cursor">
+                                        <image href="assets/contact/pixel-touch.svg" x="100" y="290" width="48" height="40"/>
+                                    </g>
+                                </svg>
+                            </a>
+                        </div>
                     </div>
 
                     <div class="contact-grid grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24">
@@ -879,7 +894,7 @@
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script src="assets/index-works.js?v=project-return-1"></script>
     <script src="assets/index-title-drag.js"></script>
-    <script src="assets/index-transitions.js?v=logic-rows-3"></script>
+    <script src="assets/index-transitions.js?v=horizontal-open-1"></script>
 
     <script>
         // --------------------------------------------------------
@@ -940,8 +955,12 @@
                 if (window.focusIndexArtifact?.(target)) return;
                 lenis.scrollTo(sectionScrollTarget(target), {
                     duration: href === '#contact-section' ? 1.25 : 1.05,
+                    offset: link.classList.contains('contact-reach') ? -128 : 0,
                     immediate: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-                    easing: t => 1 - Math.pow(1 - t, 4)
+                    easing: t => 1 - Math.pow(1 - t, 4),
+                    onComplete: () => {
+                        if (link.classList.contains('contact-reach')) target.focus({ preventScroll: true });
+                    }
                 });
             });
         });

@@ -287,8 +287,7 @@
         const surface = new T.ShaderMaterial({ uniforms: { pixelRatio: { value: 1 }, emphasis: { value: .45 } }, vertexShader: vertex, fragmentShader: fragment });
         const mesh = new T.Mesh(geometry, [surface, cap]);
         if (middle.includes(i)) {
-          // Weld cap edges by position: only the real cut perimeter remains,
-          // without exposing the triangulation across the face.
+          // Weld cap edges by position so the outline follows only the real cut perimeter.
           const edges = new Map();
           const key = index => [0, 1, 2].map(axis => Math.round(positions[index * 3 + axis] * 8192)).join(',');
           for (let n = part.surfaceCount; n < indices.length; n += 3) {
@@ -345,7 +344,6 @@
   document.addEventListener('visibilitychange', () => document.hidden ? pause() : schedule());
   window.addEventListener('pageshow', schedule);
   function disposeResources() {
-    contours.forEach(contour => { contour.geometry.dispose(); contour.material.dispose(); });
     meshes.forEach(mesh => mesh.geometry.dispose()); materials.forEach(material => material.dispose());
     if (cap) cap.dispose(); if (texture) texture.dispose(); if (renderer) renderer.dispose();
   }

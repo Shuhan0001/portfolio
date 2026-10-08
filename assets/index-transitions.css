@@ -51,11 +51,11 @@ html.lenis, html.lenis body { height: auto; }
 }
 .index-motion #zone-2-featured { background-color: rgba(5, 5, 5, .8); }
 .gallery-runway { position: relative; width: 100%; }
-/* About stays below the Works sheet, visible on both sides of its center opening. */
+/* About stays below the Works sheet, visible above and below its center opening. */
 .index-center-cover #zone-2-works { background: transparent; padding-top: 80vh; }
 .index-center-cover #zone-2-featured {
   background: #070707;
-  clip-path: inset(0 50% 0 50%);
+  clip-path: inset(50% 0 50% 0);
   will-change: transform, clip-path;
 }
 .index-motion #zone-about { will-change: transform; }
