@@ -2,7 +2,7 @@
 
 `creation-touch-reference.jpg` is the original image supplied by the user for the contact composition, retained as the source reference.
 
-`pixel-touch.svg` is a code-drawn pixel pointing hand with a transparent background, off-white fill and stepped monochrome edges. It replaces the pointer previously clipped from the JPEG.
+`pixel-touch.svg` adapts [Mano cursor by Mushii](https://commons.wikimedia.org/wiki/File:Mano_cursor.svg), under [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/). This adapted asset is also CC BY-SA 3.0. The classic pixel silhouette and finger separators are retained; the vector is rotated to point right and the black is adjusted to the page background. Rendering preserves hard pixel steps.
 
 `creation-hand-halftone.png` is an imagegen edit of that reference: background extraction and black-and-white halftone style transfer, using the existing David sculpture screenshot as the rendering reference. This replaces the previous hand-traced clipping path.
 

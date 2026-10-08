@@ -1,6 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 40" fill="none" shape-rendering="crispEdges">
-  <path d="M2 16H12V14H16V12H20V10H24V8H28V6H30V10H26V12H22V14H44V18H30V22H36V26H28V30H34V34H26V38H14V36H8V34H2Z"
-    fill="#eeede8" stroke="#080808" stroke-width="2" stroke-linejoin="miter"/>
-  <path d="M4 18H6V30H4ZM6 30H8V34H6ZM8 34H14V36H8ZM14 36H24V38H14Z" fill="#858a86"/>
-  <path d="M22 22H30M20 30H28M14 34H24" stroke="#080808" stroke-width="2"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 340" shape-rendering="crispEdges">
+  <!-- Mano cursor by Mushii, CC BY-SA 3.0. Rotated right; see CREDITS.md. -->
+  <g transform="matrix(0 1 -1 0 440 0)">
+    <path d="M0 180H60V200H80V20h20V0h40V20h20v80h40v20h60v20h40v20h20v20h20V320H320v60H300v60H100V380H80V340H60V300H40V260H20V240H0V180" fill="#080808"/>
+    <path fill="#fff" d="M20 200H60V220H80v60h20V20h40V200h20V120h40v80h20V140h40v80h20V160h20V180h20V320H300v60H280v40H120V380H100V340H80V300H60V260H40V240H20V200"/>
+  </g>
 </svg>
