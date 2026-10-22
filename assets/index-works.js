@@ -289,8 +289,9 @@
             setTitle(item.dataset.title);
             const link = document.getElementById('work-viewer-link');
             link.href = item.href;
-            link.textContent = 'Explore';
-            link.setAttribute('aria-label', 'Explore ' + item.dataset.title);
+            const certificate = item.id === 'artifact-xuanwu';
+            link.textContent = certificate ? 'View Certificate' : 'Explore';
+            link.setAttribute('aria-label', certificate ? 'View QQ Xuanwu internship certificate (PDF)' : 'Explore ' + item.dataset.title);
         }
         function clearOutgoing() {
             outgoingFrame?.remove();
