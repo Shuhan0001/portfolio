@@ -1,5 +1,33 @@
 /* The labels and the information occupy the same space as the sliced sculpture. */
 #zone-1 { overflow: clip; }
+/* Independent comic sense lines surround the sculpture on a transparent plane. */
+.logic-backdrop-disc {
+  position: absolute;
+  left: 0;
+  top: 12%;
+  width: 57%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  z-index: 3;
+  pointer-events: none;
+  background: transparent;
+  opacity: 0;
+  transition: opacity .7s ease;
+}
+.is-david-ready > .logic-backdrop-disc { opacity: 1; }
+.logic-sense-rays {
+  position: absolute;
+  inset: -14%;
+  background: url('david/sense-rays.svg?v=pixel-tint-6') center / contain no-repeat;
+  opacity: .9;
+  transform-origin: center;
+}
+@media (max-width: 639px) {
+  .logic-backdrop-disc { top: 14%; width: 60%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .logic-backdrop-disc { transition: none; }
+}
 #zone-1 .logic-head-study.logic-accordion {
   display: block;
   position: relative;

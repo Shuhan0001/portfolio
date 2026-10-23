@@ -96,17 +96,31 @@
     if (!frame && visible && ready && !disposed && !document.hidden) frame = requestAnimationFrame(render);
   }
   function sync() {
+    const previous = active;
     active = controls.findIndex(control => control.getAttribute('aria-expanded') === 'true');
+    if (active >= 0 && previous !== active) sensePulse();
     buttons.forEach((button, i) => button.setAttribute('aria-expanded', String(i === active)));
     schedule();
+  }
+  let senseAnimation;
+  function sensePulse() {
+    const rays = accordion.querySelector('.logic-sense-rays');
+    if (!rays || reduced.matches) return;
+    senseAnimation?.cancel();
+    senseAnimation = rays.animate([
+      { opacity: .55, transform: 'scale(.94) rotate(-1deg)' },
+      { opacity: 1, transform: 'scale(1.035) rotate(1deg)', offset: .24 },
+      { opacity: .92, transform: 'scale(.995) rotate(-.5deg)', offset: .55 },
+      { opacity: .9, transform: 'scale(1) rotate(0deg)' }
+    ], { duration: 480, easing: 'steps(2, end)' });
   }
   buttons.forEach((button, i) => {
     button.setAttribute('aria-controls', controls[i].getAttribute('aria-controls'));
     button.addEventListener('click', () => controls[i].click());
     [button, controls[i]].forEach(target => {
-      target.addEventListener('pointerenter', event => { if (event.pointerType !== 'touch') { hover = i; schedule(); } });
+      target.addEventListener('pointerenter', event => { if (event.pointerType !== 'touch') { hover = i; sensePulse(); schedule(); } });
       target.addEventListener('pointerleave', () => { hover = -1; schedule(); });
-      target.addEventListener('focus', () => { hover = i; schedule(); });
+      target.addEventListener('focus', () => { hover = i; sensePulse(); schedule(); });
       target.addEventListener('blur', () => { hover = -1; schedule(); });
     });
   });
