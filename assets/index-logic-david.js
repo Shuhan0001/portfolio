@@ -36,7 +36,30 @@
     dot.setAttribute('r', '2'); group.append(line, trace, dot); guides.append(group);
     return { group, line, trace, dot };
   });
+  const trackingConnector = document.createElementNS(svgNS, 'line');
+  trackingConnector.classList.add('logic-tracking-connector');
+  trackingConnector.style.opacity = '0';
+  guides.append(trackingConnector);
   accordion.append(guides);
+  // Two non-interactive tracking boxes share the sculpture's render clock.
+  const trackingBoxes = ['slice', 'content'].map(kind => {
+    const box = document.createElement('div');
+    box.className = 'logic-tracking-box logic-tracking-box--' + kind;
+    box.setAttribute('aria-hidden', 'true');
+    const label = document.createElement('span');
+    label.className = 'logic-tracking-box__label';
+    label.textContent = '???';
+    box.append(label); accordion.append(box);
+    return box;
+  });
+  let trackedLayer = -1;
+  const trackingPoint = new T.Vector3();
+  function placeTrackingBox(box, x, y, width, height, opacity) {
+    box.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)';
+    box.style.width = Math.max(0, width) + 'px';
+    box.style.height = Math.max(0, height) + 'px';
+    box.style.opacity = String(opacity);
+  }
   let titleLeft = 0;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const scene = new T.Scene(), sculpture = new T.Group();
@@ -57,8 +80,11 @@
   let renderer, texture, cap, ready = false, loading = false, visible = false;
   let frame = 0, last = 0, active = -1, hover = -1, disposed = false;
   let fitPoints, fitCenter;
+  const focusPoint = new T.Vector3();
+  let focusX = null, focusY = null;
+  const focusStrength = .5;
   let baseHeight = 700, canvasHeight = 700, pixelsPerUnit = 140;
-  let panelHeights = [], fitSize, fittedPixels = 140, rest = 1;
+  let panelHeights = [], panelBounds = [], fitSize, fittedPixels = 140, rest = 1;
   const reveal = [0, 0, 0], labelY = [null, null, null];
   const vertex = `attribute vec3 scanPosition;
     varying vec3 point; varying vec3 surfaceNormal; varying vec3 eye;
@@ -96,31 +122,17 @@
     if (!frame && visible && ready && !disposed && !document.hidden) frame = requestAnimationFrame(render);
   }
   function sync() {
-    const previous = active;
     active = controls.findIndex(control => control.getAttribute('aria-expanded') === 'true');
-    if (active >= 0 && previous !== active) sensePulse();
     buttons.forEach((button, i) => button.setAttribute('aria-expanded', String(i === active)));
     schedule();
-  }
-  let senseAnimation;
-  function sensePulse() {
-    const rays = accordion.querySelector('.logic-sense-rays');
-    if (!rays || reduced.matches) return;
-    senseAnimation?.cancel();
-    senseAnimation = rays.animate([
-      { opacity: .55, transform: 'scale(.94) rotate(-1deg)' },
-      { opacity: 1, transform: 'scale(1.035) rotate(1deg)', offset: .24 },
-      { opacity: .92, transform: 'scale(.995) rotate(-.5deg)', offset: .55 },
-      { opacity: .9, transform: 'scale(1) rotate(0deg)' }
-    ], { duration: 480, easing: 'steps(2, end)' });
   }
   buttons.forEach((button, i) => {
     button.setAttribute('aria-controls', controls[i].getAttribute('aria-controls'));
     button.addEventListener('click', () => controls[i].click());
     [button, controls[i]].forEach(target => {
-      target.addEventListener('pointerenter', event => { if (event.pointerType !== 'touch') { hover = i; sensePulse(); schedule(); } });
+      target.addEventListener('pointerenter', event => { if (event.pointerType !== 'touch') { hover = i; schedule(); } });
       target.addEventListener('pointerleave', () => { hover = -1; schedule(); });
-      target.addEventListener('focus', () => { hover = i; sensePulse(); schedule(); });
+      target.addEventListener('focus', () => { hover = i; schedule(); });
       target.addEventListener('blur', () => { hover = -1; schedule(); });
     });
   });
@@ -149,6 +161,7 @@
     // Preserve the reading composition; the closed view has a slightly fuller silhouette.
     baseHeight = innerWidth < 640 ? Math.min(440, Math.max(340, innerHeight * .45)) : Math.min(780, Math.max(600, innerHeight * .92));
     panelHeights = panels.map(panel => panel.offsetHeight);
+    panelBounds = panels.map(panel => ({ left: panel.offsetLeft, width: panel.offsetWidth }));
     titleLeft = controls[0].offsetLeft;
     controls.forEach(control => control.style.setProperty('--logic-title-width', control.querySelector('h4').offsetWidth + 'px'));
     canvasHeight = baseHeight;
@@ -191,12 +204,7 @@
     const mobile = innerWidth < 640;
     rest = settle(rest, active < 0 ? 1 : 0);
     accordion.style.setProperty('--logic-rest', rest);
-    pixelsPerUnit = fittedPixels * (1 + (mobile ? 0 : .045) * rest);
-    camera.left = -host.clientWidth / (2 * pixelsPerUnit); camera.right = -camera.left;
-    camera.top = canvasHeight / (2 * pixelsPerUnit); camera.bottom = -camera.top;
-    camera.updateProjectionMatrix();
-    camera.position.set(fitCenter.x, fitCenter.y, 10);
-    camera.lookAt(fitCenter.x, fitCenter.y, 0);
+
     sculpture.rotation.x = settle(sculpture.rotation.x, neutralRotation.x + (reduced.matches || mobile ? 0 : pointer.y * .018));
     sculpture.rotation.y = settle(sculpture.rotation.y, neutralRotation.y + (reduced.matches || mobile ? 0 : pointer.x * .035));
     meshes.forEach((mesh, i) => {
@@ -210,6 +218,29 @@
       materials[i].uniforms.emphasis.value = settle(materials[i].uniforms.emphasis.value, selected ? 1 : lit ? .85 : .45);
       if (contours[i]) contours[i].material.opacity = settle(contours[i].material.opacity, selected ? .65 : lit ? .42 : .12);
     });
+    // Halfway between the full-head composition and the selected fragment.
+    // Project guides and tracking boxes with this same camera below.
+    sculpture.updateMatrixWorld(true);
+    let targetX = fitCenter.x, targetY = fitCenter.y;
+    const restingZoom = mobile ? 1 : 1.045;
+    if (active >= 0) {
+      const selectedMesh = meshes[middle[active]];
+      selectedMesh.geometry.boundingBox.getCenter(focusPoint);
+      selectedMesh.localToWorld(focusPoint);
+      targetX += (focusPoint.x - fitCenter.x) * focusStrength;
+      targetY += (focusPoint.y - fitCenter.y) * focusStrength;
+    }
+    focusX = focusX === null ? fitCenter.x : focusX;
+    focusY = focusY === null ? fitCenter.y : focusY;
+    focusX = settle(focusX, targetX);
+    focusY = settle(focusY, targetY);
+    // Focus is a framing shift only: opening never changes the sculpture scale.
+    pixelsPerUnit = fittedPixels * restingZoom;
+    camera.left = -host.clientWidth / (2 * pixelsPerUnit); camera.right = -camera.left;
+    camera.top = canvasHeight / (2 * pixelsPerUnit); camera.bottom = -camera.top;
+    camera.updateProjectionMatrix();
+    camera.position.set(focusX, focusY, 10);
+    camera.lookAt(focusX, focusY, 0);
     renderer.render(scene, camera);
     // At rest, labels follow their layers; selection makes room for the reading column.
     const points = middle.map(i => {
@@ -240,6 +271,7 @@
       guide.trace.style.opacity = String(guideReveal[i]);
       guide.dot.setAttribute('cx', startX); guide.dot.setAttribute('cy', y[i]);
       guide.group.classList.toggle('is-active', active === i || hover === i);
+      guide.group.style.opacity = String(1 - Math.max(0, Math.min(1, (reveal[i] - .16) / .84)));
       const panel = panels[i];
       const panelTop = mobile ? baseHeight + 16 : labelY[i] + 36;
       panel.style.top = panelTop + 'px';
@@ -252,6 +284,44 @@
         lastBottom = Math.max(lastBottom, labelY[i] + 40 + reveal[i] * (panelHeights[i] + 24));
       }
     });
+    if (active >= 0) trackedLayer = active;
+    if (trackedLayer >= 0) {
+      const amount = Math.max(0, Math.min(1, (reveal[trackedLayer] - .16) / .84));
+      const mesh = meshes[middle[trackedLayer]], bounds = mesh.geometry.boundingBox;
+      let left = Infinity, top = Infinity, right = -Infinity, bottom = -Infinity;
+      // Project all eight corners so the box follows extraction and head rotation.
+      for (const x of [bounds.min.x, bounds.max.x]) {
+        for (const y of [bounds.min.y, bounds.max.y]) {
+          for (const z of [bounds.min.z, bounds.max.z]) {
+            trackingPoint.set(x, y, z).applyMatrix4(mesh.matrixWorld).project(camera);
+            const px = host.offsetLeft + (trackingPoint.x + 1) * host.clientWidth / 2;
+            const py = host.offsetTop + (1 - trackingPoint.y) * canvasHeight / 2;
+            left = Math.min(left, px); right = Math.max(right, px);
+            top = Math.min(top, py); bottom = Math.max(bottom, py);
+          }
+        }
+      }
+      const padding = mobile ? 5 : 9;
+      left = Math.max(padding, left - padding);
+      right = Math.min(accordion.clientWidth - padding, right + padding);
+      top = Math.max(22, top - padding);
+      placeTrackingBox(trackingBoxes[0], left, top, right - left, bottom + padding - top, amount);
+      const contentTop = mobile ? baseHeight + 16 : labelY[trackedLayer] + 36;
+      const contentBounds = panelBounds[trackedLayer];
+      placeTrackingBox(trackingBoxes[1], contentBounds.left, contentTop + (1 - reveal[trackedLayer]) * 10,
+        contentBounds.width, panelHeights[trackedLayer], amount);
+      const boxTop = contentTop + (1 - reveal[trackedLayer]) * 10;
+      // Attach to the actual borders, not the title or a point inside the mesh.
+      const fromX = mobile ? (left + right) / 2 : right;
+      const fromY = mobile ? bottom + padding : top;
+      const toX = mobile ? Math.max(contentBounds.left, Math.min(contentBounds.left + contentBounds.width, fromX)) : contentBounds.left;
+      const toY = boxTop;
+      trackingConnector.setAttribute('x1', fromX);
+      trackingConnector.setAttribute('y1', fromY);
+      trackingConnector.setAttribute('x2', toX);
+      trackingConnector.setAttribute('y2', toY);
+      trackingConnector.style.opacity = String(amount);
+    }
     accordion.style.height = Math.ceil(lastBottom) + 'px';
     if (moving) schedule(); else last = 0;
   }
@@ -352,6 +422,14 @@
     if (accordion.clientWidth === measuredWidth) return;
     measuredWidth = accordion.clientWidth; resize();
   }); sizeObserver.observe(accordion);
+  // Wrapped copy and font changes can alter a panel without changing rail width.
+  const panelObserver = new ResizeObserver(() => {
+    if (!ready || disposed) return;
+    panelHeights = panels.map(panel => panel.offsetHeight);
+    panelBounds = panels.map(panel => ({ left: panel.offsetLeft, width: panel.offsetWidth }));
+    schedule();
+  });
+  panels.forEach(panel => panelObserver.observe(panel));
   window.addEventListener('resize', resize, { passive: true });
   if (document.fonts) document.fonts.ready.then(() => { if (!disposed) resize(); });
   reduced.addEventListener('change', schedule);
@@ -363,7 +441,7 @@
   }
   window.addEventListener('pagehide', event => {
     pause(); if (event.persisted) return;
-    disposed = true; compressed = null; observer.disconnect(); sizeObserver.disconnect(); stateObserver.disconnect(); titleObserver.disconnect(); window.removeEventListener('resize', resize); window.removeEventListener('scroll', checkVisibility); disposeResources();
+    disposed = true; compressed = null; observer.disconnect(); sizeObserver.disconnect(); panelObserver.disconnect(); stateObserver.disconnect(); titleObserver.disconnect(); window.removeEventListener('resize', resize); window.removeEventListener('scroll', checkVisibility); disposeResources();
   });
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });

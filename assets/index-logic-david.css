@@ -1,33 +1,5 @@
 /* The labels and the information occupy the same space as the sliced sculpture. */
 #zone-1 { overflow: clip; }
-/* Independent comic sense lines surround the sculpture on a transparent plane. */
-.logic-backdrop-disc {
-  position: absolute;
-  left: 0;
-  top: 12%;
-  width: 57%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  z-index: 3;
-  pointer-events: none;
-  background: transparent;
-  opacity: 0;
-  transition: opacity .7s ease;
-}
-.is-david-ready > .logic-backdrop-disc { opacity: 1; }
-.logic-sense-rays {
-  position: absolute;
-  inset: -14%;
-  background: url('david/sense-rays.svg?v=pixel-tint-6') center / contain no-repeat;
-  opacity: .9;
-  transform-origin: center;
-}
-@media (max-width: 639px) {
-  .logic-backdrop-disc { top: 14%; width: 60%; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .logic-backdrop-disc { transition: none; }
-}
 #zone-1 .logic-head-study.logic-accordion {
   display: block;
   position: relative;
@@ -190,3 +162,53 @@
 @media (prefers-reduced-motion: reduce) {
   .logic-david, #zone-1 .logic-head-study .logic-toggle, #zone-1 .logic-head-study .logic-toggle::after { transition: none; }
 }
+
+/* White tracking frames appear only for the extracted slice and its content. */
+.logic-tracking-box {
+  position: absolute;
+  left: 0; top: 0;
+  box-sizing: border-box;
+  z-index: 4;
+  border: 1px solid rgba(255,255,255,.7);
+  pointer-events: none;
+  opacity: 0;
+  background: transparent;
+}
+.logic-tracking-box__label {
+  position: absolute;
+  left: -1px; bottom: 100%;
+  padding: 3px 7px 2px;
+  background: #f1f1ed;
+  color: #080808;
+  font: 10px/1.2 'JetBrains Mono', monospace;
+  letter-spacing: .08em;
+}
+@media (max-width: 639px) {
+  .logic-tracking-box__label { font-size: 9px; padding: 2px 5px; }
+}
+
+/* The content panel and tracking border use the same measured outer box. */
+#zone-1 .logic-head-study .accordion-panel {
+  box-sizing: border-box;
+  padding: 16px clamp(16px, 1.6vw, 28px);
+  max-width: 100%;
+}
+#zone-1 .logic-head-study .accordion-panel .group\/spec > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+#zone-1 .logic-head-study .accordion-panel .group\/spec > span {
+  flex-shrink: 0;
+  color: #ffffff70;
+}
+#zone-1 .logic-head-study .accordion-panel .group\/spec:last-child { border-bottom: 0; }
+.logic-tracking-box--content .logic-tracking-box__label { left: auto; right: -1px; }
+@media (max-width: 639px) {
+  #zone-1 .logic-head-study .accordion-panel {
+    left: 2px;
+    width: calc(100% - 4px);
+    padding: 12px 16px;
+  }
+}
+
+.logic-tracking-connector { fill: none; stroke: #ffffffb3; stroke-width: 1; vector-effect: non-scaling-stroke; }
