@@ -1,0 +1,54 @@
+/* The Perspective introduction only; existing section transitions stay intact. */
+#zone-about .perspective-grid {
+  display: grid;
+  grid-template-columns: 1fr 2.6fr .5fr;
+  gap: 40px;
+  align-items: start;
+  width: 100%;
+}
+#zone-about .perspective-label,
+#zone-about .perspective-label span {
+  font-family: 'Fragment Mono', monospace;
+  font-size: 11px;
+  line-height: 1.6;
+  letter-spacing: .06em;
+}
+#zone-about .perspective-label {
+  color: #c6d2ad;
+  padding-top: 8px;
+  text-transform: uppercase;
+}
+#zone-about .perspective-label span {
+  display: block;
+  color: #929d94;
+  margin-top: 18px;
+  text-transform: none;
+}
+#zone-about #perspective-title {
+  margin: 0;
+  color: #eeeee8;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+  font-size: clamp(30px, 3.6vw, 56px);
+  line-height: 1.12;
+  font-weight: 400;
+  letter-spacing: -.045em;
+  text-transform: none;
+}
+#zone-about #perspective-title span { color: #9da89e; }
+#zone-about .perspective-copy {
+  max-width: 53ch;
+  color: #b4bcb5;
+  font-size: 16px;
+  line-height: 1.8;
+  margin-top: 30px;
+  text-align: left;
+}
+#zone-about .perspective-structure { display: flex; flex-direction: column; gap: 7px; padding-top: 8px; }
+#zone-about .perspective-structure i { display: block; width: 100%; height: 18px; border: 1px solid #aeb99b; transform: skewY(-16deg); }
+#zone-about .perspective-structure i:nth-child(2) { transform: skewY(-16deg) translateX(-12px); }
+#zone-about .perspective-structure i:nth-child(3) { transform: skewY(-16deg) translateX(8px); }
+#zone-about .perspective-structure span { color: #9ba98e; font-size: 10px; margin-top: 18px; }
+@media (max-width: 899px) {
+  #zone-about .perspective-grid { grid-template-columns: 1fr; gap: 30px; }
+  #zone-about .perspective-structure { display: none; }
+}

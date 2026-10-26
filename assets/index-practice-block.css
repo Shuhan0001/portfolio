@@ -1,0 +1,38 @@
+/* Loaded by the main index only. Works and method belong to one surface. */
+#practice-block {
+    --practice-surface: #070707;
+    position: relative;
+    z-index: 22;
+    display: flow-root;
+}
+
+/* Keep the gallery's existing opening mask; its runway must remain unclipped. */
+#practice-block #zone-2-works {
+    background: transparent;
+    border-bottom: 0;
+}
+#practice-block #zone-2-works::before,
+#practice-block #zone-1 > .chapter-seam {
+    display: none;
+}
+#practice-block #zone-2-featured,
+#practice-block #zone-1 {
+    background: var(--practice-surface);
+    border-radius: 0;
+    box-shadow: none;
+}
+
+/* Internal chapter spacing replaces the separate overlapping sheet edge. */
+#practice-block #zone-1 {
+    margin-top: 0;
+    padding-top: clamp(64px, 8vw, 112px);
+}
+#practice-block .logic-header > div:first-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+    margin-bottom: clamp(36px, 5vw, 64px);
+}
+
+@media (max-width: 767px) {
+    #practice-block #zone-1 { padding-top: 64px; }
+}
