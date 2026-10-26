@@ -69,3 +69,21 @@
   .contact-reach, .contact-title-line:first-child, .contact-title-echo { translate: none !important; }
   .contact-reach .contact-reach__hand, .contact-reach .contact-reach__cursor { transform: none; }
 }
+
+/* Credits share the copyright bar's type, colour and spacing. */
+#contact-content > .site-colophon { width: 100%; max-width: 1024px; margin-left: auto; margin-right: auto; }
+.site-colophon__row { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; }
+.site-colophon .art-credits { margin-top: 28px; }
+.site-colophon .art-credits h4 { margin: 0 0 16px; font: inherit; letter-spacing: inherit; color: inherit; text-transform: uppercase; }
+.art-credits__grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px 40px; margin: 0; }
+.art-credits__grid > div { min-width: 0; }
+.site-colophon .art-credits dt,
+.site-colophon .art-credits dd { font: inherit; letter-spacing: inherit; color: inherit; line-height: 1.7; }
+.art-credits dd { margin: 4px 0 0; text-wrap: pretty; }
+.art-credits a { color: inherit; text-decoration: underline; text-decoration-color: currentColor; text-underline-offset: 3px; transition: color .2s ease; }
+.art-credits a:hover { color: #bcbcb6; }
+.art-credits a:focus-visible { outline: 1px solid currentColor; outline-offset: 4px; }
+@media (max-width: 639px) {
+  .site-colophon__row { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .art-credits__grid { grid-template-columns: 1fr; gap: 18px; }
+}

@@ -80,9 +80,6 @@
   let renderer, texture, cap, ready = false, loading = false, visible = false;
   let frame = 0, last = 0, active = -1, hover = -1, disposed = false;
   let fitPoints, fitCenter;
-  const focusPoint = new T.Vector3();
-  let focusX = null, focusY = null;
-  const focusStrength = .5;
   let baseHeight = 700, canvasHeight = 700, pixelsPerUnit = 140;
   let panelHeights = [], panelBounds = [], fitSize, fittedPixels = 140, rest = 1;
   const reveal = [0, 0, 0], labelY = [null, null, null];
@@ -204,6 +201,12 @@
     const mobile = innerWidth < 640;
     rest = settle(rest, active < 0 ? 1 : 0);
     accordion.style.setProperty('--logic-rest', rest);
+    pixelsPerUnit = fittedPixels * (1 + (mobile ? 0 : .045) * rest);
+    camera.left = -host.clientWidth / (2 * pixelsPerUnit); camera.right = -camera.left;
+    camera.top = canvasHeight / (2 * pixelsPerUnit); camera.bottom = -camera.top;
+    camera.updateProjectionMatrix();
+    camera.position.set(fitCenter.x, fitCenter.y, 10);
+    camera.lookAt(fitCenter.x, fitCenter.y, 0);
 
     sculpture.rotation.x = settle(sculpture.rotation.x, neutralRotation.x + (reduced.matches || mobile ? 0 : pointer.y * .018));
     sculpture.rotation.y = settle(sculpture.rotation.y, neutralRotation.y + (reduced.matches || mobile ? 0 : pointer.x * .035));
@@ -218,29 +221,6 @@
       materials[i].uniforms.emphasis.value = settle(materials[i].uniforms.emphasis.value, selected ? 1 : lit ? .85 : .45);
       if (contours[i]) contours[i].material.opacity = settle(contours[i].material.opacity, selected ? .65 : lit ? .42 : .12);
     });
-    // Halfway between the full-head composition and the selected fragment.
-    // Project guides and tracking boxes with this same camera below.
-    sculpture.updateMatrixWorld(true);
-    let targetX = fitCenter.x, targetY = fitCenter.y;
-    const restingZoom = mobile ? 1 : 1.045;
-    if (active >= 0) {
-      const selectedMesh = meshes[middle[active]];
-      selectedMesh.geometry.boundingBox.getCenter(focusPoint);
-      selectedMesh.localToWorld(focusPoint);
-      targetX += (focusPoint.x - fitCenter.x) * focusStrength;
-      targetY += (focusPoint.y - fitCenter.y) * focusStrength;
-    }
-    focusX = focusX === null ? fitCenter.x : focusX;
-    focusY = focusY === null ? fitCenter.y : focusY;
-    focusX = settle(focusX, targetX);
-    focusY = settle(focusY, targetY);
-    // Focus is a framing shift only: opening never changes the sculpture scale.
-    pixelsPerUnit = fittedPixels * restingZoom;
-    camera.left = -host.clientWidth / (2 * pixelsPerUnit); camera.right = -camera.left;
-    camera.top = canvasHeight / (2 * pixelsPerUnit); camera.bottom = -camera.top;
-    camera.updateProjectionMatrix();
-    camera.position.set(focusX, focusY, 10);
-    camera.lookAt(focusX, focusY, 0);
     renderer.render(scene, camera);
     // At rest, labels follow their layers; selection makes room for the reading column.
     const points = middle.map(i => {
