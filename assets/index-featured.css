@@ -1,0 +1,53 @@
+/* Editorial shortlist before the complete horizontal archive. */
+.featured-studies { position:relative; background:#070707; padding:clamp(40px,6vw,96px) var(--works-gutter) clamp(72px,10vw,160px); color:#eeede8; }
+.featured-studies__heading { position:relative; margin-bottom:clamp(40px,6vw,88px); }
+.featured-studies__heading h2 { font-family:var(--font-display); font-weight:400; font-synthesis:none; font-size:clamp(36px,5.8vw,80px); line-height:1.04; letter-spacing:-.025em; margin:20px 0 24px; }
+.featured-studies__heading h2 span { font-family:inherit; }
+.featured-studies__grid { display:grid; grid-template-columns:1.15fr 1fr; column-gap:clamp(28px,5vw,88px); row-gap:clamp(56px,7vw,112px); align-items:start; }
+.focus-work:nth-child(even) { margin-top:clamp(56px,9vw,144px); }
+.focus-work__link { display:block; color:inherit; text-decoration:none; }
+.focus-work__image { position:relative; overflow:hidden; aspect-ratio:1.46; background:#161616; isolation:isolate; }
+.focus-work__image img { width:100%; height:100%; object-fit:cover; transition:transform 800ms cubic-bezier(.2,.7,.2,1); }
+.focus-work:nth-child(2) .focus-work__image { background:#192619; }
+.focus-work:nth-child(2) img,.focus-work:nth-child(4) img { object-fit:contain; }
+.focus-work__link:hover img { transform:scale(1.035); }
+.focus-work__wipe { position:absolute; inset:0; background:#f3f2ed; pointer-events:none; transform:translateX(-125%) skewX(-14deg); z-index:2; }
+.focus-work__visit { position:absolute; right:20px; bottom:18px; color:#fff; font:400 clamp(26px,2.5vw,38px)/1 var(--font-display); letter-spacing:-.02em; text-shadow:0 2px 14px #000b; opacity:0; transform:translateY(5px); transition:opacity .25s,transform .25s; }
+.focus-work__link:hover .focus-work__visit,.focus-work__link:focus-visible .focus-work__visit { opacity:1; transform:none; }
+.focus-work__meta { display:flex; justify-content:space-between; gap:16px; margin-top:20px; padding-top:12px; border-top:1px solid #ffffff30; color:#a2a29d; font:10px/1.6 'JetBrains Mono',monospace; text-transform:uppercase; letter-spacing:.04em; }
+.focus-work h3 { font-family:var(--font-display); font-weight:400; font-synthesis:none; letter-spacing:-.025em; font-size:clamp(36px,3.6vw,56px); line-height:1.1; text-transform:uppercase; margin:14px 0 12px; }
+.focus-work p { color:#a8a8a3; font-size:clamp(15px,1.2vw,18px); line-height:1.65; max-width:48ch; margin:0; }
+.focus-work__link:focus-visible { outline:1px solid #eee; outline-offset:8px; }
+
+@media(max-width:700px) {
+ .featured-studies__grid { grid-template-columns:1fr; }
+ .focus-work:nth-child(even) { margin-top:0; }
+ .focus-work__image { aspect-ratio:1.5; }
+ .focus-work__meta { font-size:9px; }
+ .focus-work__visit { opacity:1; transform:none; }
+}
+@media(prefers-reduced-motion:reduce) {
+ .focus-work__wipe { display:none; }
+ .focus-work__image img,.focus-work__visit,.featured-studies__all::before,.featured-studies__all span { transition:none; }
+}
+
+#zone-2-featured .slice-gallery__heading h3.all-works-heading { margin:0; font-family:var(--font-display); font-size:clamp(36px,4vw,56px); font-weight:400; line-height:1.05; letter-spacing:-.02em; color:#eeede8; }
+/* Collection title, category and selected project have distinct roles. */
+#zone-2-featured .slice-group__label { font-family:Arial,Helvetica,sans-serif; font-size:12px; font-weight:500; line-height:1.4; letter-spacing:.12em; color:#888985; -webkit-text-stroke:0; }
+#zone-2-featured .slice-group:has(.is-current) .slice-group__label,
+#zone-2-featured .slice-group:focus-within .slice-group__label { color:#d3d3ce; }
+#zone-2-featured .slice-group__label::after { background:#ffffff1a; }
+#zone-2-featured .slice-caption { display:flex; flex-direction:column; gap:12px; }
+#zone-2-featured #slice-current-title { order:-1; margin:0; font-size:clamp(30px,3.2vw,46px); letter-spacing:-.02em; line-height:1.08; }
+#zone-2-featured #slice-current-category { font-family:Arial,Helvetica,sans-serif; font-size:10px; letter-spacing:.1em; color:#92938f; }
+#zone-2-featured .slice-index__tick::before { background:#ffffff40; }
+#zone-2-featured .slice-index__tick[aria-current="true"]::before { background:#eeede8; }
+@media(max-width:700px) {
+ #zone-2-featured .slice-group__label { font-size:10px; letter-spacing:.08em; }
+ #zone-2-featured .slice-caption { gap:8px; }
+}
+@media(max-height:600px) {
+ #zone-2-featured .slice-gallery__heading h3.all-works-heading { font-size:30px; }
+ #zone-2-featured #slice-current-title { font-size:26px; }
+ #zone-2-featured .slice-caption { gap:4px; }
+}

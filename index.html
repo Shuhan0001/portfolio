@@ -338,10 +338,11 @@
     </style>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/david/scene.css">
-    <link rel="stylesheet" href="assets/index-transitions.css?v=horizontal-open-1">
+    <link rel="stylesheet" href="assets/index-transitions.css?v=featured-1">
     <link rel="stylesheet" href="assets/index-logic-david.css?v=tracking-connect-4">
     <link rel="stylesheet" href="assets/index-typography.css">
     <link rel="stylesheet" href="assets/index-works.css">
+    <link rel="stylesheet" href="assets/index-featured.css?v=7">
     <link rel="stylesheet" href="assets/index-responsive.css">
     <link rel="stylesheet" href="assets/index-contact.css?v=footer-credits-5">
     <script defer src="assets/index-contact.js?v=creation-2"></script>
@@ -466,10 +467,8 @@
             <div id="practice-block" role="region" aria-label="Selected work and creative practice">
             <!-- Zone 2: one finite filmstrip for works and the archive. -->
             <section id="zone-2-works" class="layer-edge pointer-events-auto relative" aria-labelledby="works-heading">
-                <div id="zone-2-featured" class="slice-gallery">
-                    <div class="slice-gallery__heading">
-                        <h2 class="section-kicker">01 / Works &amp; Archive</h2>
-                        <h3 id="works-heading" class="selection-title">SELECTED <span class="text-outline">ARTIFACTS</span><span class="selection-title__gizmo" aria-hidden="true">
+<section id="featured-studies" class="featured-studies" aria-labelledby="works-heading">
+<header class="featured-studies__heading"><p class="section-kicker">01 / Works</p><h2 id="works-heading" class="selection-title">SELECTED <span class="text-outline">ARTIFACTS</span><span class="selection-title__gizmo" aria-hidden="true">
                             <svg class="selection-title__box" viewBox="0 0 440 200" preserveAspectRatio="none" fill="none" focusable="false">
                                 <g class="selection-title__bounds">
                                     <path class="selection-title__back" d="M15 12H435V165H15Z"/>
@@ -484,8 +483,31 @@
                                 <circle cx="355" cy="150" r="10" stroke="#eee8d7"/>
                                 <circle cx="355" cy="150" r="2" fill="#eee8d7"/>
                             </svg>
-                        </span></h3>
-                    </div>
+                        </span></h2></header>
+<div class="featured-studies__grid"><article class="focus-work">
+<a class="focus-work__link hover-trigger" href="Revive_Profilo.html" data-artifact="artifact-revive" aria-label="Explore Revive">
+<div class="focus-work__image"><img src="Image/Index_Revive.webp" alt="Revive project cover" loading="lazy" decoding="async"><span class="focus-work__wipe" aria-hidden="true"></span><span class="focus-work__visit" aria-hidden="true">EXPLORE</span></div>
+<div class="focus-work__meta"><span>01 / Player experience / UE5</span></div>
+<h3>Revive</h3><p>A controlled lighting study in a playable 2.5D world. Nine participants explored how visibility changes difficulty, navigation and immersion.</p></a></article>
+<article class="focus-work">
+<a class="focus-work__link hover-trigger" href="MiniQuest_Profilo.html" data-artifact="artifact-miniquest" aria-label="Explore MiniQuest">
+<div class="focus-work__image"><img src="Image/Index_MiniQuest_Green.png" alt="MiniQuest project cover" loading="lazy" decoding="async"><span class="focus-work__wipe" aria-hidden="true"></span><span class="focus-work__visit" aria-hidden="true">EXPLORE</span></div>
+<div class="focus-work__meta"><span>02 / Everyday interaction / Android</span></div>
+<h3>MiniQuest</h3><p>Walking becomes energy, everyday tasks become quests. An offline-first prototype exploring movement, rewards and brief haptic interactions.</p></a></article>
+<article class="focus-work">
+<a class="focus-work__link hover-trigger" href="CogniStream_Profilo.html" data-artifact="artifact-cognistream" aria-label="Explore Cogni-Stream">
+<div class="focus-work__image"><img src="Image/Index_CogniStream.webp" alt="Cogni-Stream project cover" loading="lazy" decoding="async"><span class="focus-work__wipe" aria-hidden="true"></span><span class="focus-work__visit" aria-hidden="true">EXPLORE</span></div>
+<div class="focus-work__meta"><span>03 / Speculative design / Web</span></div>
+<h3>Cogni-Stream</h3><p>What happens when knowledge becomes a subscription? A fictional brain–computer interface makes access, inequality and technological dependence tangible.</p></a></article>
+<article class="focus-work">
+<a class="focus-work__link hover-trigger" href="Threshold_Profilo.html" data-artifact="artifact-threshold" aria-label="Explore Threshold">
+<div class="focus-work__image"><img src="Image/Index_Threshold.png" alt="Threshold project cover" loading="lazy" decoding="async"><span class="focus-work__wipe" aria-hidden="true"></span><span class="focus-work__visit" aria-hidden="true">EXPLORE</span></div>
+<div class="focus-work__meta"><span>04 / Tangible interaction / Research concept</span><span>In progress</span></div>
+<h3>Threshold</h3><p>A physical interface concept exploring memory and AI identity through changing system states. An ongoing investigation, rather than a completed user study.</p></a></article></div>
+
+</section>
+                <div id="zone-2-featured" class="slice-gallery" role="region" aria-labelledby="all-works-heading">
+                    <div class="slice-gallery__heading"><h3 id="all-works-heading" class="all-works-heading">ALL WORKS</h3></div>
                     <div class="slice-viewport">
                         <div id="featured-track" class="slice-track">
                         <section class="slice-group" aria-labelledby="slice-group-0">
@@ -931,8 +953,9 @@
     <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script src="assets/index-works.js?v=certificate-1"></script>
+    <script src="assets/index-featured.js?v=1" defer></script>
     <script src="assets/index-title-drag.js"></script>
-    <script src="assets/index-practice-transitions.js"></script>
+    <script src="assets/index-practice-transitions.js?v=featured-1"></script>
 
     <script>
         // --------------------------------------------------------

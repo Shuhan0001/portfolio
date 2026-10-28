@@ -9,6 +9,7 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
     runway.appendChild(featured);
     const html = document.documentElement;
     const works = document.getElementById('zone-2-works');
+    const openingSurface = document.getElementById('featured-studies') || featured;
     const practiceBlock = document.getElementById('practice-block');
     // The outer wrapper reserves Contact plus its reveal travel. A separate
     // inner mask follows Logic's edge while the scroll anchor remains stable.
@@ -123,9 +124,9 @@ window.setupIndexTransitions = function setupIndexTransitions({ lenis, heroSecti
                 });
                 cover.fromTo(sheets[0], { y: 0 }, {
                     y: coverTravel, ease: 'none', duration: 1
-                }, 0).fromTo(featured, { y: () => -coverTravel() }, {
+                }, 0).fromTo(openingSurface, { y: () => -coverTravel() }, {
                     y: 0, ease: 'none', duration: 1
-                }, 0).fromTo(featured, { clipPath: 'inset(50% 0 50% 0)' }, {
+                }, 0).fromTo(openingSurface, { clipPath: 'inset(50% 0 50% 0)' }, {
                     clipPath: 'inset(0% 0 0% 0)', ease: 'sine.inOut', duration: 1
                 }, 0);
             } else {

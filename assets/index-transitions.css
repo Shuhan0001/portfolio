@@ -53,7 +53,7 @@ html.lenis, html.lenis body { height: auto; }
 .gallery-runway { position: relative; width: 100%; }
 /* About stays below the Works sheet, visible above and below its center opening. */
 .index-center-cover #zone-2-works { background: transparent; padding-top: 80vh; }
-.index-center-cover #zone-2-featured {
+.index-center-cover #featured-studies {
   background: #070707;
   clip-path: inset(50% 0 50% 0);
   will-change: transform, clip-path;
