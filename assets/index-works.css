@@ -584,3 +584,10 @@ html.works-viewer-open { overflow: hidden; }
   #zone-2-works *, #zone-2-works *::before, #zone-2-works *::after, .work-viewer *, .work-viewer *::after { transition: none !important; }
   .artifact-slice__frame { transform: none !important; }
 }
+
+/* The archive flows with the page; only its cover rail loops. */
+.index-scroll-gallery #zone-2-featured.slice-gallery.is-looping { position:relative; top:auto; }
+#zone-2-featured.is-looping .slice-viewport { overflow-x:hidden; touch-action:pan-y; }
+
+.slice-loop-position { font:10px/1.4 Arial,Helvetica,sans-serif; letter-spacing:.12em; color:#92938f; font-variant-numeric:tabular-nums; }
+.is-looping .slice-group__label { pointer-events:none; }

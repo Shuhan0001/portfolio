@@ -26,7 +26,9 @@
                     { transform:'translateX(0%) skewX(0deg)', offset:.48 },
                     { transform:'translateX(125%) skewX(-14deg)', offset:1 }
                 ], { duration:1150, easing:'cubic-bezier(.65,0,.2,1)', fill:'forwards' });
-                image.animate([{ opacity:0, transform:'scale(1.065)' },{ opacity:1, transform:'scale(1)' }],
+                // Keep the decoded cover visible beneath the wipe. A backwards-filled
+                // opacity animation would hide an already visible image during its delay.
+                image.animate([{ transform:'scale(1.065)' },{ transform:'scale(1)' }],
                     { duration:750, delay:420, fill:'backwards', easing:'cubic-bezier(.2,.7,.2,1)' });
             });
         }

@@ -392,6 +392,14 @@
     visible = rect.bottom > -240 && rect.top < innerHeight + 240;
     if (visible) { if (!loading) init(); else schedule(); } else pause();
   };
+  window.portfolioDavidDestination = {
+    prepare() { if (!loading && !disposed) init(); },
+    read() {
+      if (!ready || disposed) return null;
+      scene.updateMatrixWorld(true); camera.updateMatrixWorld(true);
+      return { host, canvas: renderer.domElement, camera, meshes, active };
+    }
+  };
   const observer = new IntersectionObserver(checkVisibility, { rootMargin: '240px' });
   observer.observe(accordion);
   window.addEventListener('scroll', checkVisibility, { passive: true });

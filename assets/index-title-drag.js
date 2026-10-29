@@ -2,7 +2,7 @@
 (() => {
     'use strict';
     const title = document.getElementById('works-heading');
-    const gallery = document.getElementById('zone-2-featured');
+    const gallery = title?.closest('.featured-studies') || document.getElementById('zone-2-featured');
     if (!title || !gallery) return;
     const controller = new AbortController();
     const { signal } = controller;
@@ -17,8 +17,8 @@
     function bounds() {
         const box = title.getBoundingClientRect();
         const stage = gallery.getBoundingClientRect();
-        const kicker = gallery.querySelector('.section-kicker').getBoundingClientRect();
-        const viewport = gallery.querySelector('.slice-viewport');
+        const kicker = (gallery.querySelector('.section-kicker') || title).getBoundingClientRect();
+        const viewport = gallery.querySelector('.slice-viewport, .featured-studies__grid');
         const railTop = viewport.getBoundingClientRect().top + parseFloat(getComputedStyle(viewport).paddingTop);
         const left = box.left - x, top = box.top - y;
         const margin = Math.max(24, parseFloat(getComputedStyle(title).fontSize) * .85);

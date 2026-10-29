@@ -1,5 +1,4 @@
-/* Finite, document-driven filmstrip. Wheel/touch input stays with Lenis/the
-   browser, so reaching either end naturally releases the vertical page. */
+/* Continuous rightward archive rail; vertical scrolling always remains with the page. */
 (function (root) {
     'use strict';
     const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
@@ -46,6 +45,76 @@
         const controller = new AbortController();
         const { signal } = controller;
         let distance = 0, travel = 0, current = -1, previousX = null;
+        native = false;
+        featured.classList.add('is-looping');
+        let railX = 0, period = 0, autoFrame = 0, lastTime = 0, hovered = false, seekMotion = null;
+        let visible = false, hoveredIndex = null;
+        title.setAttribute('aria-live','off');
+        category.setAttribute('aria-live','off');
+        const positionLabel=document.createElement('span');
+        positionLabel.className='slice-loop-position';
+        indexNav.before(positionLabel);
+        const copies = [];
+        const originals = Array.from(track.children);
+        items.forEach((item,index) => item.dataset.loopIndex = index);
+        function copyGroups(before) {
+            const fragment = document.createDocumentFragment();
+            originals.forEach(group => {
+                const copy = group.cloneNode(true);
+                copy.removeAttribute('id');
+                copy.setAttribute('aria-hidden','true');
+                copy.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+                copy.querySelectorAll('a,button').forEach(el => el.tabIndex = -1);
+                copy.addEventListener('click', event => {
+                    const card = event.target.closest('.artifact-slice');
+                    if (!card || event.button || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+                    event.preventDefault();
+                    const original = items[Number(card.dataset.loopIndex)];
+                    railX += card.getBoundingClientRect().left-original.getBoundingClientRect().left;
+                    track.style.transform = 'translate3d('+railX+'px,0,0)';
+                    openItem(original);
+                }, {signal});
+                copies.push(copy); fragment.append(copy);
+            });
+            before ? track.prepend(fragment) : track.append(fragment);
+        }
+        copyGroups(true); copyGroups(false);
+        viewport.addEventListener('pointerleave',()=>{hovered=false;hoveredIndex=null;render(false);},{signal});
+        viewport.addEventListener('pointerover',event=>{
+            const card=event.target.closest('.artifact-slice');
+            if(card){hovered=true;hoveredIndex=Number(card.dataset.loopIndex);render(false);}
+        },{signal});
+        viewport.addEventListener('pointerout',event=>{
+            const next=event.relatedTarget;
+            const card=next instanceof Element ? next.closest('.artifact-slice') : null;
+            if(!card || !viewport.contains(card)){hovered=false;hoveredIndex=null;render(false);}
+        },{signal});
+        viewport.addEventListener('wheel',event=>{
+            if(dialog.open || !period || !event.deltaX) return;
+            seekMotion=null;railX-=event.deltaX;render();
+        },{passive:true,signal});
+        let touchX = null;
+        viewport.addEventListener('touchstart',event=>{touchX=event.touches[0].clientX;hovered=true;},{passive:true,signal});
+        viewport.addEventListener('touchmove',event=>{if(touchX===null)return;const x=event.touches[0].clientX;railX+=x-touchX;touchX=x;seekMotion=null;render();},{passive:true,signal});
+        viewport.addEventListener('touchend',()=>{touchX=null;hovered=false;},{passive:true,signal});
+        viewport.addEventListener('touchcancel',()=>{touchX=null;hovered=false;},{passive:true,signal});
+        const visibilityObserver = new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;},{threshold:0});
+        visibilityObserver.observe(featured);
+        function autoplay(time) {
+            if(destroyed)return;
+            const dt=Math.min((time-lastTime)/1000,.05);lastTime=time;
+            if(!document.hidden && !dialog.open) {
+                if(seekMotion) {
+                    const t=clamp((time-seekMotion.start)/850,0,1);
+                    railX=seekMotion.from+(seekMotion.to-seekMotion.from)*ease(t);
+                    if(t===1)seekMotion=null;
+                    render(false);
+                } else if(visible && !reduced && !hovered && !featured.querySelector(':focus-visible')) {
+                    railX+=dt*26;render(false);
+                }
+            }
+            autoFrame=requestAnimationFrame(autoplay);
+        }
         let motionTimer, resizeFrame, captionAnimation, frameAnimation;
         let viewerAnimations = [], titleRows = [];
         let opener = null, closing = false, destroyed = false, restoringFocus = false;
@@ -65,19 +134,7 @@
             rememberReturn(displayedItem?.href === exploreLink.href ? displayedItem
                 : items.find(item => item.href === exploreLink.href));
         }, { signal });
-        window.addEventListener('wheel', event => {
-            if (destroyed || dialog.open || event.ctrlKey || (!event.deltaX && !event.deltaY)) return;
-            const bounds = runway.getBoundingClientRect();
-            if (native ? !viewport.contains(event.target) : bounds.top > 1 || bounds.bottom < window.innerHeight - 1) return;
-            const delta = native ? event.deltaX || (event.shiftKey ? event.deltaY : 0) : event.deltaY;
-            const position = native ? viewport.scrollLeft : -bounds.top;
-            const limit = native ? distance : travel;
-            // Give immediate feedback only when this input can move the filmstrip.
-            // At either end, ordinary vertical scrolling resumes without a tick.
-            if (delta > 0 && position < limit - .5 || delta < 0 && position > .5) {
-                window.portfolioAudio?.playScrollTick(Math.sign(delta));
-            }
-        }, { capture: true, passive: true, signal });
+
 
         // Derive navigation from the covers so its order and labels stay in sync.
         indexNav.replaceChildren();
@@ -95,8 +152,8 @@
             button.addEventListener('click', () => seek(index, false, true), { signal });
             button.addEventListener('keydown', event => {
                 if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
-                const next = event.key === 'ArrowRight' ? Math.min(items.length - 1, index + 1)
-                    : event.key === 'ArrowLeft' ? Math.max(0, index - 1)
+                const next = event.key === 'ArrowRight' ? (index + 1) % items.length
+                    : event.key === 'ArrowLeft' ? (index - 1 + items.length) % items.length
                     : event.key === 'Home' ? 0 : event.key === 'End' ? items.length - 1 : null;
                 if (next === null) return;
                 event.preventDefault();
@@ -121,6 +178,8 @@
             const item = items[index];
             title.textContent = item.dataset.title;
             category.textContent = item.dataset.category;
+            positionLabel.textContent=String(index+1).padStart(2,'0')+' / '+String(items.length).padStart(2,'0');
+            ticks.forEach((tick,i)=>tick.setAttribute('aria-label',(i===index?'Current project: ':'Show ')+items[i].dataset.title));
             captionAnimation?.cancel();
             if (animate && !reduced && title.animate) {
                 captionAnimation = title.animate([
@@ -135,68 +194,45 @@
             featured.classList.remove('is-scrolling');
         }
         function render(allowMotion = true) {
-            if (destroyed || dialog.open) return;
-            // A native focus scroll must not add an offset to the transformed rail.
-            if (!native && viewport.scrollLeft) viewport.scrollLeft = 0;
-            const position = native ? viewport.scrollLeft : -runway.getBoundingClientRect().top;
-            const state = scrollState(position, native ? distance : travel, distance, items.length, native);
-            if (!native) track.style.transform = `translate3d(${-state.x}px,0,0)`;
-            select(state.index, allowMotion);
-            if (allowMotion && previousX !== null && Math.abs(state.x - previousX) > .15) {
-                featured.classList.add('is-scrolling');
-                clearTimeout(motionTimer);
-                // Let the colour and enlargement arrive before easing back to
-                // the monochrome strip, including short trackpad gestures.
-                motionTimer = setTimeout(settle, 650);
-            }
-            previousX = state.x;
+            if (destroyed || dialog.open || !period) return;
+            if (viewport.scrollLeft) viewport.scrollLeft = 0;
+            if(!seekMotion) { while(railX>0)railX-=period; while(railX<=-period)railX+=period; }
+            track.style.transform = 'translate3d('+railX+'px,0,0)';
+            const center=viewport.getBoundingClientRect().left+viewport.clientWidth/2;
+            let nearest=0,delta=Infinity;
+            track.querySelectorAll('.artifact-slice').forEach(card=>{
+                const rect=card.getBoundingClientRect(),d=Math.abs(rect.left+rect.width/2-center);
+                if(d<delta){delta=d;nearest=Number(card.dataset.loopIndex);}
+            });
+            select(hoveredIndex ?? nearest,allowMotion);
+            featured.classList.toggle('is-scrolling',visible && (!reduced || hoveredIndex !== null));
+            copies.forEach(group=>group.querySelectorAll('.artifact-slice').forEach(card=>{
+                card.classList.toggle('is-current',Number(card.dataset.loopIndex)===current);
+                card.classList.remove('is-adjacent');
+            }));
         }
-        const onScroll = () => render();
-
+        const onScroll = () => render(false);
         function measure() {
             if (destroyed) return;
-            distance = Math.max(0, track.scrollWidth - viewport.clientWidth);
-            travel = distance ? Math.max(distance, (items.length - 1) * clamp(window.innerHeight * .23, 160, 280)) : 0;
-            const height = native ? '' : `${featured.offsetHeight + travel}px`;
-            const changed = runway.style.height !== height;
-            runway.style.height = height;
+            const old=period;
+            period=originals[0].getBoundingClientRect().left-copies[0].getBoundingClientRect().left;
+            if(old)railX=railX/old*period;
+            else railX=-period;
+            const changed=!!runway.style.height;
+            runway.style.removeProperty('height');travel=0;
             render(false);
-            if (changed) window.dispatchEvent(new CustomEvent('works:layout'));
+            if(changed)window.dispatchEvent(new CustomEvent('works:layout'));
         }
         function seek(index, focus = false, smooth = false) {
-            if (destroyed || (smooth && dialog.open)) return;
-            const offset = positionForIndex(index, items.length, native ? distance : travel, native);
-            if (smooth && !reduced) {
-                if (native) {
-                    viewport.scrollTo({ left: offset, behavior: 'smooth' });
-                } else {
-                    viewport.scrollLeft = 0;
-                    lenis.scrollTo(window.scrollY + runway.getBoundingClientRect().top + offset, {
-                        duration: 1.15, easing: ease, onComplete: onScroll
-                    });
-                }
-                // Scroll events update the marker as each cover passes, rather
-                // than marking the destination before the strip gets there.
-                return;
-            }
-            if (native) {
-                viewport.scrollLeft = offset;
-                lenis.scrollTo(featured, { immediate: true, force: dialog.open });
-            } else {
-                viewport.scrollLeft = 0;
-                lenis.scrollTo(window.scrollY + runway.getBoundingClientRect().top + offset, { immediate: true, force: dialog.open });
-                if (dialog.open) {
-                    const state = scrollState(offset, travel, distance, items.length);
-                    track.style.transform = `translate3d(${-state.x}px,0,0)`;
-                }
-            }
-            render(false);
-            select(index, false);
-            if (focus) {
-                restoringFocus = true;
-                items[index].focus({ preventScroll: true });
-                restoringFocus = false;
-            }
+            if(destroyed || (smooth && dialog.open) || !period)return;
+            hoveredIndex=null;
+            const rect=items[index].getBoundingClientRect();
+            let offset=viewport.getBoundingClientRect().left+viewport.clientWidth/2-rect.left-rect.width/2;
+            if(!dialog.open && !focus)offset-=Math.round(offset/period)*period;
+            if(smooth && !reduced) seekMotion={from:railX,to:railX+offset,start:performance.now()};
+            else {seekMotion=null;railX+=offset;track.style.transform='translate3d('+railX+'px,0,0)';render(false);}
+            select(index,false);
+            if(focus){restoringFocus=true;items[index].focus({preventScroll:true});restoringFocus=false;}
         }
 
         function sourceFrame(item) {
@@ -421,6 +457,7 @@
         }
         function openItem(item) {
             if (dialog.open || destroyed) return;
+            seekMotion=null;
             const origin = sourceFrame(item);
             const source = item.querySelector('.artifact-artwork');
             const sourceFilter = getComputedStyle(source).filter;
@@ -534,7 +571,7 @@
                 openItem(item);
             }, { signal });
             item.addEventListener('focus', () => {
-                if (!restoringFocus && !dialog.open && item.matches(':focus-visible')) seek(index);
+                if (!restoringFocus && !dialog.open && item.matches(':focus-visible')) seek(index, true);
             }, { signal });
             item.addEventListener('keydown', event => {
                 const next = event.key === 'ArrowRight' ? Math.min(items.length - 1, index + 1)
@@ -579,6 +616,7 @@
         if (native) track.style.removeProperty('transform');
         else viewport.scrollLeft = 0;
         measure();
+        autoFrame=requestAnimationFrame(autoplay);
         const observer = new ResizeObserver(() => {
             cancelAnimationFrame(resizeFrame);
             resizeFrame = requestAnimationFrame(measure);
@@ -604,6 +642,7 @@
                 measure();
                 previousX = null;
                 seek(index);
+                lenis.scrollTo(featured,{immediate:true,force:true});
                 settle();
                 return true;
             },
@@ -611,6 +650,8 @@
                 destroyed = true;
                 cancelSwitch();
                 controller.abort();
+                cancelAnimationFrame(autoFrame);visibilityObserver.disconnect();
+                copies.forEach(copy=>copy.remove());positionLabel.remove();featured.classList.remove('is-looping');
                 observer.disconnect();
                 cancelAnimationFrame(resizeFrame);
                 captionAnimation?.cancel();

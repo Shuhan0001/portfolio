@@ -277,6 +277,16 @@
       renderer.domElement.addEventListener('webglcontextrestored',()=>{ready=true;host.classList.add('is-ready');host.dataset.state='ready';schedule();});
     } catch(error) {ready=false;pauseRendering();host.classList.remove('is-ready');host.dataset.state='unavailable';if(renderer)renderer.dispose();console.warn('David 3D could not load:',error);}
   }
+  // Read-only handoff snapshots; posing here does not draw or alter scroll state.
+  window.portfolioDavidSource = {
+    sample(phase) {
+      if (!ready || disposed) return null;
+      pose(phase); scene.updateMatrixWorld(true); camera.updateMatrixWorld(true);
+      const result = { host, camera: camera.clone(), meshes: slices.map(mesh => ({ geometry: mesh.geometry, material: mesh.material, matrix: mesh.matrixWorld.clone() })) };
+      pose(progress); scene.updateMatrixWorld(true); camera.updateMatrixWorld(true);
+      return result;
+    }
+  };
   window.addEventListener('david:progress',event=>{target=clamp(event.detail);schedule();});
   window.addEventListener('scroll',()=>{if(!window.ScrollTrigger){target=clamp(scrollY/(innerHeight*1.9));schedule();}},{passive:true});
   window.addEventListener('pointermove',followPointer,{passive:true});
