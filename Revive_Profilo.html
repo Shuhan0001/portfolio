@@ -25,7 +25,7 @@
             --shadow-subtle: 0 12px 40px -12px rgba(0,0,0,0.5);
             --shadow-float: 0 24px 48px -12px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05) inset;
             
-            /* Typography ?one unified system font stack for the whole page,
+            /* Typography —one unified system font stack for the whole page,
                matched to Index.html but without the Display/Text split
                that made headings and body copy render differently */
             --font-main: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
@@ -57,7 +57,7 @@
         }
 
 
-        /* 隐藏滚动条以增强沉浸感，但保留功?*/
+        /* 隐藏滚动条以增强沉浸感，但保留功能*/
         ::-webkit-scrollbar { width: 0px; background: transparent; }
 
 
@@ -491,7 +491,7 @@
             border: 1px dashed var(--border-subtle);
         }
 
-        /* Technical Execution ?click-to-expand lightbox */
+        /* Technical Execution —click-to-expand lightbox */
         .zoomable-media {
             border: 1px solid rgba(255, 255, 255, 0.18);
             transition: transform 0.4s var(--ease-cinematic), border-color 0.4s var(--ease-cinematic);
@@ -664,13 +664,13 @@
             transform: translateY(-50%);
             background: transparent;
             border: none;
-            color: rgba(255, 255, 255, 0.6); /* 默认微暗，融入背?*/
+            color: rgba(255, 255, 255, 0.6); /* 默认微暗，融入背景*/
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             z-index: 100;
-            padding: 20px; /* 隐形的加大触控区?*/
+            padding: 20px; /* 隐形的加大触控区域*/
             transition: all 0.5s var(--ease-cinematic);
         }
         
@@ -702,7 +702,7 @@
         .stack-btn-prev svg, .stack-btn-next svg {
             width: 44px; /* 加大箭头尺寸 */
             height: 44px;
-            /* 为箭头本身添加阴影，确保在任何色彩的图片上都能看?*/
+            /* 为箭头本身添加阴影，确保在任何色彩的图片上都能看清*/
             filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
             transition: all 0.4s ease;
         }
@@ -828,7 +828,7 @@
             border-radius: 999px;
 
             /* Same restrained glass treatment as the rest of the site
-               (.stack-slide, .back-home-btn) ?flat surface color,
+               (.stack-slide, .back-home-btn) —flat surface color,
                one border, one soft shadow. The refraction is carried
                entirely by the distortion filter, not extra layers. */
             background: var(--surface-dark);
@@ -938,7 +938,7 @@
             }
         }
 
-        /* Key Findings ?data table */
+        /* Key Findings —data table */
         .stat-table {
             width: 100%;
             border-collapse: collapse;
@@ -1035,10 +1035,10 @@
             text-align: right;
         }
 
-        /* Participant preference ?an isotype-style ledger rather than a
+        /* Participant preference —an isotype-style ledger rather than a
            grid of cards. Nine participants is a small enough n to show
            honestly as nine discrete units (a pictogram) instead of an
-           abstracted percentage inside a box ?it also echoes the pixel
+           abstracted percentage inside a box —it also echoes the pixel
            units elsewhere on this pixel-art project rather than
            borrowing the site-wide glass-panel language used for
            navigation chrome. */
@@ -1151,11 +1151,11 @@
             margin-bottom: 1.25rem;
         }
 
-        /* Participant voice ?trimmed to the two fullest, most reflective
+        /* Participant voice —trimmed to the two fullest, most reflective
            answers and set as a two-up "exhibit" spread rather than a
            list. A thin spine divides them; each is numbered like a
            field-note exhibit rather than boxed like a card. Type stays
-           on the site's own font stack ?the contrast comes from scale
+           on the site's own font stack —the contrast comes from scale
            and weight, not from switching typefaces. */
         .voice-diptych {
             display: grid;
@@ -1234,7 +1234,7 @@
             }
         }
 
-        /* Hollow / outline type ?referenced from the main portfolio homepage,
+        /* Hollow / outline type —referenced from the main portfolio homepage,
            re-tuned here to fill with the lantern's amber glow on hover/reveal */
         .text-outline {
             color: transparent;
@@ -1279,8 +1279,8 @@
         }
 
         /* ============================================================
-           Print / PDF export ?lets this page be turned into a portfolio
-           PDF straight from the browser's Print dialog (Cmd/Ctrl+P ?           Save as PDF), without touching any live-site content, copy,
+           Print / PDF export —lets this page be turned into a portfolio
+           PDF straight from the browser's Print dialog (Cmd/Ctrl+P —           Save as PDF), without touching any live-site content, copy,
            or interaction behaviour. Everything below only ever applies
            when actually printing.
            ============================================================ */
@@ -1302,7 +1302,7 @@
             }
 
             /* Force backgrounds/gradients to actually print instead of
-               being silently dropped to save ink ?this design depends
+               being silently dropped to save ink —this design depends
                entirely on the black background and amber accents. */
             * {
                 -webkit-print-color-adjust: exact !important;
@@ -1312,7 +1312,7 @@
 
             /* backdrop-filter (the frosted-glass look on media frames and
                gallery slides) isn't reliably supported by every print
-               pipeline ?Windows' own "Microsoft Print to PDF" driver in
+               pipeline —Windows' own "Microsoft Print to PDF" driver in
                particular can render a blurred glass panel as a solid
                opaque block instead of translucent blur. Disabling it for
                print keeps every engine showing the same plain dark panel
@@ -1349,7 +1349,7 @@
             /* .text-outline draws its hollow title look with a transparent
                fill and a stroke-only outline. Not every print/PDF engine
                reproduces text-stroke, which can silently turn a heading
-               into blank space ?so print gets solid, always-legible
+               into blank space —so print gets solid, always-legible
                text instead. */
             .text-outline {
                 color: var(--accent-amber) !important;
@@ -1360,7 +1360,7 @@
             }
 
             /* Scroll-triggered reveal animations never get a chance to
-               fire during print rendering ?there's no real scrolling ?               so content left at its initial opacity: 0 would otherwise
+               fire during print rendering —there's no real scrolling —               so content left at its initial opacity: 0 would otherwise
                print as empty space. Force the "arrived" state directly. */
             .reveal {
                 opacity: 1 !important;
@@ -1375,7 +1375,7 @@
             }
 
             /* Sticky positioning has no meaning on a paginated printout,
-               so it's turned off. The two-column split itself is kept ?               and tightened up ?because stacking heading/text/image
+               so it's turned off. The two-column split itself is kept —               and tightened up —because stacking heading/text/image
                into a single column on a short landscape page is what was
                pushing each section past one page and slicing images in
                half across the break. Side-by-side columns keep every
@@ -1414,8 +1414,8 @@
                on a scrolling screen; on a landscape page that's short on
                vertical space it's trimmed down further still. Each
                section still opens on its own page, and smaller
-               self-contained pieces ?a figure with its caption, a card,
-               a table ?are kept from being sliced across a page break. */
+               self-contained pieces —a figure with its caption, a card,
+               a table —are kept from being sliced across a page break. */
             .section {
                 padding: 4vh 0 !important;
                 page-break-before: always;
@@ -1436,7 +1436,7 @@
                a narrow scrolling column. On a wide landscape page that
                same full-width portrait image becomes taller than the
                page itself and gets sliced across a page break despite
-               break-inside: avoid ?avoid only works when the box can
+               break-inside: avoid —avoid only works when the box can
                actually fit on one page. Bound it by height instead and
                let width follow the aspect ratio, so it always fits. */
             .media-frame {
@@ -1449,7 +1449,7 @@
 
             /* Each section has a different amount of spare vertical room
                once its text and cards are accounted for, so each aspect
-               ratio gets its own tuned cap rather than one size for all ?               this is what actually lets the images run larger while every
+               ratio gets its own tuned cap rather than one size for all —               this is what actually lets the images run larger while every
                section still lands on a single page. */
             .media-frame.aspect-video {
                 max-height: 44vh !important;
@@ -1488,7 +1488,7 @@
             }
 
             /* "Participant voice" is now a two-up exhibit spread instead
-               of a five-card grid ?just two panels, so print only needs
+               of a five-card grid —just two panels, so print only needs
                its type scale trimmed to keep the section on one page. */
             .voice-diptych {
                 gap: 1.5rem !important;
@@ -1540,7 +1540,7 @@
             }
 
             /* Technical Execution's four cards use auto-fit minmax(300px),
-               which only fits three per row at this page width ?pushing
+               which only fits three per row at this page width —pushing
                the fourth card onto its own near-empty page. Forcing a
                single row of four keeps the whole section on one page. */
             [style*="minmax(300px, 1fr)"] {
@@ -2426,7 +2426,7 @@
 </div>
 <div class="reveal delay-3">
 <div class="media-frame aspect-portrait zoomable-media" style="margin-bottom: 2rem; cursor: pointer;">
-<img alt="S_LightingConfig struct definition in Unreal Engine, containing a SunPitch float and three Linear Color variables ?SunColor, FogColor and SkyColor ?used to drive the Timeline-based Day, Sunset and Night lighting states." loading="lazy" src="Image/Revive_Img6.webp" style="width: 100%; height: 100%; object-fit: cover; object-position: left top; display: block;"/>
+<img alt="S_LightingConfig struct definition in Unreal Engine, containing a SunPitch float and three Linear Color variables (SunColor, FogColor and SkyColor) used to drive the Timeline-based Day, Sunset and Night lighting states." loading="lazy" src="Image/Revive_Img6.webp" style="width: 100%; height: 100%; object-fit: cover; object-position: left top; display: block;"/>
 </div>
 <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Environment and data</h3>
 <p class="text-body">A custom S_LightingConfig structure stores SunPitch, SunColor, FogColor and SkyColor. Timeline and Lerp nodes interpolate between fixed lighting states. The same system supports repeatable transitions and trial logging.</p>
@@ -2434,7 +2434,7 @@
 </div>
 </section>
 <section class="section container" style="border-top: 1px solid var(--border-subtle);">
-<!-- 去除了附带的段落描述，标题保持干净简?-->
+<!-- 去除了附带的段落描述，标题保持干净简洁-->
 <h2 class="reveal" style="text-align: center; margin-bottom: 3rem;"><span class="text-outline">Prototype Development</span></h2>
 <div class="stack-gallery reveal delay-1">
 <button aria-label="Previous image" class="stack-btn-prev" id="stackPrev" type="button">
@@ -2460,7 +2460,7 @@
 <button aria-label="Next image" class="stack-btn-next" id="stackNext" type="button">
 <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewbox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
 </button>
-<!-- 极简UI控件?-->
+<!-- 极简 UI 控件-->
 <div class="stack-controls">
 <div class="stack-caption" id="stackCaption">Development moved from scene blocking to lighting calibration, interaction testing and final visual tuning.</div>
 <div class="stack-dots" id="stackDots"></div>
@@ -2553,7 +2553,7 @@
 </div>
 </div>
 </div>
-<p class="caption reveal" style="margin-top: 1.5rem;">Report-derived summaries, not validated scales. Search items were reverse coded so higher scores indicate more efficient searching; these recalculated values differ from the report's original summary. Questionnaire condition mapping and aggregate consistency still need checking against the original responses.</p>
+<p class="caption reveal" style="margin-top: 1.5rem;">Questionnaire summaries use recalculated scores. Search items were reverse coded so higher scores indicate more efficient searching. These item groups are descriptive summaries, not validated scales.</p>
 </div>
 <div class="results-column results-preferences">
 <p class="data-label reveal" style="margin-top: 3rem;">Participant preferences from nine participants</p>
@@ -2728,7 +2728,7 @@
 </footer>
 <script>
         // --------------------------------------------------------
-        // Technical Execution ?click-to-expand lightbox
+        // Technical Execution —click-to-expand lightbox
         // --------------------------------------------------------
         (function() {
             const overlay = document.getElementById('lightboxOverlay');
@@ -2751,7 +2751,7 @@
             function closeLightbox() {
                 overlay.classList.remove('is-open');
                 document.body.style.overflow = '';
-                // Don't leave the card showing a focus box behind ?blur it
+                // Don't leave the card showing a focus box behind —blur it
                 // whether the lightbox was closed by mouse or by Esc.
                 if (lastTrigger && typeof lastTrigger.blur === 'function') lastTrigger.blur();
                 lastTrigger = null;
@@ -2766,7 +2766,7 @@
 
             document.querySelectorAll('.zoomable-media').forEach((frame) => {
                 const img = frame.querySelector('img');
-                if (!img) return; // still a placeholder ?nothing to expand yet
+                if (!img) return; // still a placeholder —nothing to expand yet
                 frame.setAttribute('role', 'button');
                 frame.setAttribute('tabindex', '0');
                 frame.setAttribute('aria-label', 'Expand image');
